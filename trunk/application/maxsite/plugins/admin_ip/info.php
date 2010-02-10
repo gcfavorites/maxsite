@@ -1,0 +1,13 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+$info = array(
+	'name' => 'Admin IP',
+	'description' => 'Плагин разрешает доступ в админ-панель только с указанных IP.',
+	'version' => '1.0',
+	'author' => 'Максим',
+	'plugin_url' => 'http://maxsite.org/',
+	'author_url' => 'http://maxsite.org/',
+	'group' => 'template'
+);
+
+?>

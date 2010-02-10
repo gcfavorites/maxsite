@@ -7,10 +7,6 @@
 	<meta name="keywords" content="<?= mso_head_meta('keywords') ?>">
 	<link rel="shortcut icon" href="<?= getinfo('stylesheet_url') ?>favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>style.css" type="text/css" media="screen">
-	<!--[if IE]>
-	<link rel="stylesheet" type="text/css" href="<?= getinfo('stylesheet_url') ?>ie.css" />
-	<![endif]-->
-	
 	<?php 
 		if ( $menu = mso_get_option('menu_header', 'templates', 'custom_menu-034-1.css') ) 
 		{
@@ -19,10 +15,9 @@
 			.'" type="text/css" media="screen">';
 		}
 	?>
-	<link rel="pingback" href="<?= getinfo('pingback_url') ?>">
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?= getinfo('rss_url') ?>">
 
-<?php mso_hook('head') ?>
+	<?php mso_hook('head') ?>
 
 </head>
 <body>

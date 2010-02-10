@@ -92,7 +92,8 @@
 			}
 
 			var panel = this.panel = $('<ul></ul>').addClass('panel');
-
+			
+		
 			this.appendMenu('bold');
 			this.appendMenu('italic');
 			this.appendMenu('strikeThrough');
@@ -107,6 +108,7 @@
 			
 			// max start
 			this.appendMenuSeparator(); 
+			
 			// this.appendMenu('formatBlock', ['<p>'], 'InsertParagraph');
 			this.appendMenu('InsertParagraph');
 			//this.appendMenuSeparator();
@@ -118,6 +120,8 @@
 			//this.appendMenuSeparator();
 			
 			this.appendMenu('formatBlock', ['<pre>'], 'pre');
+			
+			// this.appendMenu('formatBlock', ['<h1>'], 'h1');
 			
 			
 			this.appendMenuSeparator();

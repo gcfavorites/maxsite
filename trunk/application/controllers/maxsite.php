@@ -5,7 +5,8 @@
  * (с) http://maxsite.org/
  */
 
-class Maxsite extends Controller {
+class Maxsite extends Controller 
+{
 	
 	var $data_def = array();
 	
@@ -27,11 +28,9 @@ class Maxsite extends Controller {
 		else
 			$this->data_def['is_feed'] = '0';
 			
-		# инициализация
+		# инициализация + проверка залогиненности
 		mso_initalizing();
-		
-		if (!isset($this->session->userdata['userlogged'])) $this->session->userdata['userlogged'] = 0;
-		
+
 		$this->data_def['session'] = $this->session->userdata;
 		//$this->session->sess_destroy(); // для тестирования - обнуление сессии
 	}
@@ -62,8 +61,8 @@ class Maxsite extends Controller {
 		elseif ($method == 'url') $this->_view_i('url', 'url/url');
 		elseif ($method == 'xmlrpc') $this->_view_i('xmlrpc', 'xmlrpc/xmlrpc');
 		elseif ($method == 'xmlrpc_server') $this->_view_i('xmlrpc_server', 'xmlrpc/xmlrpc_server');
-		elseif ($method == 'trackback') $this->_view_i('trackback', 'xmlrpc/trackback');
-		elseif ($method == 'ping') $this->_view_i('ping', 'xmlrpc/ping');
+		// elseif ($method == 'trackback') $this->_view_i('trackback', 'xmlrpc/trackback');
+		// elseif ($method == 'ping') $this->_view_i('ping', 'xmlrpc/ping');
 		elseif ($method == 'login') $this->_view_i('login', 'login');
 		elseif ($method == 'logout') $this->_view_i('logout', 'logout');
 		// elseif ($method == 'newcomment') $this->_view_i('newcomment', 'newcomment');
@@ -105,6 +104,9 @@ class Maxsite extends Controller {
 
 			$this->db->select('page_id');
 			$this->db->where(array('page_slug'=>$slug));
+			$this->db->or_where(array('page_id'=>$slug));
+			$this->db->limit('1');
+			
 			$query = $this->db->get('page');
 			if ($query->num_rows() > 0) // есть страница
 			{

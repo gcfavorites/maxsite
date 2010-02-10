@@ -1,5 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+/**
+ * MaxSite CMS
+ * (с) http://maxsite.org/
+ */
 
 # функция автоподключения плагина
 function twitter_autoload($args = array())
@@ -44,6 +48,10 @@ function twitter_widget_form($num = 1)
 	$form .= '<div class="t150">Адрес:</div><p>'. form_input( array( 'name'=>$widget . '_url', 'value'=>$options['url'] ) ) ;
 	$form .= '<div class="t150">Количество записей:</div><p>'. form_input( array( 'name'=>$widget . '_count', 'value'=>$options['count'] ) ) ;
 	$form .= '<div class="t150">Формат вывода:</div><p>'. form_input( array( 'name'=>$widget . '_format', 'value'=>$options['format'] ) ) ;
+	$form .= '<div class="t150">&nbsp;</div><p>%TITLE% %DATE% %LINK%';
+	
+	// %DESCRIPTION% 
+	
 	$form .= '<div class="t150">Формат даты:</div><p>'. form_input( array( 'name'=>$widget . '_format_date', 'value'=>$options['format_date'] ) ) ;
 	$form .= '<div class="t150">Количество слов:</div><p>'. form_input( array( 'name'=>$widget . '_max_word_description', 'value'=>$options['max_word_description'] ) ) ;
 	
@@ -105,8 +113,8 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 	if (!$url) return false;
 	
 	# проверим кеш, может уже есть в нем все данные
-	$cache_key = mso_md5('twitter_go'. $url . $count . $format . $format_date . (int) $max_word_description);
-	$k = mso_get_cache($cache_key);
+	$cache_key = 'rss/' . mso_md5('twitter_go'. $url . $count . $format . $format_date . (int) $max_word_description);
+	$k = mso_get_cache($cache_key, true);
 	if ($k) return $k; // да есть в кэше
 	
 	if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 3600); // время кэширования MAGPIE
@@ -131,8 +139,8 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 		$out = str_replace('%LINK%', $item['link'], $out); // [link] = [guid]
 	}
 	
-	mso_add_cache($cache_key, $out, 3600); // сразу и в кэш добавим - время 10 минут 60 сек * 10 минут *
-	
+	mso_add_cache($cache_key, $out, 600, true);
+
 	return $out;
 }
 

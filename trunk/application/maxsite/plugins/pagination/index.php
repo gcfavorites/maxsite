@@ -1,33 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-/*
-# функция автоподключения плагина
-function pagination_autoload($args = array())
-{	
-	//mso_create_allow('pagination_plugin_admin', 'Доступ к настройкам пагинации ');
-	// mso_hook_add( 'pagination', 'pagination_go');
-	//mso_hook_add( 'admin_init', 'pagination_admin_init');
-}
-
-
-function pagination_admin_init($args = array()) 
-{
-	if ( !mso_check_allow('pagination_plugin_admin') ) return $args;
-
-	$this_plugin_url = 'plugin_pagination'; // url и hook
-	mso_admin_menu_add('plugins', $this_plugin_url, 'Пагинация страниц');
-	mso_admin_url_hook ($this_plugin_url, 'pagination_admin');
-	
-	return $args;
-}
-
-function pagination_admin($args = array()) 
-{
-	global $MSO;
-	if ( !mso_check_allow('pagination_plugin_admin') ) return $args;
-	require($MSO->config['plugins_dir'] . 'pagination/admin.php');
-}
-*/
+/**
+ * MaxSite CMS
+ * (с) http://maxsite.org/
+ */
 
 
 function pagination_go($r = array()) 

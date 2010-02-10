@@ -47,7 +47,7 @@ if ($pages) // есть страницы
 			echo $page_content;
 			mso_hook('content_end'); # хук на конец блока
 			echo '<div class="break"></div>';
-			mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comment">', '</div>');
+			mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comments-link">', '</div>');
 			
 		echo '</div>';
 		*/

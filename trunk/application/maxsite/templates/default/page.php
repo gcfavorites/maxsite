@@ -35,7 +35,7 @@ if ($pages) // есть страницы
 		
 		echo '<div class="page_content">';
 			mso_hook('content_start'); # хук на начало блока
-			echo $page_content;
+			echo mso_hook('content_content', $page_content);
 			mso_hook('content_end'); # хук на конец блока
 			echo '<div class="break"></div>';
 			require('page-comments.php'); // здесь форма комментариев

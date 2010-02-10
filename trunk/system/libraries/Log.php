@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -94,10 +94,10 @@ class CI_Log {
 		
 		if ( ! file_exists($filepath))
 		{
-			$message .= "<"."?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?".">\n\n";
+			$message .= "<"."?php  if (!defined('BASEPATH')) exit('No direct script access allowed'); ?".">\n\n";
 		}
 			
-		if ( ! $fp = @fopen($filepath, FOPEN_WRITE_CREATE))
+		if ( ! $fp = @fopen($filepath, "a"))
 		{
 			return FALSE;
 		}
@@ -109,12 +109,10 @@ class CI_Log {
 		flock($fp, LOCK_UN);
 		fclose($fp);
 	
-		@chmod($filepath, FILE_WRITE_MODE); 		
+		@chmod($filepath, 0666); 		
 		return TRUE;
 	}
 
 }
 // END Log Class
-
-/* End of file Log.php */
-/* Location: ./system/libraries/Log.php */
+?>

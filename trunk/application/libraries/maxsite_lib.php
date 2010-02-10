@@ -7,7 +7,7 @@
 
 class Maxsite_lib 
 {
-	var $version = '0.15';
+	var $version = '0.16';
 	var $config = array();
 	var $data = array();
 	var $hooks = array();
@@ -43,7 +43,7 @@ class Maxsite_lib
 		$this->config['admin_dir'] = $this->config['base_dir'] . 'admin/';
 		$this->config['config_file'] = $this->config['base_dir'] . 'mso_config.php';
 		
-		$this->config['cache_time'] = 600;
+		$this->config['cache_time'] = 900;
 		$this->config['template'] = 'default';
 		
 		$this->config['secret_key'] = $this->config['site_url'];

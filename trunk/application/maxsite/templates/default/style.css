@@ -17,8 +17,11 @@ a { color: blue; text-decoration: none;}
 a:hover { color: blue; text-decoration: underline; }
 a:active { color: #FF0000; }
 
+a.perelink {color: gray;}
+
 a img { border: none; text-decoration: none;} /* ie fix*/
 a img, a:visited img, a:hover img, a img:hover, img+a, img+a:hover { border: none; text-decoration: none;}
+
 
 
 /* H */
@@ -50,7 +53,7 @@ pre { margin: 10px 0; background: #E8E8E8 url(images/note.png) no-repeat 445px 5
 * html #MainMenu {width: 660px;}
 div.header-searh {float: right; width: 240px; text-align: right; padding: 4px 4px 0 0;}
 
-#header2 {border-top: 6px solid #3C5FB3; border-bottom: 2px solid #B7BECE; height: 211px; background: url(images/h2.jpg) no-repeat;}
+#header2 {border-top: 6px solid #3C5FB3; border-bottom: 2px solid #B7BECE; height: 211px; background: #D5D5E1 url(images/h2.jpg) no-repeat;}
 #header2 h1 {font-size: 18pt; padding: 10px 0 0 10px; color: #51669F;}
 #header2 h1 a { color: #30407F;}
 #header2 h1 a:hover {text-decoration: underline; }
@@ -118,8 +121,13 @@ div.info span {font-weight: bold;}
 div.tagclouds {text-align: center;}
 div.tagclouds span {line-height: 1.4em;}
 
+div.catclouds {text-align: center;}
+div.catclouds span {line-height: 1.4em;}
+
+div.home_top {background: #E6F1FF; padding: 1px 5px;}
+
 /* LIST */
-ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; fo1nt-size: 9pt; list-style-type: none; l1ist-style-type: square; line-height: 1.3em;}
+ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; fo1nt-size: 9pt; list-style-type: none; l1ist-style-type: square; line-height: 1.5em;}
 
 ul.is_link ul {marg1in: 0; padd1ing: 0px; list-style-type: none;}
 
@@ -174,7 +182,7 @@ div.comments li span {bor1der-bottom: 1px solid #8591B7; font-style: italic;}
 div.comments h3.comments {background: #E8E8E8; padding: 3px;}
 
 
-div.comment {margin: 10px 0 0 0; text-align: right; font-size: 8pt;}
+div.comments-link {margin: 10px 0 0 0; text-align: right; font-size: 8pt;}
 
 
 /* OTHER */
@@ -190,3 +198,8 @@ img.border {border: 1px solid #3D61B6; }
 
 img.smiley {vertical-align: middle;}
 
+div.pre {background: #F0F0F0; padding: 5px; overflow: auto; width: 99%;}
+ol.pre {line-height: 1em; font-family: monospace; padding: 0; margin: 0 0 0 30px;  }
+ol.pre li {padding: 0; margin: 0; white-space: pre; line-height: 0.8em;}
+ol.pre li.odd {background: none;}
+ol.pre span.php-comment {color: gray;}

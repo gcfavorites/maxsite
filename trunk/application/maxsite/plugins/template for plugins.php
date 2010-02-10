@@ -23,6 +23,7 @@ function %%%_activate($args = array())
 # функция выполняется при деактивации (выкл) плагина
 function %%%_deactivate($args = array())
 {	
+	// mso_delete_option('', 'plugins'); // удалим созданные опции
 	return $args;
 }
 

@@ -62,6 +62,10 @@ div.wysiwyg ul.panel li a.hilitecolor:before { content: "G"; line-height: 16px;}
 div.wysiwyg ul.panel li a.forecolor:before { content: "C"; line-height: 16px;}
 div.wysiwyg ul.panel li a.pre:before { content: "T"; line-height: 16px;}
 
+div.wysiwyg ul.panel li a.code:before { content: "D"; line-height: 16px;}
+
+div.wysiwyg ul.panel li a.ct:before { content: "C-"; line-height: 16px;}
+
 
 
 div.wysiwyg ul.panel li a.fig { background-position: -48px -80px; }

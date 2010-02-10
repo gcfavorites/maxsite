@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Code Igniter
  *
@@ -132,13 +132,12 @@ class CI_DB_forge {
 		{
 			if ($field == 'id')
 			{
-				$this->add_field(array(
-										'id' => array(
-													'type' => 'INT',
-													'constraint' => 9,
-													'auto_increment' => TRUE
-													)
-								));
+				$this->fields[] = array('id' => array(
+										'type' => 'INT',
+										'constraint' => 9,
+										'auto_increment' => TRUE
+										)
+									);									
 				$this->add_key('id', TRUE);
 			}
 			else
@@ -204,27 +203,6 @@ class CI_DB_forge {
 			return $sql;
 		}
 	
-		return $this->db->query($sql);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Rename Table
-	 *
-	 * @access	public
-	 * @param	string	the old table name
-	 * @param	string	the new table name
-	 * @return	bool
-	 */
-	function rename_table($table_name, $new_table_name)
-	{
-		if ($table_name == '' OR $new_table_name == '')
-		{
-			show_error('A table name is required for that operation.');
-		}
-			
-		$sql = $this->_rename_table($table_name, $new_table_name);
 		return $this->db->query($sql);
 	}
 
@@ -341,6 +319,4 @@ class CI_DB_forge {
 	}
 
 }
-
-/* End of file DB_forge.php */
-/* Location: ./system/database/DB_forge.php */
+?>

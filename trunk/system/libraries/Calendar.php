@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -472,6 +472,4 @@ class CI_Calendar {
 }
 
 // END CI_Calendar class
-
-/* End of file Calendar.php */
-/* Location: ./system/libraries/Calendar.php */
+?>

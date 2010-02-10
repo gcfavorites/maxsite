@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -65,7 +65,7 @@ class CI_URI {
 			// build the URI string from the zero index of the $_GET array.
 			// This avoids having to deal with $_SERVER variables, which
 			// can be unreliable in some environments
-			if (is_array($_GET) AND count($_GET) == 1 AND trim(key($_GET), '/') != '')
+			if (is_array($_GET) AND count($_GET) == 1)
 			{
 				$this->uri_string = key($_GET);			
 				return;
@@ -74,7 +74,7 @@ class CI_URI {
 			// Is there a PATH_INFO variable?
 			// Note: some servers seem to have trouble with getenv() so we'll test it two ways		
 			$path = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : @getenv('PATH_INFO');			
-			if (trim($path, '/') != '' AND $path != "/".SELF)
+			if ($path != '' AND $path != '/' AND $path != "/".SELF)
 			{
 				$this->uri_string = $path;
 				return;
@@ -82,7 +82,7 @@ class CI_URI {
 					
 			// No PATH_INFO?... What about QUERY_STRING?
 			$path =  (isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : @getenv('QUERY_STRING');	
-			if (trim($path, '/') != '')
+			if ($path != '' AND $path != '/')
 			{
 				$this->uri_string = $path;
 				return;
@@ -90,10 +90,9 @@ class CI_URI {
 			
 			// No QUERY_STRING?... Maybe the ORIG_PATH_INFO variable exists?
 			$path = (isset($_SERVER['ORIG_PATH_INFO'])) ? $_SERVER['ORIG_PATH_INFO'] : @getenv('ORIG_PATH_INFO');	
-			if (trim($path, '/') != '' AND $path != "/".SELF)
+			if ($path != '' AND $path != '/' AND $path != "/".SELF)
 			{
-				// remove path and script information so we have good URI data
-				$this->uri_string = str_replace($_SERVER['SCRIPT_NAME'], '', $path);
+				$this->uri_string = $path;
 				return;
 			}
 
@@ -140,7 +139,6 @@ class CI_URI {
 		}
 		
 		$request_uri = preg_replace("|/(.*)|", "\\1", str_replace("\\", "/", $_SERVER['REQUEST_URI']));
-
 		if ($request_uri == '' OR $request_uri == SELF)
 		{
 			return '';
@@ -151,7 +149,7 @@ class CI_URI {
 		{
 			$fc_path .= '?';
 		}
-		
+
 		$parsed_uri = explode("/", $request_uri);
 				
 		$i = 0;
@@ -163,9 +161,11 @@ class CI_URI {
 			}
 		}
 		
+		// print_r($parsed_uri);
+
 		# MAX для /home/
+		# $parsed_uri = implode("/", array_slice($parsed_uri, $i));
 		$parsed_uri = implode("/", $parsed_uri);
-		// $parsed_uri = implode("/", array_slice($parsed_uri, $i));
 		
 		if ($parsed_uri != '')
 		{
@@ -588,6 +588,4 @@ class CI_URI {
 
 }
 // END URI Class
-
-/* End of file URI.php */
-/* Location: ./system/libraries/URI.php */
+?>

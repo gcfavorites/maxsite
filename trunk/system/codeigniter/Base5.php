@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -51,6 +51,4 @@ function &get_instance()
 }
 
 
-
-/* End of file Base5.php */
-/* Location: ./system/codeigniter/Base5.php */
+?>

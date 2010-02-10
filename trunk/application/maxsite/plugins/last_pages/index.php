@@ -1,5 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+/**
+ * MaxSite CMS
+ * (с) http://maxsite.org/
+ */
+
+
 # функция автоподключения плагина
 function last_pages_autoload($args = array())
 {
@@ -51,6 +57,11 @@ function last_pages_widget_form($num = 1)
 		
 	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	$form .= '<p><div class="t150">Формат:</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
+	
+	$form .= '<br /><div class="t150">&nbsp</div> %TITLE% %DATE% %TEXT%';
+	
+	
+	
 	$form .= '<p><div class="t150">Формат даты:</div> '. form_input( array( 'name'=>$widget . 'date_format', 'value'=>$options['date_format'] ) ) ;
 	$form .= '<p><div class="t150">Количество:</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
 	$form .= '<p><div class="t150">Тип страниц:</div> '. form_input( array( 'name'=>$widget . 'page_type', 'value'=>$options['page_type'] ) ) ;

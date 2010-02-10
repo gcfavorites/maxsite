@@ -355,7 +355,7 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 	$CI->db->select('cat2obj.*');
 	$CI->db->from('category');
 	$CI->db->join('cat2obj', 'cat2obj.category_id = category.category_id');
-	$CI->db->join('page', 'cat2obj.page_id = page.page_id');
+	$CI->db->join('page', 'cat2obj.page_id = page.page_id', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->where('page_status', 'publish');
 	// $CI->db->where('page_type_name', 'blog');
@@ -372,9 +372,11 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 	foreach ($cats_post as $key=>$val) 
 	{
 		if ($type == 'page') 
-			$cat[$val['category_id']]['pages'][] =$val['page_id'];
+			$cat[$val['category_id']]['pages'][] = $val['page_id'];
 		else
-			$cat[$val['category_id']]['links'][] =$val['links_id'];
+			$cat[$val['category_id']]['links'][] = $val['links_id'];
+		
+		// $cat[$val['category_id']]['count_pages'] = count($cat[$val['category_id']]['pages']);
 	}
 
 	//pr($cat);

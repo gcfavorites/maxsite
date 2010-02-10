@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -69,14 +69,14 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @access	public
 	 * @param	string	the table
 	 * @return	string
-	 */
+	 */	
 	function dbprefix($table = '')
 	{
 		if ($table == '')
 		{
 			$this->display_error('db_table_name_required');
 		}
-
+		
 		return $this->dbprefix.$table;
 	}
 
@@ -95,16 +95,9 @@ class CI_DB_active_record extends CI_DB_driver {
 	{
 		if (is_string($select))
 		{
-			if ($protect_identifiers !== FALSE)
-			{
-				$select = explode(',', $select);
-			}
-			else
-			{
-				$select = array($select);
-			}
+			$select = explode(',', $select);
 		}
-
+	
 		foreach ($select as $val)
 		{
 			$val = trim($val);
@@ -120,7 +113,7 @@ class CI_DB_active_record extends CI_DB_driver {
 					$val = $this->_protect_identifiers($val);
 				}
 			}
-
+		
 			if ($val != '')
 			{
 				$this->ar_select[] = $val;
@@ -147,7 +140,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function select_max($select = '', $alias='')
 	{
-		if ( ! is_string($select) OR $select == '')
+		if (!is_string($select) || $select == '')
 		{
 			$this->display_error('db_invalid_query');
 		}
@@ -179,11 +172,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function select_min($select = '', $alias='')
 	{
-		if ( ! is_string($select) OR $select == '')
+		if (!is_string($select) || $select == '')
 		{
 			$this->display_error('db_invalid_query');
 		}
-
+	
 		$alias = ($alias != '') ? $alias : $select;
 	
 		$sql = 'MIN('.$this->_protect_identifiers(trim($select)).') AS '.$this->_protect_identifiers(trim($alias));
@@ -211,13 +204,13 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function select_avg($select = '', $alias='')
 	{
-		if ( ! is_string($select) OR $select == '')
+		if (!is_string($select) || $select == '')
 		{
 			$this->display_error('db_invalid_query');
 		}
 
 		$alias = ($alias != '') ? $alias : $select;
-
+	
 		$sql = 'AVG('.$this->_protect_identifiers(trim($select)).') AS '.$this->_protect_identifiers(trim($alias));
 
 		$this->ar_select[] = $sql;
@@ -230,7 +223,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	}
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Select Sum
 	 *
@@ -243,7 +236,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function select_sum($select = '', $alias='')
 	{
-		if ( ! is_string($select) OR $select == '')
+		if (!is_string($select) || $select == '')
 		{
 			$this->display_error('db_invalid_query');
 		}
@@ -296,13 +289,13 @@ class CI_DB_active_record extends CI_DB_driver {
 			$this->ar_from[] = $this->_protect_identifiers($this->_track_aliases($val));
 			if ($this->ar_caching === TRUE)
 			{
-				$this->ar_cache_from[] = $this->_protect_identifiers($this->_track_aliases($val));
+				$this->ar_cache_from[] = $this->_protect_identifiers($val);
 			}
 		}
 
 		return $this;
 	}
-
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -339,10 +332,10 @@ class CI_DB_active_record extends CI_DB_driver {
 
 			// First we remove any existing prefixes in the condition to avoid duplicates
 			$cond = preg_replace('|('.$this->dbprefix.')([\w\.]+)([\W\s]+)|', "$2$3", $cond);
-
+			
 			// Next we add the prefixes to the condition
 			$cond = preg_replace('|([\w\.]+)([\W\s]+)(.+)|', $this->dbprefix . "$1$2" . $this->dbprefix . "$3", $cond);
-		}
+		}	
 
 		$join = $type.'JOIN '.$this->_protect_identifiers($this->dbprefix.$table, TRUE).' ON '.$cond;
 
@@ -354,7 +347,7 @@ class CI_DB_active_record extends CI_DB_driver {
 
 		return $this;
 	}
-
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -453,23 +446,12 @@ class CI_DB_active_record extends CI_DB_driver {
 				{
 					$k .= ' =';
 				}
-
-				if ($v !== '' AND $v !== NULL)
-				{		
-					if ($escape === TRUE)
-					{
-						$v = ' '.$this->escape($v);
-					}
-				}
+			
+				$v = ' '.$this->escape($v);
 			}
 			else
 			{
-
-				if ($escape === TRUE)
-				{
-					$k = $this->_protect_identifiers($k, TRUE);
-				}
-				
+				$k = $this->_protect_identifiers($k, TRUE);
 			}
 
 			$this->ar_where[] = $prefix.$k.$v;
@@ -493,6 +475,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @access	public
 	 * @param	string	The field to search
 	 * @param	array	The values searched on
+
 	 * @return	object
 	 */
 	function where_in($key = NULL, $values = NULL)
@@ -511,10 +494,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @access	public
 	 * @param	string	The field to search
 	 * @param	array	The values searched on
+
 	 * @return	object
 	 */
 	function or_where_in($key = NULL, $values = NULL)
-	{
+	{	 	
 		return $this->_where_in($key, $values, FALSE, 'OR ');
 	}
 
@@ -529,10 +513,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @access	public
 	 * @param	string	The field to search
 	 * @param	array	The values searched on
+
 	 * @return	object
 	 */
 	function where_not_in($key = NULL, $values = NULL)
-	{
+	{	 	
 		return $this->_where_in($key, $values, TRUE);
 	}
 	
@@ -547,11 +532,12 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @access	public
 	 * @param	string	The field to search
 	 * @param	array	The values searched on
+
 	 * @return	object
 	 */
 	function or_where_not_in($key = NULL, $values = NULL)
-	{
-		return $this->_where_in($key, $values, TRUE, 'OR ');
+	{	 	
+		return $this->_where_in($key, $values, FALSE, 'OR ');
 	}
 
 	// --------------------------------------------------------------------
@@ -569,8 +555,8 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @return	object
 	 */
 	function _where_in($key = NULL, $values = NULL, $not = FALSE, $type = 'AND ')
-	{
-		if ($key === NULL OR ! is_array($values))
+	{	 	
+		if ($key === NULL || !is_array($values))
 		{
 			return;
 		}
@@ -583,7 +569,7 @@ class CI_DB_active_record extends CI_DB_driver {
 		}
 
 		$prefix = (count($this->ar_where) == 0) ? '' : $type;
- 
+ 	 			
 		$where_in = $prefix . $this->_protect_identifiers($key) . $not . " IN (" . implode(", ", $this->ar_wherein) . ") ";
 
 		$this->ar_where[] = $where_in;
@@ -789,23 +775,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	string
 	 * @return	object
 	 */
-	function having($key, $value = '', $escape = TRUE)
+	function having($key, $value = '')
 	{
-		return $this->_having($key, $value, 'AND ', $escape);
+		return $this->_having($key, $value, 'AND ');
 	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * orhaving() is an alias of or_having()
-	 * this function is here for backwards compatibility, as
-	 * orhaving() has been deprecated
-	 */
-
-	function orhaving($key, $value = '', $escape = TRUE)
-	{
-		return $this->or_having($key, $value = '', $escape);
-	}	
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -818,9 +792,9 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	string
 	 * @return	object
 	 */
-	function or_having($key, $value = '', $escape = TRUE)
+	function orhaving($key, $value = '')
 	{
-		return $this->_having($key, $value, 'OR ', $escape);
+		return $this->_having($key, $value, 'OR ');
 	}
 	
 	// --------------------------------------------------------------------
@@ -836,7 +810,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	string
 	 * @return	object
 	 */
-	function _having($key, $value = '', $type = 'AND ', $escape = TRUE)
+	function _having($key, $value = '', $type = 'AND ')
 	{
 		if ( ! is_array($key))
 		{
@@ -846,12 +820,7 @@ class CI_DB_active_record extends CI_DB_driver {
 		foreach ($key as $k => $v)
 		{
 			$prefix = (count($this->ar_having) == 0) ? '' : $type;
-
-			if ($escape === TRUE)
-			{
-				$k = $this->_protect_identifiers($k);
-			}
-
+			$k = $this->_protect_identifiers($k);
 			
 			if ($v != '')
 			{
@@ -1453,15 +1422,17 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */	
 	function _filter_table_aliases($statements)
 	{
-
 		foreach ($statements as $k => $v)
 		{
 			foreach ($this->ar_aliased_tables as $table)
 			{
-				$statements[$k] = preg_replace('/(\w+\.\w+)/', $this->_protect_identifiers('$0'), $statements[$k]); // makes `table.field`
-				$statements[$k] = str_replace($this->dbprefix.$table.'.', $table.'.', $statements[$k]);
+				$statement = preg_replace('/(\w+\.\w+)/', $this->_protect_identifiers('$0'), $v); // makes `table.field`
+				$statement = str_replace(array($this->dbprefix.$table, '.'), array($table, $this->_protect_identifiers('.')), $statement);
 			}
+
+			$statements[$k] = $statement;
 		}
+
 		return $statements;
 	}
 
@@ -1482,7 +1453,7 @@ class CI_DB_active_record extends CI_DB_driver {
 
 		$sql = ( ! $this->ar_distinct) ? 'SELECT ' : 'SELECT DISTINCT ';
 	
-		$sql .= (count($this->ar_select) == 0) ? '*' : implode(', ', $this->_filter_table_aliases($this->ar_select));
+		$sql .= (count($this->ar_select) == 0) ? '*' : implode(', ', $this->ar_select);
 
 		if ($select_override !== FALSE)
 		{
@@ -1696,7 +1667,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	{
 		foreach ($ar_reset_items as $item => $default_value)
 		{
-			if ( ! in_array($item, $this->ar_store_array))
+			if (!in_array($item, $this->ar_store_array))
 			{
 				$this->$item = $default_value;
 			}
@@ -1759,6 +1730,4 @@ class CI_DB_active_record extends CI_DB_driver {
 	}
 	
 }
-
-/* End of file DB_active_rec.php */
-/* Location: ./system/database/DB_active_rec.php */
+?>

@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -340,6 +340,4 @@ class CI_Profiler {
 }
 
 // END CI_Profiler class
-
-/* End of file Profiler.php */
-/* Location: ./system/libraries/Profiler.php */
+?>

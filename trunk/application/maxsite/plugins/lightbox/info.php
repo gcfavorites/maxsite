@@ -3,7 +3,7 @@
 
 $info = array(
 	'name' => 'Lightbox',
-	'description' => 'Подключение Lightbox2 к вашему сайту. Делает красивый вывод картинок',
+	'description' => 'Подключение Lightbox2 к вашему сайту. Делает красивый вывод картинок. Несовместим с jQuery!',
 	'version' => '1.0',
 	'author' => 'Максим',
 	'plugin_url' => 'http://maxsite.org/',

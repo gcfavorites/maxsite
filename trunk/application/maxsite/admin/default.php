@@ -49,7 +49,7 @@ function mso_admin_footer_default($args = '')
 	$out ='
 	<p>Страница создавалась {elapsed_time} секунд. Потребление памяти: {memory_usage}. Запросов MySQL: '
 	. $query_count
-	. '. Работает на <a href="http://maxsite.org/" style="color: white;">MaxSite CMS</a>. Версия '
+	. '. Работает на <a href="http://max-3000.com/" style="color: white;">MaxSite CMS</a>. Версия '
 	. $ver . ' [<a href="' . $MSO->config['site_url'] . 'logout'.'">выйти</a>]</p>';
 	
 	return $out;
@@ -60,7 +60,7 @@ function mso_admin_plugins_default($args = array())
 	mso_admin_plugin_load('admin_page');
 	mso_admin_plugin_load('admin_home');
 	mso_admin_plugin_load('admin_cat');
-	mso_admin_plugin_load('admin_link');
+	// mso_admin_plugin_load('admin_link');
 	mso_admin_plugin_load('admin_options');
 	mso_admin_plugin_load('admin_plugins');
 	mso_admin_plugin_load('admin_users');
@@ -75,6 +75,8 @@ function mso_admin_plugins_default($args = array())
 	// mso_admin_plugin_load('editor_wymeditor');
 	
 	mso_admin_plugin_load('editor_jw');
+	
+	mso_admin_plugin_load('template_options');
 	
 	
 	# кустомная функция, если есть

@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -117,7 +117,7 @@ class CI_Validation {
 			if ($rules == '')
 				return;
 				
-			$data = array($data => $rules);
+			$data[$data] = $rules;
 		}
 	
 		foreach ($data as $key => $val)
@@ -488,33 +488,6 @@ class CI_Validation {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Valid Emails
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	bool
-	 */	
-	function valid_emails($str)
-	{
-		if (strpos($str, ',') === FALSE)
-		{
-			return $this->valid_email(trim($str));
-		}
-		
-		foreach(explode(',', $str) as $email)
-		{
-			if (trim($email) != '' && $this->valid_email(trim($email)) === FALSE)
-			{
-				return FALSE;
-			}
-		}
-		
-		return TRUE;
-	}
-
-	// --------------------------------------------------------------------
-	
-	/**
 	 * Validate IP Address
 	 *
 	 * @access	public
@@ -726,8 +699,6 @@ class CI_Validation {
 			{
 				$data[$key] = $this->prep_for_form($val);
 			}
-			
-			return $data;
 		}
 		
 		if ($this->_safe_form_data == FALSE OR $data == '')
@@ -807,6 +778,4 @@ class CI_Validation {
 
 }
 // END Validation Class
-
-/* End of file Validation.php */
-/* Location: ./system/libraries/Validation.php */
+?>

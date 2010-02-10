@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -246,6 +246,4 @@ class CI_SHA {
 	}
 }
 // END CI_SHA
-
-/* End of file Sha1.php */
-/* Location: ./system/libraries/Sha1.php */
+?>

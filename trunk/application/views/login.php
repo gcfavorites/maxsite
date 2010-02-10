@@ -55,14 +55,14 @@ function _mso_login()
 				'users_nik' => $userdata[0]['users_nik'],
 				'users_login' => $userdata[0]['users_login'],
 				'users_password' => $userdata[0]['users_password'],
-				'users_levels_id' => $userdata[0]['users_levels_id'],
 				'users_groups_id' => $userdata[0]['users_groups_id'],
-				'users_last_visit' => $userdata[0]['users_last_visit'],
-				'users_avatar_url' => $userdata[0]['users_avatar_url'],
+				// 'users_levels_id' => $userdata[0]['users_levels_id'],
+				// 'users_last_visit' => $userdata[0]['users_last_visit'],
+				// 'users_avatar_url' => $userdata[0]['users_avatar_url'],
 				'users_show_smiles' => $userdata[0]['users_show_smiles'],
 				'users_time_zone' => $userdata[0]['users_time_zone'],
 				'users_language' => $userdata[0]['users_language'],
-				'users_skins' => $userdata[0]['users_skins']
+				// 'users_skins' => $userdata[0]['users_skins']
 			);
 			
 			$CI->session->set_userdata($data);

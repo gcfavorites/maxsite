@@ -9,7 +9,7 @@
 	$mq = $CI->db->query_count;
 	
 	echo <<<EOF
-	&copy; {$site_name}, {$date} | Работает на <a href="http://maxsite.org/">MaxSite CMS</a> {$ver} | Время: {elapsed_time} секунд | MySQL: {$mq} | Память: {memory_usage}
+	&copy; {$site_name}, {$date} | Работает на <a href="http://max-3000.com/">MaxSite CMS</a> {$ver} | Время: {elapsed_time} | SQL: {$mq} | Память: {memory_usage}
 EOF;
 
 	if (is_login())

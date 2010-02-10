@@ -345,7 +345,7 @@ function init () {
 	global $MSO;
 
     if ( !defined('MAGPIE_CACHE_DIR') ) {
-        define('MAGPIE_CACHE_DIR', $MSO->config['cache_dir']);
+        define('MAGPIE_CACHE_DIR', $MSO->config['cache_dir'] . 'rss/');
     }
 	
     if ( !defined('MAGPIE_CACHE_AGE') ) {

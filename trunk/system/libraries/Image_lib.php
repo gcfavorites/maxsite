@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -484,7 +484,7 @@ class CI_Image_lib {
 					return FALSE;
 				}
 			
-				@chmod($this->full_dst_path, DIR_WRITE_MODE);
+				@chmod($this->full_dst_path, 0777);
 				return TRUE;
 			}
 			
@@ -499,14 +499,8 @@ class CI_Image_lib {
 			return FALSE;
 		}
 
- 		//  Create The Image
-		//
-		//  old conditional which users report cause problems with shared GD libs who report themselves as "2.0 or greater"
-		//  it appears that this is no longer the issue that it was in 2004, so we've removed it, retaining it in the comment
-		//  below should that ever prove inaccurate.
-		//
-		//  if ($this->image_library == 'gd2' AND function_exists('imagecreatetruecolor') AND $v2_override == FALSE)
- 		if ($this->image_library == 'gd2' AND function_exists('imagecreatetruecolor'))		
+		//  Create The Image
+		if ($this->image_library == 'gd2' AND function_exists('imagecreatetruecolor'))
 		{
 			$create	= 'imagecreatetruecolor';
 			$copy	= 'imagecopyresampled';
@@ -539,7 +533,7 @@ class CI_Image_lib {
 		imagedestroy($src_img);
 		
 		// Set the file to 777
-		@chmod($this->full_dst_path, DIR_WRITE_MODE);
+		@chmod($this->full_dst_path, 0777);
 		
 		return TRUE;
 	}
@@ -609,7 +603,7 @@ class CI_Image_lib {
 		}
 		
 		// Set the file to 777
-		@chmod($this->full_dst_path, DIR_WRITE_MODE);
+		@chmod($this->full_dst_path, 0777);
 		
 		return TRUE;
 	}
@@ -695,7 +689,7 @@ class CI_Image_lib {
 		// we have to rename the temp file.
 		copy ($this->dest_folder.'netpbm.tmp', $this->full_dst_path);
 		unlink ($this->dest_folder.'netpbm.tmp');
-		@chmod($dst_image, DIR_WRITE_MODE);
+		@chmod($dst_image, 0777);
 		
 		return TRUE;
 	}
@@ -754,7 +748,7 @@ class CI_Image_lib {
 		
 		// Set the file to 777
 		
-		@chmod($this->full_dst_path, DIR_WRITE_MODE);
+		@chmod($this->full_dst_path, 0777);
 		
 		return true;
 	}
@@ -838,7 +832,7 @@ class CI_Image_lib {
 		imagedestroy($src_img);
 		
 		// Set the file to 777
-		@chmod($this->full_dst_path, DIR_WRITE_MODE);
+		@chmod($this->full_dst_path, 0777);
 		
 		return TRUE;
 	}
@@ -943,23 +937,10 @@ class CI_Image_lib {
 		{
 			@imagealphablending($src_img, TRUE);
 		} 		
-		
-		// Set RGB values for text and shadow
-		$rgba = imagecolorat($wm_img, $this->wm_x_transp, $this->wm_y_transp);
-		$alpha = ($rgba & 0x7F000000) >> 24;
-		
-		// make a best guess as to whether we're dealing with an image with alpha transparency or no/binary transparency
-		if ($alpha > 0)
-		{
-			// copy the image directly, the image's alpha transparency being the sole determinant of blending
-			imagecopy($src_img, $wm_img, $x_axis, $y_axis, 0, 0, $wm_width, $wm_height);
-		}
-		else
-		{
-			// set our RGB value from above to be transparent and merge the images with the specified opacity
-			imagecolortransparent($wm_img, imagecolorat($wm_img, $this->wm_x_transp, $this->wm_y_transp));
-			imagecopymerge($src_img, $wm_img, $x_axis, $y_axis, 0, 0, $wm_width, $wm_height, $this->wm_opacity);			
-		}
+
+		// Set RGB values for text and shadow		
+		imagecolortransparent($wm_img, imagecolorat($wm_img, $this->wm_x_transp, $this->wm_y_transp));
+		imagecopymerge($src_img, $wm_img, $x_axis, $y_axis, 0, 0, $wm_width, $wm_height, $this->wm_opacity);
 				
 		//  Output the image
 		if ($this->dynamic_output == TRUE)
@@ -1546,6 +1527,4 @@ class CI_Image_lib {
 
 }
 // END Image_lib Class
-
-/* End of file Image_lib.php */
-/* Location: ./system/libraries/Image_lib.php */
+?>

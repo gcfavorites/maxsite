@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -77,7 +77,7 @@ class CI_Router {
 			
 			return;
 		}
-		
+		 
 		// Load the routes.php file.
 		@include(APPPATH.'config/routes'.EXT);
 		$this->routes = ( ! isset($route) OR ! is_array($route)) ? array() : $route;
@@ -171,7 +171,7 @@ class CI_Router {
 		// Update our "routed" segment array to contain the segments.
 		// Note: If there is no custom routing, this array will be
 		// identical to $this->uri->segments
-		$this->uri->rsegments = $segments;
+		$this->uri->rsegments = $segments; 
 	}
 	
 	// --------------------------------------------------------------------
@@ -198,13 +198,13 @@ class CI_Router {
 			// Set the directory and remove it from the segment array
 			$this->set_directory($segments[0]);
 			$segments = array_slice($segments, 1);
-			
+			 
 			if (count($segments) > 0)
 			{
 				// Does the requested controller exist in the sub-folder?
 				if ( ! file_exists(APPPATH.'controllers/'.$this->fetch_directory().$segments[0].EXT))
 				{
-					show_404($this->fetch_directory().$segments[0]);
+					show_404();	
 				}
 			}
 			else
@@ -220,16 +220,16 @@ class CI_Router {
 				}
 			
 			}
-
+				
 			return $segments;
 		}
-
+	
 		// Can't find the requested controller...
-		show_404($segments[0]);
+		show_404();	
 	}
-
+		
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 *  Parse Routes
 	 *
@@ -260,7 +260,7 @@ class CI_Router {
 			$this->_set_request(explode('/', $this->routes[$uri]));		
 			return;
 		}
-				
+				 
 		// Loop through the route array looking for wild-cards
 		foreach ($this->routes as $key => $val)
 		{						
@@ -374,6 +374,4 @@ class CI_Router {
 
 }
 // END Router Class
-
-/* End of file Router.php */
-/* Location: ./system/libraries/Router.php */
+?>

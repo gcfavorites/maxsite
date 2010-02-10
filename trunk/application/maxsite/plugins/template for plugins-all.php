@@ -24,6 +24,7 @@ function %%%_activate($args = array())
 # функция выполняется при деактивации (выкл) плагина
 function %%%_deactivate($args = array())
 {	
+	// mso_delete_option('', 'plugins'); // удалим созданные опции
 	return $args;
 }
 
@@ -112,8 +113,20 @@ function %%%_widget_update($num = 1)
 # функции плагина
 function %%%_widget_custom($options = array(), $num = 1)
 {
+	// кэш 
+	$cache_key = mso_md5('%%%_widget_custom'. implode('', $options) . $num);
+	$k = mso_get_cache($cache_key);
+	if ($k) return $k; // да есть в кэше
+	
+	$out = '';
+	if ( !isset($options['header']) ) $options['header'] = '';
+	
+
 
 	
+	mso_add_cache($cache_key, $out); // сразу в кэш добавим
+	
+	return $out;	
 }
 
 

@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -121,6 +121,4 @@ class Controller extends CI_Base {
 
 }
 // END _Controller class
-
-/* End of file Controller.php */
-/* Location: ./system/libraries/Controller.php */
+?>

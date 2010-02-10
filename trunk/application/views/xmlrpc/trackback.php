@@ -6,6 +6,8 @@
  */
 
  
+//global $MSO;
+
 echo 'trackback';
 
 ?>

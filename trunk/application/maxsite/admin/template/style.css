@@ -83,9 +83,9 @@ div.cat_page ul ul {margin-left: 20px;}
 div.admin-edit-widgets {margin-bottom: 30px; padding: 5px 10px 10px 10px; background: #D0D0EF; -moz-border-radius: 10px;}
 div.admin-edit-widgets-form {border: #A0A0F0 1px solid; margin: 10px 0 10px 0; padding: 1px 10px 10px 10px; background: white; -moz-border-radius: 10px; border-bottom: #707080 2px solid; border-right: #707080 2px solid;}
 div.admin-edit-widgets-form h3 {color: #0D419B;}
-div.admin-edit-widgets-form input {width: 500px;}
-div.admin-edit-widgets-form textarea {width: 500px;}
-div.admin-edit-widgets-form select {width: 500px;}
+div.admin-edit-widgets-form input {width: 600px; font: 10pt Courier New, mono;}
+div.admin-edit-widgets-form textarea {width: 600px;}
+div.admin-edit-widgets-form select {width: 600px;}
 
 
 div.t150, div.t200, div.t250 {width: 150px; text-align: right; float: left; margin: 0 5px; font-weight: bold;}

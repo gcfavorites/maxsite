@@ -123,10 +123,11 @@ function mso_initalizing()
 	$fn = $MSO->config['config_file'];
 	if ( file_exists($fn) ) require_once ($fn);
 	
+	$CI = & get_instance();
+	
 	# стоит ли флаг, что уже произведена инсталяция?
 	if ($mso_install == false)
 	{
-		$CI = & get_instance();
 		if ( !$CI->db->table_exists('options')) return false; # еще не установлен сайт
 	}
 	
@@ -157,6 +158,50 @@ function mso_initalizing()
 	{ 
 		require_once($functions_file);
 	}
+	
+	// pr($MSO);
+	// pr($CI->session->userdata);
+	
+	# проверяем залогинненость юзера
+	if (!isset($CI->session->userdata['userlogged']) or !$CI->session->userdata['userlogged'] )
+	{	
+		// не залогинен
+		$CI->session->userdata['userlogged'] = 0;
+	}
+	else
+	{	
+		// отмечено, что залогинен
+		// нужно проверить верность данных юзера
+		$CI->db->from('users'); # таблица users
+		$CI->db->select('users_id, users_groups_id');
+		$CI->db->limit(1); # одно значение
+		
+		$CI->db->where( array('users_login'=>$CI->session->userdata['users_login'], 
+							  'users_password'=>$CI->session->userdata['users_password']) );
+		
+		$query = $CI->db->get();
+		
+		if ($query->num_rows() == 0) # нет такого - возможно взлом
+		{
+			$CI->session->sess_destroy(); // убиваем сессию
+			$CI->session->userdata['userlogged'] = 0; // отмечаем, что не залогинен
+		}
+		else
+		{
+			// есть что-то
+			$row = $query->row();
+			// сразу выставим группу
+			// $CI->session->userdata['users_groups_id'] = 
+			$MSO->data['session']['users_groups_id'] = $row->users_groups_id;
+		}
+	}
+}
+
+# проверка залогиннености юзера
+function is_login()
+{
+	global $MSO;
+	return ($MSO->data['session']['userlogged'] == 1) ? true : false;
 }
 
 # загружаем включенные плагины
@@ -255,6 +300,10 @@ function getinfo($info = '')
 				
 		case 'common_dir' :
 				$out = $MSO->config['common_dir'];
+				break;
+				
+		case 'common_url' :
+				$out = $MSO->config['common_url'];
 				break;
 				
 		case 'uploads_url' :
@@ -568,10 +617,8 @@ function mso_delete_option($key, $type)
 {
 	$CI = & get_instance();
 
-	$CI->db->where('options_key', $key);
-	$CI->db->where('options_type', $type);
 	$CI->db->limit(1);
-	$query = $CI->db->get('options');
+	$CI->db->delete('options', array('options_key'=>$key, 'options_type'=>$type ));
 
 	mso_refresh_options(); # обновляем опции из базы
 
@@ -642,20 +689,41 @@ function mso_add_cache($key, $output, $time = false, $custom_fn = false)
 }
 
 
-# сбросить весь кэш
-function mso_flush_cache()
+# сбросить кэш - если указать true, то удалится кэш из вложенных каталогов
+# если указан $dir, то удаляется только в этом каталоге
+function mso_flush_cache($full = false, $dir = false)
 {
 	$CI = & get_instance();	
 	$path = $CI->config->item('cache_path');
 
-	$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
+	$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
 		
 	if ( ! is_dir($cache_path) OR ! is_writable($cache_path))
 		return FALSE;
 	
 	// находим в каталоге все файлы и их удалаяем
-	$CI->load->helper('file_helper');
-	delete_files($cache_path);
+	if ($full)
+	{
+		$CI->load->helper('file_helper'); // этот хелпер удаляет все Файлы и во вложенных каталогах
+		delete_files($cache_path);
+	}
+	else
+	{
+		// удаляем файлы только в текущем каталоге кэша
+		// переделанная функция delete_files из file_helper
+		
+		if ($dir) $cache_path .= $dir . '/'; // если указан $dir, удаляем только в нем
+		
+		if (!$current_dir = @opendir($cache_path)) return false;
+		while (FALSE !== ($filename = @readdir($current_dir)))
+		{
+			if ($filename != "." and $filename != "..")
+			{
+				if (!is_dir($cache_path . '/' . $filename)) unlink($cache_path . '/' . $filename);
+			}
+		}
+		@closedir($current_dir);
+	}
 }
 
 # получить кеш по ключу
@@ -1098,6 +1166,7 @@ function mso_redirect($url, $absolute = false)
 }
 
 # получение текущего url относительно сайта
+# ведущий и конечные слэши удаляем
 function mso_current_url()
 {
 	global $MSO;
@@ -1105,16 +1174,12 @@ function mso_current_url()
 	$url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	$url = str_replace($MSO->config['site_url'], "", $url);
 	
+	$url = trim( str_replace('/', ' ', $url) );
+	$url = str_replace(' ', '/', $url);
+	
 	return $url;
 }
 
-# проверка залогиннености юзера
-function is_login()
-{
-	global $MSO;
-	
-	return ($MSO->data['session']['userlogged'] == 1) ? true : false;
-}
 
 # формируем скрытый input для формы с текущей сессией
 function mso_form_session($name_form = 'flogin_session_id')
@@ -1125,7 +1190,7 @@ function mso_form_session($name_form = 'flogin_session_id')
 }
 
 
-# вывод логин-форма
+# вывод логин-формы
 function mso_login_form($conf = array(), $redirect = '', $echo = true)
 {
 	global $MSO;
@@ -1143,8 +1208,8 @@ function mso_login_form($conf = array(), $redirect = '', $echo = true)
 
 	$out = <<<EOF
 	<form method="post" action="{$action}" name="flogin" id="flogin">
-		<input type="hidden" value="{$redirect}" name="flogin_redirect" id="flogin_redirect" />
-		<input type="hidden" value="{$session_id}" name="flogin_session_id" id="flogin_session_id" />
+		<input type="hidden" value="{$redirect}" name="flogin_redirect" />
+		<input type="hidden" value="{$session_id}" name="flogin_session_id" />
 		{$login}<input type="text" value="" name="flogin_user" id="flogin_user" />
 		{$password}<input type="password" value="" name="flogin_password" id="flogin_password" />
 		{$submit}<input type="submit" name="flogin_submit" id="flogin_submit" value="{$submit_value}">
@@ -1243,16 +1308,12 @@ function mso_xmlrpc_this($data = array())
 */
 
 # проверка комбинации логина-пароля
-# если указан act - то стразу смотрим разрешение на действие - пока act не работает!
+# если указан act - то сразу смотрим разрешение на действие - пока act не работает!
 function mso_check_user_password($login = false, $password = false, $act = false)
 {
 	if (!$login or !$password) return false;
 	
 	$CI = & get_instance();
-	
-	//_log($CI, false);
-	// $CI->load->library('database');
-	// _log('123');
 	
 	$CI->db->select('users_id, users_groups_id');
 	$CI->db->where(array('users_login'=>$login, 'users_password'=>$password) );  // where 'users_password' = $password
@@ -1302,7 +1363,7 @@ function mso_get_user_data($login = false, $password = false)
 /*
 # функция отправки xmlrpc к себе же
 # при debug выводятся сообщения об ошибке
-function mso_xmlrpc_send99($method = 'Hello', $request = array('Test'), $debug = false)
+function mso_xmlrpc_send($method = 'Hello', $request = array('Test'), $debug = false)
 {	
 	$CI = & get_instance();
 	$CI->load->helper('url');
@@ -1360,8 +1421,13 @@ function mso_slug($slug)
 	"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
 	"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>""
 	);
+	
+	$slug = strtolower(strtr(trim($slug), $repl));
+	$slug = str_replace('---', '-', $slug);
+	$slug = str_replace('--', '-', $slug);
+	
 
-	return strtolower(strtr(trim($slug), $repl));
+	return $slug;
 }
 
 # содание разрешения для действия
@@ -1429,7 +1495,10 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 		else 
 			$user_id = $MSO->data['session']['users_id']; // берем его номер из сессии
 		
-		if ( $MSO->data['session']['users_groups_id'] == '1' ) return true; // админам всё можно
+		if ( $MSO->data['session']['users_groups_id'] == '1' ) // отмечена первая группа - это админы
+		{
+			return true; // админам всё можно
+		}
 	}
 	else 
 		$user_id = (int) $user_id; // юзер указан явно - нужно проверять
@@ -1528,7 +1597,6 @@ function mso_date_convert($format = 'Y-m-d H:i:s', $data, $timezone = true)
 # переобразование даты в формат MySql
 function mso_date_convert_to_mysql($year = 1970, $mon = 1, $day = 1, $hour = 0, $min = 0, $sec = 0)
 {
-
 	if ($day>31) 
 	{
 		$day = 1;
@@ -1587,7 +1655,7 @@ function mso_get_permalink_cat_slug($slug = '')
 
 #  разделить строку из чисел, разделенных запятыми в массив
 # если $integer = true, то дополнительно преобразуется в числа 
-# если $probel = true, то разделителем может быть пробелы
+# если $probel = true, то разделителем может быть пробел
 function mso_explode($s = '', $int = true, $probel = true ) 
 {
 	//$s = trim( str_replace(',', ',', $s) );
@@ -1699,9 +1767,10 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 			
 			if ( function_exists($widget) ) 
 			{
-				$out .= $block_start;
-				$out .= $widget($num);
-				$out .= $block_end;
+				if ($temp = $widget($num)) // выполняем виджет если он пустой, то пропускаем вывод
+				{
+					$out .= $block_start . $temp . $block_end;
+				}
 			}
 		}
 		
@@ -1794,6 +1863,14 @@ function mso_wordwrap($str, $wid, $tag)
 		return implode($tag, $ret);
 }
 
+# возвращает script с jquery или +url
+function mso_load_jquery($plugin = false)
+{
+	if ($plugin)
+		return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
+	else 
+		return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery.pack.js"></script>' . NR;
+}
 
 
 ?>

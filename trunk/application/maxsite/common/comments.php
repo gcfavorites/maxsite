@@ -178,6 +178,7 @@ function mso_get_new_comment($args = array())
 			if ($res)
 			{
 				mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
+				mso_flush_cache();
 				mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 			}
 			else
@@ -264,6 +265,7 @@ function mso_get_new_comment($args = array())
 													)));
 							}
 							mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
+							mso_flush_cache();
 							mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 						}
 						else
@@ -312,6 +314,7 @@ function mso_get_new_comment($args = array())
 							 					)));
 						}
 						mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
+						mso_flush_cache();
 						mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 					}
 					else

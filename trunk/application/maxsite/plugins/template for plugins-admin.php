@@ -23,6 +23,7 @@ function %%%_activate($args = array())
 # функция выполняется при деактивации (выкл) плагина
 function %%%_deactivate($args = array())
 {	
+	// mso_delete_option('', 'plugins'); // удалим созданные опции
 	return $args;
 }
 
@@ -53,6 +54,15 @@ function %%%_admin_page($args = array())
 {
 	# выносим админские функции отдельно в файл
 	global $MSO;
+	if ( !mso_check_allow('%%%_admin_page') ) 
+	{
+		echo 'Доступ запрещен';
+		return $args;
+	}
+	
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Admin "; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "Admin - " . $args; ' );
+
 	require($MSO->config['plugins_dir'] . '%%%/admin.php');
 }
 

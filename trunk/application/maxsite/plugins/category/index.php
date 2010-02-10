@@ -29,8 +29,6 @@ function category_widget($num = 1)
 		
 	if ( isset($options['exclude']) ) $options['exclude'] = mso_explode($options['exclude']);
 		else $options['exclude'] = array();
-		
-	if ( !isset($options['format']) ) $options['format'] = '%LINK_START%%NAME% (%COUNT_PAGES%)<br/><i>%DESC%</i>%LINK_END%';	
 	
 	return category_widget_custom($options, $num);
 }
@@ -113,7 +111,7 @@ function category_widget_custom($arg = array(), $num = 1)
 	// <h2 class="box">Рубрики</h2>
 
 	
-	return $arg['header'] . mso_cat_ul($arg['format'], true, array(), array(), 'is_link', 'blog', 'page', 'category_menu_order', 'asc', false, $arg['include'], $arg['exclude'] );
+	return $arg['header'] . mso_cat_ul($arg['format'], true, array(), array(), 'is_link category', 'blog', 'page', 'category_menu_order', 'asc', false, $arg['include'], $arg['exclude'] );
 }
 
 

@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -133,8 +133,7 @@ class CI_DB_result {
 				$this->row_data = $this->row_array(0);
 			}
 		
-			// array_key_exists() instead of isset() to allow for MySQL NULL values
-			if (array_key_exists($n, $this->row_data))
+			if (isset($this->row_data[$n]))
 			{
 				return $this->row_data[$n];
 			}
@@ -338,6 +337,4 @@ class CI_DB_result {
 	
 }
 // END DB_result class
-
-/* End of file DB_result.php */
-/* Location: ./system/database/DB_result.php */
+?>

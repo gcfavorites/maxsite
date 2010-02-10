@@ -27,7 +27,7 @@ function admin_files_admin_init($args = array())
 	# Третий - название ссылки	
 	# Четвертый - номер в меню
 	
-	mso_admin_menu_add('options', $this_plugin_url, 'Файлы', 10);
+	mso_admin_menu_add('options', $this_plugin_url, 'Загрузки', 10);
 
 	# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 	# связанную функцию именно она будет вызываться, когда 

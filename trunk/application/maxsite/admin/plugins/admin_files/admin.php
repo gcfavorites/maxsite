@@ -96,7 +96,7 @@
 	
 	// все файлы в массиве $dirs
 	$dirs = directory_map($uploads_dir, false);
-	
+	sort($dirs);
 	foreach ($dirs as $file)
 	{
 		

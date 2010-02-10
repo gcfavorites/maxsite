@@ -6,6 +6,9 @@
  * Функции для страниц
  */
 
+# данную переменную $page мы объявляем как глобальную - в ней содержится массив 
+# текущей страницы 
+global $page;
 
 # главная страница - home
 function _mso_sql_build_home($r, &$pag)
@@ -13,21 +16,32 @@ function _mso_sql_build_home($r, &$pag)
 	$CI = & get_instance();
 
 	$offset = 0;
-
+	
+	if ($r['cat_id']) $cat_id = mso_explode($r['cat_id']);
+	else $cat_id = false;
+	
 	if ($r['pagination'])
 	{
 		# пагинация
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('page_id');
+		$CI->db->select('page.page_id');
 		$CI->db->from('page');
-		$CI->db->where('page_status', 'publish');
-		if ($r['type'])
-		{
-			$CI->db->where('page_type_name', $r['type']);
-		}
+		$CI->db->where('page.page_status', 'publish');
+		if ($r['type']) $CI->db->where('page_type.page_type_name', $r['type']);
+		
+		if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
+		
+		if ($cat_id) // указаны рубрики
+		{
+			$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id', 'left');
+			$CI->db->join('category', 'cat2obj.category_id = category.category_id');
+			$CI->db->where_in('category.category_id', $cat_id);
+		}
+		
 		$CI->db->order_by('page_date_publish', 'desc');
 		$query = $CI->db->get();
 		
@@ -63,12 +77,21 @@ function _mso_sql_build_home($r, &$pag)
 		
 	$CI->db->from('page');
 	
+	if ($r['page_id']) $CI->db->where('page_id', $r['page_id']);
+	
 	$CI->db->where('page_status', 'publish');
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
+	
+	if ($cat_id) // указаны рубрики
+	{
+		$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id', 'left');
+		$CI->db->join('category', 'cat2obj.category_id = category.category_id');
+		$CI->db->where_in('category.category_id', $cat_id);
+	}
 	
 	//$CI->db->where('comments.comments_approved', 1);
 	
@@ -78,23 +101,6 @@ function _mso_sql_build_home($r, &$pag)
 	$CI->db->group_by('comments_page_id');
 	
 	// $CI->db->distinct('page.page_id');
-	
-	
-	/*
-	$CI->db->select('page.*, page_type_name, users_nik, users_avatar_url, COUNT(comments_id) AS page_count_comments');
-	$CI->db->from('page');
-	$CI->db->where('page_status', 'publish');
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
-	$CI->db->join('users', 'users.users_id = page.page_id_autor', 'left');
-	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
-	$CI->db->join('comments', 'comments.comments_page_id = page.page_id', 'left');
-	$CI->db->order_by('page_date_publish', 'desc');
-	$CI->db->group_by('page.page_id');
-	
-	$CI->db->group_by('comments_page_id');
-	*/
-	
-	
 	
 	
 	if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
@@ -518,6 +524,10 @@ function mso_get_pages($r = array(), &$pag)
 	if ( !isset($r['pagination']) )		$r['pagination'] = true;
 	if ( !isset($r['content']) )		$r['content'] = true;
 	if ( !isset($r['type']) )			$r['type'] = 'blog'; // если false - то все, иначе blog или static
+	if ( !isset($r['page_id']) )		$r['page_id'] = 0; // если 0, значить все страницы - только для главной
+	if ( !isset($r['cat_id']) )			$r['cat_id'] = 0; // если 0, значить все рубрики - только для главной
+	
+	if ($r['page_id']) $r['type'] = false; // если указан номер, то тип страницы сбрасываем
 	
 	$CI = & get_instance();
 	

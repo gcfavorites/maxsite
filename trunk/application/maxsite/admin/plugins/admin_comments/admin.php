@@ -39,7 +39,10 @@
 		
 		$CI->db->where_in('comments_id', $arr_ids);
 		if ($CI->db->update('comments', array('comments_approved'=>$action) ) )
+		{
+			mso_flush_cache();
 			echo '<div class="update">Обновлено!</div>';
+		}
 		else 
 			echo '<div class="error">Ошибка обновления</div>';
 	}
@@ -61,7 +64,10 @@
 		$CI->db->where_in('comments_id', $arr_ids);
 		
 		if ( $CI->db->delete('comments') )
+		{
+			mso_flush_cache();
 			echo '<div class="update">Удалено!</div>';
+		}
 		else 
 			echo '<div class="error">Ошибка удаления</div>';
 	}
