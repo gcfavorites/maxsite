@@ -87,6 +87,9 @@ function calendar_widget_custom($arg = array(), $num = 1)
 	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box">Календарь</h2>';
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="calendar">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</div>';
+	
+	if ( !isset($arg['elem_previous']) ) $arg['elem_previous'] = '««';
+	if ( !isset($arg['elem_next']) ) $arg['elem_next'] = '»»';
 
 	$prefs = array (
 				'start_day'	  		=> 'monday',
@@ -96,15 +99,15 @@ function calendar_widget_custom($arg = array(), $num = 1)
 				'local_time' 		=>	time(),
 				'next_prev_url'	 	=> $MSO->config['site_url'] . 'archive/'
 				);
-			 
+	
 	$prefs['template'] = '
 	   {table_open}<table border="0" cellpadding="0" cellspacing="0">{/table_open}
 
 	   {heading_row_start}<tr>{/heading_row_start}
 
-	   {heading_previous_cell}<th><a href="{previous_url}">««</a></th>{/heading_previous_cell}
+	   {heading_previous_cell}<th><a href="{previous_url}">' . $arg['elem_previous'] . '</a></th>{/heading_previous_cell}
 	   {heading_title_cell}<th colspan="{colspan}">{heading}</th>{/heading_title_cell}
-	   {heading_next_cell}<th><a href="{next_url}">»»</a></th>{/heading_next_cell}
+	   {heading_next_cell}<th><a href="{next_url}">' . $arg['elem_next'] . '</a></th>{/heading_next_cell}
 
 	   {heading_row_end}</tr>{/heading_row_end}
 
@@ -130,20 +133,23 @@ function calendar_widget_custom($arg = array(), $num = 1)
 
 	$CI = & get_instance(); 
 	$CI->load->library('calendar', $prefs);
-
+	
+	
+	$mktime = mktime() + getinfo('time_zone') * 60 * 60; // с учетом часового пояса ?
+	
 	# если это архив, то нужно показать календарь на этот год и месяц
 	if (is_type('archive'))
 	{
 		$year = (int) mso_segment(2);
-		if ($year>date('Y', mktime()) or $year<2000) $year = date('Y', mktime());
+		if ($year>date('Y', $mktime) or $year<2000) $year = date('Y', $mktime);
 		
 		$month = (int) mso_segment(3);
-		if ($month>12 or $month<1) $month = date('m', mktime());
+		if ($month>12 or $month<1) $month = date('m', $mktime);
 	}
 	else // это не архив - берем текущую дату
 	{
-		$year = date('Y', mktime());
-		$month = date('m', mktime());
+		$year = date('Y', $mktime);
+		$month = date('m', $mktime);
 	}
 	
 	# для выделения дат нужно смотреть записи, которые в этом месяце

@@ -143,10 +143,16 @@ function random_gal_widget_custom($options = array(), $num = 1)
 	if (!$files) $files = array();
 	
 	$all_files = array(); // массив для всех нужных файлов
+	$allowed_ext = array('gif', 'jpg', 'jpeg', 'png');
 	foreach ($files as $file)
 	{
 		if (@is_dir($dir . $file)) continue; // это каталог
-		else $all_files[] = $file;
+		else
+		{
+			$ext = strtolower(str_replace('.', '', strrchr($file, '.'))); // расширение файла
+			if ( !in_array($ext, $allowed_ext) ) continue; // запрещенный тип файла
+			$all_files[] = $file;
+		}
 	}
 	
 	shuffle($all_files); // перемешиваем массив

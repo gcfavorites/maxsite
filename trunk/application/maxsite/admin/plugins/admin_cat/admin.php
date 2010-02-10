@@ -140,6 +140,7 @@
 	
 	';
 	
+	// pr($all);
 	
 	$out = mso_create_list($all, 
 		array(
@@ -150,7 +151,7 @@
 			
 			'class_ul_style'=>'list-style-type: none; margin: 0;', 
 			'class_child_style'=>'list-style-type: none;', 
-			'class_li_style'=>'pad1ding: 2px; margin: 5px 0;',
+			'class_li_style'=>'margin: 5px 0;',
 			
 			'title'=>'category_name', 
 			'link'=>'category_slug', 

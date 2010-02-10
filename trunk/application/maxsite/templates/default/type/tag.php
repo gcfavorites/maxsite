@@ -3,7 +3,7 @@
 // параметры для получения страниц
 $par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'), 
 			'cut' => mso_get_option('more', 'templates', 'Читать полностью »'),
-			'cat_order'=>'category_name', 'cat_order_asc'=>'asc' ); 
+			'cat_order'=>'category_name', 'cat_order_asc'=>'asc', 'type'=>false ); 
 
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 

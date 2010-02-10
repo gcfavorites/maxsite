@@ -537,7 +537,9 @@ function mso_get_comuser($id = 0, $args = array())
 	$CI->db->where('comusers_id', $id);
 	$CI->db->limit(1);
 	
-	$CI->db->where('comments.comments_approved', '1');
+	// отдавать все комменты, включая и неотмодерированные
+	//$CI->db->where('comments.comments_approved', '1');
+	
 	$CI->db->join('comments', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
 	$CI->db->group_by('comments_comusers_id');
 	
@@ -558,7 +560,10 @@ function mso_get_comuser($id = 0, $args = array())
 		$CI->db->where('comments_comusers_id', $id);
 		// $CI->db->where('page.page_status', 'publish');
 		// $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		
+		
 		$CI->db->where('comments.comments_approved', '1');
+		
 		$CI->db->join('page', 'page.page_id = comments.comments_page_id');
 
 		$CI->db->order_by('comments_date', $args['asc']);
@@ -566,6 +571,8 @@ function mso_get_comuser($id = 0, $args = array())
 		if ($args['limit']) $CI->db->limit($args['limit']);
 		
 		$query = $CI->db->get();
+		
+		$comments = array(); // все комменты
 		
 		if ($query->num_rows() > 0)
 		{
@@ -720,7 +727,7 @@ function mso_comuser_edit($args = array())
 		$f_comusers_password = trim($post['f_comusers_password']);
 		
 		if (!$f_comusers_email or !$f_comusers_password)
-			return '<div class="' . $args['css_error']. '">Необходимо указать emai и пароль</div>'; 
+			return '<div class="' . $args['css_error']. '">Необходимо указать email и пароль</div>'; 
 		
 		// проверим есть ли такой комюзер
 		$CI = & get_instance();

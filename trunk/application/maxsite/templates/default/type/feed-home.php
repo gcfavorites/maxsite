@@ -53,7 +53,7 @@ if ($pages)
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></guid>
 			<pubdate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($page_date_publish)) ?></pubdate>
-			<?= mso_page_cat_link($page_categories, "\n", '<category><![CDATA[', ']]></category>' . "\n", false) ?>
+			<?= mso_page_cat_link($page_categories, ", ", '<category><![CDATA[', ']]></category>' . "\n", false, 'category', false) ?>
 			<author><?= $users_nik ?></author>
 			<creator><?= $users_nik ?></creator>
 			<description><![CDATA[<?= mso_page_content($page_content) . mso_page_comments_link($page_comment_allow, $page_slug, ' Обсудить', '', '', false) ?>]]></description>

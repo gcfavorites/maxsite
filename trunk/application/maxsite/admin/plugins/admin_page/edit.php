@@ -11,7 +11,7 @@
 	$id1 = (int) $id;
 	if ( (string) $id != (string) $id1 ) $id = false; // ошибочный id
 	
-	echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
+	//echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
 							
 	if ($id) // есть корректный сегмент
 	{
@@ -178,7 +178,8 @@
 				{
 					$url = '<a href="' 
 							. mso_get_permalink_page($result['result'][0])
-							. '">Посмотреть запись</a>';
+							. '">Посмотреть запись</a> | (<a target="_blank" href="' 
+							. mso_get_permalink_page($result['result'][0]) . '">в новом окне</a>)';		
 						//	. ' | <a href="' . $MSO->config['site_admin_url'] . 'page_edit/' . $result['result'][0] . '">Изменить</a>';
 
 				}
@@ -225,6 +226,8 @@
 		}
 		else 
 		{
+			echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
+			
 			// получаем данные записи
 			$CI->db->select('*');
 			$CI->db->from('page');
@@ -260,10 +263,38 @@
 		
 		}
 		
+		// echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
+		
 		$input_style = 'style="width: 99%; border: 1px solid #3B619C; margin: 5px auto 5px auto; background: #E3FAFF; color: #333399; padding: 2px; font-size: 18pt;"';
 		
 		$f_header = htmlspecialchars($f_header);
 		$f_tags = htmlspecialchars($f_tags);
+		$f_all_tags = ''; // все метки
+		// $all_tags_page = mso_get_all_tags_page(); // это массив
+		if (function_exists('tagclouds_widget_custom')) 
+		{
+			$f_all_tags = '
+			<script type="text/javascript">
+				function addTag(t)
+				{
+					var elem = document.getElementById("f_tags");
+					e = elem.value;
+					if ( e != "" ) { elem.value = e + ", " + t; }
+					else { elem.value = t; };
+				}
+			</script>' . NR;
+			
+			
+			$f_all_tags .= tagclouds_widget_custom(array(
+				'max_num' => 20,
+				'max_size' => '180',
+				'block_start' => '<p><br />',
+				'block_end' => '</p>',
+				'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
+			
+			));
+	
+		}
 		
 		$fses = mso_form_session('f_session_id'); // сессия
 

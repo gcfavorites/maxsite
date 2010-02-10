@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
 <h1>Шаблоны для сайта</h1>
-<p class=""info>Выберите нужный шаблон. Все шаблоны хранятся в каталоге <strong>«maxsite/templates»</strong>. Название шаблона совпадает с названием его каталога.</p>
+<p class="info">Выберите нужный шаблон. Все шаблоны хранятся в каталоге <strong>«maxsite/templates»</strong>. Название шаблона совпадает с названием его каталога.</p>
 
 <?php 
 	$CI = & get_instance();
@@ -31,18 +31,31 @@
 	// получаем список каталогов 
 	$CI->load->helper('directory');
 	
-	$current_template = $MSO->config['template'];
-	
-	echo '<p>Текущий шаблон: <strong>' . $current_template . '</strong></p>';
-	
-	
 	$templates_dir = $MSO->config['templates_dir'];
 	
+	$current_template = $MSO->config['template'];
+	
+	echo '<h3>Текущий шаблон: <em>' . $current_template . '</em></h3>';
+	
+	if (file_exists($templates_dir . $current_template . '/screenshot.jpg'))
+	{
+		echo '<img src="' . $MSO->config['templates_url'] . $current_template . '/screenshot.jpg' . '" width="250" height="200" alt="" title="" />';
+	}	
+	
+	if (file_exists($templates_dir . $current_template . '/info.php'))
+	{
+		require($templates_dir . $current_template . '/info.php');
+		echo '<p><a href="' . $info['template_url'] . '">' . $info['name'] . ' ' . $info['version'] . '</a>';
+		echo '<br />' . $info['description'];
+		echo '<br />Автор: <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
+		echo '</p>';
+	}
+		
 	// все каталоги в массиве $dirs
 	$dirs = directory_map($templates_dir, true);
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
-	echo '<div style="width: 99%;">';
+	echo '<div style="width: 100%;">';
 	foreach ($dirs as $dir)
 	{
 		

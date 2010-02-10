@@ -141,8 +141,9 @@
 							else $text = '';
 							$out .= '<br /><b>Текст:</b> ' . htmlspecialchars(mso_str_word($text, 80)) . '&lt;...&gt;';
 							
-							if (isset($item['comments'])) $comments = unserialize($item['comments']);
-							else $comments = array();
+							$comments = array();
+							if (isset($item['comments'])) $comments = @unserialize($item['comments']);
+							
 							
 							$comments = count($comments);
 							$out .= '<br /><b>Комментарии:</b> ' . $comments;
@@ -374,8 +375,8 @@
 							теперь под эту запись нужно создать комментарии
 							*/
 							
-							if (isset($item['comments'])) $comments = unserialize($item['comments']);
-								else $comments = array();
+							$comments = array();
+							if (isset($item['comments'])) $comments = @unserialize($item['comments']);
 
 							if ($page_id and $comments) // есть комментарии
 							{

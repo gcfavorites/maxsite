@@ -253,7 +253,7 @@ function is_type($type)
 # возвращает true или false при проверке $MSO->data['uri_segment'], то есть по сегментам URL
 # где например [1] => page  [2] => about
 # что означает type = page  slug=about
-# http://localhost/codeigniter/page/about
+# http://localhost/page/about
 # можно указать только тип или только slug
 # тогда неуказанный параметр не учитывается (всегда true)
 function is_type_slug($type = '', $slug = '')
@@ -1119,17 +1119,38 @@ function mso_clean_pre($matches)
 
 
 
-# преобразуем введенный html в тексте между [html] и [/html]
+# преобразуем введенный html в тексте между [html] ... [/html] и для [volkman]
 # к обычному html
 function mso_clean_html($matches) 
 {
 	$arr1 = array('<p>', '</p>', '<br />',      '&amp;', '&lt;', '&gt;', "\n");
-	$arr2 = array('',    '',    '[mso_br_n]',   '&',     '<',    '>',    '[mso_br_n]');
+	$arr2 = array('',    '',     '[mso_br_n]',   '&',     '<',    '>',    '[mso_br_n]');
 	
 	$matches[1] = trim( str_replace($arr1, $arr2, $matches[1]) );
 	
 	// pr($matches[1], true);
 	return $matches[1];
+}
+
+# предподготовка html в тексте между [html] ... [/html]
+# конвертируем все символы в реальный html
+# после этого кодируем его в одну строчку base64
+# после всех операций в mso_balance_tags декодируем его в обычный текст mso_clean_html_posle
+# кодирование нужно для того, чтобы корректно пропустить весь остальной текст
+function mso_clean_html_do($matches) 
+{
+	$arr1 = array('&amp;', '&lt;', '&gt;', '<br />');
+	$arr2 = array('&',     '<',    '>',    "\n");
+	
+	$m = trim( str_replace($arr1, $arr2, $matches[1]) );
+	$m = '[html_base64]' . base64_encode($m) . '[/html_base64]';
+	return $m;
+}
+
+# декодирование из mso_balance_tags см. mso_clean_html_do
+function mso_clean_html_posle($matches) 
+{
+	return base64_decode($matches[1]);
 }
 
 # авторасстановка тэгов
@@ -1139,6 +1160,13 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 
 	$pee = $pee . "\n";
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
+	
+	# если html в [html] код [/html]
+	// $pee = preg_replace('!(\[html\])(.*?)(\[\/html\])!is', '$1', $pee);
+	$pee = str_replace('<p>[html]</p>', '[html]', $pee);
+	$pee = str_replace('<p>[/html]</p>', '[/html]', $pee);
+	$pee = preg_replace_callback('!\[html\](.*?)\[\/html\]!is', 'mso_clean_html_do', $pee );	
+	
 	
 	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|hr|embed|h1|h2|h3|h4|h5|h6|br)';
 	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
@@ -1159,8 +1187,6 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 		$pee = str_replace('[mso_br_n]', "\n", $pee);
 		return $pee;
 	}
-	
-
 	
 	// $pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
 	// $pee = str_replace('<br />', "\n\n", $pee);
@@ -1234,12 +1260,10 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 		else $pee = str_replace("\n\n", "\n", $pee);
 	}
 	
-	
-	# если html в [html] код [/html]
-	// $pee = preg_replace('!(\[html\])(.*?)(\[\/html\])!is', '$1', $pee);
-	$pee = str_replace('<p>[html]</p>', '[html]', $pee);
-	$pee = str_replace('<p>[/html]</p>', '[/html]', $pee);
-	$pee = preg_replace_callback('!\[html\](.*?)\[\/html\]!is', 'mso_clean_html', $pee );
+	# если html в [html_base64] код [/html_base64]
+//	$pee = str_replace('<p>[html_base64]', '[html_base64]', $pee);
+//	$pee = str_replace('[/html_base64]</p>', '[/html_base64]', $pee);
+//	$pee = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $pee );
 	
 	$pee = str_replace('[mso_n]', "\n", $pee);
 	$pee = str_replace('[mso_br_n]', "\n", $pee);
@@ -1257,7 +1281,7 @@ function mso_balance_tags_ul_callback($matches)
 }
 
 # моя функция авторасстановки тэгов
-function mso_balance_tags( $text ) 
+function mso_balance_tags($text) 
 {
 	//return $text;
 	// те тэги, которые нужно закрывать автоматом до конца строки
@@ -1284,12 +1308,13 @@ function mso_balance_tags( $text )
 	$text = preg_replace('~<p><!--(.*?)--></p>~si', '<!--$1-->', $text);
 	$text = preg_replace('~<p><a name=\"(.*?)\"></a></p>~si', '<a name="$1"></a>', $text);
 	
-	
-
-	
 	$text = preg_replace_callback('!(<ul>)(.*?)(</ul>)!si', 'mso_balance_tags_ul_callback', $text);
 	
 	$text = str_replace("\n\n", "\n", $text);
+	
+	$text = str_replace('<p>[html_base64]', '[html_base64]', $text);
+	$text = str_replace('[/html_base64]</p>', '[/html_base64]', $text);
+	$text = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $text );
 	
 	return $text;
 }
@@ -1474,8 +1499,9 @@ function mso_redirect($url, $absolute = false)
 function mso_current_url()
 {
 	global $MSO;
-
-	$url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	
+	$url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https://" : "http://";
+	$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	$url = str_replace($MSO->config['site_url'], "", $url);
 	
 	$url = trim( str_replace('/', ' ', $url) );
@@ -1724,13 +1750,21 @@ function mso_slug($slug)
 		
 		"«"=>"", "»"=>"", "—"=>"-", "`"=>"", " "=>"-",
 		"["=>"", "]"=>"", "{"=>"", "}"=>"", "<"=>"", ">"=>"",
-		"?"=>"", "."=>"", ","=>"", "*"=>"", "%"=>"", "$"=>"",
+		
+		"?"=>"", ","=>"", "*"=>"", "%"=>"", "$"=>"",
+		
 		"@"=>"", "!"=>"", ";"=>"", ":"=>"", "^"=>"", "\""=>"",
 		"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
 		"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>"", "”"=>"", "“"=>""
 		);
 		
 		$slug = strtolower(strtr(trim($slug), $repl));
+		
+		# разрешим расширение .html
+		$slug = str_replace('.htm', '@HTM@', $slug);
+		$slug = str_replace('.', '', $slug);
+		$slug = str_replace('@HTM@', '.htm', $slug);
+		
 		$slug = str_replace('---', '-', $slug);
 		$slug = str_replace('--', '-', $slug);
 		
@@ -1906,7 +1940,13 @@ function mso_date_convert($format = 'Y-m-d H:i:s', $data, $timezone = true, $day
 	
 	$time = mktime($h, $n, $s, $m, $d, $y);
 	
-	if ($timezone) $time = $time + getinfo('time_zone') * 60 * 60;
+	if ($timezone) 
+	{
+		if ($timezone === -1) // в случаях, если нужно убрать таймзону
+			$time = $time - getinfo('time_zone') * 60 * 60;
+		else
+			$time = $time + getinfo('time_zone') * 60 * 60;
+	}
 	
 	$out = date($format, $time);
 	
@@ -2285,7 +2325,8 @@ function mso_menu_build($menu = '', $select_css = 'selected')
 	$menu = explode("\n", trim($menu)); 
 	
 	# определим текущий url
-	$current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$http = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https://" : "http://";
+	$current_url = $http . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	
 	$out = '';
 	# обходим в цикле
@@ -2300,7 +2341,7 @@ function mso_menu_build($menu = '', $select_css = 'selected')
 			$url = trim($elem[0]);  // адрес 
 			$name = trim($elem[1]); // название
 			
-			if (strpos($url, 'http://') === false) // нет в адресе http:// - значит это текущий сайт
+			if (strpos($url, $http) === false) // нет в адресе http:// - значит это текущий сайт
 			{
 				if ($url == '/') $url = getinfo('siteurl'); // это главная 
 					else $url = getinfo('siteurl') . $url;
@@ -2386,10 +2427,26 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 	if (!isset($options['current_id'])) $options['current_id'] = true; // текущая страница отмечается по page_id - иначе по текущему url
 	if (!isset($options['childs'])) $options['childs'] = 'childs'; // поле для массива детей
 	
+	# функция, которая сработает на [FUNCTION]
+	# эта функция получает в качестве параметра текущий массив $elem
+	if (!isset($options['function'])) $options['function'] = false; 
+	
+	$class_child = $class_child_style = $class_ul = $class_ul_style = '';
+	$class_current = $class_current_style = $class_li = $class_li_style = '';
+	
+	if ($options['class_child']) $class_child = ' class="' . $options['class_child'] . '"';
+	if ($options['class_child_style']) $class_child_style = ' style="' . $options['class_child_style'] . '"';
+	if ($options['class_ul']) $class_ul = ' class="' . $options['class_ul'] . '"';
+	if ($options['class_ul_style']) $class_ul_style = ' style="' . $options['class_ul_style'] . '"';
+	
+	if ($options['class_current']) $class_current = ' class="' . $options['class_current'] . '"';
+	if ($options['class_current_style']) $class_current_style = ' style="' . $options['class_current_style'] . '"';
+	if ($options['class_li']) $class_li = ' class="' . $options['class_li'] . '"';
+	if ($options['class_li_style']) $class_li_style = ' style="' . $options['class_li_style'] . '"';
 	
 	
-	if ($child) $out = NR . '	<ul class="' . $options['class_child'] . '" style="' . $options['class_child_style'] . '">';
-		else $out = NR . '<ul class="' . $options['class_ul'] . '" style="' . $options['class_ul_style'] . '">';
+	if ($child) $out = NR . '	<ul' . $class_child . $class_child_style . '>';
+		else $out = NR . '<ul' . $class_ul . $class_ul_style . '>';
 	
 	$current_url = getinfo('siteurl') . mso_current_url(); // текущий урл
 	
@@ -2451,10 +2508,17 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 		$e = str_replace('[ID_PARENT]', $id_parent, $e);
 		$e = str_replace('[COUNT]', $count, $e);
 		
+		if ($options['function'] and function_exists($options['function'])) 
+		{
+			$function = $options['function']($elem);
+			$e = str_replace('[FUNCTION]', $function, $e);
+		}
+		else $e = str_replace('[FUNCTION]', '', $e);
+		
 		if (isset($elem[$options['childs']])) 
 		{
-			if ($cur) $out .= NR . '<li class="' . $options['class_current'] . '" style="' . $options['class_current_style'] . '">' . $e;
-				else $out .= NR . '<li class="' . $options['class_li'] . '" style="' . $options['class_li_style'] . '">' . $e;
+			if ($cur) $out .= NR . '<li' . $class_current . $class_current_style . '>' . $e;
+				else $out .= NR . '<li' . $class_li . $class_li_style . '>' . $e;
 			$out .= mso_create_list($elem[$options['childs']], $options, true);
 			$out .= NR . '</li>';
 		}
@@ -2463,8 +2527,8 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 			if ($child) $out .= NR . '	';
 				else $out .= NR;
 			
-			if ($cur) $out .= '<li class="' . $options['class_current'] . '" style="' . $options['class_current_style'] . '">' . $e . '</li>';
-				else $out .= '<li class="' . $options['class_li'] . '" style="' . $options['class_li_style'] . '">' . $e . '</li>';
+			if ($cur) $out .= '<li' . $class_current . $class_current_style . '>' . $e . '</li>';
+				else $out .= '<li' . $class_li . $class_li_style . '>' . $e . '</li>';
 		}
 	}
 	
@@ -2473,11 +2537,6 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 	
 	return $out;
 }
-
-
-
-
-
 
 
 ?>

@@ -28,12 +28,14 @@ function mso_get_pages($r = array(), &$pag)
 	}
 
 	if ( !isset($r['cut']) )			$r['cut'] = 'Далее'; // ссылка на [cut]
+	if ( !isset($r['xcut']) )			$r['xcut'] = true; // для тех у кого нет cut, но есть xcut выводить после xcut
+	
 	if ( !isset($r['cat_order']) )		$r['cat_order'] = 'category_name'; // сортировка рубрик
 	if ( !isset($r['cat_order_asc']) )	$r['cat_order_asc'] = 'asc'; // порядок рубрик
 	if ( !isset($r['pagination']) )		$r['pagination'] = true; // использовать пагинацию
 	if ( !isset($r['content']) )		$r['content'] = true; // получать весь текст
 	if ( !isset($r['page_id']) )		$r['page_id'] = 0; // если 0, значить все страницы - только для главной
-	if ( !isset($r['cat_id']) )			$r['cat_id'] = 0; // если 0, значить все рубрики - только для главной
+	if ( !isset($r['cat_id']) )			$r['cat_id'] = 0; // если 0, значит все рубрики - только для главной
 	
 	if ( !isset($r['type']) )			$r['type'] = 'blog'; // если false - то все, иначе blog или static
 	if ($r['page_id']) $r['type'] = false; // если указан номер, то тип страницы сбрасываем
@@ -77,7 +79,7 @@ function mso_get_pages($r = array(), &$pag)
 	if ( !isset($r['only_feed']) )			$r['only_feed'] = false;
 	
 	// стутус страниц - если false, то не учитывается
-	if ( !isset($r['page_status']) )			$r['page_status'] = 'publish';
+	if ( !isset($r['page_status']) )		$r['page_status'] = 'publish';
 	
 	
 	$CI = & get_instance();
@@ -128,7 +130,7 @@ function mso_get_pages($r = array(), &$pag)
 		
 		if (is_type('page'))
 		{
-			// проверяем статус публикации - если page_status <> publish то смотрим автора и саравниваем с текеущим юзером
+			// проверяем статус публикации - если page_status <> publish то смотрим автора и сравниваем с текущим юзером
 			$page_status = $pages[0]['page_status']; // в page - всегда одна запись
 			
 			if ($page_status<>'publish') // не опубликовано
@@ -149,29 +151,19 @@ function mso_get_pages($r = array(), &$pag)
 		{
 			$all_page_id[] = $page['page_id'];
 			
-			// $content = mso_hook('content', $page['page_content']);
-			
 			$content = $page['page_content'];
 			$content = mso_hook('content', $content);
 			$content = mso_hook('content_auto_tag', $content);
 			$content = mso_hook('content_balance_tags', $content);
-			
-			// $content = mso_auto_tag($content);
-			// $content = mso_balance_tags($content);
-			
 			$content = mso_hook('content_out', $content);
-			
-			//$content = mso_hook('content_auto_tag', $content);
-			
-			// $content = mso_auto_tag($content);
-			// $content = mso_balance_tags($content);
 			
 			$pages[$key]['page_slug'] = $page['page_slug'] = mso_slug($page['page_slug']);
 			
-			// pr($content, 1);
-			// pr($page['page_content']);
-			// echo mso_text_to_html($page['page_content']);
-			
+			if ($r['xcut']) // можно использовать [xcut] 
+				$content = str_replace('[xcut', '[mso_xcut][cut', $content);
+			else
+				$content = str_replace('[xcut', '[cut', $content);
+				
 			if ( preg_match('/\[cut(.*?)?\]/', $content, $matches) ) 
 			{
 				$content = explode($matches[0], $content, 2);
@@ -191,7 +183,6 @@ function mso_get_pages($r = array(), &$pag)
 				{
 					if ($cut) 
 					{
-					
 						if (isset($content[1]))
 						{
 							if (strpos($cut, '%wordcount%')!==false)
@@ -201,9 +192,7 @@ function mso_get_pages($r = array(), &$pag)
 					else $cut = $r['cut'];
 					
 					$output .= mso_page_title( $page['page_slug'], $cut, 
-								$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );					
-					// $output .= mso_page_title( $page['page_slug'], $r['cut'], 
-					//			$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
+								$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
 				}
 				else
 				{
@@ -211,6 +200,14 @@ function mso_get_pages($r = array(), &$pag)
 				}
 				
 				$output = mso_balance_tags($output);
+			}
+			
+			if ($r['xcut'])
+			{
+				if ($r['cut'])
+					$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$1", $output);
+				else 
+					$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$2", $output);
 			}
 			
 			$output = mso_hook('content_complete', $output);
@@ -234,8 +231,6 @@ function mso_get_pages($r = array(), &$pag)
 		$query = $CI->db->get();
 		$cat = $query->result_array();
 		
-		//pr($cat);
-		
 		// переместим все в массив page_id[] = category_id
 		$page_cat = array();
 		$page_cat_detail = array();
@@ -245,31 +240,20 @@ function mso_get_pages($r = array(), &$pag)
 			$page_cat_detail[$val['page_id']][$val['category_id']] = array('category_name'=>$val['category_name'], 'category_slug' => $val['category_slug']);
 		}
 		
-		// pr($page_cat);
-		
 		// по этому же принципу получаем все метки
 		$CI->db->select('meta_id_obj, meta_key, meta_value');
-		// $CI->db->where( array (	'meta_key' => 'tags', 'meta_table' => 'page' ) );
 		$CI->db->where( array (	'meta_table' => 'page' ) );
 		$CI->db->where_in('meta_id_obj', $all_page_id);
 		$CI->db->order_by('meta_value');
 		$query = $CI->db->get('meta');
 		$meta = $query->result_array();
 		
-		// pr($meta);
-		
 		// переместим все в массив page_id[] = category_id
 		$page_meta = array();
 		foreach ($meta as $key=>$val)
 		{
 			$page_meta[$val['meta_id_obj']][$val['meta_key']][] = $val['meta_value'];
-			
-			
-			// $page_meta[$val['meta_id_obj']][] = $val['meta_value'];
-			// $page_meta[$val['meta_id_obj']] = array_unique($page_meta[$val['meta_id_obj']]);
 		}
-		
-		// pr($page_meta);
 		
 		// добавим в массив pages полученную информацию по меткам и рубрикам
 		foreach ($pages as $key=>$val)
@@ -732,7 +716,7 @@ function _mso_sql_build_archive($r, &$pag)
 	$offset = 0;
 	
 	$year = (int) mso_segment(2);
-	if ($year>date('Y', mktime()) or $year<2008) $year = date('Y', mktime());
+	if ($year>date('Y', mktime()) or $year<2006) $year = date('Y', mktime());
 
 	$month = (int) mso_segment(3);
 	if ($month>12 or $month<1) $month = date('m', mktime());
@@ -746,6 +730,21 @@ function _mso_sql_build_archive($r, &$pag)
 		$dmax = get_total_days($month, $year);
 		if ( $day>$dmax ) $day = $dmax;
 	}
+	//else $day = 1;
+	
+	if ($day) 
+	{
+		$date_in = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-' . $day . ' 00:00:00', -1);
+		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-' . $day . ' 23:59:59', -1);
+	}
+	else 
+	{
+		$date_in = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-1 00:00:00', -1);
+		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-31 23:59:59', -1);	
+	}
+	
+	// pr($date_in);
+	// pr($date_in_59);
 	
 	// при получении учитываем часовой пояс
 	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
@@ -768,16 +767,9 @@ function _mso_sql_build_archive($r, &$pag)
 		{
 			$CI->db->where('page_type_name', $r['type']);
 		}
-		if ($day)
-		{
-			$CI->db->where('page_date_publish >= ', mso_date_convert_to_mysql($year, $month, $day));
-			$CI->db->where('page_date_publish <= ', mso_date_convert_to_mysql($year, $month, $day, 23, 59, 59));
-		}
-		else
-		{
-			$CI->db->where('page_date_publish >= ', mso_date_convert_to_mysql($year, $month));
-			$CI->db->where('page_date_publish <= ', mso_date_convert_to_mysql($year, $month+1));	
-		}
+		
+		$CI->db->where('page_date_publish >= ', $date_in);
+		$CI->db->where('page_date_publish <= ', $date_in_59);
 		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		
@@ -811,16 +803,10 @@ function _mso_sql_build_archive($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 	
-	if ($day)
-	{
-		$CI->db->where('page_date_publish >= ', mso_date_convert_to_mysql($year, $month, $day));
-		$CI->db->where('page_date_publish <= ', mso_date_convert_to_mysql($year, $month, $day, 23, 59, 59));
-	}
-	else
-	{
-		$CI->db->where('page_date_publish >= ', mso_date_convert_to_mysql($year, $month));
-		$CI->db->where('page_date_publish <= ', mso_date_convert_to_mysql($year, $month+1));	
-	}
+	
+	$CI->db->where('page_date_publish >= ', $date_in);
+	$CI->db->where('page_date_publish <= ', $date_in_59);
+
 	
 	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
 	
@@ -969,7 +955,7 @@ function mso_page_edit_link($id = 0, $title = 'Редактировать', $do 
 
 
 # получить ссылки на рубрики указанной страницы
-function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', $echo = true, $type = 'category')
+function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', $echo = true, $type = 'category', $link = true)
 {
 	global $MSO;
 	
@@ -980,13 +966,18 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 	
 	$out = '';
 	foreach ($cat as $id)
-		$out .=  '<a href="' 
+	{
+		if ($link)
+			$out .=  '<a href="' 
 					. $MSO->config['site_url'] 
 					. $type . '/' 
 					. $all_cat[$id]['category_slug'] 
 					. '">' 
 					. $all_cat[$id]['category_name'] 
 					. '</a>   ';
+		else
+			$out .= $all_cat[$id]['category_name'] . '   ';			
+	}
 	
 	$out = trim($out);
 	$out = str_replace('   ', $sep, $out);
@@ -996,24 +987,25 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 }
 
 # получить ссылки на метки указанной страницы
-function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', $echo = true, $type = 'tag')
+function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', $echo = true, $type = 'tag', $link = true)
 {
 	global $MSO;
 	
 	if (!$tags) return '';
 	
-	// получим массив рубрик из mso_cat_array_single
 	$out = '';
-	
 	foreach ($tags as $tag)
 	{
-		$out .=  '<a href="' 
+		if ($link)
+			$out .=  '<a href="' 
 					. $MSO->config['site_url'] 
 					. $type . '/' 
 					. $tag 
 					. '">' 
 					. $tag 
 					. '</a>   ';
+		else
+			$out .=  $tag . '   ';		
 	}
 	
 	$out = trim($out);

@@ -139,7 +139,6 @@ function page_views_widget_custom($options = array(), $num = 1)
 		
 		$i = 1;
 		
-		$out .= '<ul class="is_link page_views">' . NR;
 		
 		foreach ($pages as $page) 
 		{
@@ -167,12 +166,12 @@ function page_views_widget_custom($options = array(), $num = 1)
 			
 		}
 		
-		$out .= '</ul>' . NR;
-		
-		if ($options['header']) $out = $options['header'] . $out;
-	
+		if ($out)
+		{
+			$out = '<ul class="is_link page_views">' . NR . $out . '</ul>' . NR;
+			if ($options['header']) $out = $options['header'] . $out;
+		}
 	}
-	
 	
 	mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	

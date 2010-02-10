@@ -36,7 +36,15 @@ function editor_jw($args = array())
 		else $editor_config['posle'] = '';	
 		
 	if (isset($args['action'])) $editor_config['action'] = ' action="' . $args['action'] . '"';
-		else $editor_config['action'] = '';		
+		else $editor_config['action'] = '';
+			
+	if (isset($args['height'])) $editor_config['height'] = (int) $args['action'];
+	else 
+	{
+		$editor_config['height'] = (int) mso_get_option('editor_height', 'general', 400);
+		if ($editor_config['height'] < 100) $editor_config['height'] = 400;
+	}
+		
 	
 	mso_hook_add( 'admin_head', 'editor_jw_admin_header');
 	

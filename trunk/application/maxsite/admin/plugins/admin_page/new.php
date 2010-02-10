@@ -208,6 +208,33 @@
 	$f_header = mso_text_to_html($f_header);
 	$f_tags = mso_text_to_html($f_tags);
 	
+	$f_all_tags = ''; // все метки
+	// $all_tags_page = mso_get_all_tags_page(); // это массив
+	if (function_exists('tagclouds_widget_custom')) 
+	{
+		$f_all_tags = '
+		<script type="text/javascript">
+			function addTag(t)
+			{
+				var elem = document.getElementById("f_tags");
+				e = elem.value;
+				if ( e != "" ) { elem.value = e + ", " + t; }
+				else { elem.value = t; };
+			}
+		</script>' . NR;
+		
+		
+		$f_all_tags .= tagclouds_widget_custom(array(
+			'max_num' => 20,
+			'max_size' => '180',
+			'block_start' => '<p><br />',
+			'block_end' => '</p>',
+			'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
+		
+		));
+	}
+	
+	
 	$fses = mso_form_session('f_session_id'); // сессия
 	
 	// получаем все типы страниц

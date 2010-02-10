@@ -28,7 +28,7 @@
 
 <form method="post" <?= $editor_config['action'] ?> >
 <?= $editor_config['do'] ?>
-<textarea id="wysiwyg" name="f_content" style="height: 400px; width: 100%;" ><?= $editor_config['content'] ?></textarea>
+<textarea id="wysiwyg" name="f_content" style="height: <?= $editor_config['height'] ?>px; width: 100%;" ><?= $editor_config['content'] ?></textarea>
 <?= $editor_config['posle'] ?>
 </form>
 

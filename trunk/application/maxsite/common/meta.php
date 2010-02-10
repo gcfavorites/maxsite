@@ -32,13 +32,17 @@ function mso_get_tags_page($id = 0)
 }
 
 # получаем все метки в массиве
-function mso_get_all_tags_page()
+function mso_get_all_tags_page($options = array())
 {
 	$CI = & get_instance();
 	
 	$CI->db->select('meta_value, COUNT(meta_value) AS meta_count');
 	$CI->db->where( array (	'meta_key' => 'tags', 'meta_table' => 'page' ) );
 	$CI->db->join('page', 'page.page_id = meta.meta_id_obj' );
+	
+	$CI->db->where( 'page_status', 'publish'); // только опубликованные
+	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s')); // и только раньше текущей
+	
 	$CI->db->group_by('meta_value');
 	$query = $CI->db->get('meta');
 	

@@ -40,7 +40,8 @@ EOF;
 			
 			<div class="block_page">
 				<h3>Метки (через запятую)</h3>
-				<p><input type="text" value="{$f_tags}" name="f_tags" style="width: 99%;" /></p>
+				<p><input type="text" value="{$f_tags}" name="f_tags" id="f_tags" style="width: 99%;" /></p>
+				{$f_all_tags}
 			</div>
 			
 			<div class="block_page">

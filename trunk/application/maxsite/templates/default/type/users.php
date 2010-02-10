@@ -52,11 +52,14 @@ if ($comuser_info)
 		
 		foreach ($comments as $comment)
 		{
-			echo '<li><span><a href="' . getinfo('siteurl') . 'page/' . mso_slug($comment['page_slug']) . '#comment-' . $comment['comments_id'] . '" name="comment-' . $comment['comments_id'] . '">' . $comment['page_title'] . '</a>';
-			// echo ' | ' . $comments_url;
-			echo '</span><br />' . $comment['comments_date'];
-			echo '</span><br />' . $comment['comments_content'];
-			echo '</li>';
+			//if ($comment['comments_approved']) // только отмодерированные
+			//{
+				echo '<li><span><a href="' . getinfo('siteurl') . 'page/' . mso_slug($comment['page_slug']) . '#comment-' . $comment['comments_id'] . '" name="comment-' . $comment['comments_id'] . '">' . $comment['page_title'] . '</a>';
+				// echo ' | ' . $comments_url;
+				echo '</span><br />' . $comment['comments_date'];
+				echo '</span><br />' . $comment['comments_content'];
+				echo '</li>';
+			//}
 		}
 		
 		echo '</ul>';

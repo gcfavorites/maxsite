@@ -36,10 +36,10 @@
 		if ( !isset($options['secret']) ) $options['secret'] = '';
 		if ( !isset($options['ip']) ) $options['ip'] = '';
 		
-		
+		$cur_url = getinfo('site_admin_url') . 'plugin_admin_ip/' . $options['secret'];
 		$form = '<br /><h2>Укажите секретный адрес для сброса списка IP</h2>';
 		$form .= '<p>Следует указывать только цифры и английские буквы. Другие символы не допустимы!</p>';
-		$form .= '<p>Текущий адрес: <strong>' . getinfo('site_admin_url') . 'plugin_admin_ip/' . $options['secret'] . '</strong></p>';
+		$form .= '<p>Текущий адрес: <strong><a href="' . $cur_url . '">' . $cur_url . '</a></strong></p>';
 		$form .= '<br /><p>' . getinfo('site_admin_url') . 'plugin_admin_ip/<input name="f_secret_url" type="text" value="' . $options['secret'] . '"></p>';		
 		
 		
