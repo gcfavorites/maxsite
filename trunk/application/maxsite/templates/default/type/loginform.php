@@ -13,6 +13,8 @@
 	
 	if (!is_login())
 	{
+		$redirect_url = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getinfo('siteurl');
+		
 		mso_login_form(array( 
 			'login'=>'&nbsp;&nbsp;Логин: ', 
 			'password'=>'<br /><br />Пароль: ', 
@@ -20,7 +22,7 @@
 			'submit_value'=>'&nbsp;&nbsp;&nbsp;Войти&nbsp;&nbsp;&nbsp;', 
 			'form_end'=>'<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . getinfo('siteurl') . '">Вернуться к сайту</a>'
 			), 
-			'home');
+			$redirect_url);
 	}
 	else
 	{

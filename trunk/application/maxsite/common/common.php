@@ -129,11 +129,14 @@ function mso_initalizing()
 	$mso_cache_last = ($path == '') ? BASEPATH . 'cache/' . '_mso_cache_last.txt' : $path . '_mso_cache_last.txt';
 	if (file_exists($mso_cache_last))
 	{
-		$time = filectime($mso_cache_last) + $MSO->config['cache_time'];
+		$time = (int) trim(implode('', file($mso_cache_last)));
+		$time = $time + $MSO->config['cache_time'] + 60; // запас + 60 секунд
 		if (time() > $time) mso_flush_cache(); // время истекло - сбрасываем кэш
 	}
-	else mso_flush_cache(); // файла нет - сбрасываем кэш
-	
+	else // файла нет > _mso_cache_last.txt < создадим - наверное совсем старый кэш
+	{
+		mso_flush_cache();
+	}
 	
 	# стоит ли флаг, что уже произведена инсталяция?
 	if ($mso_install == false)
@@ -240,12 +243,61 @@ function mso_autoload_plugins()
 	foreach ($d as $load) mso_plugin_load($load);
 }
 
-# проверка типа страницы
+# проверка типа страницы, который определился в контролере
 function is_type($type)
 {
 	global $MSO;
 	return ( $MSO->data['type'] == $type ) ? true : false;
 }
+
+# возвращает true или false при проверке $MSO->data['uri_segment'], то есть по сегментам URL
+# где например [1] => page  [2] => about
+# что означает type = page  slug=about
+# http://localhost/codeigniter/page/about
+# можно указать только тип или только slug
+# тогда неуказанный параметр не учитывается (всегда true)
+function is_type_slug($type = '', $slug = '')
+{
+	global $MSO;
+	
+	$rt = $rs = '';
+	
+	// тип
+	if ($type and isset($MSO->data['uri_segment'][1]) ) $rt = $MSO->data['uri_segment'][1];
+	
+	// slug
+	if ( $slug and isset($MSO->data['uri_segment'][2]) ) $rs = $MSO->data['uri_segment'][2];
+	
+	return ($rt == $type and $rs == $slug);
+}
+
+# проверяем рубрику у страницы
+# если это page и есть указанная рубрика, то возвращаем true
+# если это не page или нет указанной рубрики, то возвращаем false
+# если $and_id = true , то ищем и по id 
+# если $and_name = true , то ищем и по category_name
+function is_page_cat($slug = '', $and_id = true, $and_name = true)
+{
+	global $MSO, $page;
+	
+	if (!$slug) return false; // slaug не указан
+	if (!is_type('page')) return false; // тип не page
+	if (!isset($page['page_categories_detail'])) return false; // нет информации о рубриках
+	
+	$result = false;
+	
+	// информация о slug, id и name в массиве $page['page_categories_detail']
+	foreach($page['page_categories_detail'] as $id => $val)
+	{
+		if ( $val['category_slug'] == $slug ) $result = true; // slug совпал
+		if ( !$result and $and_id and $id == $slug ) $result = true; // можно искать по $id
+		if ( !$result and $val['category_name'] == $slug ) $result = true; // category_name совпал
+		
+		if ($result) break;
+	}
+	return $result;
+}
+
 
 # проверка если feed
 function is_feed()
@@ -380,7 +432,10 @@ function getinfo($info = '')
 		case 'ajax' :
 				$out = $MSO->config['site_url'] . 'ajax/';
 				break;
-		
+				
+		case 'admin_plugins_dir' :
+				$out = $MSO->config['admin_plugins_dir'];
+				break;		
 		
 	endswitch;
 	
@@ -910,8 +965,11 @@ function mso_flush_cache($full = false, $dir = false)
 		// при инициализации смотрится дата этого файла и если он создан позже, чем время жизни кэша, то кэш сбрасывается mso_flush_cache
 		if (!$dir)
 		{
-			if (file_exists($mso_cache_last)) unlink($mso_cache_last);
 			$fp = @fopen($mso_cache_last, 'w');
+			flock($fp, LOCK_EX);
+			fwrite($fp, time());
+			flock($fp, LOCK_UN);
+			fclose($fp);
 		}
 	}
 }
@@ -1189,6 +1247,14 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	return $pee;
 }
 
+# вычищаем списки UL
+function mso_balance_tags_ul_callback($matches)
+{
+	$text = str_replace('<p> </p>', '', $matches[2]);
+	$text = str_replace("\n\n", "\n", $text);
+	
+	return $matches[1] . $text . $matches[3];
+}
 
 # моя функция авторасстановки тэгов
 function mso_balance_tags( $text ) 
@@ -1209,7 +1275,19 @@ function mso_balance_tags( $text )
 	}
 	
 	$text = str_replace('</div></p>', '</p></div>', $text);
+	$text = str_replace('<p></p></div>', '</div>', $text);
+	$text = str_replace('<p></ul></div></p>', '</ul></div>', $text);
+	$text = str_replace('<p></div></p>', '</div>', $text);
+	
+	$text = str_replace('<p></ul></p>', '</ul>', $text);
 	$text = preg_replace('!<pre(.*?)</p>!si', '<pre$1', $text);
+	$text = preg_replace('~<p><!--(.*?)--></p>~si', '<!--$1-->', $text);
+	$text = preg_replace('~<p><a name=\"(.*?)\"></a></p>~si', '<a name="$1"></a>', $text);
+	
+	
+
+	
+	$text = preg_replace_callback('!(<ul>)(.*?)(</ul>)!si', 'mso_balance_tags_ul_callback', $text);
 	
 	$text = str_replace("\n\n", "\n", $text);
 	
@@ -2028,24 +2106,38 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 	$widgets = mso_get_option('sidebars-' . $sidebar, 'sidebars', array());
 	
 	$out = '';
-	
+
 	if ($widgets) // есть виджеты
 	{
 		foreach ($widgets as $widget)
 		{
+			$usl_res = 1; // предполагаем, что нет условий, то есть всегда true
+			
 			// имя виджета может содержать номер через пробел
 			$arr_w = explode(' ', $widget); // в массив
 			if ( sizeof($arr_w) > 1 ) // два или больше элементов
 			{
 				$widget = trim( $arr_w[0] ); // первый - функция
 				$num = (int) trim( $arr_w[1] ); // второй - номер виджета
+				
+				if (isset($arr_w[2])) // есть какое-то php-условие
+				{
+					$u = $arr_w; // поскольку у нас разделитель пробел, то нужно до конца все подбить в одну строчку
+					$u[0] = $u[1] = '';
+					$usl = trim(implode(' ', $u));
+					
+					// текст условия, is_type('home') or is_type('category')
+					$usl = 'return ( ' . $usl . ' ) ? 1 : 0;'; 
+					$usl_res = eval($usl); // выполяем
+					if ($usl_res === false) $usl_res = 1; // возможно произошла ошибка
+				}
 			}
 			else 
 			{
 				$num = 0; // номер виджета не указан, значит 0
 			}
 			
-			if ( function_exists($widget) ) 
+			if ( function_exists($widget) and $usl_res === 1) 
 			{
 				if ($temp = $widget($num)) // выполняем виджет если он пустой, то пропускаем вывод
 				{

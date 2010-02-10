@@ -53,6 +53,12 @@ function tagclouds_widget_form($num = 1)
 	if ( !isset($options['max_size']) ) $options['max_size'] = 230;
 		else $options['max_size'] = (int) $options['max_size'];
 		
+	if ( !isset($options['max_num']) ) $options['max_num'] = 50;
+		else $options['max_num'] = (int) $options['max_num'];
+		
+	if ( !isset($options['min_count']) ) $options['min_count'] = 0;
+		else $options['min_count'] = (int) $options['min_count'];
+		
 	if ( !isset($options['format']) ) 
 		$options['format'] = '<span style="font-size: %SIZE%%"><a href="%URL%">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>';
 	
@@ -70,6 +76,12 @@ function tagclouds_widget_form($num = 1)
 	
 	$form .= '<p><div class="t150">Мин. размер (%):</div> '. form_input( array( 'name'=>$widget . 'min_size', 'value'=>$options['min_size'] ) ) ;
 	$form .= '<p><div class="t150">Макс. размер (%):</div> '. form_input( array( 'name'=>$widget . 'max_size', 'value'=>$options['max_size'] ) ) ;
+
+	$form .= '<p><div class="t150">Макс. меток:</div> '. form_input( array( 'name'=>$widget . 'max_num', 'value'=>$options['max_num'] ) ) ;
+	
+	$form .= '<p><div class="t150">Миним. меток:</div> '. form_input( array( 'name'=>$widget . 'min_count', 'value'=>$options['min_count'] ) ) ;
+	$form .= '<p><div class="t150">&nbsp;</div>Отображать только метки, которых более указанного количества. (0 - без ограничений)';
+
 	$form .= '<p><div class="t150">Начало блока:</div> '. form_input( array( 'name'=>$widget . 'block_start', 'value'=>$options['block_start'] ) ) ;
 	$form .= '<p><div class="t150">Конец блока:</div> '. form_input( array( 'name'=>$widget . 'block_end', 'value'=>$options['block_end'] ) ) ;
 	
@@ -96,8 +108,11 @@ function tagclouds_widget_update($num = 1)
 	$newoptions['block_end'] = mso_widget_get_post($widget . 'block_end');
 	$newoptions['min_size'] = mso_widget_get_post($widget . 'min_size');
 	$newoptions['max_size'] = mso_widget_get_post($widget . 'max_size');
+	$newoptions['max_num'] = mso_widget_get_post($widget . 'max_num');
+	$newoptions['min_count'] = mso_widget_get_post($widget . 'min_count');
 	$newoptions['format'] = mso_widget_get_post($widget . 'format');
 	$newoptions['sort'] = mso_widget_get_post($widget . 'sort');
+
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -107,7 +122,7 @@ function tagclouds_widget_update($num = 1)
 function tagclouds_widget_custom($options = array(), $num = 1)
 {
 	// кэш 
-	$cache_key = mso_md5('tagclouds_widget_custom'. implode('', $options) . $num);
+	$cache_key = 'tagclouds_widget_custom' . serialize($options) . $num;
 	$k = mso_get_cache($cache_key);
 	if ($k) return $k; // да есть в кэше
 	
@@ -124,6 +139,12 @@ function tagclouds_widget_custom($options = array(), $num = 1)
 		
 	if ( !isset($options['max_size']) ) $max_size = 230;
 		else $max_size = (int) $options['max_size'];
+		
+	if ( !isset($options['max_num']) ) $max_num = 50;
+		else $max_num = (int) $options['max_num'];
+		
+	if ( !isset($options['min_count']) ) $min_count = 0;
+		else $min_count = (int) $options['min_count'];
 		
 	if ( !isset($options['format']) ) 
 		$options['format'] = '<span style="font-size: %SIZE%%"><a href="%URL%">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>';
@@ -149,14 +170,24 @@ function tagclouds_widget_custom($options = array(), $num = 1)
     
     $url = getinfo('siteurl') . 'tag/';
     $out = '';
+    $i = 0;
     foreach ($tagcloud as $tag => $count) 
     {
-        $font_size = round( (($count - $min)/($max - $min)) * ($max_size - $min_size) + $min_size );
-        
-        $af = str_replace(array('%SIZE%', '%URL%', '%TAG%', '%COUNT%'), 
-						  array($font_size, $url . $tag, $tag, $count), $options['format']);
+		if ($min_count) 
+			if ($count < $min_count) continue;
 
-		$out .= $af . ' '; 	
+		$font_size = round( (($count - $min)/($max - $min)) * ($max_size - $min_size) + $min_size );
+			
+		$af = str_replace(array('%SIZE%', '%URL%', '%TAG%', '%COUNT%'), 
+							array($font_size, $url . $tag, $tag, $count), $options['format']);
+		
+		// альтернативный синтаксис с []
+		$af = str_replace(array('[SIZE]', '[URL]', '[TAG]', '[COUNT]'), 
+							array($font_size, $url . $tag, $tag, $count), $af);
+
+		$out .= $af . ' ';
+		$i++;
+		if ( $max_num != 0 and $i == $max_num ) break;
     }
 	
 	if ($out) $out = $options['header'] . $options['block_start'] . $out . $options['block_end'] ;

@@ -130,18 +130,8 @@ function category_widget_custom($options = array(), $num = 1)
 	if ( !isset($options['order_asc']) ) $options['order_asc'] = 'ASC';
 	if ( !isset($options['include_child']) ) $options['include_child'] = 0;
 	
-	$cache_key = 'category_widget' 
-				. '-'. serialize($options['include'])
-				. '-'. serialize($options['exclude'])
-				. '-'. $options['format']
-				. '-'. $options['format_current']
-				. '-'. $options['header']
-				. '-'. $options['hide_empty']
-				. '-'. $options['order']
-				. '-'. $options['order_asc']
-				. '-'. $options['include_child']
-				. '-'. $num;
-		
+	$cache_key = 'category_widget' . serialize($options) . $num;
+	
 	$k = mso_get_cache($cache_key);
 	if ($k) // да есть в кэше
 	{
@@ -149,7 +139,7 @@ function category_widget_custom($options = array(), $num = 1)
 	}
 	else 
 	{
-		$all = mso_cat_array('page', 0, $options['order'], $options['order_asc'], $options['order'], $options['order_asc'], $options['include'], $options['exclude'], $options['include_child'], $options['hide_empty']);
+		$all = mso_cat_array('page', 0, $options['order'], $options['order_asc'], $options['order'], $options['order_asc'], $options['include'], $options['exclude'], $options['include_child'], $options['hide_empty'], true);
 		
 		mso_add_cache($cache_key, $all); // сразу в кэш добавим
 	}

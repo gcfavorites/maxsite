@@ -48,6 +48,8 @@
 <h1>Настройки сайдбаров</h1>
 <p class="info">Добавьте в сайдбары необходимые виджеты. Каждый виджет в одной строчке. Виджеты будут отображаться в указанном вами порядке. Если указанные виджеты не существуют, то они будут проигнорированы при выводе в сайдбаре.</p>
 <p class="info">Если вы указываете несколько виджетов, то через пробел указывайте его номер.</p>
+<p class="info">Для виджета можно указать <a href="http://max-3000.com/page/uslovija-otobrazhenija-vidzheta" target="_blank">условия отображения</a>.</p>
+
 
 <?php
 
@@ -55,9 +57,11 @@
 	// pr($MSO->sidebars);
 	
 	$error = '';
+	$all_name_sidebars = array(); // все сайдбары
 	
 	if ($MSO->sidebars)
 	{ // есть сайдбары
+	
 		$form = '';
 		foreach ($MSO->sidebars as $name => $sidebar)
 		{
@@ -65,13 +69,15 @@
 			// потому что мы их будем там хранить
 			// это простой массив с именами виджетов
 			$options = mso_get_option('sidebars-' . mso_slug($name), 'sidebars', array());
+			$count_rows = count($options);
+			if ($count_rows < 4) $count_rows = 4;
 			$options = implode("\n", $options); // разделим по строкам 
-			
-			// $form .= '<h2>' . $sidebar['title'] . ' (' . $name . '):</h2>';
+
 			$form .= '<h2>' . $sidebar['title'] . ':</h2>';
-			$form .= '<textarea name="f_sidebars[' . $name . ']" rows="7" style="width: 99%;">';
+			$form .= '<textarea id="f_sidebars[' . $name  . ']" name="f_sidebars[' . $name . ']" rows="' . $count_rows . '" style="width: 99%;">';
 			$form .= htmlspecialchars($options);
 			$form .= '</textarea>';
+			$all_name_sidebars[$name] = $sidebar['title'];
 		}
 	}
 	else 
@@ -81,10 +87,29 @@
 	
 	if ($MSO->widgets)
 	{ // есть виджеты
-		$form .= '<br /><br /><h2>Доступные виджеты (добавляйте только функцию/выделено полужирным)</h2><ul class="widgets-allow">';
+	
+		$form .= '
+		<script type="text/javascript">
+			function addText(t, tarea)
+			{
+				var elem = document.getElementById(tarea);
+				elem.value = elem.value + "\n" + t;
+			}
+		</script>' . NR;
+
+
+		$form .= '<br /><br /><h2>Доступные виджеты (добавляйте только функцию/подчеркнуто)</h2><ul class="widgets-allow">';
 		foreach ($MSO->widgets as $function => $title)
 		{
-			$form .= '<li><b>' . $function . '</b> (' . $title . ')</li>';
+			// $form .= '<li><b>' . $function . '</b> (' . $title . ')</li>';
+			$form .= '<li><strong>' . $title . '</strong> <u>' . $function . '</u><br />Добавить в ';
+			
+			foreach($all_name_sidebars as $sid=>$sid_title)
+			{
+				$form .= ' <input style="margin: 0 0px; border: 1px solid gray; font-size: .9em;" type="button" value=" ' . $sid_title . ' " title="Добавить «' . $function . '» в сайдбар «' . $sid_title 
+						. '»" onClick="addText(\'' . $function . '\', \'f_sidebars[' . $sid . ']\') " />' . NR;
+			}
+			$form .= '</li>' . NR;
 		}
 		$form .= '</ul>';
 	}

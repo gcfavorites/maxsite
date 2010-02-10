@@ -20,19 +20,9 @@ function admin_users_admin_init($args = array())
 
 	$this_plugin_url = 'users'; // url и hook
 	
-	# добавляем свой пункт в меню админки
-	# первый параметр - группа в меню
-	# второй - это действие/адрес в url - http://сайт/admin/demo
-	#			можно использовать добавочный, например demo/edit = http://сайт/admin/demo/edit
-	# Третий - название ссылки	
-	# Четвертый - номер в меню
-	
 	if ( mso_check_allow('admin_users_users') ) 
 		mso_admin_menu_add('users', $this_plugin_url, 'Список пользователей', 1);
 
-	# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
-	# связанную функцию именно она будет вызываться, когда 
-	# будет идти обращение по адресу http://сайт/admin/admin_users
 	mso_admin_url_hook ($this_plugin_url, 'admin_users_admin');
 	
 	if ( mso_check_allow('admin_users_group') ) 
@@ -61,9 +51,14 @@ function admin_users_admin($args = array())
 	# выносим админские функции отдельно в файл
 	global $MSO;
 	
+	if ( !mso_check_allow('admin_users_users') ) 
+	{
+		echo 'Доступ запрещен';
+		return $args;
+	}
+	
 	# если идет вызов с номером юзера, то подключаем страницу для редактирования
-	
-	
+
 	// Определим текущую страницу (на основе сегмента url)
 	// http://localhost/codeigniter/admin/users/edit/1
 	$seg = mso_segment(3); // третий - edit

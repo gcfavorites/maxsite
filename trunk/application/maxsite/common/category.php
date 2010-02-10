@@ -143,7 +143,7 @@ function _get_child2($childs, $li_format = '', $checked_id = array(), $list = ''
 
 # получение всех рубрик в массиве - сразу всё с учетом вложенности
 # используются рекурсивные функции с sql-запросами - РЕСУРСОЕМКАЯ!
-function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false)
+function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false, $only_page_publish = false)
 {
 	// если неверный тип, то возвратим пустой массив
 	if ( ($type != 'page') and ($type != 'links') ) return array();
@@ -158,6 +158,12 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	$CI->db->where('category.category_id_parent', $parent_id);
 	
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
+	
+	if ($only_page_publish)
+	{
+		$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
+		$CI->db->where('page_status', 'publish');
+	}
 	
 	if ($hide_empty) $CI->db->having('pages_count>', 0);
 	
@@ -178,7 +184,7 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	{
 		$k = $row['category_id'];
 		$r[$k] = $row;
-		$ch = _get_child($type, $row['category_id'], $child_order, $child_asc, $in, $ex, $in_child, $hide_empty);
+		$ch = _get_child($type, $row['category_id'], $child_order, $child_asc, $in, $ex, $in_child, $hide_empty, $only_page_publish);
 	
 		if ($ch) $r[$k]['childs'] = $ch;
 	}
@@ -187,12 +193,18 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 }
 
 # вспомогательная рекурсивная рубрика для получения всех потомков рубрики mso_cat_array
-function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false)
+function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false, $only_page_publish = false)
 {
 	$CI = & get_instance();
 	$CI->db->select('category.*, COUNT(cat2obj_id) AS pages_count');
 	$CI->db->where(array('category.category_type'=>$type, 'category.category_id_parent'=>$parent_id));
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
+	
+	if ($only_page_publish)
+	{
+		$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
+		$CI->db->where('page_status', 'publish');
+	}
 	
 	// включить только указанные
 	// если разрешено опцией для детей
@@ -203,7 +215,7 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 	// исключить указанные
 	if ($ex) $CI->db->where_not_in('category.category_id', $ex);
 	
-	$CI->db->order_by('category.'.$order, $asc);
+	$CI->db->order_by('category.' . $order, $asc);
 	$CI->db->group_by('category.category_id');
 	
 	$query = $CI->db->get('category');
@@ -221,7 +233,7 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 		$result = $r0;
 		foreach ($result as $key=>$row)
 		{
-			$r = _get_child($type, $row['category_id'], $order, $asc, $in, $ex, $in_child, $hide_empty);
+			$r = _get_child($type, $row['category_id'], $order, $asc, $in, $ex, $in_child, $hide_empty, $only_page_publish);
 			if ($r) $result[$key]['childs'] = $r;
 		}
 	}

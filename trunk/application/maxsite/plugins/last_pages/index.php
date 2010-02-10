@@ -128,7 +128,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</ul></div>';
 	
 	
-	$cache_key = mso_md5('last_pages_widget'. implode('', $arg) . $num);
+	$cache_key = 'last_pages_widget'. serialize($arg) . $num;
 	$k = mso_get_cache($cache_key);
 	if ($k) // да есть в кэше
 	{

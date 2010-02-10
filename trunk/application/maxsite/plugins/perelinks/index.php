@@ -79,7 +79,7 @@ function perelinks_custom($content = '')
 		{
 			if (!in_array($curr_page_slug, $word))
 			{
-				$content = preg_replace($r, ' <a href="' . $my_site . $word[0] . '/" class="perelink">\1</a> ', $content);
+				$content = preg_replace($r, ' <a href="' . $my_site . $word[0] . '" class="perelink">\1</a> ', $content);
 			}
 		}
 		

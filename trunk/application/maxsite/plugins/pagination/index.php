@@ -15,9 +15,11 @@ function pagination_go($r = array())
 	if ( !isset($r['limit']) ) return ''; // нужно указать сколько записей выводить
 	if ( !isset($r['type']) )  $r['type'] = false; // можно задать свой тип
 	
-	if ( !isset($r['range']) ) $r['range'] = 3;
+	if ( !isset($r['range']) ) 	$r['range'] = 3;
 	if ( !isset($r['next_url']) ) $r['next_url'] = 'next';
-	if ( !isset($r['format']) ) $r['format'] = array('« Первая', '‹ предыдущая', 'следующая ›', 'последняя »');
+	if ( !isset($r['format']) )	$r['format'] = array('« Первая', '‹ предыдущая', 'следующая ›', 'последняя »');
+	if ( !isset($r['sep']) ) 	$r['sep'] = ' &middot; ';
+	if ( !isset($r['sep2']) ) 	$r['sep2'] = ' | ';
 	
 	# текущая пагинация вычисляется по адресу url
 	# должно быть /next/6 - номер страницы
@@ -60,8 +62,9 @@ function pagination_go($r = array())
 						$r['range'], 
 						$cur_url,
 						'',
-						' &middot; ',
-						$home_url
+						$r['sep'],
+						$home_url,
+						$r['sep2']
 						);
 	
 	if ($out)
@@ -77,7 +80,7 @@ function pagination_go($r = array())
 }
 
 
-function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first = '', $page_u = '', $sep = ' &middot; ', $home_url = '') 
+function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first = '', $page_u = '', $sep = ' &middot; ', $home_url = '', $sep2 = ' | ') 
 {
 	# (c) http://www.ben-griffiths.com/php-pagination-function/
 	# переделал MAX http://maxsite.org/
@@ -132,17 +135,17 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	}
 	if ($page_number == 1)
 	{
-		$first_link = '%FIRST%' . $sep . '%PREV% | ';
+		$first_link = '%FIRST%' . $sep . '%PREV%' . $sep2;
 		$first_dots = '';
 	} 
 	else 
 	{
 		if  ($prev_link_page == 1)
 			$first_link =  '<a href="' . $home_url . '">%FIRST%</a>' . $sep 
-						. '<a href="' . $home_url . '">%PREV%</a> | ';
+						. '<a href="' . $home_url . '">%PREV%</a>' . $sep2;
 		else
 			$first_link =  '<a href="' . $home_url . '">%FIRST%</a>' . $sep 
-						. '<a href="' . $base_url . $page_u . $prev_link_page.'/">%PREV%</a> | ';
+						. '<a href="' . $base_url . $page_u . $prev_link_page.'/">%PREV%</a>' . $sep2;
 		
 		if($page_number > 3)
 			$first_dots = ' <a href="' . $base_url . $page_u . '1">1</a> ... ';
@@ -152,12 +155,12 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	
 	if($page_number == $total_pages)
 	{
-		$last_link = ' | %NEXT%' . $sep . '%LAST%';
+		$last_link =  $sep2 . '%NEXT%' . $sep . '%LAST%';
 		$last_dots = '';
 	} 
 	else 
 	{
-		$last_link = ' | <a href="' . $base_url . $page_u . $next_link_page 
+		$last_link =  $sep2 . '<a href="' . $base_url . $page_u . $next_link_page 
 					. '">%NEXT%</a>' . $sep . '<a href="' . $base_url . $page_u . $total_pages . '">%LAST%</a>';
 		
 		if ( $last_mid_link < $total_pages  )
@@ -169,7 +172,7 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	$output_page_link = $first_link . $first_dots . $middle_page_links. $last_dots . $last_link;
 
 	if ($total_pages == -1)
-		$output_page_link = '%FIRST%' . $sep . '%PREV% | <strong>1</strong> | %NEXT%' . $sep . '%LAST%';
+		$output_page_link = '%FIRST%' . $sep . '%PREV%' . $sep2 . '<strong>1</strong>' . $sep2. '%NEXT%' . $sep . '%LAST%';
 	
 	return $output_page_link;
 }	

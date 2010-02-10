@@ -157,7 +157,9 @@
 			foreach ($us as $row)
 			{	
 				$id = $row['groups_id'];
-				$rules = (array) unserialize($row['groups_rules']);
+				
+				$rules = (array) @unserialize($row['groups_rules']);
+				
 				$name = $row['groups_name'];
 
 				if ( $id == 1 ) // if ( $name == 'admins' ) // админы всегда

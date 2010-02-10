@@ -3,8 +3,8 @@
 $info = array(
 	'name' => 'Tag clouds',
 	'description' => 'Виджет облака тэгов',
-	'version' => '1.0',
-	'author' => 'Максим',
+	'version' => '1.1',
+	'author' => 'Максим, Avish',
 	'plugin_url' => 'http://maxsite.org/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'

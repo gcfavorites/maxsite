@@ -27,8 +27,8 @@ function comment_button_custom($arg = array())
 	<input type="button" value="I" title="Курсив" onClick="addText(\'<i>\', \'</i>\') "/>
 	<input type="button" value="U" title="Подчеркнутый" onClick="addText(\'<u>\', \'</u>\') "/>
 	<input type="button" value="S" title="Зачеркнутый" onClick="addText(\'<s>\', \'</s>\') "/>
-	<input type="button" value="CITE" title="Цитата" onClick="addText(\'<blockquote>\', \'</blockquote>\') "/>
-	<input type="button" value="PRE" title="Код или преформатированный текст" onClick="addText(\'<pre>\', \'</pre>\') "/>
+	<input type="button" value="Цитата" title="Цитата" onClick="addText(\'<blockquote>\', \'</blockquote>\') "/>
+	<input type="button" value="Код" title="Код или преформатированный текст" onClick="addText(\'<pre>\', \'</pre>\') "/>
 	</p>';
 }
 

@@ -22,7 +22,7 @@ CREATE TABLE _PREFIX_options (
 	PRIMARY KEY (options_id),
 	KEY options_key (options_key),
 	KEY options_type (options_type)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 
 
 ###
@@ -34,7 +34,7 @@ CREATE TABLE _PREFIX_groups (
 	groups_rules longtext,
 	PRIMARY KEY (groups_id),
 	KEY groups_name (groups_name)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_groups (groups_name) VALUES ('admins');
 ###
@@ -79,7 +79,7 @@ CREATE TABLE _PREFIX_users (
 	users_rules longtext,
 	PRIMARY KEY (users_id),
 	KEY users_nik (users_nik)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_users (users_login, users_password, users_nik, users_email, users_date_registr, users_last_visit, users_ip_register, users_levels_id, users_groups_id) VALUES ('_USERNAME_', '_USERPASSWORD_', '_USERNAME_', '_USEREMAIL_', NOW(), NOW(), '_IP_', 10, 1 );
 
@@ -100,7 +100,7 @@ CREATE TABLE _PREFIX_meta (
 	KEY meta_key (meta_key),
 	KEY meta_table (meta_table),
 	KEY meta_id_obj (meta_id_obj)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 
 
 ###
@@ -112,7 +112,7 @@ CREATE TABLE _PREFIX_page_type (
 	page_type_desc longtext,
 	PRIMARY KEY (page_type_id),
 	KEY page_type_name (page_type_name)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_page_type (page_type_name, page_type_desc) VALUES ('blog', 'Записи для блога');
 ###
@@ -129,7 +129,7 @@ CREATE TABLE _PREFIX_cat2obj (
 	category_id bigint(20) NOT NULL default '0',
 	links_id bigint(20) NOT NULL default '0',
 	PRIMARY KEY (cat2obj_id)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_cat2obj (page_id, category_id) VALUES ('1','1');
 ###
@@ -151,7 +151,7 @@ CREATE TABLE _PREFIX_category (
 	PRIMARY KEY (category_id),
 	KEY category_type (category_type),
 	KEY category_slug (category_slug)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_category (category_name, category_desc, category_slug) VALUES ('Новости','Новости проекта','news');
 ###
@@ -175,7 +175,7 @@ CREATE TABLE _PREFIX_links (
 	links_image varchar(255) default '',
 	links_rss varchar(255) default '',
 	PRIMARY KEY (links_id)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_links (links_url, links_name, links_desc, links_rss) VALUES ('http://maxsite.org/', 'MaxSite CMS', 'Официальный сайт MaxSite CMS', 'http://maxsite.org/feed');
 ###
@@ -217,7 +217,7 @@ CREATE TABLE _PREFIX_page (
 	FULLTEXT page_title (page_title),
 	FULLTEXT page_content (page_content),
 	FULLTEXT page_content2 (page_content2)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_page (page_title, page_content, page_slug, page_date_publish, page_last_modified) VALUES ('Привет, мир!', '<p>Это ваша первая запись. Вы можете её отредактировать или удалить через админ-панель.</p>', 'hello', NOW(), NOW());
 ###
@@ -253,7 +253,7 @@ CREATE TABLE _PREFIX_comusers (
 	PRIMARY KEY (comusers_id),
 	KEY comusers_email (comusers_email),
 	KEY comusers_nik (comusers_nik)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 
 
@@ -275,6 +275,6 @@ CREATE TABLE _PREFIX_comments (
 	comments_type varchar(50) NOT NULL default '',
 	PRIMARY KEY (comments_id),
 	KEY comments_page_id (comments_page_id)
-) _CHARSETCOLLATE_;
+) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 

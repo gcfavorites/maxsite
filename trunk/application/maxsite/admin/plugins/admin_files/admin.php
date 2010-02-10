@@ -146,6 +146,20 @@
 		
 		$CI->load->library('upload', $config);
 		
+		// если была отправка файла, то нужно заменить поле имени с русского на что-то другое
+		// это ошибка при копировании на сервере - он не понимает русские буквы
+		if (isset($_FILES['f_userfile']['name'])) 
+		{
+			$f_temp = $_FILES['f_userfile']['name'];
+			
+			// оставим только точку
+			$f_temp = str_replace('.', '__mso_t__', $f_temp);
+			$f_temp = mso_slug($f_temp); // остальное как обычно mso_slug
+			$f_temp = str_replace('__mso_t__', '.', $f_temp);
+			
+			$_FILES['f_userfile']['name'] = $f_temp;
+		}
+		
 		$res = $CI->upload->do_upload('f_userfile');
 		
 		if ($res)

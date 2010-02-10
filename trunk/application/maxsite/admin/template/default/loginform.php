@@ -23,6 +23,8 @@
 <?php 
 	if (!is_login())
 	{
+		$redirect_url = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getinfo('siteurl') . mso_current_url();
+		
 		mso_login_form(array( 
 			'login'=>'&nbsp;&nbsp;Логин: ', 
 			'password'=>'<br /><br />Пароль: ', 
@@ -30,7 +32,7 @@
 			'form_end'=>'<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . getinfo('siteurl') . '">Вернуться к сайту</a>',
 			
 			), 
-			'admin');
+			$redirect_url);
 	}
 ?>
 

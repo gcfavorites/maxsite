@@ -119,7 +119,7 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 	if (!$url) return false;
 	
 	# проверим кеш, может уже есть в нем все данные
-	$cache_key = 'rss/' . mso_md5('twitter_go'. $url . $count . $format . $format_date . (int) $max_word_description);
+	$cache_key = 'rss/' . 'twitter_go' . $url . $count . $format . $format_date . (int) $max_word_description;
 	$k = mso_get_cache($cache_key, true);
 	if ($k) return $k; // да есть в кэше
 	

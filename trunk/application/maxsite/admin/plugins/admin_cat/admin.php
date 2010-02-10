@@ -103,17 +103,41 @@
 <?php
 	
 	$all = mso_cat_array('page', 0);
-	
+	//	<input title="Описание" name="f_category_desc[[ID]]" value="[DESCR]" maxlength="500" size="50" style="width: 250px;" type="text" />
+
 	$format = '
-	<strong title="Номер рубрики. В этой рубрике [COUNT] страниц">[ID]</strong> - 
-	<input title="Номер родителя" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="500" size="50" style="width: 40px;" type="text" />
-	<input title="Название" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" size="50" style="width: 200px;" type="text" />
-	<input title="Описание" name="f_category_desc[[ID]]" value="[DESCR]" maxlength="500" size="50" style="width: 250px;" type="text" />
-	<input title="Короткая ссылка" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" size="50" style="width: 100px;" type="text" />
-	<input title="Порядок" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" size="50" style="width: 40px;" type="text" />
 	
-	<input type="submit" name="f_edit_submit[[ID]]" value="&nbsp;Изменить&nbsp;">
-	<input type="submit" name="f_delete_submit[[ID]]" value="&nbsp;Удалить&nbsp;" onClick="if(confirm(\'Удалить рубрику?\')) {return true;} else {return false;}" >
+	<table class="page" style="width: 100%; border-collapse: collapse;">
+	
+	<colgroup style="width: 30px; padding: 0 4px;">
+	<colgroup style="width: 50px; padding: 0 4px;">
+	<colgroup style="width: 200px; padding: 0 4px;">
+	<colgroup style="padding: 0 4px;">
+	<colgroup style="width: 150px; padding: 0 4px;">
+	<colgroup style="width: 50px; padding: 0 4px;">
+	<colgroup style="width: 80px; padding: 0 4px;">
+	<colgroup style="width: 80px; padding: 0 4px;">
+	
+	<tr style="text-align: center; vertical-align: top;">
+	
+	<td class="alt"><strong title="Номер рубрики. В этой рубрике [COUNT] страниц">[ID]</strong></td>
+	
+	<td><input title="Номер родителя" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="50" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	
+	<td><input title="Название" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	
+	<td><textarea title="Описание" name="f_category_desc[[ID]]" style="width: 100%; margin: 0 -4px;">[DESCR]</textarea></td>
+	
+	<td><input title="Короткая ссылка" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	
+	<td><input title="Порядок" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	
+	<td><input type="submit" name="f_edit_submit[[ID]]" value="Изменить" style="width: 100%; margin: 0 -4px;"></td>
+	
+	<td><input type="submit" name="f_delete_submit[[ID]]" value="Удалить" style="width: 100%; margin: 0 -4px;" onClick="if(confirm(\'Удалить рубрику?\')) {return true;} else {return false;}" ></td>
+	
+	</tr></table>
+	
 	';
 	
 	
@@ -126,7 +150,7 @@
 			
 			'class_ul_style'=>'list-style-type: none; margin: 0;', 
 			'class_child_style'=>'list-style-type: none;', 
-			'class_li_style'=>'padding: 2px; margin: 2px;',
+			'class_li_style'=>'pad1ding: 2px; margin: 5px 0;',
 			
 			'title'=>'category_name', 
 			'link'=>'category_slug', 
@@ -141,7 +165,25 @@
 	
 	// добавляем форму, а также текущую сессию
 	echo '<form action="" method="post">' . mso_form_session('f_session_id') .
-		 '<pre><b>ID</b> <b>Родитель</b> <b>Название</b>                     <b>Описание</b>                            <b>Ссылка</b>          <b>Порядок</b></pre>';
+			'<table class="page" style="width: 100%; border-collapse: collapse;">
+			<colgroup style="width: 30px; padding: 0 4px;">
+			<colgroup style="width: 50px; padding: 0 4px;">
+			<colgroup style="width: 200px; padding: 0 4px;">
+			<colgroup style="padding: 0 4px;">
+			<colgroup style="width: 150px; padding: 0 4px;">
+			<colgroup style="width: 50px; padding: 0 4px;">
+			<colgroup style="width: 80px; padding: 0 4px;">
+			<colgroup style="width: 80px; padding: 0 4px;">
+			<tr style="vertical-align: top; font-weight: bold;">
+			<td>ID</td>
+			<td>Род.</td>
+			<td>Название</td>
+			<td>Описание</td>
+			<td>Ссылка</td>
+			<td>Пор.</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			</tr></table>' ;
 	
 	echo $out;
 	
@@ -149,7 +191,9 @@
 	echo '
 	<br />
 	<br /><b>Название</b> <input style="width: 250px;" type="text" name="f_new_name" value="">
-	<br /><b>Описание</b> <input style="width: 250px;" type="text" name="f_new_desc" value="">
+	
+	<br /><b>Описание</b><br /><textarea style="width: 350px;" name="f_new_desc"></textarea>
+	
 	<br /><b>Ссылка</b> <input style="width: 250px;" type="text" name="f_new_slug" value="">
 	<br /><b>Родитель</b> <input style="width: 250px;" type="text" name="f_new_parent" value="">
 	<br /><b>Порядок</b> <input style="width: 250px;" type="text" name="f_new_order" value="">

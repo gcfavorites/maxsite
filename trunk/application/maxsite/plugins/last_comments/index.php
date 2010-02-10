@@ -117,7 +117,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 	$options['maxchars'] = (int) $options['maxchars'];
 	if ($options['maxchars'] < 1) $options['maxchars'] = 20;
 	
-	$cache_key = 'last_comments_widget_' . mso_md5('last_comments_widget'. implode('', $options) . $num);
+	$cache_key = 'last_comments_widget_' . mso_md5('last_comments_widget'. serialize($options) . $num);
 	// $k = mso_get_cache($cache_key);
 	
 	$k = mso_get_cache($cache_key, true);

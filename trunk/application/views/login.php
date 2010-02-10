@@ -16,15 +16,16 @@ function _mso_login()
 				and isset($_POST['flogin_session_id'])
 		)
 	{
-		
 		$flogin_session_id = $_POST['flogin_session_id'];
 		
 		# защита сесии
 		if ($MSO->data['session']['session_id'] != $flogin_session_id) mso_redirect('loginform');
 		
+		
 		$flogin_redirect = urldecode($_POST['flogin_redirect']);
 		
-		if ($flogin_redirect == 'home') $flogin_redirect = '';
+		
+		if ($flogin_redirect == 'home') $flogin_redirect = getinfo('siteurl');
 		
 		$flogin_user = $_POST['flogin_user'];
 		$flogin_password = $_POST['flogin_password'];
@@ -68,14 +69,18 @@ function _mso_login()
 			);
 			
 			$CI->session->set_userdata($data);
-			
-			mso_redirect($flogin_redirect);
+			mso_redirect($flogin_redirect, true);
 		}
 		else mso_redirect('loginform');
 	}
 	else 
 	{
-		mso_redirect('loginform');
+		
+		$MSO->data['type'] = 'loginform';
+		$template_file = $MSO->config['templates_dir'] . $MSO->config['template'] . '/index.php';
+		
+		if ( file_exists($template_file) ) require($template_file);
+			else show_error('Ошибка - отсутствует файл шаблона index.php');
 	};
 }
 

@@ -57,27 +57,31 @@ function mso_admin_footer_default($args = '')
 
 function mso_admin_plugins_default($args = array())
 {
+	// все плагины в admin подключаются автоматом
+	
+	$CI = & get_instance();
+	$CI->load->helper('directory'); 
+	$plugins_dir = getinfo('admin_plugins_dir'); // получаем список каталогов в admin/plugins
+	$dirs = directory_map($plugins_dir, true);	 // все каталоги в массиве $dirs
+	
+	foreach ($dirs as $dir)
+	{
+		mso_admin_plugin_load($dir);
+	}
+	/*
 	mso_admin_plugin_load('admin_page');
 	mso_admin_plugin_load('admin_home');
 	mso_admin_plugin_load('admin_cat');
-	// mso_admin_plugin_load('admin_link');
 	mso_admin_plugin_load('admin_options');
 	mso_admin_plugin_load('admin_plugins');
 	mso_admin_plugin_load('admin_users');
 	mso_admin_plugin_load('admin_menu');
 	mso_admin_plugin_load('admin_sidebars');
-	
 	mso_admin_plugin_load('admin_files');
-	
 	mso_admin_plugin_load('admin_comments');
-	
-	// mso_admin_plugin_load('editor_freert');
-	// mso_admin_plugin_load('editor_wymeditor');
-	
 	mso_admin_plugin_load('editor_jw');
-	
 	mso_admin_plugin_load('template_options');
-	
+	*/
 	
 	# кустомная функция, если есть
 	if (function_exists('mso_autoload_admin_custom')) mso_autoload_admin_custom();

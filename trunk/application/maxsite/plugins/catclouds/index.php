@@ -107,7 +107,7 @@ function catclouds_widget_update($num = 1)
 function catclouds_widget_custom($options = array(), $num = 1)
 {
 	// кэш 
-	$cache_key = mso_md5('catclouds_widget_custom'. implode('', $options) . $num);
+	$cache_key = 'catclouds_widget_custom' . serialize($options) . $num;
 	$k = mso_get_cache($cache_key);
 	if ($k) return $k; // да есть в кэше
 	

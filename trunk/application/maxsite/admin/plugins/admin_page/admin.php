@@ -2,6 +2,9 @@
 
 	$CI = & get_instance();
 	
+	require_once( getinfo('common_dir') . 'page.php' ); 			// функции страниц 
+	// require_once( getinfo('common_dir') . 'category.php' ); 		// функции рубрик
+	
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_page_delete')) )
 	{
 		mso_checkreferer();
@@ -66,55 +69,79 @@
 
 	$CI->table->set_heading('ID','Тип', 'Заголовок', 'Дата', 'Статус', 'Автор', 'Действие');
 	
-	# подготавливаем выборку из базы
-	$CI->db->select('page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_login, users_nik');
-	$CI->db->from('page');
-	$CI->db->join('users', 'users.users_id = page.page_id_autor');
-	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
+	$par = array( 
+			'limit' => 50, // колво записей на страницу
+			'type' => false, // любой тип страниц
+			'custom_type' => 'home', // запрос как в home
+			'order_asc' => 'desc', // в обратном порядке
+			'page_status' => false, // статус любой
+			'date_now' => false, // любая дата
+			'content'=> false, // без содержания
+			);
 	
-	$CI->db->order_by('page_date_publish', 'desc');
-	
-	$query = $CI->db->get();
-	
+	$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
+
 	$all_pages = array(); // сразу список всех страниц для формы удаления
 	
-	// если есть данные, то выводим
-	if ($query->num_rows() > 0)
-	{
-		$this_url = $MSO->config['site_admin_url'] . 'page_edit/';
-		$view_url = $MSO->config['site_url'] . 'page/';
+	$this_url = getinfo('site_admin_url') . 'page_edit/';
+	$view_url = getinfo('siteurl') . 'page/';
+	$view_url_cat = getinfo('siteurl') . 'category/';
+	$view_url_tag = getinfo('siteurl') . 'tag/';
 		
-		foreach ($query->result_array() as $row)
+	if ($pages) // есть страницы
+	{ 	
+		foreach ($pages as $page) // выводим в цикле
 		{
-			$id = $row['page_id'];
-			$act = '<a href="' . $this_url . $id . '">Изменить</a>';
+			// pr($page);
+			$act = '<a href="' . $this_url . $page['page_id'] . '">Изменить</a>';
 			
-			$page_slug = $row['page_slug'];
+			$all_pages[$page['page_id']] = $page['page_id'] . ' - ' . $page['page_title'] 
+				. ' - ' . $page['page_date_publish'] . ' - ' . $page['page_status'];
 			
-			if (!$row['page_title']) $row['page_title'] = 'Нет заголовка';
-			$page_title = '<a href="' . $view_url . $page_slug . '">' . htmlspecialchars( $row['page_title'] ) . '</a>';
+			$cats = '';
+			$tags = '';
 			
-			$page_type_name = $row['page_type_name'];
-			$page_date_publish = $row['page_date_publish'];
-			$page_status = $row['page_status'];
-			$user = $row['users_login'] . ' (' . $row['users_nik'] . ')';
+			foreach ($page['page_categories_detail'] as $key => $val)
+			{
+				$cats .= '<a href="' . $view_url_cat . $page['page_categories_detail'][$key]['category_slug'] . '">'
+					. $page['page_categories_detail'][$key]['category_name'] . '</a>  ';
+			}
 			
-			$CI->table->add_row($id, $page_type_name, $page_title, $page_date_publish, $page_status, $user, $act);
+			$cats = str_replace('  ', ', ', trim($cats));
 			
-			$all_pages[$id] = $id . ' - ' . $page_title . ' - ' . $page_date_publish . ' - ' . $page_status;
+			foreach ($page['page_tags'] as $val)
+			{
+				$tags .= '<a href="' . $view_url_tag . $val . '">' . $val . '</a>  ';
+			}			
+			$tags = str_replace('  ', ', ', trim($tags));
+			
+			
+			$title = '<a href="' . $view_url . $page['page_slug'] . '">' . $page['page_title'] . '</a>';
+			
+			if ($cats) $title .= '<br />Рубрика: ' . $cats;
+			if ($tags) $title .= '<br />Метки: ' . $tags;
+			
+			$CI->table->add_row($page['page_id'], $page['page_type_name'], $title, 
+					$page['page_date_publish'], $page['page_status'], $page['users_nik'], $act);
 		}
 	}
 	
-
 	echo $CI->table->generate(); // вывод подготовленной таблицы
 
 	// добавляем форму для удаления записи
 	$all_pages = form_dropdown('f_page_delete', $all_pages, -1, '');
 	
+	if (function_exists('pagination_go')) 
+	{
+		$pagination['type'] = '';
+		$pagination['range'] = 10;
+		echo '<br />' . pagination_go($pagination); // вывод навигации
+	}
+	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo '<br /><br /><h2>Удалить страницу</h2>';
 	echo $all_pages;
-	echo ' <input type="submit" name="f_submit" value="  Удалить  " onClick="if(confirm(\'Уверены?\')) {return true;} else {return false;}" >';
+	echo ' <input type="submit" name="f_submit" value="  Удалить  " onClick="if(confirm(\'Удалить страницу?\')) {return true;} else {return false;}" >';
 	echo '</form><br />';
 	
 	

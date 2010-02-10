@@ -39,7 +39,7 @@ function sitemap($arg = array())
 	global $MSO;
 
 	// кэш строим по url, потому что у он меняется от пагинации
-	$cache_key = mso_md5('sitemap'. implode('', $MSO->data['uri_segment']));
+	$cache_key = 'sitemap' . serialize($MSO->data['uri_segment']);
 	$k = mso_get_cache($cache_key);
 	if ($k) return $k; // да есть в кэше
 	

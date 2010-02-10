@@ -28,7 +28,7 @@
 	}
 	
 	
-	// получаем список кактлогов 
+	// получаем список каталогов 
 	$CI->load->helper('directory');
 	
 	$current_template = $MSO->config['template'];
@@ -63,6 +63,20 @@
 			{
 				$screenshot = $MSO->config['templates_url'] . $dir . '/screenshot.jpg';
 				$out .= '<img src="' . $screenshot . '" width="250" height="200" alt="" title="" />';
+			}
+			else
+			{
+				$out .= '<div style="margin: 0 auto; width: 250px; height: 200px; background: #f0f0f0; border: 1px solid silver;">Нет изображения</div>';
+			}
+			
+						$info_f = $templates_dir . $dir . '/info.php';
+			if (file_exists($info_f))
+			{
+				require($info_f);
+				$out .= '<p><a href="' . $info['template_url'] . '">' . $info['name'] . ' ' . $info['version'] . '</a>';
+				$out .= '<br />' . $info['description'];
+				$out .= '<br />Автор: <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
+				$out .= '</p>';
 			}
 			
 			$out .= '<input type="submit" name="f_submit[' . $dir . ']" value="Выбрать этот шаблон" style="margin: 10px;" />';

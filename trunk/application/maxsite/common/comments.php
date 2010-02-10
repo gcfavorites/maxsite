@@ -152,7 +152,10 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	
 	if (!$email) return false;
 	
-	$subject = '[' . getinfo('title') . '] ' . 'Новый комментарий (' . $id . ') "' . $page_title . '"';
+	if ($data['comments_approved'] == 0) // нужно промодерировать
+		$subject = '[' . getinfo('title') . '] ' . '(-) Новый комментарий (' . $id . ') "' . $page_title . '"';
+	else
+		$subject = '[' . getinfo('title') . '] ' . 'Новый комментарий (' . $id . ') "' . $page_title . '"';
 	
 	$text = 'Новый комментарий на "' . $page_title . '"'. NR ;
 	$text .= mso_get_permalink_page($data['comments_page_id'])  . '#comment-' . $id . NR . NR;
@@ -524,6 +527,8 @@ function mso_get_comuser($id = 0, $args = array())
 	
 	if ( !isset($args['limit']) )	$args['limit'] = 20;
 	if ( !isset($args['tags']) )	$args['tags'] = '<p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
+	if ( !isset($args['order']) )	$args['order'] = 'comments_date';
+	if ( !isset($args['asc']) )		$args['asc'] = 'desc';
 	
 	$CI = & get_instance();
 	
@@ -555,7 +560,9 @@ function mso_get_comuser($id = 0, $args = array())
 		// $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 		$CI->db->where('comments.comments_approved', '1');
 		$CI->db->join('page', 'page.page_id = comments.comments_page_id');
-		
+
+		$CI->db->order_by('comments_date', $args['asc']);
+
 		if ($args['limit']) $CI->db->limit($args['limit']);
 		
 		$query = $CI->db->get();
