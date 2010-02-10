@@ -43,6 +43,14 @@ if ($comments) // есть страницы
 	
 	foreach ($comments as $comment)  // выводим в цикле
 	{
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('page-comments')) 
+			{
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
+			}
+		}
 		extract($comment);
 		
 		// pr($comment);
@@ -96,7 +104,18 @@ if ($comments) // есть страницы
 if ($page_comment_allow)
 {
 	echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
-	require( 'page-comment-form.php' ); // форма комментариев
+	
+	if (function_exists('mso_page_foreach'))
+	{
+		if ($f = mso_page_foreach('page-comment-form')) 
+		{
+			require($f); // подключаем кастомный вывод
+		}
+		else require( 'page-comment-form.php' ); // форма комментариев из дефолта
+	}
+	else require( 'page-comment-form.php' ); // форма комментариев из дефолта
+	
+	# require( 'page-comment-form.php' ); // форма комментариев
 }
 else
 {

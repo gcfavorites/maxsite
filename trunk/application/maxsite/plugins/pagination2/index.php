@@ -15,7 +15,9 @@ function pagination2_autoload($a = array())
 
 function pagination2_go($r = array()) 
 {
-	$r_orig = $r; // сохраним исходный, чтобы его же отдать дальше
+	if ( !isset($r['maxcount']) ) return $r;
+
+	$r_orig = $r; // сохраним исходный,	чтобы его же отдать дальше
 	
 	if ( !isset($r['old']) ) $r['old'] = t('Старее »»»', 'plugins');
 	if ( !isset($r['new']) ) $r['new'] = t('««« Новее', 'plugins');

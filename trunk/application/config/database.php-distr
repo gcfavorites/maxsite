@@ -50,6 +50,7 @@ $db['default']['cachedir'] = "system/cache/db";
 $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
 
+$db['default']['autoinit'] = FALSE; // http://rmcreative.ru/blog/post/otlozhennoe-podkljuchenie-k-baze-v-codeigniter
 
 /* End of file database.php */
 /* Location: ./system/application/config/database.php */

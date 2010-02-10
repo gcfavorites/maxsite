@@ -13,7 +13,8 @@
 	. '<br/>' 
 	. sprintf( 
 		t('Работает на <a href="http://max-3000.com/">MaxSite CMS</a> | Время: {elapsed_time} | SQL: %s | Память: {memory_usage}', 'templates')
-		, $mq);
+		, $mq)
+	. '<!--global_cache_footer-->';
 
 	if (is_login())
 		echo ' | <a href="' . getinfo('siteurl') . 'admin">' . t('Управление', 'templates') 

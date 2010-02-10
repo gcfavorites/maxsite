@@ -41,6 +41,15 @@ else
 		
 		foreach ($comments as $comment)  // выводим в цикле
 		{
+			if (function_exists('mso_page_foreach'))
+			{
+				if ($f = mso_page_foreach('comments')) 
+				{
+					require($f); // подключаем кастомный вывод
+					continue; // следующая итерация
+				}
+			}
+		
 			extract($comment);
 
 

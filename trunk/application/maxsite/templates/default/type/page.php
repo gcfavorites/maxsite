@@ -23,7 +23,18 @@ if ($pages) // есть страницы
 { 	
 	
 	foreach ($pages as $page) : // выводим в цикле
-
+		
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('page')) 
+			{
+				require($f); // подключаем кастомный вывод
+				require('page-comments.php'); // здесь форма комментариев
+				continue; // следующая итерация
+			}
+		}
+		
+		
 		extract($page);
 		# pr($page);
 		echo NR . '<div class="page_only">' . NR;
@@ -38,10 +49,10 @@ if ($pages) // есть страницы
 									'days' => t('Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье'),
 									'month' => t('января февраля марта апреля мая июня июля августа сентября октября ноября декабря')), 
 							'<span>', '</span>');
-			mso_page_view_count($page_view_count, '<br /><span>'.t('Просмотров').':</span> ', '');
-			mso_page_meta('nastr', $page_meta, '<br /><span>'.t('Настроение').':</span> ', '');
-			mso_page_meta('music', $page_meta, '<br /><span>'.t('В колонках звучит').':</span> ', '');
-			if ($page_comment_allow) mso_page_feed($page_slug, t('комментарии по RSS'), '<br /><span>'.t('Подписаться на').'</span> ', '', true);
+			mso_page_view_count($page_view_count, '<br /><span>' . t('Просмотров') . ':</span> ', '');
+			mso_page_meta('nastr', $page_meta, '<br /><span>' . t('Настроение') . ':</span> ', '');
+			mso_page_meta('music', $page_meta, '<br /><span>' . t('В колонках звучит') . ':</span> ', '');
+			if ($page_comment_allow) mso_page_feed($page_slug, t('комментарии по RSS'), '<br /><span>' . t('Подписаться на').'</span> ', '', true);
 			mso_page_edit_link($page_id, 'Edit page', '<br />[', ']');
 		echo '</div>';
 		
@@ -85,8 +96,8 @@ if ($pages) // есть страницы
 else 
 {
 
-	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
-	echo '<p>'.t('Извините, ничего не найдено').'</p>';
+	echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+	echo '<p>' . t('Извините, ничего не найдено') . '</p>';
 	echo mso_hook('page_404');
 	
 } // endif $pages

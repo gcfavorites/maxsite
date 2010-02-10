@@ -20,6 +20,15 @@ if ($comusers)
 	// pr($comusers);
 	foreach ($comusers as $comuser)
 	{
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('users-all')) 
+			{
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
+			}
+		}
+		
 		if (!$comuser['comusers_nik']) $comuser['comusers_nik'] = t('Комментатор'). ' ' . $comuser['comusers_id'];
 		echo '<li><a href="' . getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">' . $comuser['comusers_nik'] . '</a></li>';
 	}

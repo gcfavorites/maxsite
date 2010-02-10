@@ -156,8 +156,15 @@ function last_comments_widget_custom($options = array(), $num = 1)
 			foreach ($comments as $comment)  // выводим в цикле
 			{
 				extract($comment);
-
-				$out .= '<li><a href="' . getinfo('siteurl') . 'page/' . mso_slug($page_slug) . '#comment-' . $comments_id . '" name="comment-' . $comments_id . '"><strong>';
+				
+				if ($comment['comments_users_id']) 
+					$css_style_add = 'last_comment_users ' . ' last_comment_users_' . $comment['comments_users_id'];
+				elseif ($comment['comments_comusers_id']) 
+					$css_style_add = 'last_comment_comusers ' . ' last_comment_comusers_' . $comment['comments_comusers_id'];
+				else 
+					$css_style_add = 'last_comment_anonim';
+				
+				$out .= '<li class="' . $css_style_add . '"><a href="' . getinfo('siteurl') . 'page/' . mso_slug($page_slug) . '#comment-' . $comments_id . '" name="comment-' . $comments_id . '"><strong>';
 				
 				if ($comments_users_id) // это автор
 				{

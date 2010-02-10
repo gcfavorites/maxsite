@@ -122,7 +122,7 @@ mso_cur_dir_lang('admin');
 				else $f_page_type = '1';
 				
 			if ( isset($post['f_page_parent']) and $post['f_page_parent'] ) $f_page_parent = (int) $post['f_page_parent'];
-				else $f_page_parent = '';
+				else $f_page_parent = '0';
 			
 			$f_date_change = isset($post['f_date_change']) ? '1' : '0'; // сменить дату?
 		
@@ -196,7 +196,7 @@ mso_cur_dir_lang('admin');
 
 				);
 				
-			//pr($data);
+			// pr($data);
 			// pr($post);
 			//pr($f_tags);
 			//pr(mso_explode($f_tags, false, false));

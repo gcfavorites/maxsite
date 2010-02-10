@@ -12,9 +12,29 @@ function bbcode_autoload($args = array())
 	mso_hook_add( 'content', 'bbcode_custom'); # хук на вывод контента
 }
 
-# функции плагина
-function bbcode_custom($markup = '')
+function bbcode_pre_callback($matches)
 {
+	$m = $matches[1];
+
+	$m = str_replace('<br>', NR, $m);
+	$m = str_replace('<br />', NR, $m);
+	
+//	$m = str_replace('<', '&lt;', $m);
+//	$m = str_replace('>', '&gt;', $m);
+	
+	$m = str_replace('[', '&#91;', $m);
+	$m = str_replace(']', '&#93;', $m);
+	
+	$m = '<pre>' . $m . '</pre>';
+	
+	return $m;
+}
+
+# функции плагина
+function bbcode_custom($text = '')
+{
+
+	$text = preg_replace_callback('~\[pre\](.*?)\[\/pre\]~si', 'bbcode_pre_callback', $text );
 
     $preg = array(    
 		// Text arrtibutes
@@ -74,7 +94,7 @@ function bbcode_custom($markup = '')
 
 		// [code=language][/code]
 		'~\[code\](.*?)\[\/code\]~si'       => '<code>$1</code>',
-		'~\[pre\](.*?)\[\/pre\]~si'         => '<pre>$1</pre>',
+		// '~\[pre\](.*?)\[\/pre\]~si'         => '<pre>$1</pre>',
 		// '~\[code=(.*?)\](.*?)\[\/code\]~si'     => '<pre><code class="$1">$2</code></pre>',               
 
 		// email with indexing prevention & @ replacement
@@ -115,7 +135,10 @@ function bbcode_custom($markup = '')
 
   );
   
-  return preg_replace(array_keys($preg), array_values($preg), $markup);
+  $text = preg_replace(array_keys($preg), array_values($preg), $text);
+
+  
+  return $text;
 
 }
 

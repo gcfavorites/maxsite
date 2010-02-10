@@ -184,6 +184,7 @@ class CI_Upload {
 
 			return FALSE;
 		}
+		
 
 		// Set the uploaded data as class variables
 		$this->file_temp = $_FILES[$field]['tmp_name'];		
@@ -556,43 +557,14 @@ class CI_Upload {
 			$this->set_error('upload_no_file_types');
 			return FALSE;
 		}
-
-		$image_types = array('gif', 'jpg', 'jpeg', 'png', 'jpe');
-
-		foreach ($this->allowed_types as $val)
-		{
-			$mime = $this->mimes_types(strtolower($val));
-			
-			# MAX
-			/*  
-			// Images get some additional checks
-			if (in_array($val, $image_types))
-			{
-				if (getimagesize($this->file_temp) === FALSE)
-				{
-					return FALSE;
-				}
-			}
-			*/
-			# /MAX
-
-			if (is_array($mime))
-			{
-				if (in_array($this->file_type, $mime, TRUE))
-				{
-					return TRUE;
-				}
-			}
-			else
-			{
-				if ($mime == $this->file_type)
-				{
-					return TRUE;
-				}	
-			}		
-		}
 		
-		return FALSE;
+		# MaxSite CMS
+		# убираем к чертям проверку на mime - пусть буржуи пользуются :-E
+		# теперь так: проверяется file_ext с тем, что в allowed_types
+		# если есть, значит разрешено, иначе false
+		# убрать точку из расширения
+	
+		return in_array(str_replace('.', '', $this->file_ext), $this->allowed_types);
 	}
 	
 	// --------------------------------------------------------------------

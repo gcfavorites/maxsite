@@ -9,7 +9,7 @@
 
 
 # функция автоподключения плагина
-function %%%_autoload($args = array())
+function %%%_autoload()
 {
 	mso_create_allow('%%%_edit', t('Админ-доступ к %%%', __FILE__));
 	mso_hook_add( 'admin_init', '%%%_admin_init'); # хук на админку
@@ -32,6 +32,7 @@ function %%%_deactivate($args = array())
 function %%%_uninstall($args = array())
 {	
 	// mso_delete_option('plugin_%%%', 'plugins'); // удалим созданные опции
+	mso_remove_allow('%%%_edit'); // удалим созданные разрешения
 	return $args;
 }
 
@@ -51,7 +52,7 @@ function %%%_admin_init($args = array())
 	#			можно использовать добавочный, например demo/edit = http://сайт/admin/demo/edit
 	# Третий - название ссылки	
 	
-	mso_admin_menu_add('plugins', $this_plugin_url, 'Плагин %%%');
+	mso_admin_menu_add('plugins', $this_plugin_url, t('Плагин %%%', __FILE__));
 
 	# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 	# связанную функцию именно она будет вызываться, когда 

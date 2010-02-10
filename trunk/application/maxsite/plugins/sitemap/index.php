@@ -47,7 +47,7 @@ function sitemap($arg = array())
 	// параметры для получения страниц
 	$par = array( 
 			//'no_limit' => true,
-			 'limit'=>300,
+			 'limit'=>30,
 			// 'type'=> false, 
 			'custom_type'=> 'home', 
 			'content'=> false,
@@ -101,11 +101,13 @@ function sitemap($arg = array())
 		$out .= '</ul>' . NR . '</div>' . NR;
 	}
 	
+	
 	$pagination['type'] = '';
 	ob_start();
 	mso_hook('pagination', $pagination);
 	$out .=  ob_get_contents();
 	ob_end_clean();
+	
 
 	mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	

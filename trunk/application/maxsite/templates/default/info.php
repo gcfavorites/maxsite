@@ -2,7 +2,7 @@
 
 $info = array(
 	'name' => 'Default',
-	'description' => 'Шаблон MaxSite CMS',
+	'description' => t('Шаблон MaxSite CMS', 'templates'),
 	'version' => '1.0',
 	'author' => 'Максим',
 	'template_url' => 'http://max-3000.com/',

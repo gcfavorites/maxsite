@@ -72,6 +72,15 @@ if ($page_top) // есть страницы
 	
 	foreach ($page_top as $page)  // выводим в цикле
 	{
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('home-top')) 
+			{
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
+			}
+		}
+		
 		extract($page);
 		mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 	
@@ -94,7 +103,16 @@ if ($pages) // есть страницы
 	if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="category">';
 		
 	foreach ($pages as $page) : // выводим в цикле
-
+		
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('home')) 
+			{
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
+			}
+		}
+		
 		extract($page);
 		// pr($page);
 		

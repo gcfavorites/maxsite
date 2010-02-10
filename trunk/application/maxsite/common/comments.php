@@ -271,6 +271,8 @@ function mso_get_new_comment($args = array())
 		if ( !isset($args['noword']) )		$args['noword'] = array('.com', '.ru', '.net', '.org', '.info', '.ua', '.com.ua',
 																	'.com.ru', '.su', '/', 'www.', 'http', ':', '-', '"',
 																	'«', '»', '%', '<', '>', '&', '*', '+', '\'' );
+		
+		mso_hook('add_new_comment');
 
 		if (!mso_checksession($post['comments_session']) )
 			return '<div class="' . $args['css_error']. '">'. t('Ошибка сессии! Обновите страницу'). '</div>';

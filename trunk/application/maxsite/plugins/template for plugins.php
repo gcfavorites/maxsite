@@ -9,7 +9,7 @@
 
 
 # функция автоподключения плагина
-function %%%_autoload($args = array())
+function %%%_autoload()
 {
 
 }
@@ -31,6 +31,7 @@ function %%%_deactivate($args = array())
 function %%%_uninstall($args = array())
 {	
 	// mso_delete_option('plugin_%%%', 'plugins'); // удалим созданные опции
+	// mso_remove_allow('%%%_edit'); // удалим созданные разрешения
 	return $args;
 }
 

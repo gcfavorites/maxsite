@@ -169,8 +169,15 @@ function mso_get_pages($r = array(), &$pag)
 			$all_page_id[] = $page['page_id'];
 
 			$content = $page['page_content'];
+			
 
 			$content = str_replace('<!-- pagebreak -->', '[cut]', $content); // совместимость с TinyMCE
+			
+			# если после [cut] пробелы до конца строки, то удалим их 
+			$content = preg_replace('|\[cut\]\s*<br|', '[cut]<br', $content);
+			$content = preg_replace('|\[cut\](\&nbsp;)*<br|', '[cut]<br', $content);
+			$content = preg_replace('|\[cut\](\&nbsp;)*(\s)*<br|', '[cut]<br', $content);
+			
 
 			$content = mso_hook('content', $content);
 			$content = mso_hook('content_auto_tag', $content);
@@ -1437,6 +1444,7 @@ if ( !function_exists('get_total_days') )
 # url - второй сегмент
 # время жизни 30 дней: 60 секунд * 60 минут * 24 часа * 30 дней = 2592000
 
+/* старый вариант
 function mso_page_view_count_first($unique = true, $name_cookies = 'maxsite-cms', $expire = 2592000)
 {
 	
@@ -1481,6 +1489,62 @@ function mso_page_view_count_first($unique = true, $name_cookies = 'maxsite-cms'
 		return true;
 	}
 }
+*/
+# новый вариант от Ramir'а
+# http://forum.max-3000.com/viewtopic.php?f=6&t=129#p689
+function mso_page_view_count_first($unique = false, $name_cookies = 'maxsite-cms', $expire = 2592000)
+{
+   global $_COOKIE, $_SESSION;
+   
+   if ( !mso_get_option('page_view_enable', 'templates', '1') AND !$unique) return true; //если нет такой опции или не пришло в функцию, то выходим
+   if ( !$unique ) $unique = mso_get_option('page_view_enable', 'templates', '1');
+   
+   $slug = mso_segment(2);
+   $all_slug = array();
+   
+   if( $unique == 0 ) return false;
+   elseif ($unique == 1) //с помощью куки
+   {
+      if (isset($_COOKIE[$name_cookies]))   $all_slug = explode('|', $_COOKIE[$name_cookies]); // значения текущего кука
+      if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
+   }
+   elseif ($unique == 2) //с помощью сессии
+   {
+      session_start();
+      if (isset($_SESSION[$name_cookies]))   $all_slug = explode('|', $_SESSION[$name_cookies]); // значения текущей сессии
+      if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
+   }
+
+   // нужно увеличить счетчик
+   $all_slug[] = $slug; // добавляем текущий slug
+   $all_slug = array_unique($all_slug); // удалим дубли на всякий пожарный
+   $all_slug = implode('|', $all_slug); // соединяем обратно в строку
+   $expire = time() + $expire;
+   
+   if ($unique == 1) @setcookie($name_cookies, $all_slug, $expire); // записали в кук
+   elseif ($unique == 2) $_SESSION[$name_cookies]=$all_slug; // записали в сессию
+   
+   // получим текущее значение page_view_count
+   // и увеличиваем значение на 1
+   $CI = & get_instance();
+   $CI->db->select('page_view_count');
+   $CI->db->where('page_slug', $slug);
+   $CI->db->limit(1);
+   $query = $CI->db->get('page');
+
+   if ($query->num_rows() > 0)
+   {
+      $pages = $query->row_array();
+      $page_view_count = $pages['page_view_count'] + 1;
+
+      $CI->db->where('page_slug', $slug);
+      $CI->db->update('page', array('page_view_count'=>$page_view_count));
+      $CI->db->cache_delete('page', $slug);
+
+      return true;
+   }
+}
+
 
 # вывод количества просмотров текущей записи
 function mso_page_view_count($page_view_count = 0, $do = '<span>Прочтений:</span> ', $posle = '', $echo = true)
@@ -1523,6 +1587,8 @@ function mso_page_map($page_id = 0, $page_id_parent = 0)
 
 		$CI->db->or_where('page_id', $page_id_parent);
 	}
+	
+	$CI->db->order_by('page_menu_order');
 
 	$query = $CI->db->get('page');
 	$result = $query->result_array(); // здесь все страницы
@@ -1556,6 +1622,9 @@ function _mso_page_map_get_child($page_id = 0, $cur_id = 0)
 	$CI->db->where('page_id_parent', $page_id);
 	$CI->db->where('page_status', 'publish');
 	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	
+	$CI->db->order_by('page_menu_order');
+	
 	$query = $CI->db->get('page');
 
 	$result = $query->result_array(); // здесь все рубрики

@@ -56,6 +56,11 @@ mso_cur_dir_lang('admin');
 						echo '<div class="update">' . t('Удаление выполнено', 'admin') . '</div>';
 					else
 						echo '<div class="error">' . t('Ошибка удаления!', 'admin') . '</div>';
+			
+			// нужно изменить у всех юзеров этой группы группу на users = 2
+			$CI->db->where_in('users_groups_id', $w_in);
+			$CI->db->update('users', array('users_groups_id'=>'2'));
+			
 		}
 		else echo '<div class="error">Ошибка удаления!</div>';
 	}

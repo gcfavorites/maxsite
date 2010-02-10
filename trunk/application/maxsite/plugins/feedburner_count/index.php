@@ -64,9 +64,10 @@ function feedburner_count_update(){
 		require($MSO->config['plugins_dir'] . 'feedburner_count/download.php');
 		
 		if( $content = get_download('https://feedburner.google.com/api/awareness/1.0/GetFeedData?uri=' . $options['feed_name']) ){
-			$xml = new SimpleXMLElement($content);
+
+			preg_match('/circulation="(\d+)"/',$content,$match);
 			
-			$options['count'] = (string) $xml->feed->entry['circulation'];
+			$options['count'] = (string) $match[1];
 			$options['last_update'] = time();
 		}
 		else{

@@ -390,8 +390,11 @@
 		$users_groups_id = isset($data['users_groups_id']) ? $data['users_groups_id'] : false;
 
 		$ok = true;
+		$description = 'Error input data';
+		
 		# множественная проверка входных данных
 		if ( !$users_login or !$users_email or !$users_password or !$users_groups_id ) $ok = false;
+
 
 		if ($ok)
 		{
@@ -404,8 +407,16 @@
 
 			if ($ok)
 			{
-				if ( !mso_valid_email($users_email) ) $ok = false;
-				if ( strlen($users_password) < 6) $ok = false;
+				if ( !mso_valid_email($users_email) ) 
+				{
+					$ok = false;
+					$description = 'Error email';
+				}
+				if ( $ok and strlen($users_password) < 6) 
+				{
+					$ok = false;
+					$description = 'Error password (less than 6 characters)';
+				}
 			}
 		}
 
@@ -446,7 +457,7 @@
 		{
 			$response = array(
 							'result' => 0,
-							'description' => 'Error input data'
+							'description' => $description
 						);
 		}
 

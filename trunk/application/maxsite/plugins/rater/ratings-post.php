@@ -19,7 +19,6 @@
 
 		$all_slug = explode(' ', $all_slug); // разделим в массив
 
-
 		if ( in_array($slug, $all_slug) ) // уже есть текущий урл - не увеличиваем счетчик
 		{
 			echo '<span>' . t('Вы уже голосовали!', 'plugins') . '</span>';
@@ -76,6 +75,9 @@
 							. t('Средняя оценка', 'plugins') . '</span>: ' . $sredn 
 							. ' ' . t('из', 'plugins') . ' ' . $page_rating_count . ' ' 
 							. t('проголосовавших', 'plugins');
+				
+				mso_hook('global_cache_all_flush'); // сбрасываем весь html-кэш
+			
 			}
 		}
 	}

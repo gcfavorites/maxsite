@@ -9,7 +9,7 @@
 
 
 # функция автоподключения плагина
-function %%%_autoload($args = array())
+function %%%_autoload()
 {
 	mso_register_widget('%%%_widget', t('%%%', __FILE__)); # регистрируем виджет
 }

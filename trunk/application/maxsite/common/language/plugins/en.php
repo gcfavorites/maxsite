@@ -9,7 +9,7 @@
  * Update URL: 
  */
  
-$lang['Доступ запрещен'] = '';
+$lang['Доступ запрещен'] = 'Access denied';
 $lang['Сохранить изменения'] = 'Save changes';
 $lang['Обновлено!'] = 'Update!';
 $lang['Заголовок:'] = 'Header:';
@@ -19,266 +19,272 @@ $lang['Обновлено!'] = 'Update!';
 
 
 # admin_ip
-$lang['Обновлено! Обязательно сохраните секретный адрес сейчас!'] = '';
-$lang['Admin IP'] = '';
-$lang['Вы можете указать IP с которых разрешен доступ в админ-панель. Если пользователь попытается войти в панель управления с другого IP, то ему будет отказано в доступе.'] = '';
-$lang['На тот случай, если у администратора сменится IP, следует указать секретный адрес (URL), по которому можно очистить список разрешенных IP. Сохраняйте этот секретный адрес в надежном месте. В случае, если вы его забудете у вас не будет другой возможности, кроме как отключить плагин (удалить его файлы) или вручную исправить базу данных.'] = '';
-$lang['Если секретный адрес не указан, то сбросить список будет невозможно.'] = '';
-$lang['Если список IP пуст, то доступ в админ-панель разрешен с любого IP.'] = '';
-$lang['Следует указывать только цифры и английские буквы. Другие символы не допустимы!'] = '';
-$lang['Текущий адрес:'] = '';
-$lang['Укажите разрешенные IP по одному в каждой строчке'] = '';
-$lang['Ваш текущий IP:'] = '';
-$lang['Будьте внимательны! Обязательно указывайте свой текущий IP!'] = '';
-$lang['Админ-доступ к редактированию разрешенных IP'] = '';
+$lang['Обновлено! Обязательно сохраните секретный адрес сейчас!'] = 'Updated! Save secret URL <strong>now</strong>';
+$lang['Admin IP'] = 'Admin IP';
+$lang['Вы можете указать IP с которых разрешен доступ в админ-панель. Если пользователь попытается войти в панель управления с другого IP, то ему будет отказано в доступе.'] =
+'You can specify IP, via which you allow access to admin-panel. If user try to login from other IP — he get access denied.';
+$lang['На тот случай, если у администратора сменится IP, следует указать секретный адрес (URL), по которому можно очистить список разрешенных IP. Сохраняйте этот секретный адрес в надежном месте. В случае, если вы его забудете у вас не будет другой возможности, кроме как отключить плагин (удалить его файлы) или вручную исправить базу данных.'] =
+'Upon that event if beside admin is changed IP, follows to indicate the secret address (URL), over which possible clear the list allowed(permitted) by IP. Save this secret address to reliable place. If and when you will forget beside it you will not be other possibility, except hang up plugin (delete(remove) its files or manually correct the database.';
+$lang['Если секретный адрес не указан, то сбросить список будет невозможно.'] = 'If secret URL not setted, flush list is unpossible';
+$lang['Если список IP пуст, то доступ в админ-панель разрешен с любого IP.'] = 'If list of IP is empty, access to admin-panel allowed via any IP';
+$lang['Следует указывать только цифры и английские буквы. Другие символы не допустимы!'] = 'Only letters and numbers allowed.';
+$lang['Текущий адрес:'] = 'Current URL';
+$lang['Укажите разрешенные IP по одному в каждой строчке'] = 'List allowed IP — one over a line';
+$lang['Ваш текущий IP:'] = 'Your current IP:';
+$lang['Будьте внимательны! Обязательно указывайте свой текущий IP!'] = 'Be careful! Specify your current IP';
+$lang['Админ-доступ к редактированию разрешенных IP'] = 'Admin access to editing list of IP';
 
 # antispam
-$lang['Админ-доступ к antispam'] = '';
+$lang['Админ-доступ к antispam'] = 'Admin access to antispam';
 $lang['Антиспам'] = 'Antispam';
-$lang['Для вашего IP комментирование запрещено!'] = '';
-$lang['Вы используете запрещенные слова!'] = '';
-$lang['С помощью этого плагина вы можете активно бороться со спамерами. Обратите внимание, что комментарии авторов публикуются без модерации.'] = '';
-$lang['Настройки'] = '';
-$lang['Включить антиспам'] = '';
-$lang['Вести лог отловленных спамов'] = '';
-$lang['Отправлять комментарий на модерацию, если в нем встречается, хоть одна ссылка.'] = '';
-$lang['Файл для логов:'] = '';
-$lang['Посмотреть'] = '';
+$lang['Для вашего IP комментирование запрещено!'] = 'Commenting denied from your IP';
+$lang['Вы используете запрещенные слова!'] = 'You use disallowed words!';
+$lang['С помощью этого плагина вы можете активно бороться со спамерами. Обратите внимание, что комментарии авторов публикуются без модерации.'] =
+'Via this plugin you can struggle versus spammers. Attention: comments from authors are publishing without moderation';
+$lang['Настройки'] = 'Settings';
+$lang['Включить антиспам'] = 'Turn on antispam';
+$lang['Вести лог отловленных спамов'] = 'Write log of spam';
+$lang['Отправлять комментарий на модерацию, если в нем встречается, хоть одна ссылка.'] = 'Moderate comment, if it has any links.';
+$lang['Файл для логов:'] = 'File for log';
+$lang['Посмотреть'] = 'Show';
 $lang['Черный список IP'] = 'Black list IP';
-$lang['Укажите IP, с которых недопустимы комментарии. Один IP в одной строчке.'] = '';
+$lang['Укажите IP, с которых недопустимы комментарии. Один IP в одной строчке.'] = 'Store here IP adresses, comments from them are denied. One IP over one line.';
 $lang['Черный список слов'] = 'Black list words';
-$lang['Укажите слова, которые нельзя использовать в комментариях. Одно слово в одной строчке.'] = '';
-$lang['Слова для модерации'] = '';
-$lang['Укажите слова, которые принудительно отравляют комментарий на премодерацию. Одно слово в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.'] = '';
-$lang['Номера комюзеров, которые всегда попадают в модерацию'] = '';
-$lang['Укажите номера комюзеров, которые принудительно отравляют комментарий на премодерацию. Один номер в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.'] = '';
+$lang['Укажите слова, которые нельзя использовать в комментариях. Одно слово в одной строчке.'] = 'Indicate the word, which it is denied use in comments. One word at one line.';
+$lang['Слова для модерации'] = 'Words for moderation';
+$lang['Укажите слова, которые принудительно отравляют комментарий на премодерацию. Одно слово в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.'] =
+'Indicate the word, which by force send comment to moderation. One word at one line. Attention that this list is inspected only if checking is passed for Blacklists.';
+$lang['Номера комюзеров, которые всегда попадают в модерацию'] = 'Numbers of commusers, who always goes to moderation';
+$lang['Укажите номера комюзеров, которые принудительно отравляют комментарий на премодерацию. Один номер в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.'] =
+'Indicate the number an комюзеров, who by force send comments to moderation. One number at one line. Attention that this list is inspected only if checking is passed for Blacklists.';
 
 # authors
-$lang['Авторы'] = '';
+$lang['Авторы'] = 'Authors';
 
 # calendar
-$lang['Календарь'] = '';
-$lang['Январь'] = '';
-$lang['Февраль'] = '';
-$lang['Март'] = '';
-$lang['Апрель'] = '';
-$lang['Май'] = '';
-$lang['Июнь'] = '';
-$lang['Июль'] = '';
-$lang['Август'] = '';
-$lang['Сентябрь'] = '';
-$lang['Октябрь'] = '';
-$lang['Ноябрь'] = '';
-$lang['Декабрь'] = '';
-$lang['Пн'] = '';
-$lang['Вт'] = '';
-$lang['Ср'] = '';
-$lang['Чт'] = '';
-$lang['Пт'] = '';
-$lang['Сб'] = '';
-$lang['Вс'] = '';
+$lang['Календарь'] = 'Calendar';
+$lang['Январь'] = 'January';
+$lang['Февраль'] = 'February';
+$lang['Март'] = 'March';
+$lang['Апрель'] = 'April';
+$lang['Май'] = 'May';
+$lang['Июнь'] = 'June';
+$lang['Июль'] = 'July';
+$lang['Август'] = 'August';
+$lang['Сентябрь'] = 'September';
+$lang['Октябрь'] = 'October';
+$lang['Ноябрь'] = 'November';
+$lang['Декабрь'] = 'Desember';
+$lang['Пн'] = 'monday';
+$lang['Вт'] = 'tuesday';
+$lang['Ср'] = 'wednesday';
+$lang['Чт'] = 'thursday';
+$lang['Пт'] = 'friday';
+$lang['Сб'] = 'saturday';
+$lang['Вс'] = 'sunday';
 
 # captcha
-$lang['Введите нижние символы'] = '';
-$lang['Защита от спама: введите только нижние символы'] = '';
-$lang['(обязательно)'] = '';
+$lang['Введите нижние символы'] = 'Input lower symbols';
+$lang['Защита от спама: введите только нижние символы'] = 'Protection from spam';
+$lang['(обязательно)'] = '(requried)';
 
 # catclouds
 $lang['Облако рубрик'] = 'Cat Clouds';
-$lang['Мин. размер'] = '';
-$lang['Макс. размер'] = '';
-$lang['Номер рубрики:'] = '';
-$lang['Начало блока:'] = '';
-$lang['Конец блока:'] = '';
-$lang['По количеству записей (обратно)'] = '';
-$lang['По количеству записей'] = '';
-$lang['По алфавиту'] = '';
-$lang['По алфавиту (обратно)'] = '';
+$lang['Мин. размер'] = 'Min. size';
+$lang['Макс. размер'] = 'Max. size';
+$lang['Номер рубрики:'] = 'Number of rubric:';
+$lang['Начало блока:'] = 'Begin of block';
+$lang['Конец блока:'] = 'End of block';
+$lang['По количеству записей (обратно)'] = 'In count of pages (decr)';
+$lang['По количеству записей'] = 'In count of pages';
+$lang['По алфавиту'] = 'In alphabet';
+$lang['По алфавиту (обратно)'] = 'In alphabet (decr)';
 
 # category
 $lang['Рубрики'] = 'Category';
-$lang['Например:'] = '';
-$lang['Формат текущей:'] = '';
-$lang['Например:'] = '';
-$lang['Включить только:'] = '';
-$lang['Укажите номера рубрик через запятую или пробел'] = '';
-$lang['Исключить:'] = '';
-$lang['Если нет записей:'] = '';
-$lang['Отображать рубрику (количество записей ведется без учета опубликованности)'] = '';
-$lang['Скрывать рубрику (количество записей ведется только по опубликованным)'] = '';
-$lang['По имени рубрики'] = '';
-$lang['По ID рубрики'] = '';
-$lang['По выставленному menu order'] = '';
-$lang['Порядок:'] = '';
-$lang['Прямой'] = '';
-$lang['Обратный'] = '';
-$lang['Включать потомков:'] = '';
-$lang['Всегда'] = '';
-$lang['Только если явно указана рубрика'] = '';
+$lang['Например:'] = 'Example:';
+$lang['Формат текущей:'] = 'Format current:';
+$lang['Например:'] = 'Example:';
+$lang['Включить только:'] = 'Include only';
+$lang['Укажите номера рубрик через запятую или пробел'] = 'List numbers of rubrics via over comma or space';
+$lang['Исключить:'] = 'Exclude:';
+$lang['Если нет записей:'] = 'If no pages:';
+$lang['Отображать рубрику (количество записей ведется без учета опубликованности)'] = 'Show rubric (Count of pages disregarding publishing)';
+$lang['Скрывать рубрику (количество записей ведется только по опубликованным)'] = 'Hide rubric (Count of pages to conduct only over published)';
+$lang['По имени рубрики'] = 'In name of rubric';
+$lang['По ID рубрики'] = 'In ID of rubric';
+$lang['По выставленному menu order'] = 'In menu order';
+$lang['Порядок:'] = 'Order';
+$lang['Прямой'] = 'Direct';
+$lang['Обратный'] = 'Inverse';
+$lang['Включать потомков:'] = 'Include childrens';
+$lang['Всегда'] = 'Always';
+$lang['Только если явно указана рубрика'] = 'Only if rubric is obviously specified';
 
 # comment_button
 $lang['Полужирный'] = 'Bold';
 $lang['Курсив'] = 'Italic';
 $lang['Подчеркнутый'] = 'Underline';
-$lang['Зачеркнутый'] = '';
+$lang['Зачеркнутый'] = 'Striked';
 $lang['Цитата'] = 'Cite';
 $lang['Код'] = 'Code';
-$lang['Код или преформатированный текст'] = '';
+$lang['Код или преформатированный текст'] = 'Code or preformatted text';
 
 # down_count
-$lang['Админ-доступ к настройкам счетчика переходов (Download count)'] = '';
-$lang['Счетчик переходов'] = '';
-$lang['Данная ссылка доступна только со <a href="%s">страниц сайта</a>'] = '';
-$lang['Запрещен переход по этой ссылке с чужого сайта'] = '';
-$lang['Количество переходов'] = '';
-$lang['С помощью этого плагина вы можете подсчитывать количество скачиваний или переходв по ссылке. Для использования плагина обрамите нужную ссылку в код [dc]ваша ссылка[/dc]'] = '';
-$lang['Файл для хранения количества скачиваний:'] = '';
-$lang['Префикс URL:'] = '';
-$lang['ссылка'] = '';
-$lang['Запретить переходы с чужих сайтов'] = '';
-$lang['Статистика переходов'] = '';
-$lang['переходов'] = '';
+$lang['Админ-доступ к настройкам счетчика переходов (Download count)'] = 'Admin access to settings «Download count»';
+$lang['Счетчик переходов'] = 'Download count';
+$lang['Данная ссылка доступна только со <a href="%s">страниц сайта</a>'] = ' This link enabled only from <a href="%s">pages of site</a>';
+$lang['Запрещен переход по этой ссылке с чужого сайта'] = 'Disallow refferer to this link from other sites';
+$lang['Количество переходов'] = 'Count of downloading';
+$lang['С помощью этого плагина вы можете подсчитывать количество скачиваний или переходв по ссылке. Для использования плагина обрамите нужную ссылку в код [dc]ваша ссылка[/dc]'] =
+'By this plugin you can count the number of downloading or accrossing over reference. To use plugin write over necessary reference code [dc]your reference[/dc]';
+$lang['Файл для хранения количества скачиваний:'] = 'File for store downloading count';
+$lang['Префикс URL:'] = 'Prefix URL';
+$lang['ссылка'] = 'Reference';
+$lang['Запретить переходы с чужих сайтов'] = 'Disallow reference from other sites';
+$lang['Статистика переходов'] = 'Statistic of reference';
+$lang['переходов'] = 'Reference';
 
 # editor_dumb
-$lang['Ссылка'] = '';
-$lang['Картинка'] = '';
-$lang['Отрезать текст'] = '';
+$lang['Ссылка'] = 'Link';
+$lang['Картинка'] = 'Image';
+$lang['Отрезать текст'] = 'Cut text';
 
 # events
-$lang['События'] = '';
-$lang['Формат даты:'] = '';
-$lang['Как это <a href="http://ru.php.net/date" target="_blank">принято в PHP</a>'] = '';
-$lang['Указывайте по одному событию в каждом абзаце в формате:'] = '';
-$lang['<strong>дата</strong> в формате yyyy-mm-dd'] = '';
-$lang['<strong>до</strong> - выводить событие до наступления N-дней'] = '';
-$lang['<strong>после</strong> - выводить событие после прошествия N-дней'] = '';
-$lang['<strong>В тексте события</strong> можно использовать HTML'] = '';
-$lang['<strong>ПРИМЕР:</strong> 2008-09-01 | 3 | 1 | Пора в школу!'] = '';
-$lang['Понедельник'] = '';
-$lang['Вторник'] = '';
-$lang['Среда'] = '';
-$lang['Четверг'] = '';
-$lang['Пятница'] = '';
-$lang['Суббота'] = '';
-$lang['Воскресенье'] = '';
-$lang['января'] = '';
-$lang['февраля'] = '';
-$lang['марта'] = '';
-$lang['апреля'] = '';
-$lang['мая'] = '';
-$lang['июня'] = '';
-$lang['июля'] = '';
-$lang['августа'] = '';
-$lang['сентября'] = '';
-$lang['октября'] = '';
-$lang['ноября'] = '';
-$lang['декабря'] = '';
-$lang['янв'] = '';
-$lang['фев'] = '';
-$lang['мар'] = '';
-$lang['апр'] = '';
-$lang['май'] = '';
-$lang['июн'] = '';
-$lang['июл'] = '';
-$lang['авг'] = '';
-$lang['сен'] = '';
-$lang['окт'] = '';
-$lang['ноя'] = '';
-$lang['дек'] = '';
+$lang['События'] = 'Events:';
+$lang['Формат даты:'] = 'Date format:';
+$lang['Как это <a href="http://ru.php.net/date" target="_blank">принято в PHP</a>'] = 'As <a href="http://php.net/date" target="_blank">in php</a>';
+$lang['Указывайте по одному событию в каждом абзаце в формате:'] = 'One event in one line:';
+$lang['<strong>дата</strong> в формате yyyy-mm-dd'] = '<strong>Date</strong> in format yyyy-mm-dd';
+$lang['<strong>до</strong> - выводить событие до наступления N-дней'] = '<strong>Before</strong> — show notise before events N-days';
+$lang['<strong>после</strong> - выводить событие после прошествия N-дней'] = '<strong>After</strong> — show notice after events N-days';
+$lang['<strong>В тексте события</strong> можно использовать HTML'] = '<strong>In text<strong> html allowed';
+$lang['<strong>ПРИМЕР:</strong> 2008-09-01 | 3 | 1 | Пора в школу!'] = '<strong>Example:</strong> 2008-09-01 | 3 | 1 | Go to school!';
+$lang['Понедельник'] = 'Monday';
+$lang['Вторник'] = 'Tuesday';
+$lang['Среда'] = 'Wednesday';
+$lang['Четверг'] = 'Thursday';
+$lang['Пятница'] = 'Friday';
+$lang['Суббота'] = 'Saturday';
+$lang['Воскресенье'] = 'Sunday';
+$lang['января'] = 'january';
+$lang['февраля'] = 'february';
+$lang['марта'] = 'march';
+$lang['апреля'] = 'april';
+$lang['мая'] = 'may';
+$lang['июня'] = 'june';
+$lang['июля'] = 'july';
+$lang['августа'] = 'august';
+$lang['сентября'] = 'september';
+$lang['октября'] = 'october';
+$lang['ноября'] = 'november';
+$lang['декабря'] = 'desember';
+$lang['янв'] = 'jan';
+$lang['фев'] = 'feb';
+$lang['мар'] = 'mar';
+$lang['апр'] = 'apr';
+$lang['май'] = 'may';
+$lang['июн'] = 'jun';
+$lang['июл'] = 'jul';
+$lang['авг'] = 'aug';
+$lang['сен'] = 'sep';
+$lang['окт'] = 'okt';
+$lang['ноя'] = 'nov';
+$lang['дек'] = 'dec';
 
 # faq
-$lang['К списку'] = '';
+$lang['К списку'] = 'To list';
 
 # favorites
-$lang['Избранное'] = '';
-$lang['Ссылки:'] = '';
-$lang['Указывайте по одной ссылке в каждом абзаце в формате: <strong>тип/ссылка | название</strong>'] = '';
-$lang['<strong>тип/ссылка</strong> - указывается от адреса сайта, например'] = '';
-$lang['Для главной страницы укажите: <strong> / | Главная</strong>'] = '';
+$lang['Избранное'] = 'Favorites';
+$lang['Ссылки:'] = 'Links';
+$lang['Указывайте по одной ссылке в каждом абзаце в формате: <strong>тип/ссылка | название</strong>'] = 'Indicate over one reference at every line in format: <strong>type/reference | title</strong>';
+$lang['<strong>тип/ссылка</strong> - указывается от адреса сайта, например'] = '<strong>type/link</strong> — is indicated from address of the site, for instance';
+$lang['Для главной страницы укажите: <strong> / | Главная</strong>'] = 'For Home pages use: <strong> / | Main</strong>';
 
 # feedburner
-$lang['Админ-доступ к feedburner'] = '';
-$lang['Адрес вашего фида в FeedBurner.com:'] = '';
-$lang['Плагин FeedBurner'] = '';
-$lang['Плагин выполняет перенаправление вашего основного rss на сервис feedburner.com.'] = '';
+$lang['Админ-доступ к feedburner'] = 'Admin access to feedburner';
+$lang['Адрес вашего фида в FeedBurner.com:'] = 'URL of Your feed in FeedBurner.com';
+$lang['Плагин FeedBurner'] = 'Plugin FeedBurner';
+$lang['Плагин выполняет перенаправление вашего основного rss на сервис feedburner.com.'] = 'Plugin redirect your rss to feedburner.com service.';
 
 # feedburner_count
-$lang['Настройка FeedBurner Count от samborsky.com'] = '';
-$lang['Ошибка!'] = '';
-$lang['Настройка FeedBurner Count от <a href="http://www.samborsky.com/">samborsky.com</a>'] = '';
-$lang['Здравствуйте, последний раз счетчик обновлялся'] = '';
-$lang['Последнее показание счетчика:'] = '';
+$lang['Настройка FeedBurner Count от samborsky.com'] = 'Settings of FeedBurner Count by samborsky.com';
+$lang['Ошибка!'] = 'Error!';
+$lang['Настройка FeedBurner Count от <a href="http://www.samborsky.com/">samborsky.com</a>'] = 'Settings of FeedBurner Count by <a href="http://www.samborsky.com/">samborsky.com</a>';
+$lang['Здравствуйте, последний раз счетчик обновлялся'] = 'Hello. Last counter update';
+$lang['Последнее показание счетчика:'] = 'Last counter value:';
 
 # feedcount
-$lang['Виджет подсчета подписчиков RSS'] = '';
-$lang['Сегодня:'] = '';
-$lang['Вчера:'] = '';
-$lang['[COUNT] - подписчиков сегодня, [COUNTOLD] - подписчиков вчера'] = '';
+$lang['Виджет подсчета подписчиков RSS'] = 'Vidget of counting of RSS subscribers';
+$lang['Сегодня:'] = 'Today';
+$lang['Вчера:'] = 'Yesterday:';
+$lang['[COUNT] - подписчиков сегодня, [COUNTOLD] - подписчиков вчера'] = '[COUNT] - subscribers today, [COUNTOLD] - subscribers yesterday';
 
 # forms
-$lang['Неверный email!'] = '';
-$lang['Привет роботам! :-)'] = '';
-$lang['Заполните все необходимые поля!'] = '';
-$lang['Вами отправлено сообщение:'] = '';
-$lang['Ваше сообщение отправлено!'] = '';
-$lang['Ваше имя*'] = '';
-$lang['Ваш email*'] = '';
-$lang['Защита от спама:'] = '';
-$lang['Отправить копию письма на ваш e-mail'] = '';
-$lang['Отправить'] = '';
-$lang['Очистить форму'] = '';
+$lang['Неверный email!'] = 'Wrong e-mail';
+$lang['Привет роботам! :-)'] = 'Hello, robots! :-)';
+$lang['Заполните все необходимые поля!'] = 'Fill all nessesary fields!';
+$lang['Вами отправлено сообщение:'] = 'You send mail:';
+$lang['Ваше сообщение отправлено!'] = 'Your mail sent!';
+$lang['Ваше имя*'] = 'Your name*';
+$lang['Ваш email*'] = 'Your e-mail';
+$lang['Защита от спама:'] = 'Spam protection';
+$lang['Отправить копию письма на ваш e-mail'] = 'Send copy of mail to your e-mail';
+$lang['Отправить'] = 'Send';
+$lang['Очистить форму'] = 'Reset';
 
 # last_comments
-$lang['Последние комментарии'] = '';
-$lang['Количество:'] = '';
-$lang['Количество слов:'] = '';
-$lang['Количество символов в одном слове:'] = '';
-$lang['Комментатор'] = '';
+$lang['Последние комментарии'] = 'Last comments';
+$lang['Количество:'] = 'Count:';
+$lang['Количество слов:'] = 'Count of words:';
+$lang['Количество символов в одном слове:'] = 'Counts of symbols in one word:';
+$lang['Комментатор'] = 'Commuser';
 
 # last_pages
-$lang['Последние записи'] = '';
-$lang['Формат даты:'] = '';
-$lang['Тип страниц:'] = '';
-$lang['Исключить рубрики:'] = '';
-$lang['Включить рубрики:'] = '';
-$lang['Сортировка:'] = '';
-$lang['Порядок сортировки:'] = '';
-$lang['По дате'] = '';
-$lang['По алфавиту'] = '';
-$lang['Прямой'] = '';
-$lang['Обратный'] = '';
+$lang['Последние записи'] = 'Last pages';
+$lang['Формат даты:'] = 'Date format:';
+$lang['Тип страниц:'] = 'Page type:';
+$lang['Исключить рубрики:'] = 'Exclude rubrics:';
+$lang['Включить рубрики:'] = 'Include rubrics:';
+$lang['Сортировка:'] = 'Sorting:';
+$lang['Порядок сортировки:'] = 'Order of sorting:';
+$lang['По дате'] = 'In date';
+$lang['По алфавиту'] = 'In alphabet';
+$lang['Прямой'] = 'Direct';
+$lang['Обратный'] = 'Inverse';
 
 # links
-$lang['Ссылки'] = '';
-$lang['Указывайте по одной ссылке в каждом абзаце в формате:'] = '';
-$lang['обрамить ссылку в noindex, если не нужно - указать пробел'] = '';
-$lang['открыть ссылку в новом окне, если не нужно - указать пробел'] = '';
+$lang['Ссылки'] = 'Links';
+$lang['Указывайте по одной ссылке в каждом абзаце в формате:'] = 'One link in one line in format:';
+$lang['обрамить ссылку в noindex, если не нужно - указать пробел'] = 'Link in noindex. If no need — input space';
+$lang['открыть ссылку в новом окне, если не нужно - указать пробел'] = 'Link in new window. If no need — input space';
 
 # login_form
-$lang['Форма логина'] = '';
-$lang['Привет,'] = '';
-$lang['выйти'] = '';
-$lang['управление'] = '';
-$lang['своя страница'] = '';
-$lang['Логин (email):'] = '';
-$lang['Пароль:'] = '';
+$lang['Форма логина'] = 'Login form';
+$lang['Привет,'] = 'Hello';
+$lang['выйти'] = 'Logout';
+$lang['управление'] = 'Admin-panel';
+$lang['своя страница'] = 'Own page';
+$lang['Логин (email):'] = 'Login (e-mail)';
+$lang['Пароль:'] = 'Password:';
 
 # page_comments
-$lang['Самое комментируемое'] = '';
-$lang['Количество записей:'] = '';
-$lang['Формат:'] = '';
-$lang['название записи'] = '';
-$lang['количество комментариев'] = '';
-$lang['ссылка'] = '';
+$lang['Самое комментируемое'] = 'Most commented';
+$lang['Количество записей:'] = 'Count of pages';
+$lang['Формат:'] = 'Format:';
+$lang['название записи'] = 'Title of page';
+$lang['количество комментариев'] = 'Count of comments';
+$lang['ссылка'] = 'link';
 
 # page_parent
-$lang['Родительские/дочерние страницы'] = '';
-$lang['Номер страницы:'] = '';
+$lang['Родительские/дочерние страницы'] = 'Parent/child pages';
+$lang['Номер страницы:'] = 'Number of page:';
 
 # page_views
-$lang['Самое читаемое'] = '';
-$lang['просмотров в день'] = '';
-$lang['всего просмотров'] = '';
+$lang['Самое читаемое'] = 'Most reading';
+$lang['просмотров в день'] = 'Viewed in day';
+$lang['всего просмотров'] = 'All viewes';
 
 # pagination
 $lang['Первая'] = 'First';
@@ -287,147 +293,159 @@ $lang['следующая'] = 'next';
 $lang['последняя'] = 'Last';
 
 # random_gal
-$lang['Галерея'] = '';
-$lang['Галерея:'] = '';
-$lang['Количество:'] = '';
-$lang['CSS-cтиль блока:'] = '';
-$lang['CSS-cтиль img:'] = '';
-$lang['Свой HTML-блок:'] = '';
+$lang['Галерея'] = 'Gallery';
+$lang['Галерея:'] = 'Gallery:';
+$lang['Количество:'] = 'Count:';
+$lang['CSS-cтиль блока:'] = 'CSS-style of block:';
+$lang['CSS-cтиль img:'] = 'CSS-style of img:';
+$lang['Свой HTML-блок:'] = 'Your HTML-block:';
 
 # random_pages
-$lang['Случайные статьи'] = '';
-$lang['Тип страниц:'] = '';
+$lang['Случайные статьи'] = 'Random pages';
+$lang['Тип страниц:'] = 'Type of page';
 
 # randomtext
-$lang['Цитаты'] = '';
-$lang['Цитата'] = '';
+$lang['Цитаты'] = 'Quotes';
+$lang['Цитата'] = 'Quote';
 
 # rater
-$lang['Рейтинг страниц'] = '';
+$lang['Рейтинг страниц'] = 'Rating of pages';
 $lang['Голосов:'] = 'Votes:';
 $lang['Текущая оценка:'] = 'Current rater:';
-$lang['название записи'] = '';
-$lang['всего голосов'] = '';
-$lang['общий бал (деление общего рейтинга на кол-во голосов) - округлен до целого'] = '';
-$lang['общий бал (дробный)'] = '';
-$lang['Общий бал:'] = '';
-$lang['Вы уже голосовали!'] = '';
-$lang['Ваша оценка:'] = '';
-$lang['Средняя оценка'] = '';
-$lang['из'] = '';
-$lang['проголосовавших'] = '';
+$lang['название записи'] = 'title of page';
+$lang['всего голосов'] = 'All votes';
+$lang['общий бал (деление общего рейтинга на кол-во голосов) - округлен до целого'] = 'general ball (fission of the general rating at amount voice) - is rounded to integer';
+$lang['общий бал (дробный)'] = 'General ball (fractional)';
+$lang['Общий бал:'] = 'General ball';
+$lang['Вы уже голосовали!'] = 'You are already voted!';
+$lang['Ваша оценка:'] = 'Your vote:';
+$lang['Средняя оценка'] = 'Average rating';
+$lang['из'] = 'from';
+$lang['проголосовавших'] = 'voters';
 
 # search_form
-$lang['Форма поиска'] = '';
-$lang['Что искать?'] = '';
-$lang['Поиск'] = '';
-$lang['Текст подсказки:'] = '';
-$lang['Текст на кнопке:'] = '';
-$lang['CSS-стиль текста:'] = '';
-$lang['CSS-стиль кнопки:'] = '';
+$lang['Форма поиска'] = 'Search form';
+$lang['Что искать?'] = 'What to find?';
+$lang['Поиск'] = 'Search';
+$lang['Текст подсказки:'] = 'Text of hint';
+$lang['Текст на кнопке:'] = 'Text on button';
+$lang['CSS-стиль текста:'] = 'CSS-style of text';
+$lang['CSS-стиль кнопки:'] = 'CSS-style of button';
 
 # sitemap
-$lang['Воспользуйтесь картой сайта'] = '';
+$lang['Воспользуйтесь картой сайта'] = 'Use sitemap';
 
 # tabs
-$lang['Табы (закладки)'] = '';
-$lang['Табы:'] = '';
-$lang['Указывайте по одному табу в каждом абзаце в формате: <strong>заголовок | виджет номер</strong>'] = '';
-$lang['Например: <strong>Цитаты | randomtext_widget 1</strong>'] = '';
-$lang['Для ушки: <strong>Цитаты | ушка_цитаты</strong>'] = '';
-$lang['Использовать:'] = '';
-$lang['Виджет (функция и номер через пробел)'] = '';
-$lang['Ушка (только название)'] = '';
+$lang['Табы (закладки)'] = 'Tabs';
+$lang['Табы:'] = 'Tabs:';
+$lang['Указывайте по одному табу в каждом абзаце в формате: <strong>заголовок | виджет номер</strong>'] = 'Store one tab by one line in format: <strong>title | vidget number';
+$lang['Например: <strong>Цитаты | randomtext_widget 1</strong>'] = 'Example: <strong>Quotes | randomtext_widget 1</strong>';
+$lang['Для ушки: <strong>Цитаты | ушка_цитаты</strong>'] = 'For ushka: <strong>Quotes | ushka_quote</strong>';
+$lang['Использовать:'] = 'Use:';
+$lang['Виджет (функция и номер через пробел)'] = 'Vidget (func and number over space)';
+$lang['Ушка (только название)'] = 'Ushka (title only)';
 
 # tagclouds
-$lang['Облако тэгов/меток'] = '';
-$lang['Мин. размер (%):'] = '';
-$lang['Макс. размер (%):'] = '';
-$lang['Макс. меток:'] = '';
-$lang['Миним. меток:'] = '';
+$lang['Облако тэгов/меток'] = 'Tags cloud';
+$lang['Мин. размер (%):'] = 'Min size (%):';
+$lang['Макс. размер (%):'] = 'Max size (%);';
+$lang['Макс. меток:'] = 'Max tags:';
+$lang['Миним. меток:'] = 'Min tags:';
 $lang['Отображать только метки, которых более указанного количества. (0 - без ограничений)'] = '';
-$lang['Начало блока:'] = '';
-$lang['Конец блока:'] = '';
-$lang['Сортировка:'] = '';
-$lang['По количеству записей (обратно)'] = '';
-$lang['По количеству записей'] = '';
-$lang['По алфавиту'] = '';
-$lang['По алфавиту (обратно)'] = '';
+$lang['Начало блока:'] = 'Begin of block:';
+$lang['Конец блока:'] = 'End of block:';
+$lang['Сортировка:'] = 'Sorting:';
+$lang['По количеству записей (обратно)'] = 'By count (reverse)';
+$lang['По количеству записей'] = 'By count';
+$lang['По алфавиту'] = 'By alphabet';
+$lang['По алфавиту (обратно)'] = 'By alphabet (reverse)';
 
 # text_block
-$lang['Текстовый блок'] = '';
-$lang['Текст:'] = '';
-$lang['Тип:'] = '';
-$lang['HTML или текст'] = '';
-$lang['Можно использовать HTML-тэги. Если тип PHP, то код должен выполняться без ошибок!'] = '';
+$lang['Текстовый блок'] = 'Text block';
+$lang['Текст:'] = 'Text:';
+$lang['Тип:'] = 'Type:';
+$lang['HTML или текст'] = 'HTML or text';
+$lang['Можно использовать HTML-тэги. Если тип PHP, то код должен выполняться без ошибок!'] = 'Can use html-tags. If php — must be no errors!';
 
 # twitter
-$lang['Мой Twitter'] = '';
-$lang['Адрес:'] = '';
-$lang['Количество записей:'] = '';
-$lang['Формат вывода:'] = '';
-$lang['Формат даты:'] = '';
-$lang['Количество слов:'] = '';
+$lang['Мой Twitter'] = 'My Twitter';
+$lang['Адрес:'] = 'Url:';
+$lang['Количество записей:'] = 'Pages:';
+$lang['Формат вывода:'] = 'Output format:';
+$lang['Формат даты:'] = 'Date format:';
+$lang['Количество слов:'] = 'Words:';
 
 # ushki
 $lang['Ушки'] = 'Ushki';
 $lang['Админ-доступ к Ушкам'] = 'Administration Ushki';
-$lang['С помощью ушек вы можете размещать произвольный html/php код в шаблоне, виджете или прочих плагинах. Ушки удобно использовать для вывода счетчика, рекламы и т.п. Просто создайте ушку, а потом укажите её имя в виджете или с помощью кода:'] = '';
-$lang['Вы можете вывести произвольную ушку прямо в тексте. Данный код выведет ушку «reklama»:'] = '';
-$lang['Ушка добавлена!'] = '';
-$lang['Необходимо указать название ушки!'] = '';
-$lang['Обновлено!'] = '';
-$lang['Новая ушка:'] = '';
+$lang['С помощью ушек вы можете размещать произвольный html/php код в шаблоне, виджете или прочих плагинах. Ушки удобно использовать для вывода счетчика, рекламы и т.п. Просто создайте ушку, а потом укажите её имя в виджете или с помощью кода:'] =
+'By means of ushka you may place free html/php code in(to;at) pattern(mold), vidget or other plugins. The Ear(Eye of needle;Tab) comfortable to use for(on;of;to;with) output of the counter, advertisments etc. Simply(Merely) create(produce) the ear(eye of needle;tab), but afterwards indicate her(its)(her) name(first name) in(to;at) виджете or by means of code:';
+$lang['Вы можете вывести произвольную ушку прямо в тексте. Данный код выведет ушку «reklama»:'] = 'You may remove(bred;type-out;deduce) the free ear(eye of needle;tab) in(to;at) text straight(head-on). The Givenned code will remove(bred;type-out;deduce) the ear(eye of needle;tab) «reklam»:';
+$lang['Ушка добавлена!'] = 'Ushka added';
+$lang['Необходимо указать название ушки!'] = 'Need ushka title!';
+$lang['Обновлено!'] = 'Renoved!';
+$lang['Новая ушка:'] = 'New ushka:';
 $lang['Добавить новую ушку'] = 'Create new ushku';
 $lang['Удалить'] = 'Delete';
 $lang['Сохранить изменения'] = 'Save';
-$lang['Настройки ушек'] = '';
-$lang['Заголовок (блока):'] = '';
-$lang['Ушка (название):'] = '';
+$lang['Настройки ушек'] = 'Ushka settings';
+$lang['Заголовок (блока):'] = 'Title (of block)';
+$lang['Ушка (название):'] = 'Ushka (title):';
 
 # wpconvert
 # пока здесь, потом перенесу в каталог плагина
-$lang['Админ-доступ к wpconvert'] = '';
-$lang['Угу, зщас... У тебя сайт накроется, кто отвечать будет?! В ЛЕС!!!'] = '';
-$lang['Файл:'] = '';
-$lang['Сайт:'] = '';
-$lang['Ссылка:'] = '';
-$lang['Все рубрики:'] = '';
-$lang['Всего записей:'] = '';
-$lang['Статус:'] = '';
-$lang['Тип страницы:'] = '';
-$lang['Рубрики:'] = '';
-$lang['Метки:'] = '';
-$lang['Дата:'] = '';
-$lang['Комментарии:'] = '';
-$lang['Новый slug:'] = '';
-$lang['Текст:'] = '';
-$lang['Комментарии:'] = '';
+$lang['Админ-доступ к wpconvert'] = 'Admin access to wpconvert';
+$lang['Угу, зщас... У тебя сайт накроется, кто отвечать будет?! В ЛЕС!!!'] = 'No!';
+$lang['Файл:'] = 'File:';
+$lang['Сайт:'] = 'Site:';
+$lang['Ссылка:'] = 'Url:';
+$lang['Все рубрики:'] = 'All rubrics:';
+$lang['Всего записей:'] = 'Pages:';
+$lang['Статус:'] = 'Status:';
+$lang['Тип страницы:'] = 'Page type:';
+$lang['Рубрики:'] = 'Rubrics:';
+$lang['Метки:'] = 'Tags:';
+$lang['Дата:'] = 'Date:';
+$lang['Комментарии:'] = 'Comments:';
+$lang['Новый slug:'] = 'New slug:';
+$lang['Текст:'] = 'Text:';
+$lang['Комментарии:'] = 'Comments:';
 $lang['Готово! Проверка выполнена!<br />Предположительно запросов к БД будет:'] = '';
-$lang['Измененных slug (url):'] = '';
-$lang['Всего записей:'] = '';
-$lang['Всего комментариев:'] = '';
-$lang['Что за ерунду ты мне подсовываешь? Файл-то пустой!'] = '';
-$lang['Файл'] = '';
-$lang['не найден! Загрузите его в каталог /uploads/ Можно через Загрузку.'] = '';
-$lang['Добавленные рубрики'] = '';
-$lang['Добавленные страницы'] = '';
-$lang['Готово! Конвертирование выполнено!'] = '';
-$lang['С помощью данной страницы вы можете конвертировать WordPress-данные для MaxSite CMS. Для начала вам нужно выполнить экспорт из WordPress. Для выполнения экспорта вам нужно скопировать файл export-max.php в каталог wp-admin. После этого наберите адрес http://сайт/wp-admin/export-max.php Выполните экспорт. Обратите внимание, что я проверял на WordPress 2.3.3. На других версиях ничего не гарантирую. Из-за некоторых ошибок и особенности формата, собственный wp-экспорт не подойдет для наших целей.'] = '';
-$lang['Экспорт я рекомендую сделать частями так, чтобы размер одного файла не превышал 300-400Кб. При конвертировании это позволит уменьшить нагрузку на сервер, а также позволит обойти ограничения хостинга на время выполнения скриптов и максимальный размер файла. В итоге у вас получится несколько xml-файлов.'] = '';
-$lang['Перед конвертацией вам следует открыть каждый xml-файл в FireFox. Если браузер ругается на какие-то ошибки, то вам следует их исправить прямо в файле. К сожалению WordPress может неверно формировать xml-файл, но я постарался исправить ошибки в своем export-max.php.'] = '';
-$lang['Лишь только после того, как FireFox отобразит дерево элементов без ошибок, вы можете загрузить файл в каталог /uploads/. Можно через Загрузки.'] = '';
-$lang['Перед началом конвертации нужно выполнить проверку. Для этого нажмите кнопку «Проверить файл». В результате вы увидите отчет о проверке. И лишь в случае отсутствия ошибок, можно запустить конвертацию.'] = '';
-$lang['<b>Правила конвертирования.</b> Копируются все тексты, включая обычные записи и постоянные страницы. В записях сохраняется slug (короткая ссылка) при условии, что в системе еще нет такой. Если есть, то добавляется префикс 1, 2 и т.д. В комментариях копируется только текст и имя. Остальные данные не используются. Рубрики создаются по их названию. Если такое название уже есть, то используется существующая рубрика. Иерархия конвертируемых рубрик полностью теряется. Записи конвертируются только со статусом publish, static и draft.'] = '';
-$lang['Обратите внимание, что процесс конвертирования очень ресурсоемкий. Прежде всего он потребует много php-памяти, а также множество SQL-запросов к БД. При конвертировании система попробует установить большее время выполнения php-скриптов, чтобы сервер принудительно не сбросил соединение. Однако не на всех хостингах такая возможность может сработать. Если сервар слабый, то он может не успеть обработать все SQL-запросы. В этом случае вам придется уменьшить размер xml-файла и попытаться выполнить конвертирование заново по частям.'] = '';
-$lang['При конвертировании система автоматически проверяет уже существующие рубрики и записи. Если таковые уже есть, то они не добавляются. Это позволяет избежать дублирования. Ну и кроме того, вы можете не опасаться, что при повторной конвертации данные снова добавятся.'] = '';
-$lang['После конвертирования можно деактивировать этот плагин, а также удалить xml-файлы. Также рекомендую очистить кэш: удалить файлы в <u>system/cache/rss/</u>'] = '';
-$lang['После конвертирования старые адреса вида <u>http://site/slug</u> сохранятся. Но следует иметь ввиду, что на MaxSite CMS принята немного другая структура ссылок: <u>http://site/page/slug</u> (т.н. синонимы ссылок). Поэтому переживать, что ссылки на других ресурсах потеряются, не следует. При условии, конечно, то новый slug совпадает со старым (во время проверки файла это видно).'] = '';
-$lang['<u>ВАЖНО!</u> Настоятельно рекомедую перед началом конвертирования <u>сделать дамп текущей базы данных</u>! В случае ошибок, вы быстро сможете восстановить прежнее состояние своего сайта. Не игнорируйте это замечание!'] = '';
-$lang['Я понял и согласен взять на себя всю ответственность за использование данного конвертера! Дамп также сделал и умею с ним работать'] = '';
-$lang['Выберите файл:'] = '';
-$lang['Проверить файл'] = '';
-$lang['Запустить конвертацию'] = '';
+$lang['Измененных slug (url):'] = 'Changed slug (url)';
+$lang['Всего записей:'] = 'Pages';
+$lang['Всего комментариев:'] = 'Comments';
+$lang['Что за ерунду ты мне подсовываешь? Файл-то пустой!'] = 'File empty';
+$lang['Файл'] = 'File';
+$lang['не найден! Загрузите его в каталог /uploads/ Можно через Загрузку.'] = 'Not found! Upload to /uploads/ folder';
+$lang['Добавленные рубрики'] = 'Adding rubric';
+$lang['Добавленные страницы'] = 'Adding page';
+$lang['Готово! Конвертирование выполнено!'] = ' done!';
+$lang['Готово! Конвертирование выполнено!'] = 'Convert done!';
+$lang['Экспорт я рекомендую сделать частями так, чтобы размер одного файла не превышал 300-400Кб. При конвертировании это позволит уменьшить нагрузку на сервер, а также позволит обойти ограничения хостинга на время выполнения скриптов и максимальный размер файла. В итоге у вас получится несколько xml-файлов.'] =
+'The Export I recommend to do(make) the parts so that size(amount) of one file did not exceed 300-400Кб. Under(Upon) конвертировании this(it) will allow to reduce the load on(upon;in;to;for;at;per;for) server, as well as will allow to avoid(get round) the restrictions(limits) хостинга for running time скриптов and maximum(peak) size(amount) of the file. In total beside(at;by) you are got(received) several xml-files.';
+$lang['Перед конвертацией вам следует открыть каждый xml-файл в FireFox. Если браузер ругается на какие-то ошибки, то вам следует их исправить прямо в файле. К сожалению WordPress может неверно формировать xml-файл, но я постарался исправить ошибки в своем export-max.php.'] =
+'Before конвертацией you should open each(every) xml-file in(to;at) FireFox. If браузер swears on(upon;in;to;for;at;per;for) some(any) errors, that you should their correct straight(head-on) in(to;at) file. Regrettably WordPress can(may;be able) untrue form(shape) xml-file, but I tried to correct the errors in(to;at) its export-max.php.';
+$lang['Лишь только после того, как FireFox отобразит дерево элементов без ошибок, вы можете загрузить файл в каталог /uploads/. Можно через Загрузки.'] =
+'Only not until FireFox will display(map;feature) the tree(wood) an element without error, you may load(boot;store) the file in(to;at) directory /uploads/. Possible through(across;via;over;in) Boot(Store).';
+$lang['Перед началом конвертации нужно выполнить проверку. Для этого нажмите кнопку «Проверить файл». В результате вы увидите отчет о проверке. И лишь в случае отсутствия ошибок, можно запустить конвертацию.'] =
+'Before beginning конвертации it is necessary to execute(accomplish;run;perform;fulfill;carry out) check(audit;test;inspection;examine;checking). For(On;Of;To;With) this press(hit) the button(knob;drawing pin)  to Check(Test;Audit;Inspect;Examine) the file . As a result you see the report about(of;on;to;for) check(audit;test;inspection;examine;checking). And only in the event of absence error, possible start(launch) converting.';
+$lang['<b>Правила конвертирования.</b> Копируются все тексты, включая обычные записи и постоянные страницы. В записях сохраняется slug (короткая ссылка) при условии, что в системе еще нет такой. Если есть, то добавляется префикс 1, 2 и т.д. В комментариях копируется только текст и имя. Остальные данные не используются. Рубрики создаются по их названию. Если такое название уже есть, то используется существующая рубрика. Иерархия конвертируемых рубрик полностью теряется. Записи конвертируются только со статусом publish, static и draft.'] =
+'<b>Rules of converting.</b> are Copied all texts, including usual(ordinary) record(entry;writing) and constant pages. In(To;At) record(entry;writing) is saved slug (the short reference) provided that in(to;at) system else no such. If there is, that is added prefix 1, 2 and etc. In(To;At) комментариях is copied only text and name(first name). Rest given are not used. The Rubrics upon their name(title). If such name(title) already there is, that is used existing rubric. The Hierarchy of the converted rubrics completely gets lost. Record(Entry;Writing) are converted with(since) status publish only, static and draft.';
+$lang['Обратите внимание, что процесс конвертирования очень ресурсоемкий. Прежде всего он потребует много php-памяти, а также множество SQL-запросов к БД. При конвертировании система попробует установить большее время выполнения php-скриптов, чтобы сервер принудительно не сбросил соединение. Однако не на всех хостингах такая возможность может сработать. Если сервар слабый, то он может не успеть обработать все SQL-запросы. В этом случае вам придется уменьшить размер xml-файла и попытаться выполнить конвертирование заново по частям.'] =
+'Call attention that process converting much(highly;very much) hevy. First of all he will require much(many;plenty of) php-memories, as well as ensemble(manifold;great number) SQL-request to(towards) BD. Under(Upon) конвертировании system will try to install(fix) greater running time php-скриптов that server by force has not thrown join(joining). However not on(upon;in;to;for;at;per;for) all хостингах such possibility(capacity) can(may;be able) operate. If сервар weak, that he can(may;be able) not have(make progress) time to to process(handle) all SQL-requests. In this case you to come to reduce the size(amount) xml-file and try to execute(accomplish;run;perform;fulfill;carry out) конвертирование on(over;along;down;under) a parts anew.';
+$lang['При конвертировании система автоматически проверяет уже существующие рубрики и записи. Если таковые уже есть, то они не добавляются. Это позволяет избежать дублирования. Ну и кроме того, вы можете не опасаться, что при повторной конвертации данные снова добавятся.'] =
+'Under(Upon) converting system automatically checks(tests;audits;inspects;examines) already existing rubrics and record(entry;writing). If such already there is, that they are not added. This(It) allows to avoid(elude) duplication. Well and besides(furthermore), you may not fear that under(upon) the repeated(recurrent) конвертации given are once again added.';
+$lang['После конвертирования можно деактивировать этот плагин, а также удалить xml-файлы. Также рекомендую очистить кэш: удалить файлы в <u>system/cache/rss/</u>'] =
+'After converting possible deactivate this plugin, as well as delete(remove) xml-files. Also(Too;Either;As well) recommend to clean(clear;decontaminate) cache: delete(remove) files in(to;at) <u>system/cache/rss/</u>';
+$lang['После конвертирования старые адреса вида <u>http://site/slug</u> сохранятся. Но следует иметь ввиду, что на MaxSite CMS принята немного другая структура ссылок: <u>http://site/page/slug</u> (т.н. синонимы ссылок). Поэтому переживать, что ссылки на других ресурсах потеряются, не следует. При условии, конечно, то новый slug совпадает со старым (во время проверки файла это видно).'] =
+'After converting old address of the type(air;view;complexion) <u>http://site/slug</u> is saved. But follows to have in view of that on(upon;in;to;for;at;per;for) MaxSite CMS is accepted little other structures of the references: <u>http://site/page/slug</u> (t.n. synonyms of the references). So outlive that references to the other resource get lost, does not follow. At condition(term), certainly(of course), that new slug complies with old (during checking the file this(it) is seen).';
+$lang['<u>ВАЖНО!</u> Настоятельно рекомедую перед началом конвертирования <u>сделать дамп текущей базы данных</u>! В случае ошибок, вы быстро сможете восстановить прежнее состояние своего сайта. Не игнорируйте это замечание!'] =
+'<u>IMPORTANT!</u> Urgently recommend before beginning convert <u>make dump of the current base(basis) dannyh</u>! In the event of mistake(error), you will quickly be able to restore the former condition(state) of its site. Do Not ignore this(it) remark(observation)!';
+$lang['Я понял и согласен взять на себя всю ответственность за использование данного конвертера! Дамп также сделал и умею с ним работать'] =
+'I have understood and agree to undertake whole responsibility for use given converter! Dump has also(too;either;as well) done(maked) and wit with(since) him to work(operate)';
+$lang['Выберите файл:'] = 'Choose file';
+$lang['Проверить файл'] = 'Check file';
+$lang['Запустить конвертацию'] = 'Run convert';
 
 
 

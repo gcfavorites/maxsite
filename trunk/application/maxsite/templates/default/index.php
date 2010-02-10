@@ -4,17 +4,9 @@
 $type_dir = getinfo('templates_dir') . 'default/type/';
 //$type_dir = 'type/';
 
-# глобальный кэш в каталоге html - должен быть создан и права на запись (777)!
-if ( mso_get_option('global_cache', 'templates', false) ) // если разрешено в опциях шаблона
-{
-	//$cache_key = mso_md5($_SERVER['REQUEST_URI']);
-	$cache_key = $_SERVER['REQUEST_URI'];
-	$cache_key = str_replace('/', '-', $cache_key);
-	$cache_key = mso_slug(' ' . $cache_key);
-	$cache_key = 'html/' . $cache_key . '.html';
-	if ( $k = mso_get_cache($cache_key, true) ) return print($k); // да есть в кэше
-	ob_start();
-}
+# глобальное кэширование выполняется на уровне хука при наличии соответствующего плагина
+# если хук вернул true, значит данные выведены из кэша, то есть выходим
+if (mso_hook('global_cache_start', false)) return;
 
 if ( is_feed() )
 {
@@ -50,10 +42,13 @@ if ( is_type('archive') ) 			require($type_dir . 'archive.php');	// архив �
 		else require($type_dir . 'users.php');								// комюзер
 	}
 	elseif ( mso_segment(1)=='sitemap' ) require($type_dir . 'sitemap.php'); // карта сайта
-	else 							require($type_dir . 'page_404.php');	// 404 - если ничего так и не найдено
+	else
+	{
+		// ничего не найдено, пробуем проверить хук «custom_page_404»
+		if ( !mso_hook_present('custom_page_404') or !mso_hook('custom_page_404')) 
+			require($type_dir . 'page_404.php');	// 404 - если ничего так и не найдено
+	}
 
-
-# глобальный кэш на 300 секунд = 5 минут
-if ( mso_get_option('global_cache', 'templates', false) ) mso_add_cache($cache_key, ob_get_flush(), 300, true);
+mso_hook('global_cache_end');
 
 ?>

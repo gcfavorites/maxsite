@@ -27,13 +27,25 @@ echo '<h1 class="category">' . $title_page . '</h1>';
 
 if ($pages) // есть страницы
 { 	
-
-	echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a></h3>';
-
+	
+	if ( mso_get_option('category_show_rss_text', 'templates', 1) )
+	{
+		echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a></h3>';
+	}
+	
 	if (!$full_posts) echo '<ul class="category">';
 	
 	foreach ($pages as $page) : // выводим в цикле
-
+		
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('category')) 
+			{
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
+			}
+		}
+		
 		extract($page);
 	
 		if (!$full_posts)

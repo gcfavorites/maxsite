@@ -61,7 +61,7 @@ mso_cur_dir_lang('admin');
 		if (isset($result['result']) and $result['result']) 
 		{
 			echo '<div class="update">' . t('Обновлено!', 'admin') . '</div>'; // . $result['description'];
-			// mso_flush_cache(); // сбросим кэш
+			mso_flush_cache(); // сбросим кэш
 		}
 		else
 			echo '<div class="error">' . t('Ошибка обновления', 'admin') . ' (' . $result['description'] . ')</div>';

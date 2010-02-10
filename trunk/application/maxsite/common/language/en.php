@@ -24,16 +24,16 @@ $lang['Далее'] = 'More';
 $lang['(черновик)'] = '(draft)';
 $lang['Редактировать'] = 'Edit';
 $lang['Подписаться'] = 'Subscribe';
-$lang['Данная запись защищена паролем.'] = '';
-$lang['<strong>Ошибочный пароль!</strong> Повторите ввод.'] = '';
-$lang['Обсудить'] = '';
-$lang['Посмотреть комментарии'] = '';
-$lang['<span>Прочтений:</span> '] = ''; // пробел в конце!
+$lang['Данная запись защищена паролем.'] = 'This page passworded';
+$lang['<strong>Ошибочный пароль!</strong> Повторите ввод.'] = '<strong>Wrong password!</strong> Try one more time.';
+$lang['Обсудить'] = 'Discuss';
+$lang['Посмотреть комментарии'] = 'View comments';
+$lang['<span>Прочтений:</span> '] = '<span>Viewed:</span> '; // пробел в конце!
 $lang['Пароль:'] = 'Password:';
 
 # comments.php
-$lang['Комментатор'] = '';
-$lang['анонимно'] = '';
+$lang['Комментатор'] = 'Commuser';
+$lang['анонимно'] = 'anonim';
 
 
 ?>

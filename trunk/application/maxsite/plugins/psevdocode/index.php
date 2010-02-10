@@ -30,7 +30,7 @@ function psevdocode_go($text)
 		':список:' => '<ul class="text">', 
 		':/список:' => '</ul>', 
 		'<br />[*]' => '<li>',
-		'[*]' => '<li>',
+		//'[*]' => '<li>',
 		'[номера]' => '<ol class="text">',
 		'[/номера]' => '</ol>',
 		':номера:' => '<ol class="text">',

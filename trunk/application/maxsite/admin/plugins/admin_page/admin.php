@@ -122,8 +122,80 @@
 			'page_id_autor'=> $current_users_id, // только указанного автора
 			);
 	
-	$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
+	$CI->db->select('category_id, category_name');
+	$CI->db->order_by('category_name');
+	
+	$query = $CI->db->get('category');
 
+	if ($query->num_rows() > 0) 
+	{
+		//echo '<h1>Страницы по рубрикам</h1>';
+		$cat_segment_id = 0;
+		
+		if (mso_segment(3) == 'category') $cat_segment_id = (int) mso_segment(4);
+		
+		echo '<p><strong>Фильтр по рубрикам:</strong> <a href="' . getinfo('site_admin_url') . 'page/">Без фильтра</a> ';
+		foreach ($query->result_array() as $nav) 
+		{
+			if ($cat_segment_id != $nav['category_id']) 
+			{
+				echo '| <a href="' . getinfo('site_admin_url'). 'page/category/' . $nav['category_id'] .'">'. $nav['category_name'] . '</a> ';
+			} 
+			else 
+			{
+				echo '| <a href="' . getinfo('site_admin_url') . 'page/category/' . $nav['category_id'] . '"><strong>' . $nav['category_name'] . '</strong></a> ';
+			}
+		}
+		echo '</p>';
+	}
+
+	$CI->db->select('page_type_id, page_type_name');
+	$CI->db->order_by('page_type_name');
+	
+	$query = $CI->db->get('page_type');
+	
+	if ($query->num_rows() > 0) 
+	{
+		//echo '<h1>Страницы по типам</h1>';
+		$type_segment_id = 0;
+		if (mso_segment(3) == 'type') 
+		{
+			$type_segment_id = (int) mso_segment(4); 
+			$type_segment_name = '';
+		}
+		echo '<p><strong>Фильтр по типам:</strong> <a href="' . getinfo('site_admin_url') . 'page/">Без фильтра</a> ';
+		foreach ($query->result_array() as $nav) 
+		{
+			if ($type_segment_id != $nav['page_type_id']) 
+			{
+				echo '| <a href="' . getinfo('site_admin_url') . 'page/type/' . $nav['page_type_id'] . '">' . $nav['page_type_name']. '</a> ';
+			}
+			else 
+			{
+				$type_segment_name = $nav['page_type_name'];
+				echo '| <a href="' . getinfo('site_admin_url') . 'page/type/' . $nav['page_type_id'] . '"><strong>' . $nav['page_type_name'] . '</strong></a> ';
+		 }
+		}
+		echo '</p>';
+	}
+
+	if (mso_segment(3) == 'category') 
+	{
+		if (mso_segment(4) != '') 
+		{
+			$par['cat_id'] = abs(intval(mso_segment(4)));
+		}
+	}
+	elseif (mso_segment(3) == 'type') 
+	{
+		if (mso_segment(4) != '') 
+		{
+			$par['type'] = $type_segment_name;//abs(intval(mso_segment(4)));
+		}
+	}
+
+	$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
+	
 	$all_pages = array(); // сразу список всех страниц для формы удаления
 	
 	$this_url = getinfo('site_admin_url') . 'page_edit/';

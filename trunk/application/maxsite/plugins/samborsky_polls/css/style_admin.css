@@ -1,0 +1,62 @@
+fieldset{
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+fieldset input{
+	font: 10pt Arial;
+	padding: 3px;
+}
+
+#answers{
+	width: 99%;
+}
+
+.answer{
+	width: 99%;
+}
+
+.sp_count{
+	font: 14pt "Arial Narrow", Arial;
+}
+
+.samborsky_polls_error{
+	padding: 3px;
+	border: 1px dotted #ff0000;
+	margin-bottom: 5px;
+	color: #ff0000;
+}
+
+.samborsky_polls_message{
+	padding: 3px;
+	border: 1px dotted #000080;
+	margin-bottom: 5px;
+	color: #000080;
+}
+
+.samborsky_polls_table{
+	width: 100%;
+}
+
+.samborsky_polls_table th{
+	background-color: #f1f1f1;
+}
+
+.samborsky_polls_table td{
+	border-bottom: 1px solid #c0c0c0;;
+	padding: 5px;
+}
+
+.samborsky_polls_table th{
+	text-align: left;
+	padding: 5px;
+}	
+
+.sp_drag_class{
+	background-color: #cae4ff;
+}
+
+.sp_drag_class input{
+	color: #FFF;
+	background-color: #79bcff;
+}

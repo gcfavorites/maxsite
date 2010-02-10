@@ -22,8 +22,8 @@
 	}
 	
 ?>
-<h1><?= t('Плагин', 'plugins') ?></h1>
-<p class="info"><?= t('Описание', 'plugins') ?></p>
+<h1><?= t('Плагин', __FILE__) ?></h1>
+<p class="info"><?= t('Описание', __FILE__) ?></p>
 
 <?php
 		$options = mso_get_option($options_key, 'plugins', array());

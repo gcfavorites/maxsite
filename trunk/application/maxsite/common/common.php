@@ -609,7 +609,6 @@ function mso_plugin_load($plugin = '')
 {
 	global $MSO;
 
-	// $fn_plugin = $MSO->config['plugins_dir'] . $plugin . '/' . $plugin . '.php';
 	$fn_plugin = $MSO->config['plugins_dir'] . $plugin . '/index.php';
 
 	if ( !file_exists( $fn_plugin ) ) return false;
@@ -660,6 +659,7 @@ function mso_hook_add($hook, $func, $priory = 0)
 	if ( $priory > 0 ) $MSO->hooks[$hook][$func] = $priory;
 		else $MSO->hooks[$hook][$func] = 0;
 
+	ksort($MSO->hooks[$hook]);
 	arsort($MSO->hooks[$hook]);
 }
 
@@ -1041,7 +1041,8 @@ function mso_flush_cache_mask($mask = '')
 
 # сбросить кэш - если указать true, то удалится кэш из вложенных каталогов
 # если указан $dir, то удаляется только в этом каталоге
-function mso_flush_cache($full = false, $dir = false)
+# если указать $file, то удаляется только этот файл в кэше
+function mso_flush_cache($full = false, $dir = false, $file = false)
 {
 	$CI = & get_instance();
 	$path = $CI->config->item('cache_path');
@@ -1064,16 +1065,23 @@ function mso_flush_cache($full = false, $dir = false)
 		$mso_cache_last = $cache_path . '_mso_cache_last.txt';
 
 		if ($dir) $cache_path .= $dir . '/'; // если указан $dir, удаляем только в нем
-
-		if (!$current_dir = @opendir($cache_path)) return false;
-		while (FALSE !== ($filename = @readdir($current_dir)))
+		
+		if ($file) // указан конкретный файл
 		{
-			if ($filename != "." and $filename != "..")
-			{
-				if (!is_dir($cache_path . $filename)) unlink($cache_path . $filename);
-			}
+			if ( file_exists($cache_path . $file) ) unlink($cache_path . $file);
 		}
-		@closedir($current_dir);
+		else
+		{
+			if (!$current_dir = @opendir($cache_path)) return false;
+			while (FALSE !== ($filename = @readdir($current_dir)))
+			{
+				if ($filename != "." and $filename != "..")
+				{
+					if (!is_dir($cache_path . $filename)) unlink($cache_path . $filename);
+				}
+			}
+			@closedir($current_dir);
+		}
 
 		// создадим служебный файл _mso_cache_last.txt который используется для сброса кэша по дате создания
 		// при инициализации смотрится дата этого файла и если он создан позже, чем время жизни кэша, то кэш сбрасывается mso_flush_cache
@@ -1460,7 +1468,9 @@ function mso_slug($slug)
 
 		"@"=>"", "!"=>"", ";"=>"", ":"=>"", "^"=>"", "\""=>"",
 		"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
-		"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>"", "”"=>"", "“"=>""
+		"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>"", "”"=>"", "“"=>"",
+		"'"=>"",
+		
 		);
 
 		$slug = strtolower(strtr(trim($slug), $repl));
@@ -2183,12 +2193,13 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false)
 	$CI->email->from($admin_email, getinfo('name_site'));
 	$CI->email->subject($subject);
 	$CI->email->message($message);
+	$CI->email->_safe_mode = true; # иначе CodeIgniter добавляет -f к mail - не будет работать в не safePHP
 
 	// pr($admin_email);
 	// pr($CI->email);
 
-	$res = @$CI->email->send();
-
+	$res = $CI->email->send();
+	# mail($email, $subject, $message); # проверка
 	if (!$res) echo $CI->email->print_debugger();
 
 	return $res;
@@ -2735,5 +2746,37 @@ function mso_parse_url_get($s = '')
 	}
 	else return array();
 }
+
+# кастомный вывод цикла
+# $f - идентификатор цикла
+function mso_page_foreach($f = false)
+{
+	/*
+		$f - варианты:
+			archive
+			author
+			category
+			comments
+			home-cat-block-last-page
+			home-cat-block
+			home-top
+			home
+			page-comments
+			page
+			search
+			tag
+			users-all
+	*/
+	
+	if ($f)
+	{
+		$fn = getinfo('template_dir') . 'type_foreach/' . $f . '.php';
+		if (file_exists($fn)) return $fn;
+			else return false;
+	}
+	
+	return false;
+}
+
 
 ?>

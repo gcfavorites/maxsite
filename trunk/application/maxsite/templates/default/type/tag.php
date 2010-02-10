@@ -20,7 +20,16 @@ echo '<h1 class="category">' . mso_segment(2) . '</h1>';
 if ($pages) // есть страницы
 { 	
 	foreach ($pages as $page) : // выводим в цикле
-
+		
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('tag')) 
+			{
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
+			}
+		}
+		
 		extract($page);
 		
 		// pr($page);

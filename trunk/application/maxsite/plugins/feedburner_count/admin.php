@@ -29,7 +29,7 @@
 	
 ?>
 <h1>Настройка FeedBurner Count от <a href="http://www.samborsky.com/">samborsky.com</a></h1>
-Здравствуйте, последний раз счетчик обновлялся <strong><?= $options['last_update'] ? (round((time() - $options['last_update'])/60) . ' мин. назад') : 'Никогда' ?></strong>
+Здравствуйте, последний раз счетчик обновлялся <strong><?= $options['last_update'] ? (round((time() - $options['last_update'])/60) . ' мин. назад') : 'Еще не обновлялся' ?></strong>
 <br />
 Последнее показание счетчика: <strong><?= $options['count'] ?></strong>
 
@@ -38,7 +38,7 @@
 		<tr>
 			<td><strong>Ссылка на фид</strong></td>
 			<td><input type="text" size="60" style="width: 90%;" value="<?= $options['feed_name'] ?>" name="feed_name"></td>
-			<td>Адрес вашего фида в сервисе Feedburner<br /><br />Пример:<br /><em>http://feeds.feedburner.com/max3000</em></td>
+			<td>Адрес вашего фида в сервисе Feedburner<br /><br />Пример:<br /><em>http://feeds2.feedburner.com/max3000</em><br /><br />Или укажите логин, к примеру: <br /><em>max3000</em></td>
 		</tr>
 		<tr>
 			<td><strong>Интервал обновления данных</strong></td>
@@ -67,4 +67,4 @@
 </ul>
 <br />
 Если вам понравился этот плагин, напишите о нем у себя на блоге, добавив ссылку на блог автора <a href="http://www.samborsky.com/">www.samborsky.com</a> или на страницу плагина <a href="http://www.samborsky.com/max-3000/223/">FeedBurner Count</a>.
-При обнаружении ошибок, пишите в комментарии, в <a href="http://forum.maxsite.org/viewtopic.php?id=6603">ветку форума MaxSite</a>, либо <a href="http://www.samborsky.com/contacts/">напрямую автору</a>.
+При обнаружении ошибок, пишите в комментарии, в <a href="http://forum.max-3000.com/viewtopic.php?f=6&t=83">ветку форума MaxSite</a>, либо <a href="http://www.samborsky.com/contacts/">напрямую автору</a>.

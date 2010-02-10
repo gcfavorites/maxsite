@@ -43,7 +43,7 @@
 
 /**
  * Language for MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  * Author: (c) Ваше имя
  * Author URL: http://ваш сайт
  * Update URL: http://где можно найти последнюю версию перевода

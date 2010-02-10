@@ -28,6 +28,15 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 		
 		foreach ($page_top as $page)  // выводим в цикле
 		{
+			if (function_exists('mso_page_foreach'))
+			{
+				if ($f = mso_page_foreach('home-top')) 
+				{
+					require($f); // подключаем кастомный вывод
+					continue; // следующая итерация
+				}
+			}
+		
 			extract($page);
 			mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 		
@@ -60,6 +69,15 @@ if (mso_get_option('home_last_page', 'templates', '0'))
 		
 		foreach ($page_last as $page)  // выводим в цикле
 		{
+			if (function_exists('mso_page_foreach'))
+			{
+				if ($f = mso_page_foreach('home-cat-block-last-page')) 
+				{
+					require($f); // подключаем кастомный вывод
+					continue; // следующая итерация
+				}
+			}
+		
 			extract($page);
 			mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 			echo '<div class="page_content">';
@@ -127,6 +145,16 @@ else
 		
 		foreach($home_cat_block as $cat_id)
 		{
+			// выводим кастомный вывод на этот цикл, чтобы иметь возможность менять его целиком
+			if (function_exists('mso_page_foreach'))
+			{
+				if ($f = mso_page_foreach('home-cat-block')) 
+				{
+					require($f); // подключаем кастомный вывод
+					continue; // следующая итерация
+				}
+			}
+		
 			$par['cat_id'] = $cat_id;
 			$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 			
@@ -197,7 +225,8 @@ else
 				// if (function_exists('pagination_go')) echo pagination_go($pagination); // вывод навигации
 					
 			}// endif $pages
-		}
+			
+		} # end foreach $home_cat_block
 	}
 	
 	mso_add_cache($key_home_cache, ob_get_flush());

@@ -36,7 +36,16 @@ if ($pages) // есть страницы
 	
 	echo '<ul class="category">';
 	foreach ($pages as $page) : // выводим в цикле
-
+		
+		if (function_exists('mso_page_foreach'))
+		{
+			if ($f = mso_page_foreach('search')) 
+			{
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
+			}
+		}
+		
 		extract($page);
 		
 		mso_page_title($page_slug, $page_title, '<li>', '', true);
@@ -92,7 +101,9 @@ if ($pages) // есть страницы
 		echo '<p>' . $page_content . '</p>';
 
 		echo '</li>';
+	
 	endforeach;
+	
 	echo '</ul>';
 	
 	mso_hook('pagination', $pagination);
