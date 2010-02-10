@@ -24,6 +24,8 @@ function _mso_login()
 		
 		$flogin_redirect = urldecode($_POST['flogin_redirect']);
 		
+		if ($flogin_redirect == 'home') $flogin_redirect = '';
+		
 		$flogin_user = $_POST['flogin_user'];
 		$flogin_password = $_POST['flogin_password'];
 		

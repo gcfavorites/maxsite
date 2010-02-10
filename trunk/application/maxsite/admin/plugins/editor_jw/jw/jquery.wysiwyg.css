@@ -1,14 +1,21 @@
-#wysiwyg {background: #E0E0E0; border: 1px solid #ccc; padding: 5px 0 0 10px;}
+#wysiwyg {position: relative; background: #E0EFFF; border: none; padding: 7px 7px 0 7px; margin: -1px 0 10px 0; border-left: 1px solid #ccc; border-right: 1px solid #ccc; float: left;}
 
-div.wysiwyg { border: 1px solid #ccc; padding: 5px; background-color: #FFF;}
-div.wysiwyg * { margin: 0; padding: 0; }
+div.wysiwyg { border: 1px solid #ccc; background: #FFF; hei1ght: 400px; }
+div.wysiwyg * { margin: 0px; padding: 0; }
 
-div.wysiwyg ul.panel { border-bottom: 1px solid #ccc; float: left; width: 100%; padding: 0 0 4px 0; }
+div.wysiwyg iframe { border: 0; margin: 0; cle1ar: left; padding: 0px; width: 100%;}
+
+div.wysiwyg ul.panel { border-bottom: 1px solid #ccc; float: left; width: 100%; padding: 4px 0; }
+
 div.wysiwyg ul.panel li { list-style-type: none; float: left; margin: 0 2px; }
+
 div.wysiwyg ul.panel li.separator { height: 16px; margin: 0 4px; border-left: 1px solid #ccc; }
-div.wysiwyg ul.panel li a { opacity: 0.6; display: block; width: 16px; height: 16px; background: url('jquery.wysiwyg.gif') no-repeat -64px -80px; border: 0; cursor: pointer; padding: 1px; }
-div.wysiwyg ul.panel li a:hover, div.wysiwyg ul.panel li a.active { opacity: 0.99; }
-div.wysiwyg ul.panel li a.active { background-color: #f9f9f9; border: 1px solid #ccc; border-left-color: #AAA; border-top-color: #AAA; padding: 0; }
+
+div.wysiwyg ul.panel li a { opacity: 0.6; display: block; width: 16px; height: 16px; background: url('jquery.wysiwyg.gif') no-repeat -64px -80px; border: 0; cursor: pointer; padding: 0px; margin: 1px;}
+
+div.wysiwyg ul.panel li a:hover, div.wysiwyg ul.panel li a.active { opacity: 1; background-color: #CCCCFA;}
+
+div.wysiwyg ul.panel li a.active { background-color: #CCCCFA; border: 1px solid #3B619C; margin: 0;}
 
 div.wysiwyg ul.panel li a.bold { background-position: 0 -16px; }
 div.wysiwyg ul.panel li a.italic { background-position: -16px -16px; }
@@ -26,8 +33,8 @@ div.wysiwyg ul.panel li a.outdent { background-position: -80px 0; }
 div.wysiwyg ul.panel li a.subscript { background-position: -64px -16px; }
 div.wysiwyg ul.panel li a.superscript { background-position: -80px -16px; }
 
-div.wysiwyg ul.panel li a.undo { background-position: 0 -63px; }
-div.wysiwyg ul.panel li a.redo { background-position: -15px -63px; }
+div.wysiwyg ul.panel li a.undo { background-position: 0 -64px; }
+div.wysiwyg ul.panel li a.redo { background-position: -16px -64px; }
 
 div.wysiwyg ul.panel li a.insertOrderedList { background-position: -32px -48px; }
 div.wysiwyg ul.panel li a.insertUnorderedList { background-position: -16px -48px; }
@@ -40,8 +47,8 @@ div.wysiwyg ul.panel li a.h4 { background-position: -48px -32px; }
 div.wysiwyg ul.panel li a.h5 { background-position: -64px -32px; }
 div.wysiwyg ul.panel li a.h6 { background-position: -80px -32px; }
 
-div.wysiwyg ul.panel li a.cut { background-position: -32px -63px; }
-div.wysiwyg ul.panel li a.copy { background-position: -48px -63px; }
+div.wysiwyg ul.panel li a.cut { background-position: -32px -64px; }
+div.wysiwyg ul.panel li a.copy { background-position: -48px -64px; }
 div.wysiwyg ul.panel li a.paste { background-position: -64px -64px; }
 
 div.wysiwyg ul.panel li a.increaseFontSize { background-position: -16px -80px; }
@@ -50,22 +57,9 @@ div.wysiwyg ul.panel li a.decreaseFontSize { background-position: -32px -80px; }
 div.wysiwyg ul.panel li a.createLink { background-position: -80px -48px; }
 div.wysiwyg ul.panel li a.insertImage { background-position: -80px -80px; }
 
-div.wysiwyg ul.panel li a.html { background-position: -48px -46px; }
-div.wysiwyg ul.panel li a.removeFormat { background-position: -80px -63px; }
+div.wysiwyg ul.panel li a.html { background-position: -48px -48px; }
+div.wysiwyg ul.panel li a.removeFormat { background-position: -80px -64px; }
 
 div.wysiwyg ul.panel li a.empty { background-position: -64px -80px; }
 
-div.wysiwyg iframe { border: 0; margin: 0 0 0 0; clear: left;}
 
-div.wysiwyg ul.panel li a.InsertParagraph:before { content: "P"; line-height: 16px;}
-div.wysiwyg ul.panel li a.hilitecolor:before { content: "G"; line-height: 16px;}
-div.wysiwyg ul.panel li a.forecolor:before { content: "C"; line-height: 16px;}
-div.wysiwyg ul.panel li a.pre:before { content: "T"; line-height: 16px;}
-
-div.wysiwyg ul.panel li a.code:before { content: "D"; line-height: 16px;}
-
-div.wysiwyg ul.panel li a.ct:before { content: "C-"; line-height: 16px;}
-
-
-
-div.wysiwyg ul.panel li a.fig { background-position: -48px -80px; }

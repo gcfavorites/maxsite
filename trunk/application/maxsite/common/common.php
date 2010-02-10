@@ -392,14 +392,15 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 		{
 			// %page_title% %title% %category_name%
 			// | это разделитель, который = $sep
+			// pr($args);
 			
 			$category_name = '';
 			$page_title = '';
 			$title = getinfo($info);
 			
-			// pr($args);
+			if ( $info!='title') $format = '%title%';
+		
 			if ( isset($args[0]['category_name']) ) $category_name = $args[0]['category_name'];
-			
 			if ( isset($args[0]['page_title']) ) $page_title = $args[0]['page_title'];
 			
 			// если есть мета, то берем её
@@ -407,12 +408,22 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 			{
 				if ( $only_meta ) $category_name = $title = $sep = '';
 				$page_title = $args[0]['page_meta'][$info][0];
+				
+				if ( $info!='title') $title = $page_title;
 			}
-
+			else 
+			{
+			//	$page_title = $title;
+			//	if ($page_title == $title) $page_title = '';
+			}
+			
+			// pr($page_title);
+			
 			$arr_key = array( '%title%', '%page_title%',  '%category_name%', '|' );
 			$arr_val = array( $title ,  $page_title, $category_name, $sep );
 			
 			$out = str_replace($arr_key, $arr_val, $format);
+			// pr($out);
 		}
 	}
 	
@@ -885,7 +896,7 @@ function mso_clean_pre_special_chars($matches)
 
 	$text = str_replace('<p>', '', $text);
 	$text = str_replace('</p>', '', $text);
-	$text = str_replace("<br />", "[mso_br_n]", $text);
+	//$text = str_replace("<br />", "[mso_br_n]", $text);
 
 	return $text;
 }
@@ -900,6 +911,8 @@ function mso_clean_pre($matches)
 
 	$text = str_replace('<p>', '', $text);
 	$text = str_replace('</p>', '', $text);
+	$text = str_replace('[', '&#91;', $text);
+	$text = str_replace(']', '&#93;', $text);
 	$text = str_replace("<br />", "[mso_br_n]", $text);
 
 	return $text;
@@ -921,13 +934,24 @@ function mso_clean_html($matches)
 }
 
 # авторасстановка тэгов
-# в наглую выдрана из WordPress wpautop()
+# переделка из WordPress wpautop() + мои правки
 function mso_auto_tag($pee, $pre_special_chars = false) 
 {
+
 	$pee = $pee . "\n";
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
+	
+	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|hr|embed|h1|h2|h3|h4|h5|h6|br)';
+	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
+	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
+	
+
 	$pee = str_replace("\n", "<br />", $pee);
 	$pee = str_replace('<br>', '<br />', $pee);
+	
+	$pee = str_replace('<br />', "\n" . '<br />', $pee); // +
+	
+	$pee = str_replace('<hr style="width: 100%; height: 2px;">', "<hr>", $pee); // +
 	
 	if ( strpos($pee, '[volkman]') !== false and strpos(trim($pee), '[volkman]') == 0 ) // отдавать как есть
 	{
@@ -937,40 +961,58 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 		return $pee;
 	}
 	
-	if ($pre_special_chars)
-	{
-		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre_special_chars', $pee );
-	}
-	else
-	{
-		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre', $pee );
-	}
-	
-	$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
-	$pee = str_replace('<br />', "\n\n", $pee);
-	
-	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|form|map|area|blockquote|address|math|style|input|embed|p|h[1-6]|hr)';
-	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
-	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
 
-	$pee = str_replace("\n\n\n\n\n", "[mso_n]", $pee);
-	$pee = str_replace("\n\n\n\n", "[mso_n]", $pee);
-	$pee = str_replace("\n\n\n", "[mso_n]", $pee);
-	$pee = str_replace("\n\n", "[mso_n]", $pee);
-	$pee = str_replace('[mso_n]', "\n\n", $pee);
 	
-	$pee = preg_replace('/\n?(.+?)(?:\n\s*\n|\z)/s', "<p>$1</p>\n", $pee); 
+	// $pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
+	// $pee = str_replace('<br />', "\n\n", $pee);
+	
+	$pee = "\n<p>" . $pee;
+	$pee = preg_replace('|<br />\s*<br />|', "<p>", $pee); // +
+	$pee = str_replace('<p><p>', "<p>", $pee);
+	$pee = str_replace("<p>\n<br />", "<p>", $pee);
+	$pee = str_replace("<p><p ", "<p ", $pee);
+	$pee = str_replace("<br />", "<p>", $pee);
+	
+	// return $pee;
+	
+
+	//$pee = str_replace("\n\n\n\n\n", "[mso_n]", $pee);
+	//$pee = str_replace("\n\n\n\n", "[mso_n]", $pee);
+	//$pee = str_replace("\n\n\n", "[mso_n]", $pee);
+	//$pee = str_replace("\n\n", "[mso_n]", $pee);
+	//$pee = str_replace('[mso_n]', "\n\n", $pee);
+	
+	//$pee = preg_replace('/\n?(.+?)(?:\n\s*\n|\z)/s', "<p>$1</p>\n", $pee); 
 	$pee = preg_replace('|<p>\s*?</p>|', '', $pee);
 
 	$pee = preg_replace('!<p>([^<]+)\s*?(</(?:div|address|form)[^>]*>)!', "<p>$1</p>$2", $pee);
-	$pee = preg_replace( '|<p>|', "$1<p>", $pee );
+	//$pee = preg_replace( '|<p>|', "$1<p>", $pee );
 	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee); 
+	
+	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*!', "\n$1", $pee); 
+	
+	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n", $pee);
+	$pee = preg_replace('!\s*(</' . $allblocks . '>)!', "$1", $pee);
+	
+	// $pee = str_replace("<ul>", "\n<ul>", $pee);
+	
 	$pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee);
+	$pee = preg_replace("|</li>\s*<li>|", "</li>\n<li>", $pee);
+	$pee = preg_replace("|</li>\s*</ul>|", "</li>\n</ul>", $pee);
+
+	// $pee = preg_replace("|</div>\s*</p>|", "</div>\n", $pee);
+
 	$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee);
 	$pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
 	
-	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
-	$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
+	// $pee = str_replace('</div></p>', '</p></div>', $pee);
+
+	// $pee = preg_replace('|<hr([^>]*)>|i', "\n\n<hr$1>\n\n", $pee);
+	//$pee = preg_replace("|<p>\s*<hr|", "<hr", $pee);
+	
+
+	//$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
+	//$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
 	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
 	
 	$pee = str_replace('<p>[cut]</p>', '[cut]', $pee);
@@ -978,21 +1020,61 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	
 	// $pee = str_replace('<p></p>', '', $pee);
 	
+	if ($pre_special_chars)
+	{
+		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre_special_chars', $pee );
+		else $pee = str_replace("\n\n", "\n", $pee);
+	}
+	else
+	{
+		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre', $pee );
+		else $pee = str_replace("\n\n", "\n", $pee);
+	}
+	
+	
 	# если html в [html] код [/html]
 	// $pee = preg_replace('!(\[html\])(.*?)(\[\/html\])!is', '$1', $pee);
 	$pee = str_replace('<p>[html]</p>', '[html]', $pee);
 	$pee = str_replace('<p>[/html]</p>', '[/html]', $pee);
 	$pee = preg_replace_callback('!\[html\](.*?)\[\/html\]!is', 'mso_clean_html', $pee );
-
+	
+	$pee = str_replace('[mso_n]', "\n", $pee);
 	$pee = str_replace('[mso_br_n]', "\n", $pee);
 	
 	return $pee;
 }
 
 
-# функция взятая из b2
-function mso_balance_tags( $text, $force = true ) 
+# моя функция авторасстановки тэгов
+function mso_balance_tags( $text ) 
 {
+	// те тэги, которые нужно закрывать автоматом до конца строки
+	$blocks_for_close = 'p|li';
+	
+	$text = preg_replace("!<(" . $blocks_for_close . ")(.*)>(.*)([\n]*)!", "<$1$2>$3</$1>\n", $text);
+	
+	// удалим двойные закрывающие и открывающие и пустые
+	$ar = explode('|', $blocks_for_close);
+	foreach ($ar as $t)
+	{
+		$text = str_replace("<" . $t ."></" . $t .">", "", $text); //  <p></p> <li></li>
+		$text = str_replace("<" . $t ."><" . $t .">", "<" . $t . ">", $text);
+		$text = str_replace("</" . $t . "></" . $t . ">", "</" . $t . ">", $text);
+	}
+	
+	$text = str_replace('</div></p>', '</p></div>', $text);
+	$text = preg_replace('!<pre(.*?)</p>!si', '<pre$1', $text);
+	
+	$text = str_replace("\n\n", "\n", $text);
+	
+	return $text;
+}
+
+# функция взятая из b2
+function mso_balance_tags_b2( $text, $force = true ) 
+{
+	// return $text;
+	
 	if ( !$force ) return $text;
 	
 	$text1 = @balanceTags($text);
@@ -1128,6 +1210,12 @@ function balanceTags($text)
 	
 	# мои исправления
 	$newtext = str_replace('< \/a>', '<\/a>',$newtext);
+	$newtext = str_replace('<p></p>', '',$newtext);
+	$newtext = str_replace("\n</p>", "</p>\n",$newtext);
+	
+	$newtext = preg_replace("|</div>\s*</p>|", "</div>\n", $newtext);
+	$newtext = str_replace('<p><hr />', '<hr />', $newtext);
+	$newtext = str_replace('<hr /></p>', '<hr />', $newtext);
 
 	return $newtext;
 }
@@ -1725,6 +1813,18 @@ function mso_str_word($text, $counttext = 10, $sep = ' ')
 	return $text;
 }
 
+# подсчет кол-ва слов в тексте
+# можно предварительно удалить все тэги и ипреобразовать CR в $delim
+function mso_wordcount($str = '', $delim = ' ', $strip_tags = true, $cr_to_delim = true) 
+{ 
+	if ($strip_tags) $str = strip_tags($str);
+	if ($cr_to_delim) $str = str_replace("\n", $delim, $str);
+	
+	$out = str_replace($delim . $delim, $delim, $str);
+		
+	return count( explode($delim, $str) );
+}
+
 # получить текущую страницу пагинации
 function mso_current_paged()
 {
@@ -1948,12 +2048,39 @@ function mso_menu_build($menu = '', $select_css = 'selected')
 	return $out;
 }
 
-/*
-# кастомизируем slug
-function mso_custom_slug($slug = '')
+# добавляем куку ко всему сайту с помощью сессии и редиректа на главную
+function mso_add_to_cookie($name_cookies, $value, $expire, $redirect = false)
 {
-	return mso_hook('custom_slug', $slug);
+	$CI = & get_instance();
+	
+	if (isset($CI->session->userdata['_add_to_cookie'])) $add_to_cookie = $CI->session->userdata['_add_to_cookie'];
+		else $add_to_cookie = array();
+	
+	$add_to_cookie[$name_cookies] = array('value'=>$value, 'expire'=> $expire );
+
+	$CI->session->set_userdata(	array(	'_add_to_cookie' => $add_to_cookie ) );
+	
+	if ($redirect) 
+	{
+		mso_redirect(getinfo('siteurl'), true);
+		exit;
+	}
 }
-*/
+
+# получаем куку. Если нет вообще или нет в $allow_vals, то возвращает $def_value
+function mso_get_cookie($name_cookies, $def_value = '', $allow_vals = false)
+{
+	
+	if (!isset($_COOKIE[$name_cookies])) return $def_value; // нет вообще
+	
+	$value = $_COOKIE[$name_cookies]; // значение куки
+	
+	if ($allow_vals)
+	{
+		if (in_array($value, $allow_vals)) return $value; // нет в разрешенных
+		else return $def_value;
+	}
+	else return $value;
+}
 
 ?>

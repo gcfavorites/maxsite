@@ -1,19 +1,19 @@
 
-body {font-family: Verdana; font-size: 9pt; cursor: text; line-height: 1.4em;} 
+body {font-family: Courier New; font-size: 10pt; cursor: text; line-height: 1.2em;} 
 
-br {ma1rgin-bottom: 10px; background: red; width: 10px; height: 10px;}
+pre {background: #E8E8E8; padding: 10px; overflow: auto;}
+code {backgro1und: #E0E0E0; padding: 10px; overflow: auto;}
 
-pre {background: #E0E0E0; padding: 10px;}
-code {background: #E0E0E0; padding: 10px;}
-
-ul, ol {background: #E0E0F0; padding: 5px 5px 5px 30px;}
+ul, ol {back1ground: #E0E0F0; padding: 5px 5px 5px 30px; margin: 5px 0;}
 li {margin-bottom: 5px;}
 
+p {margin: 0;}
+br {margin: 0; line-height: 1em;}
 
-h1 {font-size: 1.8em; font-family: Arial;}
-h2 {font-size: 1.6em; font-family: Arial;}
-h3 {font-size: 1.4em; font-family: Arial;}
-h4 {font-size: 1.2em; font-family: Arial;}
-h5 {font-size: 1.1em; font-family: Arial;}
-h6 {font-size: 1em; font-family: Arial;}
+h1 {font-size: 1.8em; line-height: 1.2em; margin: 0;}
+h2 {font-size: 1.6em; line-height: 1.2em; margin: 0;}
+h3 {font-size: 1.4em; line-height: 1.2em; margin: 0;}
+h4 {font-size: 1.2em; line-height: 1.2em; margin: 0;}
+h5 {font-size: 1.1em; line-height: 1.2em; margin: 0;}
+h6 {font-size: 1em; line-height: 1.2em; margin: 0;}
 

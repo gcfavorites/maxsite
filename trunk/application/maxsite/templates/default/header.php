@@ -21,7 +21,7 @@
 	<?= mso_load_jquery('ui/effects.core.packed.js') ?>
 	<?= mso_load_jquery('ui/effects.highlight.packed.js') ?>
 	<script type="text/javascript" src="<?= getinfo('stylesheet_url') ?>js/my_ef.js"></script>
-
+	
 <?php mso_hook('head') ?>
 
 </head>

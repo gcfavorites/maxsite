@@ -786,9 +786,25 @@ function mso_get_pages($r = array(), &$pag)
 				// ссылка на «далее...»
 				if ($r['cut'])
 				{
-					if ($cut) $r['cut'] = $cut;
-					$output .= mso_page_title( $page['page_slug'], $r['cut'], 
-								$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
+					
+					if ($cut) 
+					{
+					
+						if (isset($content[1]))
+						{
+							if (strpos($cut, '%wordcount%')!==false)
+								$cut = str_replace('%wordcount%', mso_wordcount($content[1]), $cut);
+						}
+					} 
+					else $cut = $r['cut'];
+					
+					$output .= mso_page_title( $page['page_slug'], $cut, 
+								$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );					
+					
+					// $output .= mso_page_title( $page['page_slug'], $r['cut'], 
+					//			$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
+					
+
 				}
 				else
 				{

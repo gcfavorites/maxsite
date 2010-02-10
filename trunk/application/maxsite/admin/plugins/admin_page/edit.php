@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
 <h1>Редактирование страницы</h1>
-<p><a href="<?= $MSO->config['site_admin_url'] . 'page' ?>">Вернуться к списку страниц</a></p>	
+<p><a href="<?= $MSO->config['site_admin_url'] . 'page' ?>">Вернуться к списку страниц</a>	
 
 <?php
 	
@@ -11,6 +11,8 @@
 	$id1 = (int) $id;
 	if ( (string) $id != (string) $id1 ) $id = false; // ошибочный id
 	
+	echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
+							
 	if ($id) // есть корректный сегмент
 	{
 	

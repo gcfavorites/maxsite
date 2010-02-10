@@ -12,7 +12,6 @@ mso_head_meta('title', &$pages, '%page_title%|%title%', ' » ', true ); // meta 
 mso_head_meta('description', &$pages); // meta description страницы
 mso_head_meta('keywords', &$pages); // meta keywords страницы
 
-
 // теперь сам вывод
 
 # начальная часть шаблона

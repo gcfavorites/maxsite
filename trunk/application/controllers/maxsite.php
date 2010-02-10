@@ -32,11 +32,12 @@ class Maxsite extends Controller
 		mso_initalizing();
 
 		$this->data_def['session'] = $this->session->userdata;
-		//$this->session->sess_destroy(); // для тестирования - обнуление сессии
+		// $this->session->sess_destroy(); // для тестирования - обнуление сессии
 	}
 	
 	function _remap($method)
 	{	
+	
 		if (
 			($method == 'home') or
 			($method == 'archive') or
@@ -74,6 +75,36 @@ class Maxsite extends Controller
 		global $MSO;
 		$data = array('type'=>$type);
 		$MSO->data = array_merge($this->data_def, $data);
+
+		// еси главная страница то проверим в сессии служебный массив _add_to_cookie
+		// если он есть, то внесем из него все данные в куки
+		//	[_add_to_cookie] => Array
+		//	(
+		//		[namecooke] => Array
+		//			(
+		//				[value] => ru
+		//				[expire] => 1221749019
+		//			)
+		//	)
+		
+		if ($type == 'home' and isset($this->session->userdata['_add_to_cookie'])) // есть
+		{
+			foreach ($this->session->userdata['_add_to_cookie'] as $key=>$val)
+			{
+				if (isset($val['value']) and isset($val['expire']))
+				{
+					setcookie($key, $val['value'], $val['expire']); // записали в куку
+				}
+			}
+			
+			$this->session->unset_userdata('_add_to_cookie'); // удаляем добавленное
+			
+			// редирект пна главную страницу
+			mso_redirect(getinfo('siteurl'), true);
+			exit;
+		}
+		
+		
 		
 		if (function_exists('mso_autoload_plugins')) mso_autoload_plugins();
 		
@@ -89,7 +120,7 @@ class Maxsite extends Controller
 		# для этого подключим нужный файл если есть
 		
 		$fn = APPPATH . 'controllers/' . $this->data_def['uri_segment'][1] . EXT;
-	
+		
 		if ( file_exists($fn) ) 
 			require($fn);
 		else 
