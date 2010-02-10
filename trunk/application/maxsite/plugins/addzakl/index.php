@@ -32,7 +32,7 @@ function addzakl_content_end($args = array())
 
 	
 	$img_src = 'google_bmarks.gif';
-	$link = '<a rel="nofollow" href="http://www.google.com/bookmarks/mark?op=edit&bkmk=' . $post_link . '&title=' . $post_title .  '">';
+	$link = '<a rel="nofollow" href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=' . $post_link . '&title=' . $post_title .  '">';
 	$out = $link . '<img border="0" title="google.com" alt="google.com" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
 	
 	$img_src = 'bobrdobr.gif';
@@ -48,7 +48,7 @@ function addzakl_content_end($args = array())
 	$out .= $sep . $link . '<img border="0" title="technorati.com" alt="technorati.com" src="' . $path . $img_src  . '" /></a>';
 
 	$img_src = 'linkstore.gif';
-	$link = '<a rel="nofollow" href="http://www.linkstore.ru/servlet/LinkStore?a=add&url=' . $post_link . '&title=' . $post_title .  '">';
+	$link = '<a rel="nofollow" href="http://www.linkstore.ru/servlet/LinkStore?a=add&amp;url=' . $post_link . '&title=' . $post_title .  '">';
 	$out .= $sep . $link . '<img border="0" title="linkstore.ru" alt="linkstore.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
 	
 	$img_src = 'news2-ru.gif';
@@ -56,11 +56,11 @@ function addzakl_content_end($args = array())
 	$out .= $sep . $link . '<img border="0" title="news2.ru" alt="news2.ru" src="' . $path . $img_src  . '" /></a>';
 
 	$img_src = 'rumark.gif';
-	$link = '<a rel="nofollow" href="http://rumarkz.ru/bookmarks/?action=add&popup=1&address=' . $post_link . '&title=' . $post_title .  '">';
+	$link = '<a rel="nofollow" href="http://rumarkz.ru/bookmarks/?action=add&amp;popup=1&amp;address=' . $post_link . '&title=' . $post_title .  '">';
 	$out .= $sep . $link . '<img border="0" title="rumarkz.ru" alt="rumarkz.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
 	
 	$img_src = 'memori.gif';
-	$link = '<a rel="nofollow" href="http://memori.ru/link/?sm=1&u_data[url]=' . $post_link . '&u_data[name]=' . $post_title .  '">';
+	$link = '<a rel="nofollow" href="http://memori.ru/link/?sm=1&amp;u_data[url]=' . $post_link . '&u_data[name]=' . $post_title .  '">';
 	$out .= $sep . $link . '<img border="0" title="memori.ru" alt="memori.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
 	
 	$img_src = 'moemesto.gif';

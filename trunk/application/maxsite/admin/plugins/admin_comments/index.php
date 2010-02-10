@@ -19,7 +19,7 @@ function admin_comments_autoload($args = array())
 function admin_comments_admin_init($args = array()) 
 {
 
-	if ( mso_check_allow('admin_page') ) 
+	if ( mso_check_allow('admin_comments') ) 
 	{
 		$this_plugin_url = 'comments'; // url и hook
 		

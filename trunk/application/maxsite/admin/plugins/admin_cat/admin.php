@@ -120,7 +120,7 @@
 	
 	<tr style="text-align: center; vertical-align: top;">
 	
-	<td class="alt"><strong title="Номер рубрики. В этой рубрике [COUNT] страниц">[ID]</strong></td>
+	<td class="alt"><strong title="Номер рубрики. В этой рубрике [COUNT] страниц">[ID]</strong><sub style="color: gray">[COUNT]</sub></td>
 	
 	<td><input title="Номер родителя" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="50" style="width: 100%; margin: 0 -4px;" type="text" /></td>
 	

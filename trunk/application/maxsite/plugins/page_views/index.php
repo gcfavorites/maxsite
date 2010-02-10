@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function page_views_autoload($args = array())
 {
-	mso_register_widget('page_views_widget', 'Виджет «Самое читаемое»'); # регистрируем виджет
+	mso_register_widget('page_views_widget', 'Самое читаемое'); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина

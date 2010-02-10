@@ -221,16 +221,39 @@
 				if ( e != "" ) { elem.value = e + ", " + t; }
 				else { elem.value = t; };
 			}
+			function shtags(sh)
+			{
+				var elem1 = document.getElementById("f_all_tags_max_num");
+				var elem2 = document.getElementById("f_all_tags_all");
+				
+				if (sh == 1) 
+				{ 
+					elem1.style.display = "none"; 
+					elem2.style.display = "block"; 
+				}
+				else
+				{
+					elem1.style.display = "block"; 
+					elem2.style.display = "none"; 				
+				}
+			}			
 		</script>' . NR;
 		
-		
+		// только первые 20
 		$f_all_tags .= tagclouds_widget_custom(array(
 			'max_num' => 20,
 			'max_size' => '180',
-			'block_start' => '<p><br />',
-			'block_end' => '</p>',
+			'block_start' => '<p id="f_all_tags_max_num"><br />',
+			'block_end' => ' <a title="Показать все метки" href="#" onClick="shtags(1); return false;">&gt;&gt;&gt;</a></p>',
 			'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
+		));
 		
+		// все метки
+		$f_all_tags .= tagclouds_widget_custom(array(
+			'max_size' => '180',
+			'block_start' => '<p id="f_all_tags_all" style="display: none;"><br />',
+			'block_end' => ' <a title="Показать только самые популярные метки" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',
+			'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
 		));
 	}
 	
@@ -371,6 +394,11 @@
 				);
 
 	# отображаем редактор
-	editor_jw($ad_config);
+	# есть ли хук на редактор: если да, то получаем эту функцию
+	# если нет, то отображаем стандартный editor_jw
+	if (mso_hook_present('editor_custom')) mso_hook('editor_custom', $ad_config);
+		else editor_jw($ad_config);;
+	
+	
 	
 ?>

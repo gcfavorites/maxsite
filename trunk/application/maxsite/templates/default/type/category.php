@@ -22,19 +22,18 @@ mso_head_meta('keywords', &$pages, '%category_name%'); // meta keywords стра
 require(getinfo('template_dir') . 'main-start.php');
 
 echo '<h1 class="category">' . $title_page . '</h1>';
-echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">Подписаться на эту рубрику по RSS</a></h3>';
 
 if ($pages) // есть страницы
 { 	
 
+	echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">Подписаться на эту рубрику по RSS</a></h3>';
 
 	if (!$full_posts) echo '<ul class="category">';
 	
 	foreach ($pages as $page) : // выводим в цикле
 
 		extract($page);
-		//pr($page);
-		
+	
 		if (!$full_posts)
 		{
 			mso_page_title($page_slug, $page_title, '<li>', '', true);
@@ -43,6 +42,7 @@ if ($pages) // есть страницы
 		}
 		else
 		{
+			echo NR . '<div class="page_only">' . NR;
 			echo '<div class="info">';
 				mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 				mso_page_cat_link($page_categories, ' | ', '<span>Рубрика:</span> ', '<br />');
@@ -59,7 +59,9 @@ if ($pages) // есть страницы
 				mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comments-link"><span>', '</span></div>');
 				
 			echo '</div>';
+			echo NR . '</div><!--div class="page_only"-->' . NR;
 		}
+		
 		
 	endforeach;
 	

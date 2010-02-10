@@ -30,7 +30,7 @@ function admin_page_admin_init($args = array())
 		# Третий - название ссылки	
 		# четвертый номер по порядку
 		
-		mso_admin_menu_add('page', $this_plugin_url, 'Список', 2);
+		mso_admin_menu_add('page', $this_plugin_url, t('Список', __FILE__), 2);
 
 		# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 		# связанную функцию именно она будет вызываться, когда 
@@ -45,7 +45,7 @@ function admin_page_admin_init($args = array())
 		mso_admin_url_hook ($this_plugin_url, 'admin_page_edit');
 		
 		$this_plugin_url = 'page_new'; // url и hook
-		mso_admin_menu_add('page', $this_plugin_url, 'Создать', 1);
+		mso_admin_menu_add('page', $this_plugin_url, t('Создать', __FILE__), 1);
 		mso_admin_url_hook ($this_plugin_url, 'admin_page_new');	
 	}
 	
@@ -59,7 +59,7 @@ function admin_page_admin($args = array())
 	global $MSO;
 	if ( !mso_check_allow('admin_page') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен');
 		return $args;
 	}
 	
@@ -78,7 +78,7 @@ function admin_page_edit($args = array())
 	
 	if ( !mso_check_allow('admin_page_edit') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен');
 		return $args;
 	}
 	
@@ -97,7 +97,7 @@ function admin_page_new($args = array())
 	
 	if ( !mso_check_allow('admin_page_new') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен');
 		return $args;
 	}
 	

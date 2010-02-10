@@ -96,9 +96,13 @@ if ($pages) // есть страницы
 		extract($page);
 		// pr($page);
 		
+		
 		// выводим полные тексты или списком
 		if ( mso_get_option('home_full_text', 'templates', '1') )
 		{ 
+			
+			echo NR . '<div class="page_only">' . NR;
+		
 			mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 
 			echo '<div class="info">';
@@ -132,6 +136,7 @@ if ($pages) // есть страницы
 				// mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comments-link">', '</div>');
 				
 			echo '</div>';
+			echo NR . '</div><!--div class="page_only"-->' . NR;
 		}
 		else // списком
 		{

@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function events_autoload($args = array())
 {
-	mso_register_widget('events_widget', 'Виджет «События»'); # регистрируем виджет
+	mso_register_widget('events_widget', 'События'); # регистрируем виджет
 }
 
 

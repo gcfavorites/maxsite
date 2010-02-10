@@ -22,21 +22,11 @@ function tabs_uninstall($args = array())
 # подключаем в заголовок стили и js
 function tabs_head($args = array()) 
 {
-	echo '	<link rel="stylesheet" href="' . getinfo('plugins_url') . 'tabs/flora.tabs.css" type="text/css" media="screen">' . NR;
+	// echo '	<link rel="stylesheet" href="' . getinfo('plugins_url') . 'tabs/flora.tabs.css" type="text/css" media="screen">' . NR;
 	echo mso_load_jquery();
 	echo mso_load_jquery('ui/ui.core.packed.js');
 	echo mso_load_jquery('ui/ui.tabs.packed.js');
-	
-	echo <<<EOF
-	
-	<script> 
-		$(document).ready(function(){
-				$("#tabs-widget > ul").tabs({ fx: { height: 'toggle', opacity: 'toggle', duration: 'fast' } });
-			});
-	</script> 
-	
-EOF;
-	
+
 	return $args;
 }
 
@@ -66,6 +56,7 @@ function tabs_widget_form($num = 1)
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['tabs']) ) $options['tabs'] = '';
+	if ( !isset($options['type_func']) ) $options['type_func'] = 'widget';
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -77,8 +68,13 @@ function tabs_widget_form($num = 1)
 	
 	$form .= '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	$form .= '<p><div class="t150">Табы:</div> '. form_textarea( array( 'name'=>$widget . 'tabs', 'value'=>$options['tabs'] ) ) ;
-	$form .= '<br /><div class="t150">&nbsp;</div>Указывайте по одноу табу в каждом абзаце в формате: <strong>заголовок | ушка</strong>';
+	$form .= '<br /><div class="t150">&nbsp;</div>Указывайте по одному табу в каждом абзаце в формате: <strong>заголовок | виджет номер</strong>';
+	$form .= '<br /><div class="t150">&nbsp;</div>Например: <strong>Цитаты | randomtext_widget 1</strong>';
+	$form .= '<br /><div class="t150">&nbsp;</div>Для ушки: <strong>Цитаты | ушка_цитаты</strong>';
 	
+	
+	$form .= '<p><div class="t150">Использовать:</div> '. form_dropdown( $widget . 'type_func', array( 'widget'=>'Виджет (функция и номер через пробел)', 'ushka'=>'Ушка (только название)'), $options['type_func']);
+
 	return $form;
 }
 
@@ -95,6 +91,7 @@ function tabs_widget_update($num = 1)
 	# обрабатываем POST
 	$newoptions['header'] = mso_widget_get_post($widget . 'header');
 	$newoptions['tabs'] = mso_widget_get_post($widget . 'tabs');
+	$newoptions['type_func'] = mso_widget_get_post($widget . 'type_func');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -108,6 +105,7 @@ function tabs_widget_custom($options = array(), $num = 1)
 	$out = '';
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['tabs']) ) $options['tabs'] = '';
+	if ( !isset($options['type_func']) ) $options['type_func'] = 'widget';
 	
 	$ar = explode("\n", trim($options['tabs'])); // все табы в массив
 	
@@ -127,18 +125,50 @@ function tabs_widget_custom($options = array(), $num = 1)
 	
 	if ($tabs) // есть закладки, можно выводить
 	{
-		$out .= NR . '<div id="tabs-widget" class="flora"><ul>';
+		$out .= NR . '<div id="tabs-widget-' . $num . '" class="flora"><ul>';
 		foreach($tabs as $key => $tab)
-			$out .= NR .  '<li><a href="#tabs-widget-fragment-' . $key . '"><span>' . $tab['title'] . '</span></a></li>' . NR;
+			$out .= NR .  '<li><a href="#tabs-widget-fragment-' . $num . $key . '"><span>' . $tab['title'] . '</span></a></li>' . NR;
 		$out .= '</ul>' . NR;
 		
 		foreach($tabs as $key => $tab)
-			$out .= NR . '<div id="tabs-widget-fragment-' . $key . '">' . ushka($tab['ushka']) . '</div>' . NR;
+		{
+			if ($options['type_func'] == 'widget') // выводим с помощью функции виджета ($tab['ushka'])
+			{
+				$func = $tab['ushka']; // category_widget 20
+				$nm = 0;
+				
+				// разделим и определим номер виджета
+				$arr_w = explode(' ', $func); // в массив
+				
+				if ( sizeof($arr_w) > 1 ) // два или больше элементов
+				{
+					$func = trim( $arr_w[0] ); // первый - функция
+					$nm = (int) trim( $arr_w[1] ); // второй - номер виджета
+				}
+				
+				if ( function_exists($func) ) $func = $func($nm);
+					else $func = 'no-func';
+			
+			}
+			else $func = ushka($tab['ushka']);
+			
+			$out .= NR . '<div id="tabs-widget-fragment-' . $num . $key . '">' . $func . '</div>' . NR;
+		}
+			
 		$out .= '</div>' . NR;
 	}
 	
 	if ($out and $options['header']) $out = $options['header'] . $out;
-	
+		
+	if ($out) $out .=  <<<EOF
+	<script> 
+		$(document).ready(function(){
+				$("#tabs-widget-{$num} > ul").tabs({ fx: { height: 'toggle', opacity: 'toggle', duration: 'fast' } });
+			});
+	</script> 
+EOF;
+				// $("#tabs-widget-{$num} > ul").tabs();
+
 	return $out;	
 }
 

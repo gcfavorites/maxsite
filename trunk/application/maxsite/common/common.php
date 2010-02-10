@@ -5,6 +5,12 @@
  * (c) http://maxsite.org/
  */
 
+# подключаем библиотеку mbstring
+# какие функции отсутствуют определяется в этом файле
+require('mbstring.php');
+
+
+
 define("NR", "\n");
 
 #  функция для отладки
@@ -36,15 +42,6 @@ function pr($var, $html = false)
 	}
 	echo '</pre>';
 }
-
-
-#  определяем наличие библиотеки mb_string 
-function mso_mb_present() 
-{
-	if ( function_exists('mb_strpos') ) return true;
-		else return false;
-}
-
 
 #  правильность email 
 function mso_valid_email($em = '') 
@@ -93,14 +90,14 @@ function mso_checksession($session_id, $redirect = false)
 
 # удаляем все лишнее в формах
 # если второй параметр = true то возвращает false, если данные после стрипа изменились и $s - теже
-function mso_strip($s = '', $logical = false) 
+function mso_strip($s = '', $logical = false, $arr_strip = array('\\', '|', '/', '?', '%', '*', '`')) 
 {	
 	$s1 = $s;
 	$s1 = stripslashes($s1);
 	$s1 = strip_tags($s1);
 	$s1 = htmlspecialchars($s1, ENT_QUOTES);
 	
-	$arr_strip = array('\\', '|', '/', '?', '%', '*', '`');
+	// $arr_strip = array('\\', '|', '/', '?', '%', '*', '`');
 	$s1 = str_replace($arr_strip, '', $s1);
 	$s1 = trim($s1);
 	
@@ -212,6 +209,40 @@ function mso_initalizing()
 		}
 	}
 	
+	// аналогично проверяем и комюзера, только данные из куки
+	// но при этом сразу сохраняем все данные комюзера, чтобы потом не обращаться к БД
+	
+	$comuser = mso_get_cookie('maxsite_comuser', false);
+	if ($comuser) 
+	{	
+		$comuser = unserialize($comuser);
+		/*
+		[comusers_id] => 1 
+		[comusers_password] => 0370d342365873265874365786237852 
+		[comusers_email] => max-3000@list.ru 
+		[comusers_nik] => Максим 
+		[comusers_url] => http://maxsite.org/ 
+		[comusers_avatar_url] => http://maxsite.org/avatar.jpg 
+		*/
+		// нужно сверить с тем, что есть
+		
+		$CI->db->select('comusers_id, comusers_password, comusers_email');
+		$CI->db->where('comusers_id', $comuser['comusers_id']);
+		$CI->db->where('comusers_password', $comuser['comusers_password']);
+		$CI->db->where('comusers_email', $comuser['comusers_email']);
+		$query = $CI->db->get('comusers');
+		if ($query->num_rows()) // есть такой комюзер
+		{
+			$CI->session->userdata['comuser'] = $comuser;
+		}
+		else // неверные данные
+		{
+			$CI->session->userdata['comuser'] = 0;
+		}
+	}
+	else $CI->session->userdata['comuser'] = 0;
+	
+	
 	# дефолтные хуки
 	mso_hook_add('content_auto_tag', 'mso_auto_tag'); // авторасстановка тэгов
 	mso_hook_add('content_balance_tags', 'mso_balance_tags'); // автозакрытие тэгов - их баланс
@@ -223,6 +254,16 @@ function is_login()
 {
 	global $MSO;
 	return ($MSO->data['session']['userlogged'] == 1) ? true : false;
+}
+
+# проверка залогиннености комюзера
+# если есть, то возвращает массив данных
+function is_login_comuser()
+{	
+	global $MSO;
+	
+	if (isset($MSO->data['session']['comuser']) and ($comuser = $MSO->data['session']['comuser']) ) return $comuser;
+		else return false;
 }
 
 # загружаем включенные плагины
@@ -435,7 +476,11 @@ function getinfo($info = '')
 				
 		case 'admin_plugins_dir' :
 				$out = $MSO->config['admin_plugins_dir'];
-				break;		
+				break;
+				
+		case 'session' :
+				$out = $MSO->data['session'];
+				break;
 		
 	endswitch;
 	
@@ -448,6 +493,12 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 {
 	// ошибочный info
 	if ( $info!='title' and $info!='description' and $info!='keywords') return '';
+	
+	
+	if (mso_hook_present('head_meta')) // если есть хуки, то управление передаем им
+	{
+		return mso_hook('head_meta', array('info'=>$info, 'args'=>$args, 'format'=>$format, 'sep'=>$sep, 'only_meta'=>$only_meta));
+	}
 	
 	global $MSO;
 	
@@ -469,12 +520,14 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 			
 			$category_name = '';
 			$page_title = '';
+			$users_nik = '';
 			$title = getinfo($info);
 			
 			if ( $info!='title') $format = '%title%';
 		
 			if ( isset($args[0]['category_name']) ) $category_name = $args[0]['category_name'];
 			if ( isset($args[0]['page_title']) ) $page_title = $args[0]['page_title'];
+			if ( isset($args[0]['users_nik']) ) $users_nik = $args[0]['users_nik'];
 			
 			// если есть мета, то берем её
 			if ( isset($args[0]['page_meta'][$info][0]) and $args[0]['page_meta'][$info][0] )
@@ -492,8 +545,8 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 			
 			// pr($page_title);
 			
-			$arr_key = array( '%title%', '%page_title%',  '%category_name%', '|' );
-			$arr_val = array( $title ,  $page_title, $category_name, $sep );
+			$arr_key = array( '%title%', '%page_title%',  '%category_name%', '%users_nik%', '|' );
+			$arr_val = array( $title ,  $page_title, $category_name, $users_nik, $sep );
 			
 			$out = str_replace($arr_key, $arr_val, $format);
 			// pr($out);
@@ -585,10 +638,12 @@ function mso_admin_url_hook($hook, $func, $priory = 0)
 function mso_hook($hook = '', $result = '', $result_if_no_hook = '_mso_result_if_no_hook') 
 {
 	global $MSO;
+	
 	if ($hook == '') return $result;
 	
 	$arr = array_keys($MSO->hooks);
-	if ( !in_array($hook, $arr) ) // если нука нет
+	
+	if ( !in_array($hook, $arr) ) // если хука нет
 	{	
 		if ($result_if_no_hook != '_mso_result_if_no_hook') // если указана $result_if_no_hook
 			return $result_if_no_hook;
@@ -956,7 +1011,7 @@ function mso_flush_cache($full = false, $dir = false)
 		{
 			if ($filename != "." and $filename != "..")
 			{
-				if (!is_dir($cache_path . '/' . $filename)) unlink($cache_path . '/' . $filename);
+				if (!is_dir($cache_path . $filename)) unlink($cache_path . $filename);
 			}
 		}
 		@closedir($current_dir);
@@ -2235,13 +2290,18 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false)
 	$CI->email->initialize($config);
 
 	$CI->email->to($email);
-	$CI->email->from($admin_email);
+	$CI->email->from($admin_email, getinfo('name_site'));
 	$CI->email->subject($subject);
 	$CI->email->message($message);
 	
+	// pr($admin_email);
 	// pr($CI->email);
-
-	return @$CI->email->send();
+	
+	$res = @$CI->email->send();
+	
+	if (!$res) echo $CI->email->print_debugger();
+	
+	return $res;
 }
 
 # для юникода отдельный wordwrap
@@ -2538,5 +2598,102 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 	return $out;
 }
 
+# функция трансляции (языковой перевод)
+# первый параметр - переводимое слово - учитывается регистр полностью
+# второй параметр - переводимый файл либо __FILE__
+# либо путь к каталогу относительно application/maxsite/
+# например:
+#	для плагина ушки это plugins/ushki
+# 	для админ - admin
+#	для общего - common (используется по-умолчанию)
+# файл перевода должен находится в каталоге $file/language/язык.php
+
+function t($w = '', $file = 'common')
+{
+	global $MSO;
+	
+	if (!isset($MSO->language)) return $w;
+	
+	$current_language = $MSO->language; // тест на английский
+	
+	if (!$current_language) return $w; // не указан язык, выходим
+	
+	static $langs = array(); // общий массив перевода
+	
+	// путь относительно application/maxsite/
+	if ($file != 'common')// если не указан каталог, то берем из common
+	{
+		// заменим windows \ на /
+		$file = str_replace('\\', '/', $file); 
+		$bd = str_replace('\\', '/', $MSO->config['base_dir']);
+		
+		// если в $file входит base_dir, значит это использован __FILE__
+		// нужно вычленить base_dir
+		$pos = strpos($file, $bd);
+		if ($pos !== false) // есть вхождение
+		{
+			$file = str_replace($bd, '', $file);
+			$file = dirname($file);
+		}
+	}
+	
+	// pr($file);
+	
+	// $file у нас каталог plugins/ushki
+	// если в $langs нет такого ключа, значит нужно проверить есть ли файл 
+	// plugins/ushki/language/en.php
+	
+	if (!isset($langs[$file])) // нет такого ключа
+	{
+		$langs[$file] = array();
+		
+		// грузим файл, если есть
+		if (file_exists($MSO->config['base_dir'] . $file . '/language/' . $current_language . '.php'))
+		{
+			// есть такой файл
+			require_once ($MSO->config['base_dir'] . $file . '/language/' . $current_language . '.php');
+			
+			if (isset($lang)) // есть ли в нем $lang ?
+			{
+				$langs[$file] = $lang;
+			}
+		}
+	}
+	
+	// pr($langs);
+	
+	// если есть такой перевод, заменяем его
+	if (isset($langs[$file][$w])) $w = $langs[$file][$w];
+	
+	return $w;
+}
+
+# получение информации об авторе по его номеру из url http://localhost/author/1
+# или явно указанному номеру
+function mso_get_author_info($id = 0)
+{
+	if (!$id) $id = mso_segment(2);
+	if (!$id or !is_numeric($id)) return array(); // неверный id
+	
+	$key_cache = 'mso_get_author_info_' . $id;
+	if ( $k = mso_get_cache($key_cache) ) return $k; // да есть в кэше
+	
+	$out = array();
+	
+	$CI = & get_instance();
+	$CI->db->select('*');
+	$CI->db->where('users_id', $id);
+	$query = $CI->db->get('users');
+	
+	if ($query->num_rows() > 0) # есть такой юзер
+	{
+		$out = $query->result_array();
+		$out = $out[0];
+	}
+	
+	mso_add_cache($key_cache, $out);
+	
+	return $out;
+}
 
 ?>

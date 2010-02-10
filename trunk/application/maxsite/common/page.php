@@ -34,7 +34,7 @@ function mso_get_pages($r = array(), &$pag)
 	if ( !isset($r['cat_order_asc']) )	$r['cat_order_asc'] = 'asc'; // порядок рубрик
 	if ( !isset($r['pagination']) )		$r['pagination'] = true; // использовать пагинацию
 	if ( !isset($r['content']) )		$r['content'] = true; // получать весь текст
-	if ( !isset($r['page_id']) )		$r['page_id'] = 0; // если 0, значить все страницы - только для главной
+	if ( !isset($r['page_id']) )		$r['page_id'] = 0; // если 0, значит все страницы - только для главной
 	if ( !isset($r['cat_id']) )			$r['cat_id'] = 0; // если 0, значит все рубрики - только для главной
 	
 	if ( !isset($r['type']) )			$r['type'] = 'blog'; // если false - то все, иначе blog или static
@@ -80,6 +80,9 @@ function mso_get_pages($r = array(), &$pag)
 	
 	// стутус страниц - если false, то не учитывается
 	if ( !isset($r['page_status']) )		$r['page_status'] = 'publish';
+	
+	// можно указать номер автора - получим только его записи
+	if ( !isset($r['page_id_autor']) )		$r['page_id_autor'] = false;
 	
 	
 	$CI = & get_instance();
@@ -152,6 +155,9 @@ function mso_get_pages($r = array(), &$pag)
 			$all_page_id[] = $page['page_id'];
 			
 			$content = $page['page_content'];
+			
+			$content = str_replace('<!-- pagebreak -->', '[cut]', $content); // совместимость с TinyMCE
+			
 			$content = mso_hook('content', $content);
 			$content = mso_hook('content_auto_tag', $content);
 			$content = mso_hook('content_balance_tags', $content);
@@ -326,6 +332,8 @@ function _mso_sql_build_home($r, &$pag)
 		
 		if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
 		
+		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		
 		if ($cat_id) // указаны рубрики
@@ -368,11 +376,11 @@ function _mso_sql_build_home($r, &$pag)
 	
 	if ($r['content'])
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 	}
 	else
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 	}
 		
 	$CI->db->from('page');
@@ -386,6 +394,8 @@ function _mso_sql_build_home($r, &$pag)
 	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now );
 	
 	if ($r['only_feed']) $CI->db->where('page_feed_allow', '1');
+	
+	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
@@ -438,7 +448,7 @@ function _mso_sql_build_page($r, &$pag)
 	// if ( (string) $slug != (string) $id ) $id = false; // slug не число
 	
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor, users_description');
 	$CI->db->from('page');
 	
 	// if ($page_status) $CI->db->where('page_status', $page_status);
@@ -518,6 +528,8 @@ function _mso_sql_build_category($r, &$pag)
 		
 		if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
 		
+		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
 		$CI->db->join('category', 'cat2obj.category_id = category.category_id');
@@ -560,9 +572,9 @@ function _mso_sql_build_category($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 		
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
@@ -570,6 +582,8 @@ function _mso_sql_build_category($r, &$pag)
 	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
 	
 	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
+	
+	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 	
 	//$CI->db->where('page_type_name', 'blog');
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
@@ -643,6 +657,9 @@ function _mso_sql_build_tag($r, &$pag)
 		if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
 		
 		if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+		
+		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		$CI->db->join('meta', 'meta.meta_id_obj = page.page_id');
 		$CI->db->where('meta_key', 'tags');
@@ -673,9 +690,9 @@ function _mso_sql_build_tag($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 	
 	
 	$CI->db->from('page');
@@ -685,6 +702,9 @@ function _mso_sql_build_tag($r, &$pag)
 	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
 	
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	
+	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
+	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->join('meta', 'meta.meta_id_obj = page.page_id');
@@ -771,6 +791,8 @@ function _mso_sql_build_archive($r, &$pag)
 		$CI->db->where('page_date_publish >= ', $date_in);
 		$CI->db->where('page_date_publish <= ', $date_in_59);
 		
+		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		
 		// $CI->db->order_by('page_date_publish', 'desc');
@@ -799,7 +821,7 @@ function _mso_sql_build_archive($r, &$pag)
 		$pag = false;
 	
 	// теперь сами страницы
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 	
@@ -807,6 +829,7 @@ function _mso_sql_build_archive($r, &$pag)
 	$CI->db->where('page_date_publish >= ', $date_in);
 	$CI->db->where('page_date_publish <= ', $date_in_59);
 
+	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 	
 	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
 	
@@ -862,6 +885,8 @@ function _mso_sql_build_search($r, &$pag)
 		
 		if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
 		
+		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
+		
 		$CI->db->like('page_content', $search); 
 		$CI->db->or_like('page_title', $search); 
 		
@@ -893,7 +918,7 @@ function _mso_sql_build_search($r, &$pag)
 	
 	// теперь сами страницы
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
 	
 		
 	$CI->db->from('page');
@@ -901,6 +926,8 @@ function _mso_sql_build_search($r, &$pag)
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 	
 	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
+	
+	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 	
 	$CI->db->like('page_content', $search); 
 	$CI->db->or_like('page_title', $search);
@@ -928,8 +955,107 @@ function _mso_sql_build_search($r, &$pag)
 # страницы автора
 function _mso_sql_build_author($r, &$pag)
 {
+	// $CI = & get_instance();
+	// _mso_sql_build_home($r, &$pag);
 	$CI = & get_instance();
-	_mso_sql_build_home($r, &$pag);
+	
+	if ($r['slug']) 
+		$slug = $r['slug'];
+	else
+		$slug = mso_segment(2);
+	
+	// $slug = mso_segment(2);
+	
+	// если slug есть число, то выполняем поиск по id
+	if (!is_numeric($slug)) $id = 0; // slug не число
+		else $id = (int) $slug;
+	
+	// при получении учитываем часовой пояс
+	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	
+	$offset = 0;
+
+	if ($r['pagination'])
+	{
+		# пагинация
+		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
+		# сама пагинация выводится отдельным плагином
+		# запрос один в один, кроме limit и юзеров
+		$CI->db->select('page.page_id');
+		$CI->db->from('page');
+
+		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
+		
+		//$CI->db->where('page_type_name', 'blog');
+		if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+		
+		if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
+		
+		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
+		//$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
+		//$CI->db->join('category', 'cat2obj.category_id = category.category_id');
+		
+		$CI->db->where('page.page_id_autor', $id);
+		
+		$query = $CI->db->get();
+		
+		$pag_row = $query->num_rows();
+		
+		if ($pag_row > 0)
+		{
+			$pag['maxcount'] = ceil($pag_row / $r['limit']); // всего станиц пагинации
+			$pag['limit'] = $r['limit']; // записей на страницу
+
+			$current_paged = mso_current_paged();
+			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
+			
+			$offset = $current_paged * $pag['limit'] - $pag['limit']; 
+		}
+		else
+		{
+			$pag = false;
+		}
+	}
+	else 
+		$pag = false;
+	
+	// теперь сами страницы
+	if ($r['content'])
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+	else
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		
+	$CI->db->from('page');
+	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
+	
+	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
+	
+	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
+	
+	
+	//$CI->db->where('page_type_name', 'blog');
+	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	$CI->db->join('users', 'users.users_id = page.page_id_autor');
+	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
+	
+	$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
+	$CI->db->join('category', 'cat2obj.category_id = category.category_id');
+	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
+
+
+	$CI->db->where('page.page_id_autor', $id);
+			
+
+	$CI->db->order_by($r['order'], $r['order_asc']);
+	
+	$CI->db->group_by('page.page_id');
+	//$CI->db->group_by('comments_page_id');
+	
+	if (!$r['no_limit'])
+	{
+		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
+			else $CI->db->limit($r['limit']);
+	}	
 }
 
 
@@ -1001,7 +1127,7 @@ function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', 
 					. $MSO->config['site_url'] 
 					. $type . '/' 
 					. $tag 
-					. '">' 
+					. '" rel="tag">' 
 					. $tag 
 					. '</a>   ';
 		else
@@ -1199,6 +1325,31 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		if ($echo) echo $out;
 			else return $out;		
 	}
+}
+
+# получить ссылкe на автора страницы
+function  mso_page_author_link($users_nik = '', $page_id_autor = '', $do = '', $posle = '', $echo = true, $type = 'author', $link = true)
+{
+	global $MSO;
+	
+	if (!$users_nik or !$page_id_autor) return '';
+	
+	$out = '';
+
+	if ($link)
+		$out .=  '<a href="' 
+				. $MSO->config['site_url'] 
+				. $type . '/' 
+				. $page_id_autor 
+				. '">' 
+				. $users_nik
+				. '</a>   ';
+	else
+		$out .= $users_nik;
+
+	
+	if ($echo) echo $do . $out . $posle;
+		else return $do . $out . $posle;
 }
 
 

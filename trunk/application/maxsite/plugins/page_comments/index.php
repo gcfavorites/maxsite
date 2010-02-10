@@ -10,7 +10,7 @@
 # функция автоподключения плагина
 function page_comments_autoload($args = array())
 {
-	mso_register_widget('page_comments_widget', 'Виджет «Самое комментируемое»'); # регистрируем виджет
+	mso_register_widget('page_comments_widget', 'Самое комментируемое'); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина

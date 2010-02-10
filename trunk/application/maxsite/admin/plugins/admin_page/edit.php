@@ -8,14 +8,44 @@
 	$id = mso_segment(3); // номер страницы по сегменту url
 	
 	// проверим, чтобы это было число
-	$id1 = (int) $id;
-	if ( (string) $id != (string) $id1 ) $id = false; // ошибочный id
+	//$id1 = (int) $id;
+	//if ( (string) $id != (string) $id1 ) $id = false; // ошибочный id
+	
+	if (!is_numeric($id)) $id = false; // не число
+		else $id = (int) $id;
 	
 	//echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
 							
 	if ($id) // есть корректный сегмент
 	{
-	
+		$CI = & get_instance();
+		
+		
+		# проверим текущего юзера и его разрешение на правку чужих страниц
+		# если admin_page_edit=1, то есть разрешено редактировать в принципе (уже проверили раньше!),
+		# то смотрим admin_page_edit_other. Если стоит 1, то все разрешено
+		# если false, значит смотрим автора страницы и если он не равен юзеру, рубим доступ
+		
+		if ( !mso_check_allow('admin_page_edit_other') )
+		{
+			# echo 'запрещено редактировать чужие страницы';
+			
+			$current_users_id = getinfo('session');
+			$current_users_id = $current_users_id['users_id'];
+			
+			# получаем данные страницы
+			$CI->db->select('page_id');
+			$CI->db->from('page');
+			$CI->db->where(array('page_id'=>$id, 'page_id_autor'=>$current_users_id));
+			$query = $CI->db->get();
+			if ($query->num_rows() == 0) // не автор
+			{
+				echo '<div class="error">Вам не разрешено редактировать чужие записи!</div>';
+				return;
+			}
+		}
+		
+		
 	
 		require_once( getinfo('common_dir') . 'category.php' ); // функции рубрик
 		require_once( getinfo('common_dir') . 'meta.php' ); // функции meta - для меток
@@ -24,7 +54,7 @@
 		// этот код почти полностью повторяет код из new.php
 		// разница только в том, что указан id
 		
-		$CI = & get_instance();
+		
 		
 		if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_content')) )
 		{
@@ -282,16 +312,39 @@
 					if ( e != "" ) { elem.value = e + ", " + t; }
 					else { elem.value = t; };
 				}
+				function shtags(sh)
+				{
+					var elem1 = document.getElementById("f_all_tags_max_num");
+					var elem2 = document.getElementById("f_all_tags_all");
+					
+					if (sh == 1) 
+					{ 
+						elem1.style.display = "none"; 
+						elem2.style.display = "block"; 
+					}
+					else
+					{
+						elem1.style.display = "block"; 
+						elem2.style.display = "none"; 				
+					}
+				}			
 			</script>' . NR;
 			
-			
+			// только первые 20
 			$f_all_tags .= tagclouds_widget_custom(array(
 				'max_num' => 20,
 				'max_size' => '180',
-				'block_start' => '<p><br />',
-				'block_end' => '</p>',
+				'block_start' => '<p id="f_all_tags_max_num"><br />',
+				'block_end' => ' <a title="Показать все метки" href="#" onClick="shtags(1); return false;">&gt;&gt;&gt;</a></p>',
 				'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
+			));
 			
+			// все метки
+			$f_all_tags .= tagclouds_widget_custom(array(
+				'max_size' => '180',
+				'block_start' => '<p id="f_all_tags_all" style="display: none;"><br />',
+				'block_end' => ' <a title="Показать только самые популярные метки" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',
+				'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
 			));
 	
 		}
@@ -438,8 +491,12 @@
 					);
 
 		# отображаем редактор
-		editor_jw($ad_config);
-
+		# есть ли хук на редактор: если да, то получаем эту функцию
+		# если нет, то отображаем стандартный editor_jw
+		if (mso_hook_present('editor_custom')) mso_hook('editor_custom', $ad_config);
+			else editor_jw($ad_config);;
+			
+		//editor_jw($ad_config);
 
 	////////////////////////////////////////////////////////////////////////////////
 

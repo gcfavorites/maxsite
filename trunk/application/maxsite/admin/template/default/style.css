@@ -40,8 +40,8 @@ div.admin-header {background: #0D419B url(images/bg-header.jpg) repeat-x; color:
 div.admin-header a {color: white;}
 
 div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; border-left: 2px #4472C5 solid; }
-
-div.admin-menu {width: 250px; background: #C3DAF9; color: #527FD0; float: left; border-right: 2px #4472C5 solid;}
+/*C3DAF9 */
+div.admin-menu {width: 250px; background: #A4C5EF; color: #527FD0; float: left; border-right: 2px #4472C5 solid;}
 div.admin-menu div.r {padding: 10px 0 10px 0;}
 
 div.admin-footer {clear: both; background: #0D419B; color: white; padding: 5px 0; text-align: center;}

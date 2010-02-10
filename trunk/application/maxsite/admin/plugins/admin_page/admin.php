@@ -69,6 +69,16 @@
 
 	$CI->table->set_heading('ID','Тип', 'Заголовок', 'Дата', 'Статус', 'Автор', 'Действие');
 	
+	
+	if ( !mso_check_allow('admin_page_edit_other') )
+	{
+		# echo 'запрещено редактировать чужие страницы';
+		$current_users_id = getinfo('session');
+		$current_users_id = $current_users_id['users_id'];
+	}
+	else $current_users_id = false;
+	
+	
 	$par = array( 
 			'limit' => 50, // колво записей на страницу
 			'type' => false, // любой тип страниц
@@ -77,6 +87,7 @@
 			'page_status' => false, // статус любой
 			'date_now' => false, // любая дата
 			'content'=> false, // без содержания
+			'page_id_autor'=> $current_users_id, // только указанного автора
 			);
 	
 	$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации

@@ -71,4 +71,6 @@
 
 [quote]текст[/quote] => <blockquote>текст</blockquote> - цитата
 
+[url]http://site/[/url] => <a href="http://site/">http://site/</a>
+[url=http://site/]текст[/url] => <a href="http://site/">текст</a>
 

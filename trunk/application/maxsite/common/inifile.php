@@ -187,8 +187,10 @@ function mso_view_ini($all = false)
 		}
 		
 		if ($description) $f .= '<p>' .  $description . '</p>';
-		if (!$options_present) $key = '<span style="color: red;">* ' . $key . ' (нет в базе)</span>';
-			else $key = '<strong>' . $key . '</strong>';
+		if (!$options_present) 
+			$key = '<span title="' . $options_key . '" style="color: red;">* ' . $key . ' (нет в базе)</span>';
+		else 
+			$key = '<strong title="' . $options_key . '">' . $key . '</strong>';
 			
 		$CI->table->add_row($key, $f);
 	}

@@ -130,7 +130,7 @@ else
 			if ($pages) // есть страницы
 			{ 	
 				
-				echo '<h1 clss="home-cat-block">' . $all_cats[$cat_id]['category_name'] . '</h1>';
+				echo '<h1 class="home-cat-block">' . $all_cats[$cat_id]['category_name'] . '</h1>';
 				
 				
 				// выводим полнные тексты или списком

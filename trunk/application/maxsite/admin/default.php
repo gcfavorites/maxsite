@@ -13,12 +13,12 @@ function mso_admin_menu_default($args = array())
 	# группа - адрес - название ссылка - порядок в своей группе
 	# вначале нужно добавить все главные меню в той последовательности, которая нужна
 
-	mso_admin_menu_add('', '', 'Начало');
+	mso_admin_menu_add('', '', t('Начало', __FILE__) );
 
-	mso_admin_menu_add('page', '', 'Страницы');
-	mso_admin_menu_add('options', '', 'Настройки');
-	mso_admin_menu_add('users', '', 'Пользователи');
-	mso_admin_menu_add('plugins', '', 'Плагины');
+	mso_admin_menu_add('page', '', t('Страницы', __FILE__));
+	mso_admin_menu_add('options', '', t('Настройки', __FILE__));
+	mso_admin_menu_add('users', '', t('Пользователи', __FILE__));
+	mso_admin_menu_add('plugins', '', t('Плагины', __FILE__));
 	
 	$out = 'Меню не определено';
 	
@@ -117,6 +117,7 @@ mso_create_allow('admin_options', 'Админ-доступ к «Настройк
 mso_create_allow('admin_page', 'Админ-доступ к «Страницы-список»');
 mso_create_allow('admin_page_new', 'Админ-доступ к «Создание страниц»');
 mso_create_allow('admin_page_edit', 'Админ-доступ к «Редактирование страниц»');
+mso_create_allow('admin_page_edit_other', 'Админ-доступ к редактированию чужих страниц');
 
 mso_create_allow('admin_sidebars', 'Админ-доступ к настройкам сайдбаров');
 

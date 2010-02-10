@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /system
-Disallow: */admin
-
+Disallow: /admin
+Disallow: /feed$

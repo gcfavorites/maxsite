@@ -44,6 +44,15 @@
 		
 		if ($ok) // все ок - выполняем sql запрос
 		{
+			# проверим, чтобы category_id_parent был существующим, а также не был равен category_id
+			# то есть не ссылался сам на себя
+			if ($category_id_parent > 0)
+			{
+				$all_cats = mso_cat_array_single();
+				if (!isset($all_cats[$category_id_parent])) // нет такой рубрики
+					$category_id_parent = 0; // сбрасываем парент
+				if ($category_id_parent == $category_id) $category_id_parent = 0; // сбрасываем парент
+			}
 			
 			$CI->db->where('category_id', $category_id);
 			
@@ -113,6 +122,14 @@
 			
 			if ($query->num_rows() == 0 ) // нет такого
 			{
+				# проверим, чтобы category_id_parent был существующим
+				if ($category_id_parent > 0)
+				{
+					$all_cats = mso_cat_array_single();
+					if (!isset($all_cats[$category_id_parent])) // нет такой рубрики
+						$category_id_parent = 0; // сбрасываем парент
+				}
+				
 				$ins_data = array (
 					'category_id_parent' => $category_id_parent,
 					'category_menu_order' => $category_menu_order,
@@ -317,7 +334,7 @@
 			if ($users_id != $user_data['users_id']) 
 			{
 				if ( mso_check_allow('edit_users_password', $user_data['users_id']) ) // да можно 
-					$upd_data['users_new_password'] = $users_new_password;
+					$upd_data['users_password'] = $users_new_password;
 			}
 			else // меняет сам себе
 			{

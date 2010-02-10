@@ -21,7 +21,7 @@ echo $res_post;
 if ($comuser_info)
 {
 	extract($comuser_info[0]);
-	
+	// pr($comuser_info[0]);
 	if ($comusers_nik) echo '<h1>' . $comusers_nik . '</h1>';
 		else echo '<h1>Комментатор ' . $comusers_id . '</h1>';
 	
@@ -53,6 +53,8 @@ if ($comuser_info)
 		
 		echo '<p><strong>Отображаемый ник:</strong> <input type="text" name="f_comusers_nik" value="' . $comusers_nik . '"></p>';
 		echo '<p><strong>Сайт (с http://):</strong> <input type="text" name="f_comusers_url" value="' . $comusers_url . '"></p>';
+		echo '<p><strong>Аватарка (с http://, размер 80x80px):</strong> <input type="text" name="f_comusers_avatar_url" value="' . $comusers_avatar_url . '"></p><br />';
+		
 		echo '<p><strong>ICQ:</strong> <input type="text" name="f_comusers_icq" value="' . $comusers_icq . '"></p>';
 		echo '<p><strong>MSN:</strong> <input type="text" name="f_comusers_msn" value="' . $comusers_msn . '"></p>';
 		echo '<p><strong>Jaber:</strong> <input type="text" name="f_comusers_jaber" value="' . $comusers_jaber . '"></p>';

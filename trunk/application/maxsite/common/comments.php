@@ -374,9 +374,18 @@ function mso_get_new_comment($args = array())
 					if ($query->num_rows()) // есть такой комюзер
 					{
 						$row = $query->row_array(1);
-
-						if ($row['comusers_password'] != mso_md5($comments_password)) // пароль неверный
-							return '<div class="' . $args['css_error']. '">Неверный пароль</div>';
+						
+						// пароль не нужно шифровать mso_md5
+						if (isset($post['comments_password_md']) and $post['comments_password_md'])
+						{
+							if ($row['comusers_password'] != $comments_password) // пароль неверный
+								return '<div class="' . $args['css_error']. '">Неверный пароль</div>';
+						}
+						else
+						{
+							if ($row['comusers_password'] != mso_md5($comments_password)) // пароль неверный
+								return '<div class="' . $args['css_error']. '">Неверный пароль</div>';
+						}
 						
 						$comusers_id = $row['comusers_id']; // получаем номер комюзера
 					}
@@ -711,7 +720,7 @@ function mso_comuser_edit($args = array())
 	} // активация
 	elseif ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comusers_email', 'f_comusers_password', 
 					'f_comusers_nik', 'f_comusers_url', 'f_comusers_icq', 'f_comusers_msn', 'f_comusers_jaber', 
-					'f_comusers_date_birth',  'f_comusers_description')) ) // это обновление формы
+					'f_comusers_date_birth',  'f_comusers_description', 'f_comusers_avatar_url')) ) // это обновление формы
 	{
 		# защита рефера
 		mso_checkreferer();
@@ -748,11 +757,14 @@ function mso_comuser_edit($args = array())
 			$comuser = $query->result_array(); // данные комюзера
 			// pr($comuser);
 			
-			//$ = ;
-			//$ = $post[''];
-			//$ = $post[''];
+			$f_comusers_avatar_url = mso_strip($post['f_comusers_avatar_url'], false, 
+				array('\\', '|', '?', '%', '*', '`'));
+			
+			$allowed_ext = array('gif', 'jpg', 'jpeg', 'png'); // разрешенные типы
+			$ext = strtolower(str_replace('.', '', strrchr($f_comusers_avatar_url, '.'))); // расширение файла
+			if ( !in_array($ext, $allowed_ext) ) $f_comusers_avatar_url = ''; // запрещенный тип файла
+				
 			$upd_date = array (
-				// 'comusers_id'=>$id,
 				'comusers_nik' =>	strip_tags($post['f_comusers_nik']),
 				'comusers_url' =>	strip_tags($post['f_comusers_url']),
 				'comusers_icq' =>	strip_tags($post['f_comusers_icq']),
@@ -760,6 +772,7 @@ function mso_comuser_edit($args = array())
 				'comusers_jaber' =>	strip_tags($post['f_comusers_jaber']),
 				'comusers_date_birth' =>	strip_tags($post['f_comusers_date_birth']),
 				'comusers_description' =>	strip_tags($post['f_comusers_description']),
+				'comusers_avatar_url' =>	$f_comusers_avatar_url,
 				);
 			$CI->db->where('comusers_id', $id);
 			$res = ($CI->db->update('comusers', $upd_date )) ? '1' : '0';

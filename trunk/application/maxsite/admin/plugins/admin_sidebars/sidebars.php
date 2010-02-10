@@ -85,7 +85,14 @@
 		$error .= '<div class="error">Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например: <br /><b>mso_register_sidebar(\'1\', \'Первый сайдбар\');</b></div>';
 	}
 	
-	if ($MSO->widgets)
+	
+	//pr($MSO->widgets);
+	
+	// сортируем по титлу
+	$all_w = $MSO->widgets;
+	asort($all_w);
+	
+	if ($all_w)
 	{ // есть виджеты
 	
 		$form .= '
@@ -99,17 +106,17 @@
 
 
 		$form .= '<br /><br /><h2>Доступные виджеты (добавляйте только функцию/подчеркнуто)</h2><ul class="widgets-allow">';
-		foreach ($MSO->widgets as $function => $title)
+		foreach ($all_w as $function => $title)
 		{
 			// $form .= '<li><b>' . $function . '</b> (' . $title . ')</li>';
-			$form .= '<li><strong>' . $title . '</strong> <u>' . $function . '</u><br />Добавить в ';
+			$form .= '<li><strong>' . $title . '</strong> » ';
 			
 			foreach($all_name_sidebars as $sid=>$sid_title)
 			{
 				$form .= ' <input style="margin: 0 0px; border: 1px solid gray; font-size: .9em;" type="button" value=" ' . $sid_title . ' " title="Добавить «' . $function . '» в сайдбар «' . $sid_title 
 						. '»" onClick="addText(\'' . $function . '\', \'f_sidebars[' . $sid . ']\') " />' . NR;
 			}
-			$form .= '</li>' . NR;
+			$form .= ' (<em>' . $function . '</em>) </li>' . NR;
 		}
 		$form .= '</ul>';
 	}

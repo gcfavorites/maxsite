@@ -19,10 +19,12 @@ require(getinfo('template_dir') . 'main-start.php');
 
 if ($pages) // есть страницы
 { 	
+	
 	foreach ($pages as $page) : // выводим в цикле
 
 		extract($page);
-		// pr($page);
+		
+		echo NR . '<div class="page_only">' . NR;
 		
 		mso_page_title($page_slug, $page_title, '<h1>', '</h1>', false);
 
@@ -68,9 +70,11 @@ if ($pages) // есть страницы
 				}
 			}
 			
-			require('page-comments.php'); // здесь форма комментариев
 		echo '</div>';
 		
+		echo NR . '</div><!--div class="page_only"-->' . NR;
+		
+		require('page-comments.php'); // здесь форма комментариев
 		
 	endforeach;
 	

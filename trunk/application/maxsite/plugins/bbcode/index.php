@@ -74,8 +74,8 @@ function bbcode_custom($markup = '')
 
 		// links
 		//'~\[url\]www\.(.*?)\[\/url\]~si'        => '<a href="http://www.$1">$1</a>',
-		//'~\[url\](.*?)\[\/url\]~si'             => '<a href="$1">$1</a>',
-		//'~\[url=(.*?)?\](.*?)\[\/url\]~si'      => '<a href="$1">$2</a>',
+		'~\[url\](.*?)\[\/url\]~si'             => '<a href="$1">$1</a>',
+		'~\[url=(.*?)?\](.*?)\[\/url\]~si'      => '<a href="$1">$2</a>',
 
 
 		// images

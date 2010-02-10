@@ -22,6 +22,8 @@ if ($pages) // есть страницы
 		extract($page);
 		
 		// pr($page);
+		
+		echo NR . '<div class="page_only">' . NR;
 	
 		mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 
@@ -40,6 +42,7 @@ if ($pages) // есть страницы
 			
 		echo '</div>';
 		
+		echo NR . '</div><!--div class="page_only"-->' . NR;
 		
 	endforeach;
 	

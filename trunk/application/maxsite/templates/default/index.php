@@ -42,7 +42,7 @@ if ( is_type('archive') ) 			require($type_dir . 'archive.php');	// архив �
 	elseif ( is_type('category') )	require($type_dir . 'category.php');	// рубрики
 	elseif ( is_type('search') )	require($type_dir . 'search.php');		// поиск
 	elseif ( is_type('tag') )		require($type_dir . 'tag.php');		// метки
-	# elseif ( is_type('author') ) 	require($type_dir . 'type/author.php');
+	elseif ( is_type('author') ) 	require($type_dir . 'author.php');
 	elseif ( is_type('users') )	
 	{
 		if (mso_segment(3)=='edit')	require($type_dir . 'users-form.php'); // редактирование комюзера

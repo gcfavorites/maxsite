@@ -41,7 +41,7 @@ function ushki_admin_init($args = array())
 		#			можно использовать добавочный, например demo/edit = http://сайт/admin/demo/edit
 		# Третий - название ссылки	
 		
-		mso_admin_menu_add('plugins', $this_plugin_url, 'Ушки');
+		mso_admin_menu_add('plugins', $this_plugin_url, t('Ушки', __FILE__));
 
 		# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 		# связанную функцию именно она будет вызываться, когда 

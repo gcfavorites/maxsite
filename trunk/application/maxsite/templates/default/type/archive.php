@@ -15,7 +15,7 @@ require(getinfo('template_dir') . 'main-start.php');
 
 if ($pages) // есть страницы
 { 	
-	echo '<h1>Архивы</h1>';
+	echo '<h1 class="archive">Архивы</h1>';
 	
 	foreach ($pages as $page) : // выводим в цикле
 

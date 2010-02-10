@@ -282,7 +282,7 @@ class CI_Encrypt {
 		
 		$init_vect = substr($data, 0, $init_size);
 		$data = substr($data, $init_size);
-		return rtrim(mcrypt_decrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), "\0");
+		return rtrim(@mcrypt_decrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), "\0");
 	}
   	
 	// --------------------------------------------------------------------

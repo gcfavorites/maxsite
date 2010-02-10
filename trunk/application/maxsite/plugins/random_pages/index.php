@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function random_pages_autoload($args = array())
 {
-	mso_register_widget('random_pages_widget', 'Виджет «Случайные статьи»'); # регистрируем виджет
+	mso_register_widget('random_pages_widget', 'Случайные статьи'); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина

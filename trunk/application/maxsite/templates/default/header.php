@@ -7,6 +7,7 @@
 	<meta name="keywords" content="<?= mso_head_meta('keywords') ?>">
 	<link rel="shortcut icon" href="<?= getinfo('stylesheet_url') ?>ico/favicon4.ico" type="image/x-icon">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>style.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>print.css" type="text/css" media="print">
 	<?php 
 		if ( $menu = mso_get_option('menu_header', 'templates', 'custom_menu-034-1.css') ) 
 		{

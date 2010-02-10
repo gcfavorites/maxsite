@@ -56,9 +56,9 @@
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo '<div style="width: 100%;">';
+	
 	foreach ($dirs as $dir)
 	{
-		
 		if ($dir == $current_template) continue;
 		
 		// обязательный файл index.php
@@ -67,7 +67,7 @@
 		
 		if (file_exists($index))
 		{
-			$out = '<div style="float: left; margin: 10px; border: 1px silver solid; border-right: 3px gray solid; border-bottom: 3px #676767 solid; padding: 0px 10px; width: 280px; text-align: center; ">';
+			$out = '<div style="float: left; margin: 5px 5px 10px 5px; border: 1px silver solid; border-right: 3px gray solid; border-bottom: 3px #676767 solid; padding: 0px 10px; width: 280px; height: 340px; text-align: center; position: relative;">';
 			$out .= '<h2>' . $dir . '</h2>';
 			
 			$screenshot = $templates_dir . $dir . '/screenshot.jpg';
@@ -82,7 +82,7 @@
 				$out .= '<div style="margin: 0 auto; width: 250px; height: 200px; background: #f0f0f0; border: 1px solid silver;">Нет изображения</div>';
 			}
 			
-						$info_f = $templates_dir . $dir . '/info.php';
+			$info_f = $templates_dir . $dir . '/info.php';
 			if (file_exists($info_f))
 			{
 				require($info_f);
@@ -94,6 +94,7 @@
 			
 			$out .= '<input type="submit" name="f_submit[' . $dir . ']" value="Выбрать этот шаблон" style="margin: 10px;" />';
 			$out .= '</div>';
+
 			echo $out;
 		}
 	}
