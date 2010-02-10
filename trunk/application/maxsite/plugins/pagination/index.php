@@ -24,14 +24,29 @@ function pagination_go($r = array())
 	if ( !isset($r['limit']) ) return $r; // нужно указать сколько записей выводить
 	if ( !isset($r['type']) )  $r['type'] = false; // можно задать свой тип
 	
-	if ( !isset($r['range']) ) 	$r['range'] = 3;
 	if ( !isset($r['next_url']) ) $r['next_url'] = 'next';
-	if ( !isset($r['format']) )	$r['format'] = array('« ' . t('Первая', 'plugins'), 
-													'‹ ' . t('предыдущая', 'plugins'), 
-													t('следующая', 'plugins') . ' ›', 
-													t('последняя', 'plugins') . ' »');
-	if ( !isset($r['sep']) ) 	$r['sep'] = ' &middot; ';
-	if ( !isset($r['sep2']) ) 	$r['sep2'] = ' | ';
+	
+	$options = mso_get_option('plugin_pagination', 'plugins', array() ); // получаем опции
+	
+	if ( !isset($r['range']) ) 
+		$r['range'] = isset($options['range']) ? (int) $options['range'] : 3;
+		
+	if ( !isset($r['sep']) ) 
+		$r['sep'] = isset($options['sep']) ? $options['sep'] : ' &middot; ';	
+	
+	if ( !isset($r['sep2']) ) 
+		$r['sep2'] = isset($options['sep2']) ? $options['sep2'] : ' | ';
+		
+	
+	
+	if ( !isset($r['format']) )
+	{	
+		// $r['format'] = 
+		$r['format'][] = isset($options['format_first']) ? $options['format_first'] : '« ' . t('Первая', 'plugins');
+		$r['format'][] = isset($options['format_prev']) ? $options['format_prev'] : '‹ ' . t('предыдущая', 'plugins');
+		$r['format'][] = isset($options['format_next']) ? $options['format_next'] : t('следующая', 'plugins') . ' ›';
+		$r['format'][] = isset($options['format_last']) ? $options['format_last'] : t('последняя', 'plugins') . ' »';
+	}	
 	
 	# текущая пагинация вычисляется по адресу url
 	# должно быть /next/6 - номер страницы
@@ -68,7 +83,7 @@ function pagination_go($r = array())
 	else
 		$home_url = $cur_url;
 	
-	// pr($home_url);
+	//pr($home_url);
 	
 	$out = _pagination( $r['maxcount'], 
 						$current_paged, 
@@ -90,7 +105,7 @@ function pagination_go($r = array())
 		
 		echo NR . '<div class="pagination">' . $out . '</div>' . NR;
 	}
-	 
+	
 	return $r_orig;
 }
 
@@ -193,4 +208,59 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 }	
 
 
+function pagination_mso_options() 
+{
+	# ключ, тип, ключи массива
+	mso_admin_plugin_options('plugin_pagination', 'plugins', 
+		array(
+			'range' => array(
+							'type' => 'text', 
+							'name' => 'Диапазон количества ссылок', 
+							'description' => 'Задайте количество отображаемых ссылок на страницы.', 
+							'default' => '3'
+						),
+			'format_first' => array(
+							'type' => 'text', 
+							'name' => 'Текст для «Первая»', 
+							'description' => '', 
+							'default' => 'Первая'
+						),
+			'format_prev' => array(
+							'type' => 'text', 
+							'name' => 'Текст для «предыдущая»', 
+							'description' => '', 
+							'default' => 'предыдущая'
+						),
+			'format_next' => array(
+							'type' => 'text', 
+							'name' => 'Текст для «следующая»', 
+							'description' => '', 
+							'default' => 'следующая'
+						),
+			'format_last' => array(
+							'type' => 'text', 
+							'name' => 'Текст для «последняя»', 
+							'description' => '', 
+							'default' => 'последняя'
+						),
+			'sep' => array(
+							'type' => 'text', 
+							'name' => 'Разделитель между страницами', 
+							'description' => '', 
+							'default' => ' &middot; '
+						),
+			'sep2' => array(
+							'type' => 'text', 
+							'name' => 'Разделитель между блоком страниц и текстовыми ссылками', 
+							'description' => '', 
+							'default' => ' | '
+						),
+
+			),
+		'Настройки плагина Pagination', // титул
+		'Укажите необходимые опции.'   // инфо
+	);
+}
+
+	
 ?>

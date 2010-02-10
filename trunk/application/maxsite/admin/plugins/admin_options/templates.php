@@ -43,15 +43,15 @@ mso_cur_dir_lang('admin');
 	
 	if (file_exists($templates_dir . $current_template . '/screenshot.jpg'))
 	{
-		echo '<img src="' . $MSO->config['templates_url'] . $current_template . '/screenshot.jpg' . '" width="250" height="200" alt="" title="" />';
+		echo '<img src="' . $MSO->config['templates_url'] . $current_template . '/screenshot.jpg' . '" width="250" height="200" alt="" title="">';
 	}	
 	
 	if (file_exists($templates_dir . $current_template . '/info.php'))
 	{
 		require($templates_dir . $current_template . '/info.php');
 		echo '<p><a href="' . $info['template_url'] . '">' . $info['name'] . ' ' . $info['version'] . '</a>';
-		echo '<br />' . $info['description'];
-		echo '<br />' . t('Автор:') . ' <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
+		echo '<br>' . $info['description'];
+		echo '<br>' . t('Автор:') . ' <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
 		echo '</p>';
 	}
 		
@@ -79,7 +79,7 @@ mso_cur_dir_lang('admin');
 			if (file_exists($screenshot))
 			{
 				$screenshot = $MSO->config['templates_url'] . $dir . '/screenshot.jpg';
-				$out .= '<img src="' . $screenshot . '" width="250" height="200" alt="" title="" />';
+				$out .= '<img src="' . $screenshot . '" width="250" height="200" alt="" title="">';
 			}
 			else
 			{
@@ -91,12 +91,12 @@ mso_cur_dir_lang('admin');
 			{
 				require($info_f);
 				$out .= '<p><a href="' . $info['template_url'] . '">' . $info['name'] . ' ' . $info['version'] . '</a>';
-				$out .= '<br />' . $info['description'];
-				$out .= '<br />' . t('Автор:') . ' <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
+				$out .= '<br>' . $info['description'];
+				$out .= '<br>' . t('Автор:') . ' <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
 				$out .= '</p>';
 			}
 			
-			$out .= '<input type="submit" name="f_submit[' . $dir . ']" value="' . t('Выбрать этот шаблон') . '" style="margin: 10px;" />';
+			$out .= '<input type="submit" name="f_submit[' . $dir . ']" value="' . t('Выбрать этот шаблон') . '" style="margin: 10px;">';
 			$out .= '</div>';
 
 			echo $out;

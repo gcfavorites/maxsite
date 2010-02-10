@@ -426,7 +426,7 @@
 	echo '
 		<div style="margin: 20px 0; padding: 5px 10px 5px 10px; border: 1px solid gray;">
 		<form action="" method="post">' . mso_form_session('f_session3_id') . 
-		'<p>Новый каталог: <input type="text" name="f_cat_name" style="width: 380px" value="" />
+		'<p>Новый каталог: <input type="text" name="f_cat_name" style="width: 380px" value="">
 		<input type="submit" name="f_newcat_submit" value="&nbsp;Создать&nbsp;" onClick="if(confirm(\'' . t('Создать каталог в uploads?', 'admin') . '\')) {return true;} else {return false;}" ></p>
 		</form></div>';
 			
@@ -440,14 +440,14 @@
 		<h2>' . t('Загрузка файла', 'admin') . '</h2>
 		<p>' . t('Для загрузки файла нажмите кнопку «Обзор», выберите файл на своем компьютере. После этого нажмите кнопку «Загрузить». Размер файла не должен превышать', 'admin') . ' ' . ini_get ('post_max_size') . '.</p>
 		<form action="" method="post" enctype="multipart/form-data">' . mso_form_session('f_session2_id') . 
-		'<p><input type="file" name="f_userfile" size="80" />&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="f_upload_submit" value="' . t('Загрузить', 'admin') . '" /></p>
-		<p>' . t('Описание файла:', 'admin') . ' <input type="text" name="f_userfile_title" style="width: 380px" value="" /></p>
+		'<p><input type="file" name="f_userfile" size="80">&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="f_upload_submit" value="' . t('Загрузить', 'admin') . '"></p>
+		<p>' . t('Описание файла:', 'admin') . ' <input type="text" name="f_userfile_title" style="width: 380px" value=""></p>
 		
-		<p><input type="checkbox" name="f_userfile_resize" checked="checked" value="" /> ' . t('Для изображений изменить размер до', 'admin') . ' 
-			<input type="text" name="f_userfile_resize_size" style="width: 50px" maxlength="4" value="' . $resize_images . '" /> ' . t('px (по максимальной стороне).', 'admin') . '</p>
+		<p><input type="checkbox" name="f_userfile_resize" checked="checked" value=""> ' . t('Для изображений изменить размер до', 'admin') . ' 
+			<input type="text" name="f_userfile_resize_size" style="width: 50px" maxlength="4" value="' . $resize_images . '"> ' . t('px (по максимальной стороне).', 'admin') . '</p>
 		
-		<p><input type="checkbox" name="f_userfile_mini" checked="checked" value="" /> ' . t('Для изображений сделать миниатюру размером', 'admin') . ' 
-			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="' . $size_image_mini . '" /> ' . t('px (по максимальной стороне).', 'admin') . ' <br /><em>' . t('Примечание: миниатюра будет создана в каталоге', 'admin') . ' <strong>uploads/' . $current_dir . 'mini</strong></em></p>
+		<p><input type="checkbox" name="f_userfile_mini" checked="checked" value=""> ' . t('Для изображений сделать миниатюру размером', 'admin') . ' 
+			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="' . $size_image_mini . '"> ' . t('px (по максимальной стороне).', 'admin') . ' <br><em>' . t('Примечание: миниатюра будет создана в каталоге', 'admin') . ' <strong>uploads/' . $current_dir . 'mini</strong></em></p>
 		
 		<p>' . t('Миниатюру делать путем:', 'admin') . ' <select style="width: 350px" name="f_mini_type">
 		<option value="1">' . t('Пропорционального уменьшения', 'admin') . '</option>
@@ -507,7 +507,7 @@
 		if (isset($mso_descritions[$file])) 
 		{
 			$title = $mso_descritions[$file];
-			if ($title) $title_f = '<br /><em>«' . $title . '»</em>';
+			if ($title) $title_f = '<br><em>«' . $title . '»</em>';
 		}
 		
 		$sel = form_checkbox('f_check_files[]', $file, false, 
@@ -518,10 +518,10 @@
 		
 		$cod1 = stripslashes(htmlspecialchars( $uploads_url . $file ) );
 		
-		# if ($title) $cod .= '<input type="text" style="width: 300px;" value="' . $title . '" />';
+		# if ($title) $cod .= '<input type="text" style="width: 300px;" value="' . $title . '">';
 		
 		
-		# $cod .= '<p><input type="text" style="width: 99%;" value="' . $cod1 . '" />';
+		# $cod .= '<p><input type="text" style="width: 99%;" value="' . $cod1 . '">';
 		
 		$cod .= '<a href="#"
 			onClick = "jAlert(\'<textarea cols=60 rows=4>' . $cod1 . '</textarea>\', \'Адрес файла\'); return false;">Адрес</a>';
@@ -533,7 +533,7 @@
 		if ($title) $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $title . '</a>') );
 			else $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $file . '</a>') );
 		
-		# $cod .= '<p><input type="text" style="width: 99%;" value="' . $cod2 . '" />';
+		# $cod .= '<p><input type="text" style="width: 99%;" value="' . $cod2 . '">';
 		$cod .= ' | <a href="#"
 			onClick = "jAlert(\'<textarea cols=60 rows=5>' . $cod2 . '</textarea>\', \'HTML-ссылка файла\'); return false;">HTML-ссылка</a>';
 		
@@ -548,26 +548,26 @@
 			else $file_mini = '=' . $uploads_url . $file;
 			
 			
-			// $cod3 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . $file . '" /></a>') );
-			//$cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '" />';
+			// $cod3 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . $file . '"></a>') );
+			//$cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '">';
 			
 			if ($title)
 				$cod3 = stripslashes(htmlspecialchars( '[image' . $file_mini . ' ' . $title . ']' . $uploads_url . $file . '[/image]') );
 			else
 				$cod3 = stripslashes(htmlspecialchars( '[image' . $file_mini . ']' . $uploads_url . $file . '[/image]') );
 			
-			# $cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '" />';
+			# $cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '">';
 			$cod .= ' | <a href="#"
 			onClick = "jAlert(\'<textarea cols=60 rows=6>' . $cod3 . '</textarea>\', \'Код [image] файла\'); return false;">Код [image]</a>';	
 			
-			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 10px auto; display: block;" src="' . $uploads_url . $_f . '" /></a>';
+			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 10px auto; display: block;" src="' . $uploads_url . $_f . '"></a>';
 			
 		}
 		else 
 		{
 			if ( $ext == 'mp3')
 			{
-				$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 5px auto; display: block;" src="' . getinfo('admin_url') . 'plugins/admin_files/mp3.png" /></a>';
+				$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 5px auto; display: block;" src="' . getinfo('admin_url') . 'plugins/admin_files/mp3.png"></a>';
 				
 				$cod .= ' | <a href="#"
 			onClick = "jAlert(\'<textarea cols=60 rows=6>' . stripslashes(htmlspecialchars( '[audio=' . $uploads_url . $file . ']') ) . '</textarea>\', \'Код [audio] файла\'); return false;">Код [audio]</a>';	
@@ -575,7 +575,7 @@
 			}
 			else
 			{
-				$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 5px auto; display: block;" src="' . getinfo('admin_url') . 'plugins/admin_files/document_plain.png" /></a>';
+				$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 5px auto; display: block;" src="' . getinfo('admin_url') . 'plugins/admin_files/document_plain.png"></a>';
 			}
 			
 			
@@ -592,9 +592,9 @@
 	# echo $CI->table->generate(); // вывод подготовленной таблицы
 	echo '<div style="width: 100%;">';
 	echo $out_all;
-	echo '</div><br clear="all" />';
+	echo '</div><br clear="all">';
 	
-	echo '<br /><input type="submit" name="f_delete_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Выделенные файы будут безвозвратно удалены! Удалять?', 'admin') . '\')) {return true;} else {return false;}" >';
+	echo '<br><input type="submit" name="f_delete_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Выделенные файы будут безвозвратно удалены! Удалять?', 'admin') . '\')) {return true;} else {return false;}" >';
 	echo '</form>';
 	
 	$n = '\n';
@@ -647,12 +647,12 @@
 			});
 		});
 	</script>
-	<br /><hr />
+	<br><hr>
 EOF;
 	echo '
 	<p>' . t('Выделите нужные файлы. (У вас должен быть активирован плагин <strong>LightBox</strong>)', 'admin') . '</p>
 	<p><input type="button" id="gallerycodeclick" value="' . t('Генерировать код галереи', 'admin') . '">
-	' . t('Название:', 'admin') . ' <input type="text" id="gallerycodename" style="width: 200px" value="" /> ' 
+	' . t('Название:', 'admin') . ' <input type="text" id="gallerycodename" style="width: 200px" value=""> ' 
 	  . t('(если нужно)', 'admin') . '</p>
 	<p><textarea id="gallerycode" style="display: none"></textarea>
 	';

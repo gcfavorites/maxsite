@@ -115,7 +115,7 @@ function admin_announce($arg = array())
 				t('просмотров: ', __FILE__). $page['page_view_count']. ' (<a href="'. $MSO->config['site_admin_url']. 'page_edit/'. $page['page_id']. '">'. t('редактировать', __FILE__). '</a>)</li>';
 		if ( $page['page_view_count'] > ($maxcount - $options['delta']) ) $maxout .= $out;
 		elseif ( $page['page_view_count'] < ($mincount + $options['delta']) ) $minout .= $out;
-		elseif ( ($page['page_view_count'] < ($avgcount + $options['delta']/2)) and ($page['page_view_count'] > ($avgcount - $options['delta']/2)) )  $avgout .= $out;
+		elseif ( ($page['page_view_count'] < ($avgcount + $options['delta'])) and ($page['page_view_count'] > ($avgcount - $options['delta'])) )  $avgout .= $out;
 	endforeach;
 	$maxout .= '</ul></div>';
 	$minout .= '</ul></div>';

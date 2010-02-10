@@ -105,7 +105,7 @@
 <?php
 	
 	$all = mso_cat_array('page', 0);
-	//	<input title="Описание" name="f_category_desc[[ID]]" value="[DESCR]" maxlength="500" size="50" style="width: 250px;" type="text" />
+	//	<input title="Описание" name="f_category_desc[[ID]]" value="[DESCR]" maxlength="500" size="50" style="width: 250px;" type="text">
 
 	$format = '
 	
@@ -127,15 +127,15 @@
 	. '">[ID]</strong><sub style="color: gray">[COUNT]</sub></td>
 	
 	<td><input title="' . t('Номер родителя', 'admin') 
-	. '" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="50" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	. '" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="50" style="width: 100%; margin: 0 -4px;" type="text"></td>
 	
-	<td><input title="' . t('Название', 'admin') . '" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	<td><input title="' . t('Название', 'admin') . '" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text"></td>
 	
 	<td><textarea title="' . t('Описание', 'admin') . '" name="f_category_desc[[ID]]" style="width: 100%; margin: 0 -4px;">[DESCR]</textarea></td>
 	
-	<td><input title="' . t('Короткая ссылка', 'admin') . '" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	<td><input title="' . t('Короткая ссылка', 'admin') . '" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text"></td>
 	
-	<td><input title="' . t('Порядок', 'admin') . '" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text" /></td>
+	<td><input title="' . t('Порядок', 'admin') . '" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text"></td>
 	
 	<td><input type="submit" name="f_edit_submit[[ID]]" value="' . t('Изменить', 'admin') . '" style="width: 100%; margin: 0 -2px;"></td>
 	
@@ -195,15 +195,15 @@
 	
 	# строчка для добавления новой рубрики
 	echo '
-	<br />
-	<br /><b>' . t('Название', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_name" value="">
+	<br>
+	<br><b>' . t('Название', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_name" value="">
 	
-	<br /><b>' . t('Описание', 'admin') . '</b><br /><textarea style="width: 350px;" name="f_new_desc"></textarea>
+	<br><b>' . t('Описание', 'admin') . '</b><br><textarea style="width: 350px;" name="f_new_desc"></textarea>
 	
-	<br /><b>' . t('Ссылка', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_slug" value="">
-	<br /><b>' . t('Родитель', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_parent" value="">
-	<br /><b>' . t('Порядок', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_order" value="">
-	<br /><br /><input type="submit" name="f_new_submit" value="' . t('Добавить новую рубрику', 'admin') . '">
+	<br><b>' . t('Ссылка', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_slug" value="">
+	<br><b>' . t('Родитель', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_parent" value="">
+	<br><b>' . t('Порядок', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_order" value="">
+	<br><br><input type="submit" name="f_new_submit" value="' . t('Добавить новую рубрику', 'admin') . '">
 	</form>';
 	
 ?>

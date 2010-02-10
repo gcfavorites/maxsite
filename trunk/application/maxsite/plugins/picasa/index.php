@@ -157,7 +157,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			preg_match('/.*src="(.*?)".*/',$item['description'],$img_src);
 			$path = $img_src[1];
 			$path = str_replace("s160-","s".$img_size."-",$path);
-			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' width='".$img_size."' height='".$img_size."' /></a></noindex>";	
+			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' width='".$img_size."' height='".$img_size."'></a></noindex>";	
 		}
 	};
 	if ($show_type == 3) {
@@ -171,7 +171,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			preg_match('/.*src="(.*?)".*/',$item['description'],$img_src);
 			$path = $img_src[1];
 			$path = str_replace("s288","s".$img_size,$path);
-			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' /></a></noindex>";	
+			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."'></a></noindex>";	
 		}
 	};
 	mso_add_cache($cache_key, $result, 300, true);

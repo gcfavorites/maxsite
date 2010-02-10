@@ -135,9 +135,9 @@
 			$page_title = '<a target="_blank" href="' . $view_url . $page_slug . '#comment-' . $id . '">' . htmlspecialchars( $row['page_title'] ) . '</a>';
 			
 			$comments_content = htmlspecialchars($row['comments_content']);
-			$comments_content = str_replace('&lt;p&gt;', '<br />', $comments_content);
+			$comments_content = str_replace('&lt;p&gt;', '<br>', $comments_content);
 			$comments_content = str_replace('&lt;/p&gt;', '', $comments_content);
-			$comments_content = str_replace('&lt;br /&gt;', '<br />', $comments_content);
+			$comments_content = str_replace('&lt;br /&gt;', '<br>', $comments_content);
 			
 			
 			if ( $row['comments_approved'] > 0 ) $comments_approved = '+';
@@ -158,7 +158,7 @@
 		</p>';
 	echo $CI->table->generate();
 	echo '
-		<br /><br />' . t('C отмеченными:') .
+		<br><br>' . t('C отмеченными:') .
 		'<input type="submit" name="f_aproved_submit" value="' . t('Разрешить') . '">
 		<input type="submit" name="f_unaproved_submit" value="' . t('Запретить') . '">
 		<input type="submit" name="f_delete_submit" onClick="if(confirm(\'' . t('Уверены?') . '\')) {return true;} else {return false;}" value="' . t('Удалить') . '">

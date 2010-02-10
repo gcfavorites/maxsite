@@ -19,7 +19,7 @@
 <body>
 <h1 id="loginlogo"><a href="http://max-3000.com/" title="Работает на MaxSite CMS">MaxSite CMS</a></h1>
 <div id="login_block">
-	<p><strong>Введите свой логин и пароль</strong></p><br />
+	<p><strong>Введите свой логин и пароль</strong></p><br>
 
 <?php 
 	if (!is_login())
@@ -28,9 +28,9 @@
 		
 		mso_login_form(array( 
 			'login'=>'&nbsp;&nbsp;Логин: ', 
-			'password'=>'<br /><br />Пароль: ', 
-			'submit'=>'<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'submit_value'=>'&nbsp;&nbsp;&nbsp;Войти&nbsp;&nbsp;&nbsp;',
-			'form_end'=>'<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . getinfo('siteurl') . '">Вернуться к сайту</a>',
+			'password'=>'<br><br>Пароль: ', 
+			'submit'=>'<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'submit_value'=>'&nbsp;&nbsp;&nbsp;Войти&nbsp;&nbsp;&nbsp;',
+			'form_end'=>'<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . getinfo('siteurl') . '">Вернуться к сайту</a>',
 			
 			), 
 			$redirect_url);

@@ -37,13 +37,13 @@
 		if ( !isset($options['ip']) ) $options['ip'] = '';
 		
 		$cur_url = getinfo('site_admin_url') . 'plugin_admin_ip/' . $options['secret'];
-		$form = '<br /><h2>' . t('Укажите секретный адрес для сброса списка IP', 'plugins') . '</h2>';
+		$form = '<br><h2>' . t('Укажите секретный адрес для сброса списка IP', 'plugins') . '</h2>';
 		$form .= '<p>' . t('Следует указывать только цифры и английские буквы. Другие символы не допустимы!', 'plugins') . '</p>';
 		$form .= '<p>' . t('Текущий адрес:', 'plugins') . ' <strong><a href="' . $cur_url . '">' . $cur_url . '</a></strong></p>';
-		$form .= '<br /><p>' . getinfo('site_admin_url') . 'plugin_admin_ip/<input name="f_secret_url" type="text" value="' . $options['secret'] . '"></p>';		
+		$form .= '<br><p>' . getinfo('site_admin_url') . 'plugin_admin_ip/<input name="f_secret_url" type="text" value="' . $options['secret'] . '"></p>';		
 		
 		
-		$form .= '<br /><h2>' . t('Укажите разрешенные IP по одному в каждой строчке', 'plugins') . '</h2>';
+		$form .= '<br><h2>' . t('Укажите разрешенные IP по одному в каждой строчке', 'plugins') . '</h2>';
 		$form .= '<p>' . t('Ваш текущий IP:', 'plugins') . ' <b>' . $MSO->data['session']['ip_address'] . '</b></p>';
 		$form .= '<textarea name="f_ip" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['ip']);
@@ -52,7 +52,7 @@
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<br /><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+		echo '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 
 ?>

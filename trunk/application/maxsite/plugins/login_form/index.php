@@ -21,14 +21,14 @@ function login_form_widget($num = 1)
 	if (is_login())
 	{
 		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' . getinfo('users_nik') 
-				. '!</strong><br /> [<a href="' . getinfo('siteurl') 
+				. '!</strong><br> [<a href="' . getinfo('siteurl') 
 				. 'logout'.'">' . t('выйти', 'plugins') . '</a>] [<a href="' 
 				. getinfo('siteurl') . 'admin">' . t('управление', 'plugins') . '</a>]</p>';	
 	}
 	elseif ($comuser = is_login_comuser())
 	{
 		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' 
-				. $comuser['comusers_nik'] . '!</strong><br /> [<a href="' . getinfo('siteurl')
+				. $comuser['comusers_nik'] . '!</strong><br> [<a href="' . getinfo('siteurl')
 				. 'logout'.'">' . t('выйти', 'plugins') . '</a>] [<a href="' 
 				. getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">' . t('своя страница', 'plugins') . '</a>]</p>';
 

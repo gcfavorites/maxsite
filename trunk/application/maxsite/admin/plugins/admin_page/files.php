@@ -112,14 +112,14 @@
 		
 		$cod1 = stripslashes(htmlspecialchars( $uploads_url . $file ) );
 		
-		if ($title) $cod .= '<p><input type="text" style="wi1dth: 99%;" value="' . $title . '" />';
+		if ($title) $cod .= '<p><input type="text" style="wi1dth: 99%;" value="' . $title . '">';
 		
-		$cod .= '<p><input type="text" style="w1idth: 99%;" value="' . $cod1 . '" />';
+		$cod .= '<p><input type="text" style="w1idth: 99%;" value="' . $cod1 . '">';
 		
 		if ($title) $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $title . '</a>') );
 			else $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $file . '</a>') );
 		
-		$cod .= '<p><input type="text" style="wid1th: 99%;" value="' . $cod2 . '" />';
+		$cod .= '<p><input type="text" style="wid1th: 99%;" value="' . $cod2 . '">';
 		
 		if ( $ext == 'jpg' or $ext == 'jpeg' or $ext == 'gif' or $ext == 'png'  )
 		{
@@ -130,22 +130,22 @@
 				$file_mini = '=' . $uploads_url . 'mini/' . $file;
 			else $file_mini = '=' . $uploads_url . $file;
 			
-			// $cod3 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . $file . '" /></a>') );
-			//$cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '" />';
+			// $cod3 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . $file . '"></a>') );
+			//$cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '">';
 			
 			if ($title)
 				$cod3 = stripslashes(htmlspecialchars( '[image' . $file_mini . ' ' . $title . ']' . $uploads_url . $file . '[/image]') );
 			else
 				$cod3 = stripslashes(htmlspecialchars( '[image' . $file_mini . ']' . $uploads_url . $file . '[/image]') );
 			
-			$cod .= '<p><input type="text" style="wi1dth: 99%;" value="' . $cod3 . '" />';
+			$cod .= '<p><input type="text" style="wi1dth: 99%;" value="' . $cod3 . '">';
 			
-			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 0 auto; display: block;" src="' . $uploads_url . $_f . '" /></a>';
+			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 0 auto; display: block;" src="' . $uploads_url . $_f . '"></a>';
 			
 		}
 		else
 		{
-			$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 0 auto; display: block;" src="' . getinfo('admin_url') . 'plugins/admin_files/document_plain.png" /></a>';
+			$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 0 auto; display: block;" src="' . getinfo('admin_url') . 'plugins/admin_files/document_plain.png"></a>';
 			
 		}
 		
@@ -206,12 +206,12 @@
 				});
 			});
 		</script>
-		<br /><hr />
+		<br><hr>
 EOF;
 		echo '
 		<p>' . t('Выделите нужные файлы. (У вас должен быть активирован плагин <strong>LightBox</strong>)', 'admin') . '</p>
 		<p><input type="button" id="gallerycodeclick" value="' . t('Генерировать код галереи', 'admin') . '">
-		' . t('Название:', 'admin') . ' <input type="text" id="gallerycodename" style="width: 200px" value="" /> ' . t('(если нужно)', 'admin') . '</p>
+		' . t('Название:', 'admin') . ' <input type="text" id="gallerycodename" style="width: 200px" value=""> ' . t('(если нужно)', 'admin') . '</p>
 		<p><textarea id="gallerycode" style="display: none"></textarea>
 		';
 	}

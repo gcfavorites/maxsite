@@ -14,13 +14,13 @@
 	if (function_exists('ushka')) echo ushka('имя ушки');
 ?&gt;
 </pre>
-<br />
+<br>
 <p class="info"><?= t('Вы можете вывести произвольную ушку прямо в тексте. Данный код выведет ушку «reklama»:', 'plugins') ?></p>
 
 <pre>
 [ushka=reklama]
 </pre>
-<br />
+<br>
 
 <?php
 
@@ -88,7 +88,7 @@
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id') . '
 		<p><strong>' . t('Новая ушка:', 'plugins') . '</strong> ' . ' <input name="f_ushka_new" type="text" value="">
-		<input type="submit" name="f_submit_new" value="' . t('Добавить новую ушку', 'plugins') . '" style="margin: 25px 0 5px 0;" /></p>
+		<input type="submit" name="f_submit_new" value="' . t('Добавить новую ушку', 'plugins') . '" style="margin: 25px 0 5px 0;"></p>
 		</form>';
 		
 		$form = '';
@@ -104,7 +104,7 @@
 			
 			
 			$form .= '<p><input name="f_ushka['.$id.'][name]" type="text" value="'. $us['name'] . '"  style="width: 400px;">
-				<select style="width: 150px;" name="f_ushka[' . $id . '][type]"><option value="html"' . $sel_html . '/>TEXT/HTML</option><option value="php"' . $sel_php . ' />PHP</option></select>
+				<select style="width: 150px;" name="f_ushka[' . $id . '][type]"><option value="html"' . $sel_html . '/>TEXT/HTML</option><option value="php"' . $sel_php . '>PHP</option></select>
 				<label><input name="f_ushka[' . $id . '][delete]" type="checkbox"> ' . t('Удалить', 'plugins') . '</label>
 			</p>';
 			
@@ -117,7 +117,7 @@
 		{
 			echo '<h2>' . t('Ушки', 'plugins') . '</h2><form action="" method="post">' . mso_form_session('f_session_id');
 			echo $form;
-			echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+			echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 			echo '</form>';
 		}
 

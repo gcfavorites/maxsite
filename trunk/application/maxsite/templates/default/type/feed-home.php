@@ -2,6 +2,9 @@
 
 mso_cur_dir_lang('templates');
 
+header('Content-type: text/html; charset=utf-8');
+header('Content-Type: application/rss+xml');
+
 $cache_key = mso_md5('feed_' . mso_current_url());
 $k = mso_get_cache($cache_key);
 if ($k) return print($k); // да есть в кэше
@@ -41,8 +44,6 @@ if ($pages)
 {
 	$pubdate = date('D, d M Y H:i:s ' . $time_zone, strtotime($pages[0]['page_date_publish']));
 	
-	header('Content-type: text/html; charset=utf-8');
-	header('Content-Type: application/rss+xml');
 	echo '<' . '?xml version="1.0" encoding="utf-8"?' . '>';
 ?>
 

@@ -86,14 +86,14 @@ if ($comments) // есть страницы
 				$avatar_url = "http://www.gravatar.com/avatar.php?gravatar_id=" 
 						. md5($grav_email)
 						// . "&default=" . urlencode('')
-						. "&size=80";
+						. "&amp;size=80";
 			}
 		}
 		
 		if ($avatar_url) 
-			$avatar_url = '<noindex><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar" /></noindex>';
+			$avatar_url = '<span style="display: none"><![CDATA[<noindex>]]></span><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar"><span style="display: none"><![CDATA[</noindex>]]></span>';
 		
-		echo '</span><br />' . $avatar_url;
+		echo '</span><br>' . $avatar_url;
 		echo mso_comments_content($comments_content);
 		
 		echo '</li>'; 

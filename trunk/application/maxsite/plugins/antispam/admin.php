@@ -66,25 +66,25 @@
 			$form .= ' <a href="' . $MSO->config['uploads_url'] . $options['logging_file'] . '" target="_blank">' . t('Посмотреть', 'plugins') . '</a>';
 		
 		
-		$form .= '<br /><br /><h2>' . t('Черный список IP', 'plugins') . '</h2>';
+		$form .= '<br><br><h2>' . t('Черный список IP', 'plugins') . '</h2>';
 		$form .= '<p>' . t('Укажите IP, с которых недопустимы комментарии. Один IP в одной строчке.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_black_ip" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['black_ip']);
 		$form .= '</textarea>';
 		
-		$form .= '<br /><br /><h2>' . t('Черный список слов', 'plugins') . '</h2>';
+		$form .= '<br><br><h2>' . t('Черный список слов', 'plugins') . '</h2>';
 		$form .= '<p>' . t('Укажите слова, которые нельзя использовать в комментариях. Одно слово в одной строчке.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_black_words" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['black_words']);
 		$form .= '</textarea>';		
 		
-		$form .= '<br /><br /><h2>' . t('Слова для модерации', 'plugins') . '</h2>';
+		$form .= '<br><br><h2>' . t('Слова для модерации', 'plugins') . '</h2>';
 		$form .= '<p>' . t('Укажите слова, которые принудительно отравляют комментарий на премодерацию. Одно слово в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_moderation_words" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['moderation_words']);
 		$form .= '</textarea>';		
 		
-		$form .= '<br /><br /><h2>' . t('Номера комюзеров, которые всегда попадают в модерацию', 'plugins') . '</h2>';
+		$form .= '<br><br><h2>' . t('Номера комюзеров, которые всегда попадают в модерацию', 'plugins') . '</h2>';
 		$form .= '<p>' . t('Укажите номера комюзеров, которые принудительно отравляют комментарий на премодерацию. Один номер в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_moderation_comusers" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['moderation_comusers']);
@@ -92,7 +92,7 @@
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<br /><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+		echo '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 
 ?>

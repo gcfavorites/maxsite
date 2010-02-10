@@ -28,6 +28,12 @@ function mso_get_pages($r = array(), &$pag)
 
 	if ( !isset($r['cut']) )			$r['cut'] = t('Далее'); // ссылка на [cut]
 	if ( !isset($r['xcut']) )			$r['xcut'] = true; // для тех у кого нет cut, но есть xcut выводить после xcut
+	
+	if ( !isset($r['show_cut']) )		$r['show_cut'] = true; // отображать ссылку «далее» для [cut] ? 
+	if ( !isset($r['show_xcut']) )		$r['show_xcut'] = true; // отображать ссылку «далее» для [xcut] ? 
+	
+	// приписка к ссылке на страницу полной записи
+	if ( !isset($r['a_link_cut']) )		$r['a_link_cut'] = '#cut'; 
 
 	// удалять ли [cut], если false, то cut не обрабатывается
 	// если false, то $r['cut'] и $r['xcut'] уже не учитываются
@@ -201,7 +207,7 @@ function mso_get_pages($r = array(), &$pag)
 					$content = str_replace('[xcut', '[mso_xcut][cut', $content);
 				else
 					$content = str_replace('[xcut', '[cut', $content);
-
+					
 				if ( preg_match('/\[cut(.*?)?\]/', $content, $matches) )
 				{
 					$content = explode($matches[0], $content, 2);
@@ -223,7 +229,6 @@ function mso_get_pages($r = array(), &$pag)
 					{
 						if ($cut)
 						{
-							
 							if (isset($content[1]))
 							{
 								if (strpos($cut, '%wordcount%')!==false)
@@ -231,18 +236,18 @@ function mso_get_pages($r = array(), &$pag)
 							}
 						}
 						else $cut = $r['cut'];
-
-						$output .= mso_page_title( $page['page_slug'], $cut,
-									$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
+						
+						# отображать ссылку?
+						if ($r['show_cut'])
+							$output .= mso_page_title( $page['page_slug'] . $r['a_link_cut'], $cut, 
+								'<span class="cut">', '</span>', true, false, $r['link_page_type'] );
 					}
 					else
 					{
-						
 						$output .= '<a name="cut"></a>' .  $content[1];
-						
 					}
 
-					$output = mso_balance_tags($output);
+					// $output = mso_balance_tags($output);
 				}
 				
 				if ($r['xcut'])
@@ -250,13 +255,26 @@ function mso_get_pages($r = array(), &$pag)
 					if (strpos($output, '[mso_xcut]') !== false)
 					{
 						$xcontent = explode('[mso_xcut]', $output);
-						if ($r['cut']) $output = $xcontent[0];
-							else $output = $xcontent[1];
+						
+						if ($r['cut'] and $cut)
+						{
+							if ($r['show_xcut'])
+								$cut = mso_page_title( $page['page_slug'] . $r['a_link_cut'], $cut, 
+									'<span class="cut">', '</span>', true, false, $r['link_page_type'] );
+							else $cut = '';
+							
+							$output = $xcontent[0] . $cut;
+						}
+						else $output = $xcontent[1];
 					}
 				}
 				
 			}
 			else $output = $content; // отдаем как есть
+			
+			
+			# хуки на контент
+			# по возможности используйте хук content - остальные могут поменяться
 			
 			$output = mso_hook('content_in', $output);
 			
@@ -268,6 +286,7 @@ function mso_get_pages($r = array(), &$pag)
 			$output = mso_hook('content_out', $output);
 			
 			$output = mso_hook('content_complete', $output);
+			
 			
 			$pages[$key]['page_content'] = $output;
 
@@ -1305,9 +1324,9 @@ function mso_page_content($page_content = '', $use_password = true, $message = '
 
 		$form ='<p><strong>' . t($message) . '</strong></p>';
 		$form .= '<form action="' . getinfo('siteurl') . 'page/' . $page['page_slug'] . '" method="post">' . mso_form_session('f_session_id');
-		$form .= '<input type="hidden" name="f_page_id" value="' . $page['page_id'] . '" />';
-		$form .= '<p>' . t('Пароль:', 'common') . ' <input type="text" name="f_password" value="" /> ';
-		$form .= '<input type="submit" name="f_submit" value="ОК" /></p>';
+		$form .= '<input type="hidden" name="f_page_id" value="' . $page['page_id'] . '">';
+		$form .= '<p>' . t('Пароль:', 'common') . ' <input type="text" name="f_password" value=""> ';
+		$form .= '<input type="submit" name="f_submit" value="ОК"></p>';
 		$form .= '</form>';
 
 		// возможно пароль уже был отправлен
@@ -1538,7 +1557,7 @@ function mso_page_view_count_first($unique = false, $name_cookies = 'maxsite-cms
    $slug = mso_segment(2);
    $all_slug = array();
    
-   if( $unique == 0 ) return false;
+   if( $unique == 0 ) return false; // не вести подсчет
    elseif ($unique == 1) //с помощью куки
    {
       if (isset($_COOKIE[$name_cookies]))   $all_slug = explode('|', $_COOKIE[$name_cookies]); // значения текущего кука
@@ -1586,6 +1605,9 @@ function mso_page_view_count_first($unique = false, $name_cookies = 'maxsite-cms
 function mso_page_view_count($page_view_count = 0, $do = '<span>Прочтений:</span> ', $posle = '', $echo = true)
 {
 	if (!$page_view_count) return '';
+	
+	// если в опции включено не вести подсчет, то блок не выводим
+	if (mso_get_option('page_view_enable', 'templates', 0) == 0) return '';
 
 	if ($echo) echo t($do) . $page_view_count . $posle;
 		else return t($do) . $page_view_count . $posle;

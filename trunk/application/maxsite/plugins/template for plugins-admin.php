@@ -66,7 +66,7 @@ function %%%_admin_init($args = array())
 function %%%_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
+
 	if ( !mso_check_allow('%%%_edit') ) 
 	{
 		echo t('Доступ запрещен', 'plugins');
@@ -76,7 +76,7 @@ function %%%_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('%%%', __FILE__) . '"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('%%%', __FILE__) . ' - " . $args; ' );
 	
-	require($MSO->config['plugins_dir'] . '%%%/admin.php');
+	require(getinfo('plugins_dir') . '%%%/admin.php');
 }
 
 

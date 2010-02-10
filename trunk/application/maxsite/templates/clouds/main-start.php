@@ -15,6 +15,7 @@
 			</div><!-- div id="header1" -->
 			
 			<div id="header2">
+				<?php if (!mso_hook_present('main_menu')) { ?>
 				<div id="MainMenu">
 					<div id="tab">
 						<ul>
@@ -26,6 +27,7 @@
 						</ul>
 					</div><!-- div id="tab" -->
 				</div><!-- div id="MainMenu" -->
+				<?php } else mso_hook('main_menu'); ?>
 				<div class="r1"></div>
 				<div class="r2"></div>
 			</div><!-- div id="header2" -->

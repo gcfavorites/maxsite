@@ -131,7 +131,7 @@ if ($query->num_rows() > 0)
 			
 			if ($key == 'id') // id менять нельзя
 			{
-				$val_out = $val . '<input name="f_fields_guestbook[' . $key . ']" type="hidden" value="' . $val . '" />';
+				$val_out = $val . '<input name="f_fields_guestbook[' . $key . ']" type="hidden" value="' . $val . '">';
 			}
 			elseif ($key == 'approved') 
 			{
@@ -141,7 +141,7 @@ if ($query->num_rows() > 0)
 			}
 			elseif ($key != 'text') // для всех кроме text - input
 			{
-				$val_out = '<input name="f_fields_guestbook[' . $key . ']" type="text" style="width: 99%;" value="' . $val . '" />';
+				$val_out = '<input name="f_fields_guestbook[' . $key . ']" type="text" style="width: 99%;" value="' . $val . '">';
 			}
 			else
 			{
@@ -155,7 +155,7 @@ if ($query->num_rows() > 0)
 
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo $CI->table->generate(); // вывод подготовленной таблицы
-	echo '<input type="submit" name="f_submit_guestbook" value="' . t('Изменить', 'admin') . '" style="margin: 10px 0;" />';
+	echo '<input type="submit" name="f_submit_guestbook" value="' . t('Изменить', 'admin') . '" style="margin: 10px 0;">';
 	echo ' <input type="submit" name="f_submit_guestbook_delete" onClick="if(confirm(\'' . t('Удалить отзыв?', __FILE__) . '\')) {return true;} else {return false;}" value="' . t('Удалить отзыв', __FILE__) . '">';
 	echo '</form>';
 

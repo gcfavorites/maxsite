@@ -115,6 +115,7 @@
 			'limit' => 50, // колво записей на страницу
 			'type' => false, // любой тип страниц
 			'custom_type' => 'home', // запрос как в home
+			'order' => 'page_date_publish', // запрос как в home
 			'order_asc' => 'desc', // в обратном порядке
 			'page_status' => false, // статус любой
 			'date_now' => false, // любая дата
@@ -252,8 +253,8 @@
 			
 			
 			
-			if ($cats) $title .= '<br />' . t('Рубрика:', 'admin') . ' ' . $cats;
-			if ($tags) $title .= '<br />' . t('Метки:', 'admin') . ' ' . $tags;
+			if ($cats) $title .= '<br>' . t('Рубрика:', 'admin') . ' ' . $cats;
+			if ($tags) $title .= '<br>' . t('Метки:', 'admin') . ' ' . $tags;
 			
 			// $date_p = '<span title="Дата и время сохранения записи">' . $page['page_date_publish'] . '</span>'; // это время публикации как установлено на сервере
 			
@@ -268,7 +269,7 @@
 	$pagination['type'] = '';
 	$pagination['range'] = 10;
 	mso_hook('pagination', $pagination);
-	echo  '<br />';
+	echo  '<br>';
 	
 	
 	echo mso_load_jquery('jquery.tablesorter.js');
@@ -291,15 +292,15 @@
 
 	$pagination['type'] = '';
 	$pagination['range'] = 10;
-	echo '<br />';
+	echo '<br>';
 	mso_hook('pagination', $pagination);
 
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
-	echo '<br /><br /><h2>' . t('Удалить страницу', 'admin') . '</h2>';
+	echo '<br><br><h2>' . t('Удалить страницу', 'admin') . '</h2>';
 	echo $all_pages;
 	echo ' <input type="submit" name="f_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Удалить страницу?', 'admin') . '\')) {return true;} else {return false;}" >';
-	echo '</form><br />';
+	echo '</form><br>';
 	
 	
 ?>

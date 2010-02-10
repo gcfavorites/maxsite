@@ -37,8 +37,8 @@ $(document).ready(function(){
 		$('#answers').append(
 			'<tr id="sp_row_' + count + '">' +	
 				'<td class="sp_count"></td>' +
-				'<td><input type="text" class="answer" name="sp_answer_' + count + '" /></td>' +
-				'<td><input size="5" type="text" name="sp_totalvotes_' + count + '" value="0" /></td>' +
+				'<td><input type="text" class="answer" name="sp_answer_' + count + '"></td>' +
+				'<td><input size="5" type="text" name="sp_totalvotes_' + count + '" value="0"></td>' +
 			'</tr>'
 		);	
 		

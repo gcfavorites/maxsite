@@ -38,7 +38,6 @@ function down_count_admin_init($args = array())
 function down_count_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('down_count_edit') ) 
 	{
 		echo t('Доступ запрещен', 'plugins');
@@ -48,7 +47,7 @@ function down_count_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Счетчик переходов', 'plugins') . ' "; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Счетчик переходов', 'plugins') . ' - " . $args; ' );
 
-	require($MSO->config['plugins_dir'] . 'down_count/admin.php');
+	require(getinfo('plugins_dir') . 'down_count/admin.php');
 }
 
 function down_count_get_data()
@@ -57,7 +56,6 @@ function down_count_get_data()
 	// делаем её статик, чтобы не было многократного ображения к файлу
 	// когда нужно получить данные из хука на контент
 	
-	global $MSO;
 	static $data;
 	
 	if (!isset($data))
@@ -65,7 +63,7 @@ function down_count_get_data()
 		$options = mso_get_option('plugin_down_count', 'plugins', array());
 		if ( !isset($options['file']) ) $options['file'] = 'dc.dat';
 
-		$fn = $MSO->config['uploads_dir'] . $options['file'];
+		$fn = getinfo('uploads_dir') . $options['file'];
 		
 		$CI = & get_instance();
 		$CI->load->helper('file'); // хелпер для работы с файлами
@@ -85,7 +83,9 @@ function down_count_get_data()
 # функции плагина
 function down_count_init($args = array())
 {
-	global $MSO;
+	
+	$CI = & get_instance();
+	
 	
 	# опции плагина
 	$options = mso_get_option('plugin_down_count', 'plugins', array());
@@ -113,13 +113,18 @@ function down_count_init($args = array())
 		
 		$url = base64_decode(mso_segment(2)); // декодируем
 		
+		// проверяем входящий url 
+		// в нем может быть закодирована какая-то гадость
+		$url_check = $CI->input->xss_clean($url);
+		if ($url_check != $url) die('<b><font color="red">Achtung! XSS attack!</font></b>');
+		$url = $url_check;
+		
 		// все урлы хранятся в файле 
 		// в виде серилизованного массива
 		if ( !isset($options['file']) ) $options['file'] = 'dc.dat';
 		
-		$fn = $MSO->config['uploads_dir'] . $options['file']; // имя файла
+		$fn = getinfo('uploads_dir') . $options['file']; // имя файла
 		
-		$CI = & get_instance();
 		$CI->load->helper('file'); // хелпер для работы с файлами
 		
 		if (!file_exists( $fn )) // файла нет, нужно его создать
@@ -173,10 +178,22 @@ function down_count_content_callback($matches)
 	$matches[3] = str_replace('%COUNT%', $count, $matches[3]);
 	
 	$out = '<a' . $matches[1] . 'href="' . $url . '"' . ' title="' . $matches[2] . '" '. $matches[3] . '>' . $matches[4] . '</a>' . $format_out;
-	
+
 	return $out;
 }
 
+
+function down_count_content_callback_url($matches)
+{
+	// используем down_count_content_callback, только изменим под него $matches
+	
+	$m[1] = ' ';
+	$m[2] = $matches[1];
+	$m[3] = '';
+	$m[4] = $matches[2];
+
+	return down_count_content_callback($m);
+}
 
 # замена ссылок в тексте
 function down_count_content($text = '')
@@ -184,6 +201,10 @@ function down_count_content($text = '')
 	// [dc]<a href="http://localhost/codeigniter/">ссылка</a>[/dc]
 	$pattern = '|\[dc\]<a(.*?)href="(.*?)"(.*?)>(.*?)</a>\[/dc\]|ui';
 	$text = preg_replace_callback($pattern, 'down_count_content_callback', $text);
+	
+	// [dc][url=урл]сайт[/url][/dc]
+	$pattern = '|\[dc\]\[url=(.*?)\](.*?)\[/url\]\[/dc\]|ui';
+	$text = preg_replace_callback($pattern, 'down_count_content_callback_url', $text);
 
 	return $text;
 }

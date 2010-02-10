@@ -8,17 +8,23 @@
 # функция автоподключения плагина
 function global_cache_autoload($args = array())
 {
-	if ( mso_get_option('global_cache', 'templates', false) ) // если разрешено в опциях шаблона
+	if (!is_login() and mso_segment(1) != 'admin')
 	{
-		mso_hook_add('global_cache_start', 'global_cache_start');
-		mso_hook_add('global_cache_end', 'global_cache_end');
-		
-		# дополнительные хуки, которые позволяют сбросить кэш - использовать в плагинах и т.п.
-		mso_hook_add('global_cache_key_flush', 'global_cache_key_flush'); // сброс кэша текущей страницы
-		mso_hook_add('global_cache_all_flush', 'global_cache_all_flush'); // сброс всего html-кэша
-		
-		# сброс кэша для страниц, которые отправлены как POST
-		if ( isset($_POST) and $_POST ) global_cache_key_flush();
+		if ( mso_get_option('global_cache', 'templates', false) ) // если разрешено в опциях шаблона
+		{
+			mso_hook_add('global_cache_start', 'global_cache_start');
+			mso_hook_add('global_cache_end', 'global_cache_end');
+			
+			# дополнительные хуки, которые позволяют сбросить кэш - использовать в плагинах и т.п.
+			mso_hook_add('global_cache_key_flush', 'global_cache_key_flush'); // сброс кэша текущей страницы
+			mso_hook_add('global_cache_all_flush', 'global_cache_all_flush'); // сброс всего html-кэша
+			
+			# сброс кэша для страниц, которые отправлены как POST
+			# if ( isset($_POST) and $_POST ) global_cache_key_flush();
+			
+			# сброс кэша если была отправка POST
+			if ( isset($_POST) and $_POST ) global_cache_all_flush();		
+		}
 	}
 }
 
@@ -61,7 +67,6 @@ function global_cache_start($arg = array())
 		$CI = & get_instance();	
 		$mq = $CI->db->query_count; // колво sql-запросов
 		$k = str_replace('<!--global_cache_footer-->', ' | Cache (' . $mq . ')', $k);
-		//$k = str_replace('<!--global_cache_footer-->', ' | Cache', $k);
 		echo $k; 
 		return true;
 	}
@@ -75,7 +80,7 @@ function global_cache_end($arg = array())
 {
 	# сброс кэша для страниц, которые отправлены как POST
 	if ( isset($_POST) and $_POST ) global_cache_key_flush();
-		else mso_add_cache(global_cache_key(), ob_get_flush(), 900, true);
+		else mso_add_cache(global_cache_key(), ob_get_flush(), 86400, true);
 }
 
 # сброс кэша текущей страницы

@@ -31,12 +31,12 @@ function comment_button_head_admin_comment_edit($arg = array())
 function comment_button_custom($arg = array())
 {
 	echo '<p class="comment_button">
-	<input type="button" value="B" title="' . t('Полужирный', 'plugins') . '" onClick="addText(\'<b>\', \'</b>\') " />
-	<input type="button" value="I" title="' . t('Курсив', 'plugins') . '" onClick="addText(\'<i>\', \'</i>\') "/>
-	<input type="button" value="U" title="' . t('Подчеркнутый', 'plugins') . '" onClick="addText(\'<u>\', \'</u>\') "/>
-	<input type="button" value="S" title="' . t('Зачеркнутый', 'plugins') . '" onClick="addText(\'<s>\', \'</s>\') "/>
-	<input type="button" value="' . t('Цитата', 'plugins') . '" title="' . t('Цитата', 'plugins') . '" onClick="addText(\'<blockquote>\', \'</blockquote>\') "/>
-	<input type="button" value="' . t('Код', 'plugins') . '" title="' . t('Код или преформатированный текст', 'plugins') . '" onClick="addText(\'<pre>\', \'</pre>\') "/>
+	<input type="button" value="B" title="' . t('Полужирный', 'plugins') . '" onClick="addText(\'<b>\', \'</b>\') ">
+	<input type="button" value="I" title="' . t('Курсив', 'plugins') . '" onClick="addText(\'<i>\', \'</i>\') ">
+	<input type="button" value="U" title="' . t('Подчеркнутый', 'plugins') . '" onClick="addText(\'<u>\', \'</u>\') ">
+	<input type="button" value="S" title="' . t('Зачеркнутый', 'plugins') . '" onClick="addText(\'<s>\', \'</s>\') ">
+	<input type="button" value="' . t('Цитата', 'plugins') . '" title="' . t('Цитата', 'plugins') . '" onClick="addText(\'<blockquote>\', \'</blockquote>\') ">
+	<input type="button" value="' . t('Код', 'plugins') . '" title="' . t('Код или преформатированный текст', 'plugins') . '" onclick="addText(\'<pre>\', \'</pre>\') ">
 	</p>';
 }
 

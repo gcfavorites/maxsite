@@ -46,7 +46,7 @@
 			'table_open'  => '<table border="0" cellpadding="0" cellspacing="0" class="samborsky_polls_table">',
 			'heading_cell_start'  => '<th valign="top">',
 		)); 
-		$CI->table->set_heading('ID','Вопрос','<div align="right">Проголосовало<br />чел.</div>','<div align="right">Сумма<br />голосов</div>','Статус','Логи','Изменить','Удалить');
+		$CI->table->set_heading('ID','Вопрос','<div align="right">Проголосовало<br>чел.</div>','<div align="right">Сумма<br>голосов</div>','Статус','Логи','Изменить','Удалить');
 		
 		foreach( $query->result() as $row ){
 			

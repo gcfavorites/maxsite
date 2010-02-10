@@ -132,8 +132,7 @@
 			}	
 			
 			
-			$path = $CI->config->item('cache_path');
-			$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
+			$cache_path = getinfo('cache_dir');
 			if ( !is_dir($cache_path) or !is_writable($cache_path))
 			{
 				echo '<p class="error">Каталог <em>' . $cache_path . '</em> - не найден или нет разрешения на запись (777)!</p>';
@@ -175,8 +174,10 @@
 				# echo '<p class="ok">Каталог «uploads/_mso_i» - OK!</p>';
 			}			
 			
-
-			$path = realpath(dirname(FCPATH)) . '/.htaccess';
+			# CodeIgniter 1.7.1
+			# $path = realpath(dirname(FCPATH)) . '/.htaccess';
+			
+			$path = FCPATH . '/.htaccess';
 			if ( !file_exists($path))
 			{
 				echo '<p class="error">Файл <em>' . $path . '</em> - не найден!</p>';
@@ -187,7 +188,8 @@
 				# echo '<p class="ok">Файл «.htaccess» - OK!</p>';
 			}
 			
-			$path = realpath(dirname(FCPATH)) . '/sitemap.xml';
+			
+			$path = FCPATH . '/sitemap.xml';
 			if ( !file_exists($path) or !is_writable($path))
 			{
 				echo '<p class="error">Файл <em>' . $path . '</em> - не найден или нет разрешения на запись!</p>';
@@ -226,7 +228,7 @@
 	<h2>Ваша информация:</h2>
 	<?= $res ?>
 	<p><a href="<?= getinfo('siteurl') ?>">Переход к сайту</a></p>
-	<p>Не забудьте открыть файл «application/maxsite/mso_config.php»	и измените на <em>$mso_install = true;</em></p>
+	<p>Не забудьте открыть файл «application/maxsite/mso_config.php» и измените на <em>$mso_install = true;</em></p>
 	<?php 
 		// поскольку это инсталяция, то отправитель - тот же email
 		@mso_mail($useremail, 'Новый сайт на MaxSite CMS', $text, $useremail); 

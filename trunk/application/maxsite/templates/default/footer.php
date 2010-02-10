@@ -10,7 +10,7 @@
 	
 	echo '
 	&copy; ' . $site_name . ', ' . $date 
-	. '<br/>' 
+	. '<br>' 
 	. sprintf( 
 		t('Работает на <a href="http://max-3000.com/">MaxSite CMS</a> | Время: {elapsed_time} | SQL: %s | Память: {memory_usage}', 'templates')
 		, $mq)

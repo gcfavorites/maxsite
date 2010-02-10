@@ -200,7 +200,7 @@
 
 	<fieldset>
 		<legend><strong>Вопрос</strong></legend>
-		<input type="text" name="question" size="60" value="<?= isset($question) ? stripslashes($question->data->q_question) : '' ?>" />
+		<input type="text" name="question" size="60" value="<?= isset($question) ? stripslashes($question->data->q_question) : '' ?>">
 	</fieldset>
 	
 	<fieldset>
@@ -227,10 +227,10 @@
 						echo 
 						'<tr class="vote_content">	
 							<td class="sp_count"></td>
-							<td><input type="text" class="answer" name="sp_answer_',$row->a_id,'" value="',stripslashes($row->a_answer),'" /></td>
+							<td><input type="text" class="answer" name="sp_answer_',$row->a_id,'" value="',stripslashes($row->a_answer),'"></td>
 							<td>
-								<input type="hidden" class="vote_order" name="sp_voteorder_',$row->a_id,'" />
-								<input size="5" type="text" name="sp_totalvotes_',$row->a_id,'" value="',$row->a_votes,'" />&nbsp;
+								<input type="hidden" class="vote_order" name="sp_voteorder_',$row->a_id,'">
+								<input size="5" type="text" name="sp_totalvotes_',$row->a_id,'" value="',$row->a_votes,'">&nbsp;
 								<a href="',$delete_url.'" onclick="return confirm(\'Удалить? Уверены?\');">Удалить</a>
 							</td>
 						</tr>';
@@ -241,13 +241,13 @@
 					echo 
 					'<tr>	
 						<td class="sp_count"></td>
-						<td><input type="text" class="answer" name="sp_answer_1" /></td>
-						<td><input size="5" type="text" name="sp_totalvotes_1" value="0" /></td>
+						<td><input type="text" class="answer" name="sp_answer_1"></td>
+						<td><input size="5" type="text" name="sp_totalvotes_1" value="0"></td>
 					</tr>
 					<tr>	
 						<td class="sp_count"></td>
-						<td><input type="text" class="answer" name="sp_answer_2" /></td>
-						<td><input size="5" type="text" name="sp_totalvotes_2" value="0" /></td>
+						<td><input type="text" class="answer" name="sp_answer_2"></td>
+						<td><input size="5" type="text" name="sp_totalvotes_2" value="0"></td>
 					</tr>';
 				}
 			?>	
@@ -255,9 +255,9 @@
 		</table>
 		
 		<div style="padding: 5px; text-align: center;">
-			<input type="button" id="add_answer" value="Добавить ответ" />&nbsp;
-			<input type="button" id="remove_answer" value="Убрать ответ" />
-			<br /><br /><br />
+			<input type="button" id="add_answer" value="Добавить ответ">&nbsp;
+			<input type="button" id="remove_answer" value="Убрать ответ">
+			<br><br><br>
 		</div>
 		
 	</fieldset>
@@ -314,25 +314,25 @@
 		
 		<div style="float: left;" id="dateRange" >	
 			Начало: 
-			<input type="text" id="beginDate" name="beginDate" value="<?= isset($question) ? date('m/d/Y',$question->data->q_timestamp) : date('m/d/Y') ?>" />&nbsp;&nbsp;&nbsp;
+			<input type="text" id="beginDate" name="beginDate" value="<?= isset($question) ? date('m/d/Y',$question->data->q_timestamp) : date('m/d/Y') ?>">&nbsp;&nbsp;&nbsp;
 			Окончание: 
-			<input type="text" id="expiryDate" name="expiryDate" value="<?= ( isset($question) && $question->data->q_expiry ) ? date('m/d/Y',$question->data->q_expiry) : date('m/d/Y') ?>" />
+			<input type="text" id="expiryDate" name="expiryDate" value="<?= ( isset($question) && $question->data->q_expiry ) ? date('m/d/Y',$question->data->q_expiry) : date('m/d/Y') ?>">
 		</div>
 		
-		<div style="float:right;"><input type="checkbox" name="noExpiry" id="noExpiry" <? if( isset($question) && !$question->data->q_expiry ) echo 'checked="true"' ?> />&nbsp;Бессрочное голосование</div>
+		<div style="float:right;"><input type="checkbox" name="noExpiry" id="noExpiry" <? if( isset($question) && !$question->data->q_expiry ) echo 'checked="true"' ?>>&nbsp;Бессрочное голосование</div>
 
 		<? endif ?>
 		
 	</fieldset>
 	
-	<br /><br /><br />
+	<br><br><br>
 	
-	<input type="submit" name="<?= isset($question) ? 'submit_edit' : 'submit_create' ?>" value="Сохранить изменения" />
+	<input type="submit" name="<?= isset($question) ? 'submit_edit' : 'submit_create' ?>" value="Сохранить изменения">
 	
 	<? if( isset($question) && $question->data->q_active ) : ?>
-	<input type="submit" name="submit_close" value="Закрыть голосование" onclick="return confirm('Закрыть голосование? Уверены?');" />
+	<input type="submit" name="submit_close" value="Закрыть голосование" onclick="return confirm('Закрыть голосование? Уверены?');">
 	<? elseif( isset($question) && !$question->data->q_active ) : ?>
-	<input type="submit" name="submit_open" value="Открыть голосование" />
+	<input type="submit" name="submit_open" value="Открыть голосование">
 	<? endif; ?>
 	
 </form>

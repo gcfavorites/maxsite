@@ -167,7 +167,7 @@ function random_gal_widget_custom($options = array(), $num = 1)
 			else $title = '';
 		
 		$out .= '<a href="' . $dir_url . $file . '" class="lightbox"' . $title . '><img src="' 
-				. $dir_url_mini . $file . '" alt="" style="' . $options['style_img'] . '" /></a>' . NR;
+				. $dir_url_mini . $file . '" alt="" style="' . $options['style_img'] . '"></a>' . NR;
 	}	
 	
 	if ($out) $out = '<div class="random-gal-widget" style="' . $options['style'] . '">' . $out . '</div>' . $options['html'];

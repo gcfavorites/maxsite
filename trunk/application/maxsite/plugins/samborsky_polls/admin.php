@@ -6,10 +6,10 @@
 
 <!-- jQuery UI (DatePicker) -->
 <script type="text/javascript" src="<?= getinfo('plugins_url') ?>samborsky_polls/js/jquery-ui.min.js"></script>
-<link href="<?= getinfo('plugins_url') ?>samborsky_polls/css/jquery-ui.css" rel="stylesheet" type="text/css" media="screen" />	
+<link href="<?= getinfo('plugins_url') ?>samborsky_polls/css/jquery-ui.css" rel="stylesheet" type="text/css" media="screen">	
 
 <!-- Стили админки -->
-<link rel="stylesheet" href="<?= getinfo('plugins_url') ?>samborsky_polls/css/style_admin.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="<?= getinfo('plugins_url') ?>samborsky_polls/css/style_admin.css" type="text/css" media="screen" charset="utf-8">
 
 <!-- jQuery плагин для перемещения строк в таблице -->
 <script src="<?= getinfo('plugins_url') ?>samborsky_polls/js/jquery.tablednd.js"></script>

@@ -190,6 +190,13 @@ function mso_get_comments($page_id = 0, $r = array())
 # первый парметр id, второй данные текст и т.д.
 function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '')
 {
+	
+	$data['page_title'] = $page_title; // заголовок страницы
+	$data['id'] = $id; // номер комментария
+	
+	# хук на который можно повестить подписку на новые комментарии
+	mso_hook('mso_email_message_new_comment', $data);
+	
 	$email = mso_get_option('admin_email', 'general', false); // email куда приходят уведомления
 
 	if (!$email) return false;
@@ -298,9 +305,18 @@ function mso_get_new_comment($args = array())
 
 
 		// капчу проверим
+		// если этот хук возвращает false, значит капча неверная
 		if (!mso_hook('comments_new_captcha', true))
-		{	// если этот хук возвращает false, значит капча неверная
-			return '<div class="' . $args['css_error']. '">'. t('Ошибка! Неверно введены нижние символы!'). '</div>';
+		{	
+			// если определен хук на неверную капчу, отдаем его
+			if (mso_hook_present('comments_new_captcha_error'))
+			{
+				return mso_hook('comments_new_captcha_error');
+			}
+			else
+			{
+				return '<div class="' . $args['css_error']. '">'. t('Ошибка! Неверно введены нижние символы!'). '</div>';
+			}
 		}
 
 		if (!trim($post['comments_content'])) return '<div class="' . $args['css_error']. '">'. t('Ошибка, нет текста!'). '</div>';
@@ -414,7 +430,7 @@ function mso_get_new_comment($args = array())
 					if ( !mso_valid_email($comments_email) )
 						return '<div class="' . $args['css_error']. '">'. t('Ошибочный Email'). '</div>';
 
-					// вначале нужно зарегистрировать comюзера - получить его id и только после этого доабвить сам коммент
+					// вначале нужно зарегистрировать comюзера - получить его id и только после этого добавить сам коммент
 					// но вначале есть смысл проверить есть ли такой ком-пользователь
 
 					$comusers_id = false;
@@ -499,6 +515,9 @@ function mso_get_new_comment($args = array())
 						$res = ($CI->db->insert('comments', $ins_data)) ? '1' : '0';
 						if ($res)
 						{
+							
+							$id_comment_new = $CI->db->insert_id();
+							
 							// посколько у нас идет редирект, то данные об отправленном комменте
 							// сохраняем в сессии номер комментария
 							if ( isset($MSO->data['session']) )
@@ -506,14 +525,48 @@ function mso_get_new_comment($args = array())
 								$CI->session->set_userdata(array( 'comments' =>
 													array(
 													// $CI->db->insert_id()=>$comments_page_id
-													$CI->db->insert_id()
+													$id_comment_new
 													)));
 							}
-							mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
+							mso_email_message_new_comment($id_comment_new, $ins_data, $args['page_title']);
 							// mso_flush_cache();
 							$CI->db->cache_delete_all();
 							mso_hook('new_comment');
-							mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
+							
+							
+							
+							
+							# если комюзер не залогинен, то сразу логиним его
+							
+							$CI->db->select('comusers_id, comusers_password, comusers_email, 
+									comusers_nik, comusers_url, comusers_avatar_url, comusers_last_visit');
+							$CI->db->where('comusers_email', $comments_email);
+							$CI->db->where('comusers_password', mso_md5($comments_password));
+							$query = $CI->db->get('comusers');
+							
+							if ($query->num_rows()) // есть такой комюзер
+							{
+								$comuser_info = $query->row_array(1); // вся инфа о комюзере
+								
+								// сразу же обновим поле последнего входа
+								$CI->db->where('comusers_id', $comuser_info['comusers_id']);
+								$CI->db->update('comusers', array('comusers_last_visit'=>date('Y-m-d H:i:s')));
+								
+								$expire  = time() + 60 * 60 * 24 * 30; // 30 дней = 2592000 секунд
+								
+								$name_cookies = 'maxsite_comuser';
+								$value = serialize($comuser_info); 
+								
+								# ставим куку и редиректимся автоматом
+								mso_add_to_cookie($name_cookies, $value, $expire, 
+											mso_current_url() . '#comment-' . $id_comment_new);
+								exit;
+							}
+							
+							
+							
+							
+							mso_redirect(mso_current_url() . '#comment-' . $id_comment_new);
 						}
 						else
 							return '<div class="' . $args['css_error']. '">'. t('Ошибка добавления комментария'). '</div>';
@@ -625,6 +678,7 @@ function mso_get_comuser($id = 0, $args = array())
 
 		// pr($comuser);
 
+
 		$comuser_count_comment_first = $comuser[0]['comusers_count_comments']; // первоначальное значание колво комментариев
 
 		// подсоединим к нему [comments] - все его комментарии
@@ -675,6 +729,25 @@ function mso_get_comuser($id = 0, $args = array())
 			mso_comuser_set_count_comment($id, count($comments));
 		}
 
+		// в секцию meta добавим все метаполя данного юзера
+		$CI->db->select('meta_key, meta_value');
+		$CI->db->from('meta');
+		$CI->db->where('meta_table', 'comusers');
+		$CI->db->where('meta_id_obj', $id);
+		$query = $CI->db->get();
+		if ($query->num_rows() > 0)
+		{
+			// переделаем полученный массив в key = value
+			foreach ($query->result_array() as $val)
+			{
+				$comuser[0]['comusers_meta'][$val['meta_key']] = $val['meta_value'];
+			}
+		}
+		else
+		{
+			$comuser[0]['comusers_meta'] = array();
+		}
+		
 		// pr($comuser);
 
 		return $comuser;
@@ -725,11 +798,13 @@ function mso_comuser_edit($args = array())
 			$id_session = $MSO->data['session']['comuser']['comusers_id'];
 	else $id_session = false;
 
+	
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comusers_activate_key')) ) // это активация
 	{
 		# защита рефера
 		mso_checkreferer();
 
+	
 		# защита сессии - если не нужно закомментировать строчку!
 		if ($MSO->data['session']['session_id'] != $post['f_session_id']) mso_redirect();
 
@@ -738,8 +813,8 @@ function mso_comuser_edit($args = array())
 		if (!$id) return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
 
 		# проверяем id в сессии с сабмитом 
-		if ($id != $id_session) 
-			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
+		// if ($id != $id_session) 
+		//	return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
 			
 		$f_comusers_activate_key = trim($post['f_comusers_activate_key']);
 		if (!$f_comusers_activate_key) return '<div class="' . $args['css_error']. '">'. t('Неверный (пустой) ключ'). '</div>';
@@ -837,10 +912,10 @@ function mso_comuser_edit($args = array())
 		
 		# CodeIgniter экранирует where, даже когда только условия в полях
 		$CI->db->where('comusers_activate_string=comusers_activate_key', '', false); // активация должна уже быть
-		
+
 		$CI->db->where(array('comusers_id'=>$id,
 							'comusers_email'=>$f_comusers_email,
-							'comusers_password'=>$f_comusers_password 
+							'comusers_password'=>$f_comusers_password
 							));
 		$CI->db->limit(1);
 		$query = $CI->db->get();
@@ -877,7 +952,33 @@ function mso_comuser_edit($args = array())
 
 			$CI->db->where('comusers_id', $id);
 			$res = ($CI->db->update('comusers', $upd_date )) ? '1' : '0';
-
+			
+			// если переданы метаполя, то обновляем и их
+			if (isset($post['f_comusers_meta']) and $post['f_comusers_meta'])
+			{
+				//pr($post);
+				
+				foreach($post['f_comusers_meta'] as $key => $val)
+				{
+					
+					// вначале грохаем если есть такой ключ
+					$CI->db->where('meta_table', 'comusers');
+					$CI->db->where('meta_id_obj', $id);
+					$CI->db->where('meta_key', $key);
+					$CI->db->delete('meta');
+					
+					// теперь добавляем как новый
+					$ins_data = array(
+							'meta_table' => 'comusers',
+							'meta_id_obj' => $id,
+							'meta_key' => $key,
+							'meta_value' => $val
+							);
+					
+					$CI->db->insert('meta', $ins_data);
+				}
+			}
+			
 			$CI->db->cache_delete_all();
 			// mso_flush_cache(); // сбросим кэш
 			
@@ -899,7 +1000,9 @@ function mso_comuser_lost($args = array())
 	if ( !isset($args['css_ok']) )		$args['css_ok'] = 'comment-ok';
 	if ( !isset($args['css_error']) )	$args['css_error'] = 'comment-error';
 	
-	# id комюзера, который в сессии
+	# id комюзера, который в сессии - какой комюзер
+	# если комюзер залогинен, то будет $id_session
+	# если нет, то залогиненности нет
 	if ( isset($MSO->data['session']['comuser']) and $MSO->data['session']['comuser'] )
 			$id_session = $MSO->data['session']['comuser']['comusers_id'];
 	else $id_session = false;
@@ -917,8 +1020,8 @@ function mso_comuser_lost($args = array())
 		if (!$id) return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '!</div>';
 
 		# проверяем id в сессии с сабмитом 
-		if ($id != $id_session) 
-			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
+		if ($id_session and $id != $id_session) 
+			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя2'). '</div>';
 		
 		$comusers_email = trim($post['f_comusers_email']);
 		if (!$comusers_email) return '<div class="' . $args['css_error']. '">'. t('Нужно указать email'). '</div>';
@@ -930,10 +1033,11 @@ function mso_comuser_lost($args = array())
 		// проверим есть ли вообще такой юзер
 		$CI->db->select('comusers_id');
 		$CI->db->where('comusers_id', $id);
+		$CI->db->where('comusers_email', $comusers_email);
 		$query = $CI->db->get('comusers');
 
 		if ($query->num_rows() == 0)
-			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '!</div>';
+			return '<div class="' . $args['css_error']. '">'. t('Неверный email или номер пользователя'). '!</div>';
 
 
 		$comusers_new_password = trim($post['f_comusers_password']);

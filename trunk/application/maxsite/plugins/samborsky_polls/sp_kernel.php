@@ -115,7 +115,7 @@
 			foreach( $answers_array as $a ){
 			
 				$CI->table->add_row(
-					"<input type=\"radio\" id=\"sp_answer_{$a->a_id}\" class=\"sp_question_{$this->id}\" name=\"sp_question_{$this->id}\" value=\"{$a->a_id}\" />",
+					"<input type=\"radio\" id=\"sp_answer_{$a->a_id}\" class=\"sp_question_{$this->id}\" name=\"sp_question_{$this->id}\" value=\"{$a->a_id}\">",
 					"<label for=\"sp_answer_{$a->a_id}\">{$a->a_answer}</label>"
 				);
 			}
@@ -126,8 +126,8 @@
 			$results_link = mso_get_option('show_results_link') ? '&nbsp;&nbsp;<a href="javascript: void(0);" onclick="javascript:sp_polls_results('.$this->id.');" class="sp_polls_ajax_link">Результаты</a>' : '';
 			
 			$CI->table->add_row(
-				'<input type="hidden" id="sp_ajax_path_'.$this->id.'" value="'.$ajax_path.'" />',
-				'<input type="button" value="Проголосовать" onclick="javascript:sp_polls_vote('.$this->id.');" />' . $results_link
+				'<input type="hidden" id="sp_ajax_path_'.$this->id.'" value="'.$ajax_path.'">',
+				'<input type="button" value="Проголосовать" onclick="javascript:sp_polls_vote('.$this->id.');">' . $results_link
 			);
 			
 			if( mso_get_option('show_archives_link') )
@@ -136,7 +136,7 @@
 			// Генерируем таблицу и форму загрузки			
 			$out = $CI->table->generate() . 
 			"<div class=\"sp_polls_loader\" id=\"sp_polls_loader_{$this->id}\">
-				<img src=\"". getinfo('plugins_url') . 'samborsky_polls/ajax-loader.gif' ."\" alt=\"Идет загрузка...\" />
+				<img src=\"". getinfo('plugins_url') . 'samborsky_polls/ajax-loader.gif' ."\" alt=\"Идет загрузка...\">
 				<p>Идет загрузка...</p>
 			</div>";
 			

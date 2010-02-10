@@ -191,7 +191,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 				
 				
 				$out .= ' »</strong>  ' . strip_tags($comments_content) . '</a>';
-				// $out .=  '<br /><em>«' . $page_title . '»</em>';
+				// $out .=  '<br><em>«' . $page_title . '»</em>';
 				$out .= '</li>' . NR; 
 			}
 			$out .= '</ul>' . NR;

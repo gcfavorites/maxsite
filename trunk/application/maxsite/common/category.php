@@ -607,7 +607,7 @@ function _mso_cat_ul_glue($in, &$all, $li_format, $checked_id, $selected_id, $sh
 # если $full = true, то возвращаем массив всех данных рубрики (mso_cat_array_single)
 # идея Евгений Самборский (http://www.samborsky.com/)
 # http://forum.maxsite.org/viewtopic.php?pid=38939
-function mso_get_cat_from_slug($slug = '', $full = false)
+function mso_get_cat_from_slug($slug = '', $full = false, $par = 'category_id')
 {
 	if (!$slug) $slug = mso_segment(2);
 	$all_cats = mso_cat_array_single();
@@ -617,7 +617,7 @@ function mso_get_cat_from_slug($slug = '', $full = false)
 		if ($val['category_slug'] == $slug)
 		{
 			if ($full) return $val;
-			else return $val['category_id'];
+			else return $val[$par];
 		}
 	}
 	

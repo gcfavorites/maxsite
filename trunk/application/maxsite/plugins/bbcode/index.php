@@ -64,9 +64,9 @@ function bbcode_custom($text = '')
 		'~\[pright\](.*?)\[\/pright\]~si'     => '<p style="text-align: right;">$1</p>',
 		'~\[pcenter\](.*?)\[\/pcenter\]~si'   => '<p style="text-align: center;">$1</p>',		
 		
-		'~\[br\]~si'   => '<br clear="all" />',
-		'~\[hr\]~si'   => '<hr />',
-		'~\[line\]~si'   => '<hr />',
+		'~\[br\]~si'   => '<br clear="all">',
+		'~\[hr\]~si'   => '<hr>',
+		'~\[line\]~si'   => '<hr>',
 		
 		'~\[table\]~si'   => '<table>',
 		'~\[\/table\]~si'   => '</table>',
@@ -109,25 +109,25 @@ function bbcode_custom($text = '')
 
 		// images
 
-		'~\[imgleft=(.*?)x(.*?)\](.*?)\[\/imgleft\]~si'  => '<img src="$3" style="float: left; margin: 0 10px 0 0; width: $1px; height: $2px" />',
-		'~\[imgleft\](.*?)\[\/imgleft\]~si'      => '<img src="$1" style="float: left; margin: 0 10px 0 0;" />',
-		'~\[imgleft (.*?)\](.*?)\[\/imgleft\]~si'      => '<img src="$2" title="$1" alt="$1" style="float: left; margin: 0 10px 0 0;" />',
+		'~\[imgleft=(.*?)x(.*?)\](.*?)\[\/imgleft\]~si'  => '<img src="$3" style="float: left; margin: 0 10px 0 0; width: $1px; height: $2px">',
+		'~\[imgleft\](.*?)\[\/imgleft\]~si'      => '<img src="$1" style="float: left; margin: 0 10px 0 0;">',
+		'~\[imgleft (.*?)\](.*?)\[\/imgleft\]~si'      => '<img src="$2" title="$1" alt="$1" style="float: left; margin: 0 10px 0 0;">',
 		
-		'~\[imgright=(.*?)x(.*?)\](.*?)\[\/imgright\]~si'  => '<img src="$3" style="float: right; margin: 0 0 0 10px; width: $1px; height: $2px" />',
-		'~\[imgright\](.*?)\[\/imgright\]~si'    => '<img src="$1" style="float: right; margin: 0 0 0 10px;" />',
-		'~\[imgright (.*?)\](.*?)\[\/imgright\]~si'    => '<img src="$2" title="$1" alt="$1" style="float: right; margin: 0 0 0 10px;" />',
+		'~\[imgright=(.*?)x(.*?)\](.*?)\[\/imgright\]~si'  => '<img src="$3" style="float: right; margin: 0 0 0 10px; width: $1px; height: $2px">',
+		'~\[imgright\](.*?)\[\/imgright\]~si'    => '<img src="$1" style="float: right; margin: 0 0 0 10px;">',
+		'~\[imgright (.*?)\](.*?)\[\/imgright\]~si'    => '<img src="$2" title="$1" alt="$1" style="float: right; margin: 0 0 0 10px;">',
 		
-		'~\[imgcenter\](.*?)\[\/imgcenter\]~si'  => '<div style="text-align: center"><img src="$1" /></div>',
-		'~\[imgcenter (.*?)\](.*?)\[\/imgcenter\]~si'  => '<div style="text-align: center"><img src="$2" title="$1" alt="$1" /></div>',
+		'~\[imgcenter\](.*?)\[\/imgcenter\]~si'  => '<div style="text-align: center"><img src="$1"></div>',
+		'~\[imgcenter (.*?)\](.*?)\[\/imgcenter\]~si'  => '<div style="text-align: center"><img src="$2" title="$1" alt="$1"></div>',
 		
 		// [imgmini=http://site/uploads/sborka-mini.jpg]http://site/uploads/sborka.jpg[/imgmini]
-		'~\[imgmini=_(.*?)\](.*?)\[\/imgmini\]~si' => '<a href="$2" target="_blank" class="lightbox"><img src="$1" /></a>',
-		'~\[imgmini=(.*?)\](.*?)\[\/imgmini\]~si'  => '<a href="$2"><img src="$1" class="lightbox" /></a>',
+		'~\[imgmini=_(.*?)\](.*?)\[\/imgmini\]~si' => '<a href="$2" target="_blank" class="lightbox"><img src="$1"></a>',
+		'~\[imgmini=(.*?)\](.*?)\[\/imgmini\]~si'  => '<a href="$2"><img src="$1" class="lightbox"></a>',
 		
-		'~\[img=(.*?)x(.*?)\](.*?)\[\/img\]~si'  => '<img src="$3" style="width: $1px; height: $2px" />',
+		'~\[img=(.*?)x(.*?)\](.*?)\[\/img\]~si'  => '<img src="$3" style="width: $1px; height: $2px">',
 		
-		'~\[img (.*?)\](.*?)\[\/img\]~si'              => '<img src="$2" title="$1" alt="$1" />',
-		'~\[img\](.*?)\[\/img\]~si'              => '<img src="$1" title="" alt="" />',
+		'~\[img (.*?)\](.*?)\[\/img\]~si'              => '<img src="$2" title="$1" alt="$1">',
+		'~\[img\](.*?)\[\/img\]~si'              => '<img src="$1" title="" alt="">',
 		
 		// quoting
 		'~\[quote\](.*?)\[\/quote\]~si'         => '<blockquote>$1</blockquote>',

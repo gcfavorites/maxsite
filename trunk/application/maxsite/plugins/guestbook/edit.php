@@ -28,7 +28,7 @@ if ( !isset($options['limit']) ) $options['limit'] = 10; // отзывов на 
 
 $CI->load->library('table');
 $tmpl = array (
-				'table_open'		  => '<br /><table class="page" border="0" width="100%">',
+				'table_open'		  => '<br><table class="page" border="0" width="100%">',
 				'row_alt_start'		  => '<tr class="alt">',
 				'cell_alt_start'	  => '<td class="alt" style="vertical-align: top;">',
 				'cell_start'	  => '<td style="vertical-align: top;">',
@@ -81,7 +81,7 @@ if ($query->num_rows() > 0)
 	foreach ($books as $book) 
 	{
 		if ($book['guestbook_approved']) $approved = '';
-			else $approved = '<a title="' . t('Редактировать', __FILE__) . '" style="color: red" href="' . getinfo('site_admin_url') . 'guestbook/editone/' . $book['guestbook_id'] . '">' . t('Ожидает одобрения!', __FILE__) . '</a><br /><br />';
+			else $approved = '<a title="' . t('Редактировать', __FILE__) . '" style="color: red" href="' . getinfo('site_admin_url') . 'guestbook/editone/' . $book['guestbook_id'] . '">' . t('Ожидает одобрения!', __FILE__) . '</a><br><br>';
 		
 		$CI->table->add_row(
 				'<a title="' . t('Редактировать', __FILE__) . '" href="' . getinfo('site_admin_url') . 'guestbook/editone/' . $book['guestbook_id'] . '">' 
@@ -89,11 +89,11 @@ if ($query->num_rows() > 0)
 					
 				$approved
 				. mso_date_convert('Y-m-d H:i:s', $book['guestbook_date'])
-				. '<br /><br />' . $book['guestbook_ip'] 
-				. '<br /><br />' . $book['guestbook_browser'],
+				. '<br><br>' . $book['guestbook_ip'] 
+				. '<br><br>' . $book['guestbook_browser'],
 				
 				htmlspecialchars($book['guestbook_name']),
-				str_replace("\n", "<br />", htmlspecialchars($book['guestbook_text'])),
+				str_replace("\n", "<br>", htmlspecialchars($book['guestbook_text'])),
 				htmlspecialchars($book['guestbook_title']),
 				htmlspecialchars($book['guestbook_email']),
 				htmlspecialchars($book['guestbook_icq']),
@@ -107,10 +107,10 @@ if ($query->num_rows() > 0)
 		
 	}
 	
-	echo '<br />';
+	echo '<br>';
 	mso_hook('pagination', $pag);
 	echo $CI->table->generate(); // вывод подготовленной таблицы
-	echo '<br />';
+	echo '<br>';
 	mso_hook('pagination', $pag);
 }
 

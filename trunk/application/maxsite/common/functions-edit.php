@@ -67,12 +67,11 @@
 
 			$res = ($CI->db->update('category', $upd_data)) ? '1' : '0';
 
-	        #$CI->db->cache_delete_all();
-
 			$response = array(
 							'result' => $res,
 							'description'=>''
 							);
+			mso_flush_cache(); // сбросим кэш
 		}
 		else
 		{
@@ -144,10 +143,13 @@
 				$res = ($CI->db->insert('category', $ins_data)) ? '1' : '0';
 
 				if ($res)
+				{
 					$response =	array(
 									'result' => $res,
 									'description'=>'Inserting new category'
 								);
+					mso_flush_cache(); // сбросим кэш
+				}
 				else
 					$response =	array(
 									'result' => 0,
@@ -201,17 +203,14 @@
 			$CI->db->where('category_id_parent', $category_id);
 			$CI->db->update('category', array('category_id_parent'=>'0'));
 
-            # $CI->db->cache_delete_all();
-
 			$CI->db->where('category_id', $category_id);
 			$res = ($CI->db->delete('category')) ? '1' : '0';
-
-            # $CI->db->cache_delete_all();
 
 			$response = array(
 							'result' => $res,
 							'description'=>''
 						);
+			mso_flush_cache(); // сбросим кэш
 		}
 		else
 		{
@@ -352,12 +351,11 @@
 		$CI->db->where('users_id', $users_id);
 		$res = ($CI->db->update('users', $upd_data)) ? '1' : '0';
 
-        # $CI->db->cache_delete_all();
-
 		$response = array(
 						'result' => $res,
 						'description' => 'Update'
 						);
+		mso_flush_cache(); // сбросим кэш
 
 		return $response;
 	}
@@ -451,6 +449,7 @@
 								'result' => $res,
 								'description' => 'Inserting new user'
 								);
+				mso_flush_cache(); // сбросим кэш
 			}
 		}
 		else // ошибочные данные
@@ -466,7 +465,79 @@
 
 
 
+	# удалить юзера
+	function mso_delete_user($data, $check_user_password = true)
+	{
+		global $MSO;
 
+		$CI = & get_instance();
+
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+
+		# нужно ли проверять разрешение?
+		if ($check_user_password)
+		{
+			# проверка доступа этому пользователю с этим паролем и этим разрешением
+			if ( !mso_check_user_password($user_login, $password, 'edit_delete_users') )
+				return array( 'result' => 0, 'description' => 'Login/password incorrect');
+		}
+
+		$users_id = isset($data['users_id']) ? (int) $data['users_id'] : false;
+		$delete_user_comments = isset($data['delete_user_comments']) ? $data['delete_user_comments'] : false;
+		$delete_user_pages = isset($data['delete_user_pages']) ? $data['delete_user_pages'] : false;
+
+		if ($users_id)
+		{
+			if ($delete_user_comments)
+			{
+				# удалить все комментарии юзера
+				$CI->db->where( array ('comments_users_id' => $users_id) );
+				$CI->db->delete('comments');
+			}
+			else
+			{
+				# отметить все комментарии юзера как анонима без имени
+				$CI->db->where(array ('comments_users_id' => $users_id));
+				$CI->db->update('comments', array('comments_users_id' => '0', 'comments_author_name' => t('Аноним', 'admin') ) );
+			}
+			
+			
+			if ($delete_user_pages)
+			{
+				# удалить все записи юзера
+				$CI->db->where( array ('page_id_autor' => $users_id) );
+				$CI->db->delete('page');
+			}
+			else
+			{
+				# отметить у записей юзера автор = 1 - админ
+				$CI->db->where(array ('page_id_autor' => $users_id));
+				$CI->db->update('page', array('page_id_autor' => '1') );			
+			}
+			
+			# теперь можно удалить самого юзера
+			$res = $CI->db->delete('users', array ('users_id' => $users_id));			
+			
+			$response = array(
+								'result' => $res,
+								'description' => 'Deleting user'
+								);
+			mso_flush_cache(); // сбросим кэш
+		}
+		else // ошибочные данные
+		{
+			$response = array(
+							'result' => 0,
+							'description' => 'Error input data'
+						);
+		}
+
+		return $response;
+	}
 
 
 
@@ -1132,7 +1203,7 @@
 		$CI->db->where('comusers_id', $comusers_id);
 		$res = ($CI->db->update('comusers', $upd_data)) ? '1' : '0';
 
-        # $CI->db->cache_delete_all();
+        mso_flush_cache(); // сбросим кэш
 
 		$response = array(
 						'result' => $res,

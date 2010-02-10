@@ -260,7 +260,7 @@ mso_cur_dir_lang('admin');
 			
 			echo '<form action="" method="post">' . mso_form_session('f_session_id');
 			echo $CI->table->generate();
-			echo '<input type="submit" name="f_submit[' . $id . ']" value="' . t('Изменить', 'admin') . '" style="margin: 10px 0;" />';
+			echo '<input type="submit" name="f_submit[' . $id . ']" value="' . t('Изменить', 'admin') . '" style="margin: 10px 0;">';
 			echo '</form>';
 		}
 		else echo '<div class="error">' . t('Ошибочный запрос', 'admin') . '</div>';

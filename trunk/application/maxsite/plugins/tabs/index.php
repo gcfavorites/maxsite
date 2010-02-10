@@ -71,11 +71,11 @@ function tabs_widget_form($num = 1)
 	
 	$form .= '<p><div class="t150">' . t('Табы:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'tabs', 'value'=>$options['tabs'] ) ) ;
 	
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Указывайте по одному табу в каждом абзаце в формате: <strong>заголовок | виджет номер</strong>', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Указывайте по одному табу в каждом абзаце в формате: <strong>заголовок | виджет номер</strong>', 'plugins');
 	
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Например: <strong>Цитаты | randomtext_widget 1</strong>', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Например: <strong>Цитаты | randomtext_widget 1</strong>', 'plugins');
 	
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Для ушки: <strong>Цитаты | ушка_цитаты</strong>', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Для ушки: <strong>Цитаты | ушка_цитаты</strong>', 'plugins');
 	
 	
 	$form .= '<p><div class="t150">' . t('Использовать:', 'plugins') . '</div> '. form_dropdown( $widget . 'type_func', array( 'widget'=>t('Виджет (функция и номер через пробел)', 'plugins'), 'ushka'=>t('Ушка (только название)', 'plugins')), $options['type_func']);

@@ -24,17 +24,19 @@
 		<legend>Архив</legend>
 		
 		<table cellspacing="10">
-			<tr>				<td>
+			<tr>
+				<td>
 					Ссылка на архив голосований (/ - на конце обязателен)
-					<input type="text" name="sp_archive_url" value="<?= mso_get_option('sp_archive_url') ?>" size="100%" />
+					<input type="text" name="sp_archive_url" value="<?= mso_get_option('sp_archive_url') ?>" size="100%">
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<input type="checkbox" name="show_archives_link" id="show_archives_link" <?= mso_get_option('show_archives_link') ? ' checked="checked" ' : ''  ?> />
+					<input type="checkbox" name="show_archives_link" id="show_archives_link" <?= mso_get_option('show_archives_link') ? ' checked="checked" ' : ''  ?>>
 					<label for="show_archives_link">Показывать ссылку</label>
 				</td>
-			</tr>		</table>
+			</tr>
+		</table>
 		
 	</fieldset>
 
@@ -44,7 +46,7 @@
 		<table cellspacing="10">
 			<tr>
 				<td>
-					<input type="checkbox" name="show_results_link" id="show_results_link" <?= mso_get_option('show_results_link') ? ' checked="checked" ' : ''  ?> />
+					<input type="checkbox" name="show_results_link" id="show_results_link" <?= mso_get_option('show_results_link') ? ' checked="checked" ' : ''  ?>>
 					<label for="show_results_link">Показывать ссылку "Результаты голосования"</label>
 				</td>
 			</tr>
@@ -52,8 +54,8 @@
 		
 	</fieldset>
 
-	<br /><br />
-	<input type="submit" name="sp_settings_submit" value="Сохранить" />	
+	<br><br>
+	<input type="submit" name="sp_settings_submit" value="Сохранить">	
 	
 </form>	
 	

@@ -30,7 +30,8 @@ function pr($var, $html = false, $echo = true)
 			if (!$html) echo $var;
 				else
 				{
-					$var = str_replace('<br />', "<br />\n", $var);
+					$var = str_replace('<br />', "<br>", $var);
+					$var = str_replace('<br>', "<br>\n", $var);
 					$var = str_replace('</p>', "</p>\n", $var);
 					$var = str_replace('<ul>', "\n<ul>", $var);
 					$var = str_replace('<li>', "\n<li>", $var);
@@ -533,6 +534,15 @@ function getinfo($info = '')
 				$out = $MSO->config['admin_dir'];
 				break;
 				
+		case 'cache_dir' :
+				$out = $MSO->config['cache_dir'];
+				break;
+
+		case 'FCPATH' :
+				$out = $MSO->config['FCPATH'];
+				break;
+
+				
 	endswitch;
 
 	return $out;
@@ -981,17 +991,26 @@ function mso_delete_float_option($key, $type = 'general', $dir = '')
 
 # добавить кеш
 # ключ, значение, время
+# Функция взята из _write_cache output.php - немного переделанная
 function mso_add_cache($key, $output, $time = false, $custom_fn = false)
 {
-	/*
-	Функция взята из _write_cache output.php - немного переделанная
-	*/
+	# если определен отдельный хук, то выполняем его
+	if (mso_hook_present('mso_add_cache')) 
+		return mso_hook('mso_add_cache', array(
+		'key' => $key,
+		'output' => $output,
+		'time' => $time,
+		'custom_fn' => $custom_fn
+		));
 
+		
 	global $MSO;
 
 	$CI = & get_instance();
-	$path = $CI->config->item('cache_path');
-	$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
+	
+	//$path = $CI->config->item('cache_path');
+	//$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
+	$cache_path = getinfo('cache_dir');
 
 	if ( ! is_dir($cache_path) or ! is_writable($cache_path)) return;
 
@@ -1020,10 +1039,15 @@ function mso_flush_cache_mask($mask = '')
 {
 	if (!$mask) return;
 
+	# если определен отдельный хук, то выполняем его
+	if (mso_hook_present('mso_flush_cache_mask')) 
+		return mso_hook('mso_flush_cache_mask', array('mask' => $mask));
+	
 	$CI = & get_instance();
-	$path = $CI->config->item('cache_path');
+	// $path = $CI->config->item('cache_path');
+	// $cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
 
-	$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
+	$cache_path = getinfo('cache_dir');	
 
 	if ( ! is_dir($cache_path) or ! is_writable($cache_path)) return;
 
@@ -1051,10 +1075,20 @@ function mso_flush_cache_mask($mask = '')
 # если указать $file, то удаляется только этот файл в кэше
 function mso_flush_cache($full = false, $dir = false, $file = false)
 {
+	# если определен отдельный хук, то выполняем его
+	if (mso_hook_present('mso_flush_cache')) 
+		return mso_hook('mso_flush_cache', array(
+		'full' => $full,
+		'dir' => $dir,
+		'file' => $file
+		));
+		
 	$CI = & get_instance();
-	$path = $CI->config->item('cache_path');
-
-	$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
+	
+	//$path = $CI->config->item('cache_path');
+	//$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
+	
+	$cache_path = getinfo('cache_dir');
 
 	if ( ! is_dir($cache_path) OR ! is_writable($cache_path))
 		return FALSE;
@@ -1108,17 +1142,23 @@ function mso_flush_cache($full = false, $dir = false, $file = false)
 
 
 # получить кеш по ключу
+# Функция взята из _display_cache output.php - переделанная
 function mso_get_cache($key, $custom_fn = false)
 {
-	/*
-	Функция взята из _display_cache output.php - переделанная
-	*/
+	# если определен отдельный хук, то выполняем его
+	if (mso_hook_present('mso_get_cache')) 
+		return mso_hook('mso_get_cache', array(
+		'key' => $key,
+		'custom_fn' => $custom_fn
+		));
 
 	$CI = & get_instance();
-	$path = $CI->config->item('cache_path');
-
-	$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
-
+	
+	//$path = $CI->config->item('cache_path');
+	// $cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
+	
+	$cache_path = getinfo('cache_dir');
+	
 	if ( !is_dir($cache_path) OR ! is_writable($cache_path))
 		return FALSE;
 
@@ -1176,7 +1216,7 @@ function mso_text_to_html($content)
 
 	// $content = htmlspecialchars($content, ENT_QUOTES);
 	
-	return $content;
+	return mso_hook('text_to_html', $content);
 }
 
 
@@ -1199,7 +1239,7 @@ function mso_html_to_text($content)
 
 	// $content = htmlspecialchars($content, ENT_QUOTES);
 
-	return $content;
+	return mso_hook('html_to_text', $content);
 }
 
 
@@ -1212,7 +1252,8 @@ function mso_clean_pre_special_chars($matches)
 
 		$m = str_replace('<p>', '', $m);
 		$m = str_replace('</p>', '', $m);
-		$m = str_replace("<br />", "MSO_N", $m);
+		$m = str_replace("<br />", "<br>", $m);
+		$m = str_replace("<br>", "MSO_N", $m);
 
 		$m = htmlspecialchars($m, ENT_QUOTES);
 
@@ -1246,8 +1287,9 @@ function mso_clean_pre($matches)
 	$text = str_replace('[', '&#91;', $text);
 	$text = str_replace(']', '&#93;', $text);
 	$text = str_replace("<br>", "MSO_N", $text);
-	$text = str_replace("<br />", "MSO_N", $text);
-	$text = str_replace("<br/>", "MSO_N", $text);
+	$text = str_replace("<br />", "<br>", $text);
+	$text = str_replace("<br/>", "<br>", $text);
+	$text = str_replace("<br>", "MSO_N", $text);
 
 	return $text;
 }
@@ -1264,11 +1306,31 @@ function mso_clean_block($matches)
 
 	$text = str_replace('<p>', '', $text);
 	$text = str_replace('</p>', 'MSO_N_BLOCK', $text);
+	$text = str_replace("<br>", "MSO_N", $text);
+	$text = str_replace("<br />", "<br>", $text);
+	$text = str_replace("<br/>", "<br>", $text);
+	$text = str_replace("<br>", "MSO_N", $text);
+	//$text = str_replace("\n", "MSO_N", $text);
+
+	return $text;
+}
+
+# аналогично, только еще и [] меняем 
+function mso_clean_block2($matches)
+{
+
+	if ( is_array($matches) )
+		$text = "" . $matches[1] . $matches[2] . $matches[3] . "\n";
+	else
+		$text = $matches;
+
+	$text = str_replace('<p>', '', $text);
+	$text = str_replace('</p>', 'MSO_N_BLOCK', $text);
 	$text = str_replace('[', '&#91;', $text);
 	$text = str_replace(']', '&#93;', $text);
+	$text = str_replace("<br />", "<br>", $text);
+	$text = str_replace("<br/>", "<br>", $text);
 	$text = str_replace("<br>", "MSO_N", $text);
-	$text = str_replace("<br />", "MSO_N", $text);
-	$text = str_replace("<br/>", "MSO_N", $text);
 	//$text = str_replace("\n", "MSO_N", $text);
 
 	return $text;
@@ -1278,8 +1340,8 @@ function mso_clean_block($matches)
 # к обычному html
 function mso_clean_html($matches)
 {
-	$arr1 = array('<p>', '</p>', '<br />',      '&amp;', '&lt;', '&gt;', "\n");
-	$arr2 = array('',    '',     'MSO_N',       '&',     '<',    '>',    'MSO_N');
+	$arr1 = array('<p>', '</p>', '<br />',  '<br>',     '&amp;', '&lt;', '&gt;', "\n");
+	$arr2 = array('',    '',     'MSO_N',   'MSO_N',   '&',     '<',    '>',    'MSO_N');
 
 	$matches[1] = trim( str_replace($arr1, $arr2, $matches[1]) );
 
@@ -1294,8 +1356,8 @@ function mso_clean_html($matches)
 # кодирование нужно для того, чтобы корректно пропустить весь остальной текст
 function mso_clean_html_do($matches)
 {
-	$arr1 = array('&amp;', '&lt;', '&gt;', '<br />', '&nbsp;');
-	$arr2 = array('&',     '<',    '>',    "\n",     ' ');
+	$arr1 = array('&amp;', '&lt;', '&gt;', '<br />', '<br>', '&nbsp;');
+	$arr2 = array('&',     '<',    '>',    "\n",     "\n",   ' ');
 
 	$m = trim( str_replace($arr1, $arr2, $matches[1]) );
 	$m = '[html_base64]' . base64_encode($m) . '[/html_base64]';
@@ -1316,7 +1378,7 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
 	
 	if ( mso_hook_present('content_auto_tag_custom') ) 
-		return $pee = mso_hook('content_auto_tag_custom', $pee);
+		return mso_hook('content_auto_tag_custom', $pee);
 	
 	$pee = mso_hook('content_auto_tag_do', $pee);
 
@@ -1348,8 +1410,8 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	
 
 	# всё приводим к MSO_N - признак переноса
-	$pee = str_replace('<br />', 'MSO_N', $pee);
-	$pee = str_replace('<br/>', 'MSO_N', $pee);
+	$pee = str_replace('<br />', '<br>', $pee);
+	$pee = str_replace('<br/>', '<br>', $pee);
 	$pee = str_replace('<br>', 'MSO_N', $pee);
 	$pee = str_replace("\n", 'MSO_N', $pee); // все абзацы тоже <br>
 	
@@ -1416,12 +1478,12 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	### подчистим некоторые блочные тэги удалим <p> внутри. MSO_N_BLOCK = </p>
 	
 	# code
-	$pee = preg_replace_callback('!(<code.*?>)(.*?)(</code>)!is', 'mso_clean_block', $pee );
-	$pee = str_replace('MSO_N_BLOCK', "<br />", $pee); // заменим перенос в блочном на <br> 
+	$pee = preg_replace_callback('!(<code.*?>)(.*?)(</code>)!is', 'mso_clean_block2', $pee );
+	$pee = str_replace('MSO_N_BLOCK', "<br>", $pee); // заменим перенос в блочном на <br> 
 	
 	# blockquote
 	$pee = preg_replace_callback('!(<blockquote.*?>)(.*?)(</blockquote>)!is', 'mso_clean_block', $pee );
-	$pee = str_replace('MSO_N_BLOCK', "<br />", $pee); // заменим перенос в блочном на <br> 	
+	$pee = str_replace('MSO_N_BLOCK', "<br>", $pee); // заменим перенос в блочном на ''	
 	
 	
 	# еще раз подчистка
@@ -1442,105 +1504,8 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	// _pr($pee, true); # контроль
 
 	return $pee;
-	
-	
-	/*
-	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|hr|embed|h1|h2|h3|h4|h5|h6|br)';
-	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
-	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
 
-	$pee = str_replace("\n", "<br />", $pee);
-	$pee = str_replace('<br>', '<br />', $pee);
-
-	$pee = str_replace('<br />', "\n" . '<br />', $pee); // +
-
-
-	if ( // отдавать как есть - это такая фишка :-)
-		( strpos($pee, '[volkman]') !== false and strpos(trim($pee), '[volkman]') == 0 ) 
-		or ( strpos($pee, '[wave]') !== false and strpos(trim($pee), '[wave]') == 0 ) 
-		or ( strpos($pee, '[arsenal]') !== false and strpos(trim($pee), '[arsenal]') == 0 ) 
-		or ( strpos($pee, '[cuprum]') !== false and strpos(trim($pee), '[cuprum]') == 0 ) 
-		or ( strpos($pee, '[librarian]') !== false and strpos(trim($pee), '[librarian]') == 0 ) 
-		or ( strpos($pee, '[maxsite]') !== false and strpos(trim($pee), '[maxsite]') == 0 ) 
-	)
-	{
-		$pee = str_replace('[volkman]', '', $pee);
-		$pee = str_replace('[wave]', '', $pee);
-		$pee = str_replace('[arsenal]', '', $pee);
-		$pee = str_replace('[cuprum]', '', $pee);
-		$pee = str_replace('[librarian]', '', $pee);
-		
-		$pee = mso_clean_html( array('1'=>$pee) );
-		$pee = str_replace('[mso_br_n]', "\n", $pee);
-		return $pee;
-	}
-
-	$pee = "\n<p>" . $pee;
-
-	$pee = preg_replace('|<br />\s*?<br />|', "<p>", $pee); // +
-	$pee = str_replace('<p><p>', "<p>", $pee);
-	
-	$pee = str_replace("<p>\n<br />", "<p>", $pee);
-	$pee = str_replace("<p><p ", "<p ", $pee);
-	$pee = str_replace("<br />", "<p>", $pee);
-
-	$pee = preg_replace('|<p>\s*?</p>|', '', $pee);
-
-	$pee = preg_replace('!<p>([^<]+)\s*?(</(?:div|address|form)[^>]*>)!', "<p>$1</p>$2", $pee);
-	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
-
-	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*!', "\n$1", $pee);
-
-	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n", $pee);
-	$pee = preg_replace('!\s*(</' . $allblocks . '>)!', "$1", $pee);
-
-
-	$pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee);
-	$pee = preg_replace("|</li>\s*<li>|", "</li>\n<li>", $pee);
-	$pee = preg_replace("|</li>\s*</ul>|", "</li>\n</ul>", $pee);
-
-	$pee = preg_replace('|<p><blockquote([^>]*)></p>|i', "<blockquote$1>", $pee);
-	$pee = str_replace('<p></blockquote></p>', '</blockquote>', $pee);
-
-	$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1>", $pee);
-	$pee = str_replace('</blockquote></p>', '</blockquote>', $pee);
-
-	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
-
-	$pee = str_replace('<p>[cut]</p>', '[cut]', $pee);
-	$pee = str_replace('<p>[page]</p>', '[page]', $pee);
-
-
-	if ($pre_special_chars)
-	{
-		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre_special_chars', $pee );
-		else $pee = str_replace("\n\n", "\n", $pee);
-	}
-	else
-	{
-		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre', $pee );
-		else $pee = str_replace("\n\n", "\n", $pee);
-	}
-
-	$pee = str_replace('[mso_n]', "\n", $pee);
-	$pee = str_replace('[mso_br_n]', "\n", $pee);
-	
-	$pee = mso_hook('content_auto_tag_my', $pee);
-	
-	return $pee;
-	*/
 }
-
-/*
-# вычищаем списки UL
-function mso_balance_tags_ul_callback($matches)
-{
-	$text = str_replace('<p> </p>', '', $matches[2]);
-	$text = str_replace("\n\n", "\n", $text);
-
-	return $matches[1] . $text . $matches[3];
-}
-*/
 
 # моя функция авторасстановки тэгов
 function mso_balance_tags($text)
@@ -1550,63 +1515,6 @@ function mso_balance_tags($text)
 	$text = mso_hook('content_balance_tags_my', $text);
 	
 	return $text;
-
-/*
-	//return $text;
-	// те тэги, которые нужно закрывать автоматом до конца строки
-	$blocks_for_close = 'p|li';
-
-	$text = preg_replace("!<(" . $blocks_for_close . ")(.*)>(.*)([\n]*)!", "<$1$2>$3</$1>\n", $text);
-
-	// удалим двойные закрывающие и открывающие и пустые
-	$ar = explode('|', $blocks_for_close);
-	foreach ($ar as $t)
-	{
-		$text = str_replace("<" . $t ."></" . $t .">", "", $text); //  <p></p> <li></li>
-		$text = str_replace("<" . $t ."><" . $t .">", "<" . $t . ">", $text);
-		$text = str_replace("</" . $t . "></" . $t . ">", "</" . $t . ">", $text);
-	}
-
-	// $text = str_replace("</p>\n</p>", "</p>", $text);
-	$text = str_replace('</div></p>', '</p></div>', $text);
-	$text = str_replace('<p></p></div>', '</div>', $text);
-	$text = str_replace('<p></ul></div></p>', '</ul></div>', $text);
-	$text = str_replace('<p></div></p>', '</div>', $text);
-
-	$text = str_replace('<p></ul></p>', '</ul>', $text);
-	$text = str_replace('<p></table></p>', '</table>', $text);
-	$text = str_replace('<p></tr></p>', '</tr>', $text);
-	$text = str_replace('<p></td></p>', '</td>', $text);
-	$text = str_replace('</td></p>', '</p></td>', $text);
-	$text = str_replace('<p></div></tr></p>', '</tr></div>', $text);
-
-	$text = str_replace('<p></tr></tbody></table></p>', '</tr></tbody></table>', $text);
-
-	$text = preg_replace('!<pre(.*?)</p>!si', '<pre$1', $text);
-	$text = preg_replace('~<p><!--(.*?)--></p>~si', '<!--$1-->', $text);
-	$text = preg_replace('~<p><a name=\"(.*?)\"></a></p>~si', '<a name="$1"></a>', $text);
-
-	$text = preg_replace_callback('!(<ul>)(.*?)(</ul>)!si', 'mso_balance_tags_ul_callback', $text);
-
-	$text = str_replace('<p></li></p>', '</li>', $text);
-
-	$text = str_replace('<p> </p>', '<p>&nbsp;</p>', $text);
-
-
-	$text = str_replace("\n\n\n\n", "\n", $text);
-	$text = str_replace("\n\n\n", "\n", $text);
-	$text = str_replace("\n\n", "\n", $text);
-
-	$text = str_replace('<p>[html_base64]', '[html_base64]', $text);
-	$text = str_replace('[/html_base64]</p>', '[/html_base64]', $text);
-	$text = str_replace('[/html_base64] </p>', '[/html_base64]', $text);
-
-	$text = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $text );
-	
-	$text = mso_hook('content_balance_tags_my', $text);
-	
-	return $text;
-	*/
 }
 
 
@@ -1678,9 +1586,11 @@ function mso_redirect($url, $absolute = false)
 	global $MSO;
 
 	$url = strip_tags($url);
-
 	$url = str_replace( array('%0d', '%0a'), '', $url );
-
+	
+	$CI = & get_instance();
+	$url = $CI->input->xss_clean($url);
+	
 	if ($absolute)
 	{
 		header("Refresh: 0; url={$url}");
@@ -1722,7 +1632,7 @@ function mso_form_session($name_form = 'flogin_session_id')
 {
 	global $MSO;
 
-	return '<input type="hidden" value="' . $MSO->data['session']['session_id'] . '" name="' . $name_form . '" />';
+	return '<input type="hidden" value="' . $MSO->data['session']['session_id'] . '" name="' . $name_form . '">';
 }
 
 
@@ -1744,10 +1654,10 @@ function mso_login_form($conf = array(), $redirect = '', $echo = true)
 
 	$out = <<<EOF
 	<form method="post" action="{$action}" name="flogin" id="flogin">
-		<input type="hidden" value="{$redirect}" name="flogin_redirect" />
-		<input type="hidden" value="{$session_id}" name="flogin_session_id" />
-		<span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user" />
-		<span>{$password}</span><input type="password" value="" name="flogin_password" id="flogin_password" />
+		<input type="hidden" value="{$redirect}" name="flogin_redirect">
+		<input type="hidden" value="{$session_id}" name="flogin_session_id">
+		<span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user">
+		<span>{$password}</span><input type="password" value="" name="flogin_password" id="flogin_password">
 		{$submit}<input type="submit" name="flogin_submit" id="flogin_submit" value="{$submit_value}">
 		{$form_end}
 	</form>
@@ -1994,14 +1904,24 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 # http://localhost/admin/users/edit/1
 # mso_segment(3) -> edit
 # номер считается от home-сайта
-function mso_segment($segment = 2)
+# если в сегменте находится XSS и $die = true, то рубим все
+function mso_segment($segment = 2, $die = true)
 {
 	global $MSO;
+	
+	$CI = & get_instance();
+	
 	if ( count($MSO->data['uri_segment']) > ($segment - 1) )
 		$seg = $MSO->data['uri_segment'][$segment];
 	else $seg = '';
+	
+	$seg = urldecode($seg);
+	
+	$url = $CI->input->xss_clean($seg);
 
-	return urldecode($seg);
+	if ($url != $seg and $die) die('<b><font color="red">Achtung! XSS attack!</font></b>');
+	
+	return $url;
 }
 
 
@@ -2305,7 +2225,7 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 			if ( sizeof($arr_w) > 1 ) // два или больше элементов
 			{
 				$widget = trim( $arr_w[0] ); // первый - функция
-				$num = (int) trim( $arr_w[1] ); // второй - номер виджета
+				$num = trim( $arr_w[1] ); // второй - номер виджета
 
 				if (isset($arr_w[2])) // есть какое-то php-условие
 				{
@@ -2323,7 +2243,15 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 			{
 				$num = 0; // номер виджета не указан, значит 0
 			}
-
+			
+			// номер функции виджета может быть не только числом, но и текстом
+			// если текст, то нужно его преобразовать в slug, чтобы исключить 
+			// некоректную замену [NUMF] для стилей
+			$num = mso_slug($num);
+			
+			// двойной - заменим на один - защита id в форме админки
+			$num = str_replace('--', '-', $num);
+			
 			if ( function_exists($widget) and $usl_res === 1)
 			{
 				if ($temp = $widget($num)) // выполняем виджет если он пустой, то пропускаем вывод
@@ -2337,7 +2265,9 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 					{
 						$numw = $num_widget[$sidebar]['numw'] = 1;
 					}
+					
 
+					
 					$st = str_replace('[FN]', $widget, $block_start); // название функции виджета
 					$st = str_replace('[NUMF]', $num, $st); // номер функции
 					$st = str_replace('[NUMW]', $numw, $st);	//
@@ -2369,8 +2299,18 @@ function mso_widget_get_post($option = '')
 
 
 # функция отправки письма по email
-function mso_mail($email = '', $subject = '', $message = '', $from = false)
+# preferences пока не реализована
+function mso_mail($email = '', $subject = '', $message = '', $from = false, $preferences = array())
 {
+	
+	$arg = array('email' => $email, 'subject' => $subject, 'message' => $message, 'from' => $from, 'preferences' => $preferences);
+	
+	# если определен хук mail, то через него отправляем данные
+	if (mso_hook_present('mail'))
+	{
+		return mso_hook('mail', $arg);
+	}
+	
 	$CI = & get_instance();
 	$CI->load->library('email');
 
@@ -2390,10 +2330,14 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false)
 	// pr($admin_email);
 	// pr($CI->email);
 
-	$res = $CI->email->send();
+	$res = @$CI->email->send();
+	
 	# mail($email, $subject, $message); # проверка
 	if (!$res) echo $CI->email->print_debugger();
-
+	
+	$arg['res'] = $res;
+	mso_hook('mail_res', $arg); // хук, если нужно отслеживать отправку почты
+	
 	return $res;
 }
 
@@ -2474,10 +2418,10 @@ function mso_load_jquery($plugin = '')
 # каждый пункт делается так:  http://ссылка|название
 # на выходе так:
 # <li class="selected"><a href="url"><span>ссылка</span></a></li>
+# если первый символ [ то это открывает группу ul 
+# если ] то закрывает - позволяет создавать многоуровневые меню
 function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = false)
 {
-	global $MSO;
-
 	# добавить ссылку на admin
 	if ($add_link_admin and is_login()) $menu .= NR . 'admin|Admin';
 
@@ -2495,18 +2439,21 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 	$out = '';
 	# обходим в цикле
 	$i = 1;
+	
+	$group_in = false;
+	
 	foreach ($menu as $elem)
 	{
 		# разобъем строчку по адрес | название
 		$elem = explode('|', $elem);
-
+		
 		# должно быть два элемента
 		if (count($elem) > 1 )
 		{
 			$url = trim($elem[0]);  // адрес
 			$name = trim($elem[1]); // название
-
-			if (strpos($url, $http) === false) // нет в адресе http:// - значит это текущий сайт
+			
+			if (($url != '#') and strpos($url, $http) === false) // нет в адресе http:// - значит это текущий сайт
 			{
 				if ($url == '/') $url = getinfo('siteurl'); // это главная
 					else $url = getinfo('siteurl') . $url;
@@ -2523,15 +2470,38 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			if ($i == count($menu)) $class .= ' last';
 
 			$class = trim($class);
-
-			if ($class)
-				$out .= '<li class="' . $class . '"><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+			
+			if ($group_in) // открываем группу
+			{
+				$out .= '<li class="group' . $class . '"><a href="' . $url . '"><span>' . $name . '</span></a>' 
+						. NR . '<ul>' . NR;
+				$group_in = false;
+			}
 			else
-				$out .= '<li><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
-
+			{
+				$out .= '<li class="' . $class . '"><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+			}
+			
 			$i++;
 		}
+		else
+		{
+			// если это [, то это начало группы ul 
+			// если ] то /ul
+			if ($elem[0] == '[') 
+			{
+				$group_in = true;
+			}
+			if ($elem[0] == ']') 
+			{
+				$group_in = false;
+				$out .= '</ul>' . NR . '</li>' . NR;
+			}
+		}
 	}
+	
+	$out = str_replace('<li class="">', '<li>', $out);
+	
 	return $out;
 }
 

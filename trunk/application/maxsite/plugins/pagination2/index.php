@@ -40,7 +40,9 @@ function pagination2_go($r = array())
 	
 	if (!$ran1 or !$ran2) $r['sep'] = '';
 
-	echo NR . '<div class="pagination pagination2">' . $ran1 . $r['sep'] . $ran2 . '</div>' . NR;
+	$out = $ran1 . $r['sep'] . $ran2;
+	
+	if ($out) echo NR . '<div class="pagination pagination2">' . $out . '</div>' . NR;
 	
 	return $r_orig;
 }

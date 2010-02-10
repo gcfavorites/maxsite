@@ -19,7 +19,7 @@ function forms_content_callback($matches)
 	
 	$text = str_replace('&nbsp;', ' ', $text);
 	$text = str_replace("\t", ' ', $text);
-	$text = str_replace('<br />', "\n", $text);
+	$text = str_replace('<br />', "<br>", $text);
 	$text = str_replace('<br>', "\n", $text);
 	$text = str_replace("\n\n", "\n", $text);
 	$text = str_replace('     ', ' ', $text);
@@ -155,7 +155,7 @@ function forms_content_callback($matches)
 				
 				
 				$out .= '<h2>' . t('Ваше сообщение отправлено!', 'plugins') . '</h2><p>' 
-						. str_replace("\n", '<br />', htmlspecialchars($subject. "\n" . $message)) 
+						. str_replace("\n", '<br>', htmlspecialchars($subject. "\n" . $message)) 
 						. '</p>';
 				
 				if ($redirect) mso_redirect($redirect, true);
@@ -188,13 +188,13 @@ function forms_show_form($f = array())
 	
 	$out .= NR . '<div class="forms"><form action="" method="post">' . mso_form_session('forms_session');
 	
-	$out .= '<input type="hidden" name="forms_antispam1" value="' . $antispam1 * 984 . '" />';
-	$out .= '<input type="hidden" name="forms_antispam2" value="' . $antispam2 * 765 . '" />';
+	$out .= '<input type="hidden" name="forms_antispam1" value="' . $antispam1 * 984 . '">';
+	$out .= '<input type="hidden" name="forms_antispam2" value="' . $antispam2 * 765 . '">';
 	
 	// обязательные поля
-	$out .= '<div><label><span>' . t('Ваше имя*', 'plugins') . '</span><input name="forms_name" type="text" value="" /></label></div><div class="break"></div>';
+	$out .= '<div><label><span>' . t('Ваше имя*', 'plugins') . '</span><input name="forms_name" type="text" value=""></label></div><div class="break"></div>';
 	
-	$out .= '<div><label><span>' . t('Ваш email*', 'plugins') . '</span><input name="forms_email" type="text" value="" /></label></div><div class="break"></div>';
+	$out .= '<div><label><span>' . t('Ваш email*', 'plugins') . '</span><input name="forms_email" type="text" value=""></label></div><div class="break"></div>';
 	
 	
 	// тут указанные поля в $f
@@ -212,14 +212,14 @@ function forms_show_form($f = array())
 		
 		if ($val['type'] == 'text')
 		{
-			$out .= '<div><label><span>' . $description . $require . '</span><input name="forms_fields[' . $key . ']" type="text" value="" /></label></div><div class="break"></div>';
+			$out .= '<div><label><span>' . $description . $require . '</span><input name="forms_fields[' . $key . ']" type="text" value=""></label></div><div class="break"></div>';
 		}
 		elseif ($val['type'] == 'select')
 		{
 			if (!isset($val['default'])) continue;
 			if (!isset($val['values'])) continue;
 			
-			$out .= '<div><label><span>' . $description . $require . '</span><select name="forms_fields[' . $key . ']" />';
+			$out .= '<div><label><span>' . $description . $require . '</span><select name="forms_fields[' . $key . ']">';
 			
 			$default = trim($val['default']);
 			$values = explode('#', $val['values']);
@@ -244,12 +244,12 @@ function forms_show_form($f = array())
 	
 	// обязательные поля антиспама и отправка и ресет
 	$out .= '<div><label><span>' . t('Защита от спама:', 'plugins') . ' ' . $antispam1 . ' + ' . $antispam2 . '=</span>';
-	$out .= '<input name="forms_antispam" type="text" value="" /></label></div><div class="break"></div>';
+	$out .= '<input name="forms_antispam" type="text" value=""></label></div><div class="break"></div>';
 
-	$out .= '<div><span>&nbsp;</span><label><input name="forms_subscribe" value="" type="checkbox"  class="forms_checkbox" />&nbsp;' . t('Отправить копию письма на ваш e-mail', 'plugins') . '</label></div><div class="break"></div>';
+	$out .= '<div><span>&nbsp;</span><label><input name="forms_subscribe" value="" type="checkbox"  class="forms_checkbox">&nbsp;' . t('Отправить копию письма на ваш e-mail', 'plugins') . '</label></div><div class="break"></div>';
 	
-	$out .= '<div><span>&nbsp;</span><input name="forms_submit" type="submit" class="forms_submit" value="' . t('Отправить', 'plugins') . '" />';
-	$out .= '<input name="forms_clear" type="reset" class="forms_reset" value="' . t('Очистить форму', 'plugins') . '" /></div>';
+	$out .= '<div><span>&nbsp;</span><input name="forms_submit" type="submit" class="forms_submit" value="' . t('Отправить', 'plugins') . '">';
+	$out .= '<input name="forms_clear" type="reset" class="forms_reset" value="' . t('Очистить форму', 'plugins') . '"></div>';
 	
 	$out .= '</form></div>' . NR;
 	

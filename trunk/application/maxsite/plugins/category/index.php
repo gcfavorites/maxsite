@@ -69,20 +69,20 @@ function category_widget_form($num = 1)
 	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
 	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) 
-			. '<br /><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' [LINK][TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;[/LINK]&lt;br /&gt;[DESCR]';
+			. '<br><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' [LINK][TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;[/LINK]&lt;br /&gt;[DESCR]';
 
 	$form .= '<p><div class="t150">' . t('Формат текущей:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format_current', 'value'=>$options['format_current'] ) ) 
-			. '<br /><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' &lt;span&gt;[TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;&lt;/span&gt;&lt;br /&gt;[DESCR]'
-			. '<br /><div class="t150">&nbsp;</div>' . t('Все варианты:', 'plugins') . ' [SLUG], [ID_PARENT], [ID], [MENU_ORDER], [TITLE], [COUNT], [DESCR], [LINK][/LINK]'
+			. '<br><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' &lt;span&gt;[TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;&lt;/span&gt;&lt;br /&gt;[DESCR]'
+			. '<br><div class="t150">&nbsp;</div>' . t('Все варианты:', 'plugins') . ' [SLUG], [ID_PARENT], [ID], [MENU_ORDER], [TITLE], [COUNT], [DESCR], [LINK][/LINK]'
 			
 			
 			;
 
 	$form .= '<p><div class="t150">' . t('Включить только:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'include', 'value'=>$options['include'] ) ) 
-			. '<br /><div class="t150">&nbsp;</div>' . t('Укажите номера рубрик через запятую или пробел', 'plugins');
+			. '<br><div class="t150">&nbsp;</div>' . t('Укажите номера рубрик через запятую или пробел', 'plugins');
 	
 	$form .= '<p><div class="t150">' . t('Исключить:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'exclude', 'value'=>$options['exclude'] ) )
-			. '<br /><div class="t150">&nbsp;</div>' . t('Укажите номера рубрик через запятую или пробел', 'plugins');
+			. '<br><div class="t150">&nbsp;</div>' . t('Укажите номера рубрик через запятую или пробел', 'plugins');
 
 	$form .= '<p><div class="t150">' . t('Если нет записей:', 'plugins') . '</div> '. 
 		form_dropdown( $widget . 'hide_empty', array( 

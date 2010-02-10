@@ -43,7 +43,7 @@ function lightbox_head($args = array())
 			});
 		});
 	</script>
-	<link rel="stylesheet" href="{$url}css/jquery.lightbox-0.5.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{$url}css/jquery.lightbox-0.5.css" type="text/css" media="screen">
 	
 EOF;
 
@@ -70,24 +70,24 @@ function lightbox_content($text = '')
 		
 		'~\[gallery\](.*?)\[\/gallery\]~si' => '<div class="gallery">$1</div>',
 		
-		'~\[gal=(.[^\s]*?) (.*?)\](.*?)\[\/gal\]~si' => '<a href="$3" title="$2"><img src="$1" alt="$2" /></a>',
+		'~\[gal=(.[^\s]*?) (.*?)\](.*?)\[\/gal\]~si' => '<a href="$3" title="$2"><img src="$1" alt="$2"></a>',
 		
-		'~\[gal=(.*?)\](.*?)\[\/gal\]~si' => '<a href="$2"><img src="$1" alt="" /></a>',
+		'~\[gal=(.*?)\](.*?)\[\/gal\]~si' => '<a href="$2"><img src="$1" alt=""></a>',
 		
-		'~\[image\](.*?)\[\/image\]~si' => '<a href="$1" class="lightbox"><img src="$1" alt="" /></a>',
+		'~\[image\](.*?)\[\/image\]~si' => '<a href="$1" class="lightbox"><img src="$1" alt=""></a>',
 	
-		'~\[image=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox" title="$2"><img src="$1" alt="$2" /></a>',
+		'~\[image=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox" title="$2"><img src="$1" alt="$2"></a>',
 		
-		'~\[image=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$1" alt="" /></a>',
+		'~\[image=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$1" alt=""></a>',
 		
 		# [image(left)=http://localhost/uploads/mini/2008-07-11-19-50-56.jpg Картинка]http://localhost/uploads/2008-07-11-19-50-56.jpg[/image]
-		'~\[image\((.[^\s]*?)\)=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$4" class="lightbox" title="$3"><img src="$2" alt="$3" class="$1" /></a>',
+		'~\[image\((.[^\s]*?)\)=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$4" class="lightbox" title="$3"><img src="$2" alt="$3" class="$1"></a>',
 		
 		# [image(left)=http://localhost/uploads/mini/2008-07-11-19-50-56.jpg]http://localhost/uploads/2008-07-11-19-50-56.jpg[/image]
-		'~\[image\((.[^ ]*?)\)=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox"><img src="$2" alt="" class="$1" /></a>',
+		'~\[image\((.[^ ]*?)\)=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox"><img src="$2" alt="" class="$1"></a>',
 		
 		# [image(right)]http://localhost/uploads/2008-07-11-19-50-56.jpg[/image]
-		'~\[image\((.[^ ]*?)\)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$2" alt="" class="$1" /></a>',
+		'~\[image\((.[^ ]*?)\)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$2" alt="" class="$1"></a>',
 
 		
 	

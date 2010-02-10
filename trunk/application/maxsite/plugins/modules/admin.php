@@ -117,13 +117,13 @@
 		
 		
 		
-		$form .= '<br />' . NR;
+		$form .= '<br>' . NR;
 	}
 	
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo $form;
-	echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+	echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 	echo '</form>';
 
 ?>

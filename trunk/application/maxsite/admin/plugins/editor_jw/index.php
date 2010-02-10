@@ -13,7 +13,7 @@ function editor_jw_admin_header($args = '')
 	
 	echo NR . '<link rel="stylesheet" href="' 
 			. $MSO->config['admin_plugins_url'] 
-			. 'editor_jw/jw/jquery.wysiwyg.css" type="text/css" media="screen" />' . NR;
+			. 'editor_jw/jw/jquery.wysiwyg.css" type="text/css" media="screen">' . NR;
 	
 	mso_hook('editor_controls_extra_css');
 }

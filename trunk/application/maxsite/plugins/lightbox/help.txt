@@ -3,16 +3,16 @@
 
 Одиночная картинка:
 
-<a href="http://site/uploads/image1-mini.jpg" title="Название" class="lightbox"><img src="http://site/uploads/image1.jpg" alt="" /></a>
+<a href="http://site/uploads/image1-mini.jpg" title="Название" class="lightbox"><img src="http://site/uploads/image1.jpg" alt=""></a>
 
 
 
 Несколько в одной галерее.
 
 <div class="gallery">
-	<a href="http://site/uploads/image1-mini.jpg" title="Название"><img src="http://site/uploads/image1.jpg" alt="" /></a>
-	<a href="http://site/uploads/image2-mini.jpg" title="Название"><img src="http://site/uploads/image2.jpg" alt="" /></a>
-	<a href="http://site/uploads/image3-mini.jpg" title="Название"><img src="http://site/uploads/image3.jpg" alt="" /></a>
+	<a href="http://site/uploads/image1-mini.jpg" title="Название"><img src="http://site/uploads/image1.jpg" alt=""></a>
+	<a href="http://site/uploads/image2-mini.jpg" title="Название"><img src="http://site/uploads/image2.jpg" alt=""></a>
+	<a href="http://site/uploads/image3-mini.jpg" title="Название"><img src="http://site/uploads/image3.jpg" alt=""></a>
 </div>
 
 

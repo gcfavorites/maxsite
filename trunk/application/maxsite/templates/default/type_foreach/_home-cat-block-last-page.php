@@ -8,8 +8,8 @@
 						array(	'format' => 'D, j F Y г.', // 'd/m/Y H:i:s'
 								'days' => t('Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье'),
 								'month' => t('января февраля марта апреля мая июня июля августа сентября октября ноября декабря')), 
-								'<span>', '</span><br />');
-					mso_page_cat_link($page_categories, ' -&gt; ', '<span>'.t('Рубрика').':</span> ', '<br />');
+								'<span>', '</span><br>');
+					mso_page_cat_link($page_categories, ' -&gt; ', '<span>'.t('Рубрика').':</span> ', '<br>');
 					mso_page_tag_link($page_tags, ' | ', '<span>'.t('Метки').':</span> ', '');                  
 					mso_page_edit_link($page_id, 'Edit page', ' [', ']');
 				echo '</div>';

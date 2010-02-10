@@ -64,12 +64,12 @@
 					$out = '<h2>' . t('Файл:', 'plugins') . ' ' . $f_xml_file . '</h2>';
 					$out .= '<ul>';
 						$out .= '<li><b>' . t('Сайт:', 'plugins') . '</b> ' . $all->channel['title'];
-						$out .= '<br /><b>' . t('Ссылка:', 'plugins') . '</b> ' . $all->channel['link'];					
-						$out .= '<br /><b>' . t('Все рубрики:', 'plugins') . '</b> ' . $categorys_out;					
-						// $out .= '<br /><b>Все метки:</b> ' . $tags_out;					
-						$out .= '<br /><b>' . t('Всего записей:', 'plugins') . '</b> ' . count($all->items);					
-						$out .= '<br /><br /></li>';
-					$out .= '</ul><br /><hr /><br />';
+						$out .= '<br><b>' . t('Ссылка:', 'plugins') . '</b> ' . $all->channel['link'];					
+						$out .= '<br><b>' . t('Все рубрики:', 'plugins') . '</b> ' . $categorys_out;					
+						// $out .= '<br><b>Все метки:</b> ' . $tags_out;					
+						$out .= '<br><b>' . t('Всего записей:', 'plugins') . '</b> ' . count($all->items);					
+						$out .= '<br><br></li>';
+					$out .= '</ul><br><hr><br>';
 					
 					
 					$sql_count = count($categorys0) * 2; // расчет количества запросов к БД
@@ -117,40 +117,40 @@
 							
 							$out .= '<li><h2>' . $item['title'] . '</h2>';
 							$out .= '<b>' . t('Статус:', 'plugins') . '</b> ' . $status;
-							$out .= '<br /><b>' . t('Тип страницы:', 'plugins') . '</b> ' . $page_type_id;
-							$out .= '<br /><b>' . t('Рубрики:', 'plugins') . '</b> ' . $category;
-							$out .= '<br /><b>' . t('Метки:', 'plugins') . '</b> ' . $tag;
-							$out .= '<br /><b>' . t('Дата:', 'plugins') . '</b> ' . $post_date ;
-							$out .= '<br /><b>' . t('Комментарии:', 'plugins') . '</b> ' . $item['wp']['comment_status'];
+							$out .= '<br><b>' . t('Тип страницы:', 'plugins') . '</b> ' . $page_type_id;
+							$out .= '<br><b>' . t('Рубрики:', 'plugins') . '</b> ' . $category;
+							$out .= '<br><b>' . t('Метки:', 'plugins') . '</b> ' . $tag;
+							$out .= '<br><b>' . t('Дата:', 'plugins') . '</b> ' . $post_date ;
+							$out .= '<br><b>' . t('Комментарии:', 'plugins') . '</b> ' . $item['wp']['comment_status'];
 							
 							if (!isset($item['wp']['post_name'])) $slug = mso_slug($item['title']);
 								else $slug = urldecode($item['wp']['post_name']);
 							
 							$slug_new = mso_slug($slug);
-							$out .= '<br /><b>Slug:</b> ' . $slug;
+							$out .= '<br><b>Slug:</b> ' . $slug;
 							// если $slug = числу, то нужно его заменить на заголовок
 							$i = (int) $slug;
 							if ( (string) $slug != (string) $i ) $i = false; // slug не число
 							if ($i) $slug_new = mso_slug($item['title']);
 							if ($slug != $slug_new)
 							{
-								$out .= '<br /><b>' . t('Новый slug:', 'plugins') . '</b> <span style="color: red"> ' . $slug_new . '</span>';
+								$out .= '<br><b>' . t('Новый slug:', 'plugins') . '</b> <span style="color: red"> ' . $slug_new . '</span>';
 								$slug_rename++;
 							}
 							
 							if (isset($item['content'])) $text = $item['content'];
 							else $text = '';
-							$out .= '<br /><b>' . t('Текст:', 'plugins') . '</b> ' . htmlspecialchars(mso_str_word($text, 80)) . '&lt;...&gt;';
+							$out .= '<br><b>' . t('Текст:', 'plugins') . '</b> ' . htmlspecialchars(mso_str_word($text, 80)) . '&lt;...&gt;';
 							
 							$comments = array();
 							if (isset($item['comments'])) $comments = @unserialize($item['comments']);
 							
 							
 							$comments = count($comments);
-							$out .= '<br /><b>' . t('Комментарии:', 'plugins') . '</b> ' . $comments;
+							$out .= '<br><b>' . t('Комментарии:', 'plugins') . '</b> ' . $comments;
 							
 							
-							$out .= '<br /><br /></li>';
+							$out .= '<br><br></li>';
 							
 							$sql_count = $sql_count + 8 + $comments;
 							$comments_count = $comments_count + $comments;
@@ -161,11 +161,11 @@
 					$out .= '</ul>';
 					
 					echo $out . '<div class="update">' 
-								. t('Готово! Проверка выполнена!<br />Предположительно запросов к БД будет:', 'plugins') 
+								. t('Готово! Проверка выполнена!<br>Предположительно запросов к БД будет:', 'plugins') 
 								. ' ' . $sql_count 
-								. '<br />' . t('Измененных slug (url):', 'plugins') . ' ' . $slug_rename 
-								. '<br />' . t('Всего записей:', 'plugins') . ' ' . $pages_count 
-								. '<br />' . t('Всего комментариев:', 'plugins') . ' ' . $comments_count 
+								. '<br>' . t('Измененных slug (url):', 'plugins') . ' ' . $slug_rename 
+								. '<br>' . t('Всего записей:', 'plugins') . ' ' . $pages_count 
+								. '<br>' . t('Всего комментариев:', 'plugins') . ' ' . $comments_count 
 								. '</div>';
 				}
 				else
@@ -337,7 +337,7 @@
 							if (!isset($item['content'])) $content = '';
 								else $content = $item['content'];
 							
-							$content = str_replace(chr(10), "<br />", $content);
+							$content = str_replace(chr(10), "<br>", $content);
 							$content = str_replace(chr(13), "", $content);
 							$content = str_replace('<!--more-->', '[cut]', $content);
 							
@@ -409,7 +409,7 @@
 						}
 					}
 
-					echo $out . '<br /><div class="update">' . t('Готово! Конвертирование выполнено!', 'plugins') . '</div>';
+					echo $out . '<br><div class="update">' . t('Готово! Конвертирование выполнено!', 'plugins') . '</div>';
 					
 				}
 				else
@@ -474,13 +474,13 @@
 	}
 	
 	
-	echo '<br /><form action="" method="post">' . mso_form_session('f_session_id');
-	echo '<label><input type="checkbox" name="f_yes" nochecked /> ' . t('Я понял и согласен взять на себя всю ответственность за использование данного конвертера! Дамп также сделал и умею с ним работать', 'plugins') . '</label><br />';
+	echo '<br><form action="" method="post">' . mso_form_session('f_session_id');
+	echo '<label><input type="checkbox" name="f_yes" nochecked> ' . t('Я понял и согласен взять на себя всю ответственность за использование данного конвертера! Дамп также сделал и умею с ним работать', 'plugins') . '</label><br>';
 	
-	echo '<br />' . t('Выберите файл:', 'plugins') . ' <select style="width: 300px" name="f_xml_file">' . $option_files . '</select>';
+	echo '<br>' . t('Выберите файл:', 'plugins') . ' <select style="width: 300px" name="f_xml_file">' . $option_files . '</select>';
 	
-	echo '<br /><input type="submit" name="f_submit_chek" value="' . t('Проверить файл', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
-	echo '<input type="submit" name="f_submit_go" value="' . t('Запустить конвертацию', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+	echo '<br><input type="submit" name="f_submit_chek" value="' . t('Проверить файл', 'plugins') . '" style="margin: 25px 0 5px 0;">';
+	echo '<input type="submit" name="f_submit_go" value="' . t('Запустить конвертацию', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 	
 	echo '</form>';
 

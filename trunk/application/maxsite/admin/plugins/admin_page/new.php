@@ -20,7 +20,7 @@
 		else
 		{
 			$f_content = trim($f_content);
-			$f_content = str_replace(chr(10), "<br />", $f_content);
+			$f_content = str_replace(chr(10), "<br>", $f_content);
 			$f_content = str_replace(chr(13), "", $f_content);
 		}
 			
@@ -274,7 +274,7 @@
 			
 			'sort' => isset($editor_options['tags_sort']) ? $editor_options['tags_sort'] : 0, 
 			
-			'block_start' => '<p id="f_all_tags_max_num"><br />',
+			'block_start' => '<p id="f_all_tags_max_num"><br>',
 			'block_end' => ' <a title="' . t('Показать все метки', 'admin') . '" href="#" onClick="shtags(1); return false;">&gt;&gt;&gt;</a></p>',
 			'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
 		));
@@ -286,7 +286,7 @@
 			
 			'sort' => isset($editor_options['tags_sort']) ? $editor_options['tags_sort'] : 0, 
 			
-			'block_start' => '<p id="f_all_tags_all" style="display: none;"><br />',
+			'block_start' => '<p id="f_all_tags_all" style="display: none;"><br>',
 			'block_end' => ' <a title="' . t('Показать только самые популярные метки', 'admin') . '" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',
 			'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
 		));

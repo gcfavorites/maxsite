@@ -14,8 +14,8 @@ function run_php_autoload($args = array())
 # callback-функция 
 function run_php_callback($matches)
 {
-	$arr1 = array('<p>', '</p>', '<br />', '&nbsp;', '&amp;', '&lt;', '&gt;', '&quot;');
-	$arr2 = array('',    '',     "\n",     ' ',      '&',     '<',    '>',    '"');
+	$arr1 = array('<p>', '</p>', '<br />', '<br>', '&nbsp;', '&amp;', '&lt;', '&gt;', '&quot;');
+	$arr2 = array('',    '',     "\n",     "\n",   ' ',      '&',     '<',    '>',    '"');
 	$text = trim( str_replace($arr1, $arr2, $matches[1]) );
 	ob_start();
 	eval(stripslashes($text));

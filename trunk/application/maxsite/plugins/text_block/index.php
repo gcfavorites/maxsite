@@ -62,7 +62,7 @@ function text_block_widget_form($num = 1)
 	$form .= '<p><div class="t150">' . t('Тип:', 'plugins') . '</div> '. form_dropdown( $widget . 'type', array( 'html'=>t('HTML или текст', 'plugins'), 'php'=>'PHP'), $options['type']);
 	
 	
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Можно использовать HTML-тэги. Если тип PHP, то код должен выполняться без ошибок!', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Можно использовать HTML-тэги. Если тип PHP, то код должен выполняться без ошибок!', 'plugins');
 	
 	return $form;
 }

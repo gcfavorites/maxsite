@@ -38,7 +38,7 @@
 		if ($avatar_url) 
 			$avatar_url = '<noindex><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;"/></noindex>';
 		
-		echo '</span><br />' . $avatar_url;
+		echo '</span><br>' . $avatar_url;
 		echo mso_comments_content($comments_content);
 		
 		echo '</li>'; 

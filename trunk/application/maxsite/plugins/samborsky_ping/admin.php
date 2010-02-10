@@ -27,17 +27,17 @@
 <h1>Пинги</h1>
 
 Список пинг сервисов (дубли удалятся)
-<br />
+<br>
 <form action="" method="post">
 	<textarea name="samborsky_ping_list" style="width: 80%; height: 200px;"><?= $string_lists ?></textarea>
-	<p><input type="submit" value="Сохранить" name="save_submit" /></p>
+	<p><input type="submit" value="Сохранить" name="save_submit"></p>
 </form>
 
 
-<br /><br />
+<br><br>
 Ручной запуск пингов
 <form action="" method="post">
-	<p><input type="submit" value="Запустить" name="submit_ping_start" /></p>
+	<p><input type="submit" value="Запустить" name="submit_ping_start"></p>
 </form>
 
 <?
@@ -88,5 +88,5 @@
 
 ?>
 
-<br />
+<br>
 Идея и разработка плагина - <a href="http://www.samborsky.com/">Евгений Самборский</a>.

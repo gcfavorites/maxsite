@@ -87,7 +87,7 @@
 <p>После проверки кода, вы можете войти в свой аккаунт на sape.ru и добавить свой сайт. В течение некоторого времени, робот <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a> его проиндексирует.</p>
 
 <p><strong>Обратите внимание! Помощь по установке кода <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a>, любые подсказки и разъяснения пр этому поводу я оказываю только в двух случаях: 1) Вы зарегистрировались по моей ссылке и являетесь моим рефералом; 2) На платной основе - 30WMZ.</strong></p>
-<br />
+<br>
 
 <?php
 		$options = mso_get_option($options_key, 'plugins', array());
@@ -115,7 +115,7 @@
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value=" Сохранить изменения " style="margin: 25px 0 5px 0;" />';
+		echo '<input type="submit" name="f_submit" value=" Сохранить изменения " style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 
 ?>

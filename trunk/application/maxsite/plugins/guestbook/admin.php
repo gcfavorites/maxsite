@@ -117,27 +117,27 @@
 		$form .= '<p><label><input name="f_moderation" type="checkbox"' . $check . '> <strong>' . t('Модерация каждого отзыва', __FILE__) . '</strong></label></p>';
 		
 		
-		$form .= '<br /><p>' . t('Текст перед отзывами (можно использовать HTML):', __FILE__) . '</p><p>' . ' <textarea name="f_text" style="width: 99%; height: 200px;">' . $options['text'] . '</textarea></p>';
+		$form .= '<br><p>' . t('Текст перед отзывами (можно использовать HTML):', __FILE__) . '</p><p>' . ' <textarea name="f_text" style="width: 99%; height: 200px;">' . $options['text'] . '</textarea></p>';
 		
 		
-		$form .= '<br /><p>' . t('Укажите названия полей, которые следует выводить в форме в формате: «поле | название», например: <strong>«name | Ваше имя:»</strong>. Поля буду выведены в том же порядке. Одно поле в одной строке.', __FILE__) . '</p>';
+		$form .= '<br><p>' . t('Укажите названия полей, которые следует выводить в форме в формате: «поле | название», например: <strong>«name | Ваше имя:»</strong>. Поля буду выведены в том же порядке. Одно поле в одной строке.', __FILE__) . '</p>';
 		$form .= '<p>' . t('Все возможные варианты полей: <strong>name, text, title, email, icq, site, phone, custom1, custom2, custom3, custom4, custom5.</strong>', __FILE__) . '</p>';
 
 		$form .= '<p><textarea name="f_fields" style="width: 99%; height: 200px;">' . $options['fields'] . '</textarea></p>';
 		
 		
-		$form .= '<br /><p>' . t('Укажите формат вывода отзывов. Можно использовать HTML.</p><p>Варианты: <strong>[name], [text], [title], [email], [icq], [site], [phone], [custom1], [custom2], [custom3], [custom4], [custom5], [id], [ip], [date], [browser].</strong>', __FILE__) . '</p>';
+		$form .= '<br><p>' . t('Укажите формат вывода отзывов. Можно использовать HTML.</p><p>Варианты: <strong>[name], [text], [title], [email], [icq], [site], [phone], [custom1], [custom2], [custom3], [custom4], [custom5], [id], [ip], [date], [browser].</strong>', __FILE__) . '</p>';
 		$form .= '<p><textarea name="f_format" style="width: 99%; height: 200px;">' . htmlspecialchars($options['format']) . '</textarea></p>';
 		
-		$form .= '<br /><p>' . t('Текст перед циклом вывода отзывов. Можно использовать HTML.', __FILE__) .'</p>';
+		$form .= '<br><p>' . t('Текст перед циклом вывода отзывов. Можно использовать HTML.', __FILE__) .'</p>';
 		$form .= '<p><textarea name="f_start" style="width: 99%; height: 100px;">' . htmlspecialchars($options['start']) . '</textarea></p>';
 		
-		$form .= '<br /><p>' . t('Текст после цикла вывода отзывов. Можно использовать HTML.', __FILE__) .'</p>';
+		$form .= '<br><p>' . t('Текст после цикла вывода отзывов. Можно использовать HTML.', __FILE__) .'</p>';
 		$form .= '<p><textarea name="f_end" style="width: 99%; height: 100px;">' . htmlspecialchars($options['end']) . '</textarea></p>';	
 				
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', __FILE__) . '" style="margin: 25px 0 5px 0;" />';
+		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', __FILE__) . '" style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 
 ?>

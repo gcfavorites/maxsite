@@ -94,6 +94,9 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 		echo '<p class="info">' . $info . '</p>';
 	else
 		echo '<p class="info">' . t('Укажите необходимые опции плагина.') . '</p>';
+		
+		
+	echo '<p><a href="' . getinfo('site_admin_url') . 'plugins">' . t('Вернуться на страницу плагинов') . '</a></p>';
 	
 	
 	# тут получаем текущие опции
@@ -155,24 +158,22 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 			{
 				$form .= '<div class="admin_plugin_options"><strong>' 
 						. $val['name'] 
-						. '</strong><br /><input type="text" value="'
-						//. stripslashes(htmlspecialchars($options[$m])) 
+						. '</strong><br><input type="text" value="'
 						. htmlspecialchars($options[$m]) 
 						. '" name="'
 						. $key . '-' . $type . '[' . $m . ']'
-						. '" /><br /><em>' 
+						. '"><br><em>' 
 						. $val['description'] . '</em></div>' . NR;
 			}
 			elseif ($val['type'] == 'textarea')
 			{
 				$form .= '<div class="admin_plugin_options"><strong>' 
 						. $val['name'] 
-						. '</strong><br /><textarea name="'
+						. '</strong><br><textarea rows="10" name="'
 						. $key . '-' . $type . '[' . $m . ']'
 						. '">'
-						//. stripslashes(htmlspecialchars($options[$m])) 
 						. htmlspecialchars($options[$m]) 
-						. '</textarea><br /><em>' 
+						. '</textarea><br><em>' 
 						. $val['description'] . '</em></div>' . NR;
 			}
 			elseif ($val['type'] == 'checkbox')
@@ -186,18 +187,18 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 						. '<label><input class="checkbox" type="checkbox" value="' . $ch_val . '"'
 						. ' name="' . $key . '-' . $type . '[' . $m . ']' . '" ' . $checked . '> <strong>'
 						. $val['name']
-						. '</strong></label><br /><em>' 
+						. '</strong></label><br><em>' 
 						. $val['description'] . '</em></div>' . NR;
 				
 				# поскольку не отмеченные чекбоксы не передаются в POST, сделаем массив чекбоксов в hidden
-				$form .= '<input type="hidden" name="' . $key . '-' . $type . '[_mso_checkboxs][' . $m . ']" value="0" />';	
+				$form .= '<input type="hidden" name="' . $key . '-' . $type . '[_mso_checkboxs][' . $m . ']" value="0">';	
 						
 			}
 			elseif ($val['type'] == 'select')
 			{
 				$form .= '<div class="admin_plugin_options"><strong>' 
 						. $val['name'] 
-						. '</strong><br /><select name="'
+						. '</strong><br><select name="'
 						. $key . '-' . $type . '[' . $m . ']'
 						. '">';
 				
@@ -216,10 +217,10 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 						
 						if (htmlspecialchars($options[$m]) == $v) $checked = 'selected="selected"';
 							else $checked = '';
-						$form .= NR . '<option value="' . $v . '" ' . $checked . ' />' . $v_t . '</option>';
+						$form .= NR . '<option value="' . $v . '" ' . $checked . '>' . $v_t . '</option>';
 					}
 				}
-				$form .= '</select><br /><em>' 
+				$form .= '</select><br><em>' 
 						. $val['description'] . '</em></div>' . NR;
 			}
 		}
@@ -228,7 +229,7 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 		# выводим форму
 		echo NR . '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo NR . '<br /><input type="submit" name="f_submit" value="' . t('Сохранить') . '">';
+		echo NR . '<br><input type="submit" name="f_submit" value="' . t('Сохранить') . '">';
 		echo '</form>' . NR;
 	}
 	else

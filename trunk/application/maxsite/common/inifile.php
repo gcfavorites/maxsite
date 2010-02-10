@@ -116,7 +116,7 @@ function mso_view_ini($all = false)
 		if ( !isset($row['description']) ) $description = '';
 			else $description = _mso_ini_check_php(stripslashes( trim( t($row['description']))));
 		
-		if ( !isset($row['delimer']) ) $delimer = '<br />';
+		if ( !isset($row['delimer']) ) $delimer = '<br>';
 			else $delimer = stripslashes($row['delimer']);
 			
 		if ( !isset($row['default']) ) $default = '';
@@ -147,7 +147,7 @@ function mso_view_ini($all = false)
 		if ($type == 'textfield')
 		{
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '" />' . NR;
+			$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 		}
 		elseif ($type == 'textarea')
 		{
@@ -159,11 +159,11 @@ function mso_view_ini($all = false)
 			if ($value) $checked = 'checked="checked"';
 				else $checked = '';
 				
-			$f .= '<label><input type="checkbox" name="' . $name_f . '" ' . $checked . ' /> ' 
+			$f .= '<label><input type="checkbox" name="' . $name_f . '" ' . $checked . '> ' 
 			. $key . '</label>' 
 			. NR;
 			
-			$f .= '<input type="hidden" name="f_all_checkbox[' . $options_key . '_m_s_o_' . $options_type . ']" />' . NR;
+			$f .= '<input type="hidden" name="f_all_checkbox[' . $options_key . '_m_s_o_' . $options_type . ']">' . NR;
 		}
 		elseif ($type == 'radio')
 		{
@@ -177,7 +177,7 @@ function mso_view_ini($all = false)
 						else $checked = '';
 						
 					$f .= '<input type="radio" name="' . $name_f . '" value="' . trim($val) . '" ' 
-							. $checked . ' /> ' . trim($val) . $delimer . NR;
+							. $checked . '> ' . trim($val) . $delimer . NR;
 				}
 			}
 		}
@@ -202,7 +202,7 @@ function mso_view_ini($all = false)
 					
 					if ($value == $val) $checked = 'selected="selected"';
 						else $checked = '';
-					$f .= NR . '<option value="' . $val . '" ' . $checked . ' />' . $val_t . '</option>';
+					$f .= NR . '<option value="' . $val . '" ' . $checked . '>' . $val_t . '</option>';
 				}
 				$f .= NR . '</select>' . NR;
 			}
@@ -219,9 +219,9 @@ function mso_view_ini($all = false)
 	
 	
 	$out .= '<form action="" method="post">' . mso_form_session('f_session_id');
-	$out .= '<input type="hidden" value="1" name="f_ini" />'; // доп. поле - индикатор, что это ini-форма
+	$out .= '<input type="hidden" value="1" name="f_ini">'; // доп. поле - индикатор, что это ini-форма
 	$out .= $CI->table->generate(); // вывод подготовленной таблицы
-	$out .= NR . '<br /><input type="submit" name="f_submit" value="' . t('Сохранить') . '">';
+	$out .= NR . '<br><input type="submit" name="f_submit" value="' . t('Сохранить') . '">';
 	$out .= '</form>';
 	
 	return $out;

@@ -85,7 +85,7 @@
 	}
 	else 
 	{
-		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например:') . ' <br /><b>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар') . '\');</b></div>';
+		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например:') . ' <br><b>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар') . '\');</b></div>';
 	}
 	
 	
@@ -108,7 +108,7 @@
 		</script>' . NR;
 
 
-		$form .= '<br /><br /><h2>' . t('Доступные виджеты (добавляйте только функцию)') . '</h2><table class="widgets-allow">';
+		$form .= '<br><br><h2>' . t('Доступные виджеты (добавляйте только функцию)') . '</h2><table class="widgets-allow">';
 		foreach ($all_w as $function => $title)
 		{
 			// $form .= '<li><b>' . $function . '</b> (' . $title . ')</li>';
@@ -117,7 +117,7 @@
 			foreach($all_name_sidebars as $sid=>$sid_title)
 			{
 				$form .= '<td><input style="margin: 0 0px; border: 1px solid gray; font-size: .9em; cursor: pointer;" type="button" value=" ' . $sid_title . ' " title="' . t('Добавить') . ' «' . $function . '» ' . t('в') . ' «' . $sid_title 
-						. '»" onClick="addText(\'' . $function . '\', \'f_sidebars[' . $sid . ']\') " />&nbsp;&nbsp;</td>' . NR;
+						. '»" onClick="addText(\'' . $function . '\', \'f_sidebars[' . $sid . ']\') ">&nbsp;&nbsp;</td>' . NR;
 			}
 			$form .= '<td><em>' . $function . '</em> </td></tr>' . NR;
 		}
@@ -133,7 +133,7 @@
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения') . '" style="margin: 25px 0 5px 0;" />';
+		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения') . '" style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 	}
 	else

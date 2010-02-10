@@ -68,7 +68,7 @@
 		if ( !isset($row['description']) ) $description = '';
 			else $description = stripslashes(trim($row['description']));
 			
-		if ( !isset($row['delimer']) ) $delimer = '<br />';
+		if ( !isset($row['delimer']) ) $delimer = '<br>';
 			else $delimer = stripslashes($row['delimer']);	
 			
 		if ( !isset($row['default']) ) $default = '';
@@ -98,7 +98,7 @@
 		if ($type == 'textfield')
 		{
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '" />' . NR;
+			$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 		}
 		elseif ($type == 'textarea')
 		{
@@ -116,7 +116,7 @@
 						else $checked = '';
 						
 					$f .= '<input type="radio" name="' . $name_f . '" value="' . trim($val) . '" ' 
-							. $checked . ' /> ' . trim($val) . $delimer . NR;
+							. $checked . '> ' . trim($val) . $delimer . NR;
 				}
 			}
 		}
@@ -132,7 +132,7 @@
 				{
 				//	if ($value == trim($val)) $checked = 'selected="selected"';
 				//		else $checked = '';
-				//	$f .= NR . '<option value="' . trim($val) . '" ' . $checked . ' />' . trim($val) . '</option>';
+				//	$f .= NR . '<option value="' . trim($val) . '" ' . $checked . '>' . trim($val) . '</option>';
 				
 					// $val может быть с || val - текст
 					
@@ -145,7 +145,7 @@
 					
 					if ($value == $val) $checked = 'selected="selected"';
 						else $checked = '';
-					$f .= NR . '<option value="' . $val . '" ' . $checked . ' />' . $val_t . '</option>';
+					$f .= NR . '<option value="' . $val . '" ' . $checked . '>' . $val_t . '</option>';
 				}
 				$f .= NR . '</select>' . NR;
 			}

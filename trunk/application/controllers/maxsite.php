@@ -61,7 +61,6 @@ class Maxsite extends Controller
 			($method == 'archive') or
 			($method == 'author') or
 			($method == 'category') or
-			($method == 'link') or
 			($method == 'page') or
 			($method == 'users') or
 			($method == 'search') or

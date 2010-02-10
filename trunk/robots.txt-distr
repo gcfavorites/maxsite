@@ -1,6 +1,5 @@
 User-agent: *
 Disallow: /system
 Disallow: /admin
-Disallow: /feed$
 Disallow: /login
 Disallow: /logout

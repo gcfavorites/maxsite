@@ -2,6 +2,9 @@
 
 mso_cur_dir_lang('templates');
 
+header('Content-type: text/html; charset=utf-8');
+header('Content-Type: application/rss+xml');
+
 $cache_key = mso_md5('feed_' . mso_current_url());
 $k = mso_get_cache($cache_key);
 if ($k) return print($k); // да есть в кэше
@@ -32,8 +35,7 @@ $comments = mso_get_comments(false, array('limit'=>'20', 'order'=>'desc'));
 if ($comments) 
 {
 	$pubdate = date('D, d M Y H:i:s '. $time_zone, strtotime($comments[0]['comments_date']));
-	header('Content-type: text/html; charset=utf-8');
-	header('Content-Type: application/rss+xml');
+
 	echo '<' . '?xml version="1.0" encoding="utf-8"?' . '>';
 ?>
 

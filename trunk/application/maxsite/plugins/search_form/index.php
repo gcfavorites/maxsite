@@ -100,7 +100,7 @@ function search_form_widget_custom($options = array(), $num = 1)
 	
 	$out .= '
 	<form class="search_form_widget" name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">
-	<input type="text" name="s" style="' . $options['style_text'] . '" class="search_text" onfocus="if (this.value == \'' . $options['text'] . '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \'' . $options['text'] . '\';}" value="' . $options['text'] . '" /><input type="submit" name="Submit" value="' . $options['submit'] . '" style="' . $options['style_submit'] . '" class="search_submit" /></form>
+	<input type="text" name="s" style="' . $options['style_text'] . '" class="search_text" onfocus="if (this.value == \'' . $options['text'] . '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \'' . $options['text'] . '\';}" value="' . $options['text'] . '"><input type="submit" name="Submit" value="' . $options['submit'] . '" style="' . $options['style_submit'] . '" class="search_submit"></form>
 	';
 	
 	if ($options['header']) $out = $options['header'] . $out;

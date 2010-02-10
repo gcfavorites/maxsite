@@ -111,8 +111,8 @@
 	}
 
 	# добавим строчку для добавления нового типа
-	$name = '<b>' . t('Новый тип') . '</b><br /><input style="width: 99%;" type="text" name="f_new_name" value="">';
-	$desc = '<b>' . t('Описание') . '</b><br /><input style="width: 99%;" type="text" name="f_new_desc" value="">';
+	$name = '<b>' . t('Новый тип') . '</b><br><input style="width: 99%;" type="text" name="f_new_name" value="">';
+	$desc = '<b>' . t('Описание') . '</b><br><input style="width: 99%;" type="text" name="f_new_desc" value="">';
 	$act = '<input type="submit" name="f_new_submit" value="' . t('Добавить новый тип') . '">';
 
 	$CI->table->add_row('', $name, $desc, $act);

@@ -53,9 +53,9 @@ function favorites_widget_form($num = 1)
 	
 	$form .= '<p><div class="t150">' . t('Ссылки:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'favorites', 'value'=>$options['favorites'] ) ) ;
 	
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Указывайте по одной ссылке в каждом абзаце в формате: <strong>тип/ссылка | название</strong>', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div>' . t('<strong>тип/ссылка</strong> - указывается от адреса сайта, например', 'plugins') . ' <strong>page/about</strong>, <strong>category/news</strong>
-			  <br /><div class="t150">&nbsp;</div>' . t('Для главной страницы укажите: <strong> / | Главная</strong>', 'plugins') . '
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Указывайте по одной ссылке в каждом абзаце в формате: <strong>тип/ссылка | название</strong>', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div>' . t('<strong>тип/ссылка</strong> - указывается от адреса сайта, например', 'plugins') . ' <strong>page/about</strong>, <strong>category/news</strong>
+			  <br><div class="t150">&nbsp;</div>' . t('Для главной страницы укажите: <strong> / | Главная</strong>', 'plugins') . '
 			  ';
 
 	return $form;

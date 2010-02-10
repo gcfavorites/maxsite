@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -184,7 +184,6 @@ class CI_Upload {
 
 			return FALSE;
 		}
-		
 
 		// Set the uploaded data as class variables
 		$this->file_temp = $_FILES[$field]['tmp_name'];		
@@ -557,7 +556,6 @@ class CI_Upload {
 			$this->set_error('upload_no_file_types');
 			return FALSE;
 		}
-		
 		# MaxSite CMS
 		# убираем к чертям проверку на mime - пусть буржуи пользуются :-E
 		# теперь так: проверяется file_ext с тем, что в allowed_types
@@ -887,11 +885,11 @@ class CI_Upload {
 		{
 			return $filename;
 		}
-		
+
 		$parts		= explode('.', $filename);
 		$ext		= array_pop($parts);
 		$filename	= array_shift($parts);
-				
+
 		foreach ($parts as $part)
 		{
 			if ($this->mimes_types(strtolower($part)) === FALSE)
@@ -903,7 +901,14 @@ class CI_Upload {
 				$filename .= '.'.$part;
 			}
 		}
-		
+
+		// file name override, since the exact name is provided, no need to
+		// run it through a $this->mimes check.
+		if ($this->file_name != '')
+		{
+			$filename = $this->file_name;
+		}
+
 		$filename .= '.'.$ext;
 		
 		return $filename;

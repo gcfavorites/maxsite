@@ -84,7 +84,7 @@
 		
 		if ($row['comusers_date_registr'] != $row['comusers_last_visit'])
 			$date = '<span style="color: gray" title="Дата регистрации">' . $row['comusers_date_registr'] 
-					. '</span><br />' . $row['comusers_last_visit'];
+					. '</span><br>' . $row['comusers_last_visit'];
 		else
 			$date = $row['comusers_date_registr'];
 		
@@ -92,7 +92,7 @@
 	}
 
 	mso_hook('pagination', $pag);
-	echo '<br />'; // вывод навигации
+	echo '<br>'; // вывод навигации
 	
 	echo mso_load_jquery('jquery.tablesorter.js');
 	
@@ -108,7 +108,7 @@
 	
 	echo $CI->table->generate(); // вывод подготовленной таблицы
 	
-	echo '<br />';
+	echo '<br>';
 	mso_hook('pagination', $pag);
 
 	

@@ -7,9 +7,10 @@
 	<div id="header1">
 		
 		<div class="header-searh">
-			<form name="f_search" action="" method="get" onsubmit="location.href='<?= getinfo('siteurl') ?>search/' + encodeURIComponent(this.s.value).replace(/%20/g, '+'); return false;">	<input type="text" name="s" id="s" size="20" onfocus="if (this.value == '<?= t('что искать?', 'templates') ?>') {this.value = '';}" onblur="if (this.value == '') {this.value = '<?= t('что искать?', 'templates') ?>';}" value="<?= t('что искать?', 'templates') ?>" />&nbsp;<input type="submit" id="searchsubmit" name="Submit" value="  <?= t('Поиск', 'templates') ?>  " /></form>
+			<form name="f_search" action="" method="get" onsubmit="location.href='<?= getinfo('siteurl') ?>search/' + encodeURIComponent(this.s.value).replace(/%20/g, '+'); return false;">	<input type="text" name="s" id="s" size="20" onfocus="if (this.value == '<?= t('что искать?', 'templates') ?>') {this.value = '';}" onblur="if (this.value == '') {this.value = '<?= t('что искать?', 'templates') ?>';}" value="<?= t('что искать?', 'templates') ?>">&nbsp;<input type="submit" id="searchsubmit" name="Submit" value="  <?= t('Поиск', 'templates') ?>  "></form>
 		</div><!-- div class= -->
 		
+		<?php if (!mso_hook_present('main_menu')) { ?>
 		<div id="MainMenu">
 			<div id="tab">
 				<ul>
@@ -21,6 +22,7 @@
 				</ul>
 			</div><!-- div id="tab" -->
 		</div><!-- div id="MainMenu" -->
+		<?php } else mso_hook('main_menu'); ?>
 	</div><!-- div id="header1" -->
 	
 	<?php 

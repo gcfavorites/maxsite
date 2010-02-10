@@ -39,8 +39,8 @@ $lang['Не регистрировать/аноним'] = 'Anonimous';
 $lang['Используйте нормальные имена. Ваш комментарий будет опубликован после проверки.'] =
 'Use natural names. Your comment will be shown after moderation.';
 $lang['Используйте нормальные имена.'] = 'Use natural names.';
-$lang['Если вы уже зарегистрированы как комментатор или хотите зарегистрироваться, укажите пароль и свой действующий email. <br />(<i>При регистрации на указанный адрес придет письмо с кодом активации и ссылкой на ваш персональный аккаунт, где вы сможете изменить свои данные, включая адрес сайта, ник, описание, контакты и т.д.</i>)'] =
-'If you are already registered as commuser or want be registered, indicate password and its acting email <br />(<i>In registrations to specified address will come letter with code of the activations and reference to your personal аккаунт, where you will be able to change your own data, including address of the site, drooped, description, contacts and so on.</i>)';
+$lang['Если вы уже зарегистрированы как комментатор или хотите зарегистрироваться, укажите пароль и свой действующий email. <br>(<i>При регистрации на указанный адрес придет письмо с кодом активации и ссылкой на ваш персональный аккаунт, где вы сможете изменить свои данные, включая адрес сайта, ник, описание, контакты и т.д.</i>)'] =
+'If you are already registered as commuser or want be registered, indicate password and its acting email <br>(<i>In registrations to specified address will come letter with code of the activations and reference to your personal аккаунт, where you will be able to change your own data, including address of the site, drooped, description, contacts and so on.</i>)';
 
 $lang['Карта сайта (архив)'] = 'Sitemap (archive)';
 $lang['404. Ничего не найдено...'] = '404. Nothing found…';

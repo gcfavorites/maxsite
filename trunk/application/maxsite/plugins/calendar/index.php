@@ -162,6 +162,10 @@ function calendar_widget_custom($arg = array(), $num = 1)
 	$CI->db->where('page_date_publish >= ', mso_date_convert_to_mysql($year, $month));
 	$CI->db->where('page_date_publish < ', mso_date_convert_to_mysql($year, $month+1));
 	
+	# не выводить неопубликованные
+	$CI->db->where('page_date_publish < ',  mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'))  );
+	
+	
 	$query = $CI->db->get();
 	
 	$data = array();

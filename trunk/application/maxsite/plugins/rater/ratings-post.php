@@ -71,7 +71,7 @@
 
 				$sredn = round($page_rating / $page_rating_count);
 
-				echo '<span>' . t('Ваша оценка:', 'plugins') . '</span> ' . $rating . '<br /><span>' 
+				echo '<span>' . t('Ваша оценка:', 'plugins') . '</span> ' . $rating . '<br><span>' 
 							. t('Средняя оценка', 'plugins') . '</span>: ' . $sredn 
 							. ' ' . t('из', 'plugins') . ' ' . $page_rating_count . ' ' 
 							. t('проголосовавших', 'plugins');

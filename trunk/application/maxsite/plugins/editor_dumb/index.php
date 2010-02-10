@@ -6,8 +6,17 @@ function editor_dumb_autoload($args = array())
 	mso_hook_add( 'editor_custom', 'editor_dumb'); # хук на подключение своего редактора
 }
 
+# функция выполняется при деинсталяции плагина
+function editor_dumb_uninstall($args = array())
+{	
+	mso_delete_option('editor_dumb', 'plugins'); // удалим созданные опции
+	return $args;
+}
+
 function editor_dumb($args = array()) 
 {
+	
+	$options = mso_get_option('editor_dumb', 'plugins', array() ); // получаем опции
 	
 	$editor_config['url'] = getinfo('plugins_url') . 'editor_dumb/';
 	$editor_config['dir'] = getinfo('plugins_dir') . 'editor_dumb/';
@@ -31,11 +40,31 @@ function editor_dumb($args = array())
 		if ($editor_config['height'] < 100) $editor_config['height'] = 400;
 	}
 
-	# Приведение строк с <br /> в первозданный вид
+	# Приведение строк с <br> в первозданный вид
 	$editor_config['content'] = preg_replace('"&lt;br\s?/?&gt;"i',"\n",$editor_config['content']);
+	$editor_config['content'] = preg_replace('"&lt;br&gt;"i',"\n",$editor_config['content']);
 
-	require($editor_config['dir'] . 'editor.php');
+	if (isset($options['editor']))
+		$editor_type = $options['editor'] == 'BB-CODE' ? 'editor-bb.php' : 'editor.php';
+	else $editor_type = 'editor.php';
+	
+	require($editor_config['dir'] . $editor_type);
 }
 
+function editor_dumb_mso_options() 
+{
+	mso_admin_plugin_options('editor_dumb', 'plugins', 
+		array(
+			'editor' => array(
+							'type' => 'select', 
+							'name' => 'Редактор', 
+							'description' => 'Выберите тип редактора',
+							'values' => 'HTML # BB-CODE', 
+							'default' => 'HTML'
+						),	
+			)
+	);
+
+}
 
 ?>

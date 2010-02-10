@@ -3,13 +3,14 @@
 	mso_cur_dir_lang('admin');
 	
 	$CI = & get_instance();
+	
+	# новый пользователь
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_user_login', 
 			'f_user_email', 'f_user_password', 'f_user_group')) )
 	{
 		mso_checkreferer();
 		
-		
-		// подготавливаем данные для xmlrpc
+		// подготавливаем данные
 		$data = array(
 			'user_login' => $MSO->data['session']['users_login'],
 			'password' => $MSO->data['session']['users_password'],
@@ -19,9 +20,6 @@
 			'users_password' => $post['f_user_password'],
 			'users_groups_id' => $post['f_user_group']
 			);
-		
-		// выполняем запрос и получаем результат
-		// $result = mso_xmlrpc_send('NewUser', mso_xmlrpc_this($data));
 		
 		require_once( getinfo('common_dir') . 'functions-edit.php' ); // функции редактирования
 		
@@ -36,6 +34,36 @@
 		}
 		else
 			echo '<div class="error">' . t('Ошибка обновления', 'admin') . '</div>';
+	}
+	
+	# удаление пользователя
+	if ( $post = mso_check_post(array('f_session_id', 'f_delete_submit', 'f_user_delete')) )
+	{
+		mso_checkreferer();
+
+		// подготавливаем данные
+		$data = array(
+			'user_login' => $MSO->data['session']['users_login'],
+			'password' => $MSO->data['session']['users_password'],
+			
+			'users_id' => $post['f_user_delete'],
+			'delete_user_comments' => isset($post['f_delete_user_comments']) ? true : false,
+			'delete_user_pages' => isset($post['f_delete_user_pages']) ? true : false
+			);
+		
+		require_once( getinfo('common_dir') . 'functions-edit.php' ); // функции редактирования
+		
+		$result = mso_delete_user($data);
+		
+		if (isset($result['result'])) 
+		{
+			if ($result['result'] == 1)
+				echo '<div class="update">' . t('Пользователь удален!', 'admin') . '</div>'; // . $result['description'];
+			else 
+				echo '<div class="error">' . t('Произошла ошибка', 'admin') . '<p>' . $result['description'] . '</p></div>';
+		}
+		else
+			echo '<div class="error">' . t('Ошибка удаления', 'admin') . '</div>';
 	}
 
 ?>
@@ -69,7 +97,8 @@
 	
 	$this_url = $MSO->config['site_admin_url'] . 'users';
 
-
+	$all_users = array(); // массив для удаления пользователей
+	
 	foreach ($query->result_array() as $row)
 	{
 		$id = $row['users_id'];
@@ -81,6 +110,9 @@
 		$groups_name = $row['groups_name'];
 		
 		$act = '<a href="'.$this_url.'/edit/' . $id . '">' . t('Изменить', 'admin') . '</a>';
+		
+		# админа (1) удалять нельзя
+		if ($id > 1) $all_users[$id] = $id . ' - ' . $nik . ' - ' . $email;
 		
 		$CI->table->add_row($id, $login, $nik, $email, $url, $groups_name, $act);
 	}
@@ -114,9 +146,9 @@
 		$form = '';
 		$CI->load->helper('form');
 		
-		$form .= '<br />Логин: '. form_input( array( 'name'=>'f_user_login', 'style'=>'width: 200px' ) ) ;
-		$form .= '<br />E-mail: '. form_input( array( 'name'=>'f_user_email', 'style'=>'width: 200px' ) );
-		$form .= '<br />Пароль: '. form_input( array( 'name'=>'f_user_password', 'style'=>'width: 200px' ) );
+		$form .= '<br>Логин: '. form_input( array( 'name'=>'f_user_login', 'style'=>'width: 200px' ) ) ;
+		$form .= '<br>E-mail: '. form_input( array( 'name'=>'f_user_email', 'style'=>'width: 200px' ) );
+		$form .= '<br>Пароль: '. form_input( array( 'name'=>'f_user_password', 'style'=>'width: 200px' ) );
 		
 		$CI->db->select('groups_id, groups_name');
 		$q = $CI->db->get('groups');
@@ -124,14 +156,30 @@
 		foreach ($q->result_array() as $rw)
 			$groups[$rw['groups_id']] = $rw['groups_name'];
 
-		$form .= '<br />' . t('Группа:', 'admin') . ' '. form_dropdown('f_user_group', $groups, '', ' style="width: 200px;" ');	
-		$form .=  '<br/ ><br /><input type="submit" name="f_submit" value="' . t('Создать пользователя', 'admin') . '" />';
+		$form .= '<br>' . t('Группа:', 'admin') . ' '. form_dropdown('f_user_group', $groups, '', ' style="width: 200px;" ');	
+		$form .=  '<br><br><input type="submit" name="f_submit" value="' . t('Создать пользователя', 'admin') . '">';
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
-		echo '<br /><br /><h2>' . t('Создать нового пользователя', 'admin') . '</h2>';
+		echo '<br><br><h2>' . t('Создать нового пользователя', 'admin') . '</h2>';
 		echo '<p>' . t('Если данные некорректны, то пользователь создан не будет. Для нового пользователя-админа нужно обновить разрешения.', 'admin') . '</p>';
 		echo $form;
 		echo '</form>';
 	}
+
+	if ( mso_check_allow('edit_delete_users') ) // если разрешено удалять юзеров
+	{
+		$CI->load->helper('form');
+		
+		echo '<form action="" method="post">' . mso_form_session('f_session_id');
+		echo '<br><br><h2>' . t('Удалить пользователя', 'admin') . '</h2>';
+		echo form_dropdown('f_user_delete', $all_users, '', '');
+		echo '<br><br><p><label><input type="checkbox" name="f_delete_user_comments"> ' . t('Удалить все комментарии пользователя. Иначе комментарии отметятся как анонимные.', 'admin') . '</label></p>';
+		echo '<p><label><input type="checkbox" name="f_delete_user_pages"> ' . t('Удалить все страницы пользователя. Иначе у страниц автором станет администратор.', 'admin') . '</label></p>';
+		
+		echo '<br><input type="submit" name="f_delete_submit" value="' . t('Удалить пользователя', 'admin') . '" onClick="if(confirm(\'' . t('Удалить пользователя?', 'admin') . '\')) {return true;} else {return false;}">';
+		
+		echo '</form>';
+	}
+
 
 ?>

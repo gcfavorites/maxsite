@@ -60,11 +60,6 @@ mso_cur_dir_lang('admin');
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row_array(); 
-		
-		//	pr($row);
-			
-
-			
 			
 			if ( $row['users_nik'] )
 			{
@@ -94,7 +89,7 @@ mso_cur_dir_lang('admin');
 			echo '<h3>' . t('Дата') . '</h3>
 				<p><input name="f_comments_date" type="text" value="' . htmlspecialchars($row['comments_date']) .'"></p>';
 			
-			if ( $row['comments_author_name'] ) 
+			if ( $row['comments_author_name'] or ( !$row['comments_users_id'] and !$row['comments_comusers_id'] ) ) 
 			{
 				echo '<h3>' . t('Автор') . '</h3>
 					<p><input name="f_comments_author_name" type="text" value="' . htmlspecialchars($row['comments_author_name']) .'"></p>';
@@ -108,11 +103,11 @@ mso_cur_dir_lang('admin');
 			else
 				$checked2 = 'checked="checked"'; 
 			
-			echo '<p><label><input type="radio" name="f_comments_approved" value="1" ' . $checked1 . ' /> ' . t('Одобрить')
-				. '</label> <label><input type="radio" name="f_comments_approved" value="0" ' . $checked2 . ' /> ' . t('Запретить')
+			echo '<p><label><input type="radio" name="f_comments_approved" value="1" ' . $checked1 . '> ' . t('Одобрить')
+				. '</label> <label><input type="radio" name="f_comments_approved" value="0" ' . $checked2 . '> ' . t('Запретить')
 				. '</label></p>';
 			
-			echo '<br /><p><input type="submit" name="f_submit" value="' . t('Готово') . '"></p>';
+			echo '<br><p><input type="submit" name="f_submit" value="' . t('Готово') . '"></p>';
 			echo '</form>';
 			
 			echo '<p><a href="' . getinfo('siteurl') . 'page/' . $row['page_slug'] . '#comment-' . $id . '">' 

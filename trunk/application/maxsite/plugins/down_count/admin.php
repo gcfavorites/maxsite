@@ -5,8 +5,6 @@
  * (c) http://max-3000.com/
  */
 
-	global $MSO;
-	
 	$CI = & get_instance();
 	
 	$options_key = 'plugin_down_count';
@@ -42,8 +40,8 @@
 
 		$form .= '<h2>' . t('Настройки', 'plugins') . '</h2>';
 		
-		$form .= '<p><strong>' . t('Файл для хранения количества скачиваний:', 'plugins') . '</strong><br />' . 
-			$MSO->config['uploads_dir'] . ' <input name="f_file" type="text" value="' . $options['file'] . '"></p>';
+		$form .= '<p><strong>' . t('Файл для хранения количества скачиваний:', 'plugins') . '</strong><br>' . 
+			getinfo('uploads_dir') . ' <input name="f_file" type="text" value="' . $options['file'] . '"></p>';
 			
 		$form .= '<p><strong>' . t('Префикс URL:', 'plugins') . '</strong> ' . getinfo('siteurl') . ' <input name="f_prefix" type="text" value="' . $options['prefix'] . '">/' . t('ссылка', 'plugins') . '</p>';
 		
@@ -55,11 +53,11 @@
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 		
 		// выведем ниже формы всю статистику
-		$fn = $MSO->config['uploads_dir'] . $options['file'];
+		$fn = getinfo('uploads_dir') . $options['file'];
 		
 		$CI = & get_instance();
 		$CI->load->helper('file'); // хелпер для работы с файлами
@@ -67,15 +65,15 @@
 		if (file_exists( $fn )) // файла нет, нужно его создать
 		{
 			// массив данных: url => array ( count=>77 )
-			$data = unserialize( read_file($fn) ); // поулчим из файла
+			$data = unserialize( read_file($fn) ); // получим из файла
 			
 			if ($data)
 			{
-				echo '<br /><h2>' . t('Статистика переходов', 'plugins') . '</h2>';
+				echo '<br><h2>' . t('Статистика переходов', 'plugins') . '</h2>';
 				echo '<ul>';
 				foreach($data as $url => $aaa)
 				{
-					echo '<li><strong>' . $url . '</strong> - ' . t('переходов', 'plugins') . ': ' . $data[$url]['count'] . '</li>' . NR;
+					echo '<li><strong>' . htmlspecialchars($CI->input->xss_clean($url)) . '</strong> - ' . t('переходов', 'plugins') . ': ' . $data[$url]['count'] . '</li>' . NR;
 				}
 				echo '</ul>';
 			}

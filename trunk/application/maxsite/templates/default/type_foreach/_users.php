@@ -20,8 +20,8 @@
 		if ($comusers_description) 
 		{
 			$comusers_description = strip_tags($comusers_description);
-			$comusers_description = str_replace("\n", '<br />', $comusers_description);
-			$comusers_description = str_replace('<br /><br />', '<br />', $comusers_description);
+			$comusers_description = str_replace("\n", '<br>', $comusers_description);
+			$comusers_description = str_replace('<br><br>', '<br>', $comusers_description);
 			
 			echo '<p><strong>'. t('О себе'). ':</strong> ' . $comusers_description . '</p>';
 		}
@@ -32,7 +32,7 @@
 		
 		if ($comments) // есть комментарии
 		{
-			echo '<br /><h2>'. t('Его последние комментарии'). ':</h2><ul>';
+			echo '<br><h2>'. t('Его последние комментарии'). ':</h2><ul>';
 			
 			foreach ($comments as $comment)
 			{
@@ -40,8 +40,8 @@
 				//{
 					echo '<li><span><a href="' . getinfo('siteurl') . 'page/' . mso_slug($comment['page_slug']) . '#comment-' . $comment['comments_id'] . '" name="comment-' . $comment['comments_id'] . '">' . $comment['page_title'] . '</a>';
 					// echo ' | ' . $comments_url;
-					echo '</span><br />' . $comment['comments_date'];
-					echo '</span><br />' . $comment['comments_content'];
+					echo '</span><br>' . $comment['comments_date'];
+					echo '</span><br>' . $comment['comments_content'];
 					echo '</li>';
 				//}
 			}

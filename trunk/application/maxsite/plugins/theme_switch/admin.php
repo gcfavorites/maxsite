@@ -66,13 +66,13 @@
 				}
 				else $iname = 'not info.php!';
 				
-				$form .= '<input type="checkbox" name="f_templates[' . $dir . ']" id="f_templates_' . $dir . '" ' . $checked . ' /> <label for="f_templates_' . $dir . '">' . $iname . ' (' . $dir . ')</label><br />';
+				$form .= '<input type="checkbox" name="f_templates[' . $dir . ']" id="f_templates_' . $dir . '" ' . $checked . '> <label for="f_templates_' . $dir . '">' . $iname . ' (' . $dir . ')</label><br>';
 			}
 		}
 
 		echo '<form action="" method="post">' . mso_form_session('f_session_id') . '<p>';
 		echo $form;
-		echo '</p><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+		echo '</p><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 
 ?>

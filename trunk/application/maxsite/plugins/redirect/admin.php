@@ -31,7 +31,7 @@
 
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo '<textarea name="f_all" style="width: 650px; height: 300px;">' .  $options['all'] . '</textarea>';
-		echo '<br /><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+		echo '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 		echo '</form>';
 
 ?>

@@ -82,9 +82,9 @@ function sitemap($arg = array())
 					. $page['page_title'] . '</a>';
 			
 			if ($page['page_categories'])
-				$out .=  ' ('
+				$out .=  ' <span>('
 						. mso_page_cat_link($page['page_categories'], ' &rarr; ', '', '', false)
-						. ')';
+						. ')</span>';
 					# синонимы ссылок
 					/*
 					. ' ('

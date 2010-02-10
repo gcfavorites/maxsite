@@ -67,7 +67,7 @@
 			}
 			
 			echo '<h2>'. t('Ваше сообщение отправлено!'). '</h2><p>' 
-					. str_replace("\n", '<br />', htmlspecialchars($subject. "\n" . $message)) 
+					. str_replace("\n", '<br>', htmlspecialchars($subject. "\n" . $message)) 
 					. '</p>';
 			$form_hide = true;
 		}
@@ -87,25 +87,25 @@
 ?>
 
 <form name="contact-form" class="contact-form" action="" method="post">
-	<input type="hidden" name="antispam1" value="<?= $antispam1 * 711; ?>" id="antispam1" />
-	<input type="hidden" name="antispam2" value="<?= $antispam2 * 931; ?>" id="antispam2" />
+	<input type="hidden" name="antispam1" value="<?= $antispam1 * 711; ?>" id="antispam1">
+	<input type="hidden" name="antispam2" value="<?= $antispam2 * 931; ?>" id="antispam2">
 	
 	<table border="0" width="99%" cellspacing="10">
 		<tr>
 			<td align="right"><label for="contact_name"><?=t('Ваше имя')?>*</label></td>
-			<td><input name="contact_name" type="text" value="" id="contact_name" style="width: 98%;" /></td>
+			<td><input name="contact_name" type="text" value="" id="contact_name" style="width: 98%;"></td>
 		</tr>
 		<tr>
 			<td align="right"><label for="contact_mail"><?=t('E-mail')?>*</label></td>
-			<td><input name="contact_mail" type="text" value="" id="contact_mail" style="width: 98%;" /></td>
+			<td><input name="contact_mail" type="text" value="" id="contact_mail" style="width: 98%;"></td>
 		</tr>
 		<tr>
 			<td align="right"><label for="contact_phone"><?=t('Телефон (с кодом города)')?></label></td>
-			<td><input name="contact_phone" type="text" value="" id="contact_phone" style="width: 98%;" /></td>
+			<td><input name="contact_phone" type="text" value="" id="contact_phone" style="width: 98%;"></td>
 		</tr>
 		<tr>
 			<td align="right"><label for="contact_url"><?=t('Адрес сайта')?></label></td>
-			<td><input name="contact_url" type="text" value="" id="contact_url" style="width: 98%;" /></td>
+			<td><input name="contact_url" type="text" value="" id="contact_url" style="width: 98%;"></td>
 		</tr>
 		<tr>
 			<td align="right"><label for="contact_subject"><?=t('Выберите тему письма')?>*</label></td>
@@ -124,15 +124,15 @@
 		</tr>
 		<tr>
 			<td align="right"><label for="contact_antispam"><?=t('Защита от спама')?>: <?= $antispam1; ?>+<?= $antispam2; ?>=</label></td>
-			<td><input name="contact_antispam" type="text" value="" id="contact_antispam" /><br /><?=t('Укажите свой ответ')?></td>
+			<td><input name="contact_antispam" type="text" value="" id="contact_antispam"><br><?=t('Укажите свой ответ')?></td>
 		</tr>
 		<tr>
 			<td align="right"><?=t('Отправить копию письма на ваш e-mail?')?></td>
-			<td><input name="subscribe" value="" type="checkbox" /> <?=t('Да')?></td>
+			<td><input name="subscribe" value="" type="checkbox"> <?=t('Да')?></td>
 		</tr>
 		<tr>
-			<td align="right"><input name="submit" type="submit" value=" <?=t('Отправить')?> " /></td>
-			<td><input name="clear" type="reset" value=" <?=t('Очистить форму')?> " /></td>
+			<td align="right"><input name="submit" type="submit" value=" <?=t('Отправить')?> "></td>
+			<td><input name="clear" type="reset" value=" <?=t('Очистить форму')?> "></td>
 		</tr>
 	</table>
 </form>

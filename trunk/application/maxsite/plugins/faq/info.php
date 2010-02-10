@@ -2,7 +2,7 @@
 
 $info = array(
 	'name' => 'FAQ',
-	'description' => 'Плагин для организации FAQ на странице. Код:<br />[faqs] [faq=вопрос]ответ[/faq] [faq=вопрос2]ответ2[/faq] [/faqs]',
+	'description' => 'Плагин для организации FAQ на странице. Код:<br>[faqs] [faq=вопрос]ответ[/faq] [faq=вопрос2]ответ2[/faq] [/faqs]',
 	'version' => '1.0',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',

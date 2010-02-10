@@ -59,7 +59,7 @@ function top_commentators_widget_form($num = 1)
   $form = '<p><div class="t150">' . t('Заголовок:', __FILE__) . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
   
   $form .= '<p><div class="t150">' . t('Формат:', __FILE__) . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) )
-      . '<br /><div class="t150">&nbsp;</div>' . t('Возможные подстановки:', __FILE__) . ' [LINK_URL][/LINK] [LINK_PAGE][/LINK] [NAME] [COUNT]';
+      . '<br><div class="t150">&nbsp;</div>' . t('Возможные подстановки:', __FILE__) . ' [LINK_URL][/LINK] [LINK_PAGE][/LINK] [NAME] [COUNT]';
 
   $form .= '<p><div class="t150">' . t('Количество комментаторов:', __FILE__) . '</div> '. form_input( array( 'name'=>$widget . 'commentators_cnt', 'value'=>$options['commentators_cnt'] ) ) ;
 

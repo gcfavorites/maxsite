@@ -32,42 +32,42 @@ function addzakl_content_end($args = array())
 
 	
 	$img_src = 'google_bmarks.gif';
-	$link = '<a rel="nofollow" href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=' . $post_link . '&title=' . $post_title .  '">';
-	$out = $link . '<img border="0" title="google.com" alt="google.com" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
+	$link = '<a rel="nofollow" href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=' . $post_link . '&amp;title=' . $post_title .  '">';
+	$out = $link . '<img border="0" title="google.com" alt="google.com" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 	
 	$img_src = 'bobrdobr.gif';
-	$link = '<a rel="nofollow" href="http://bobrdobr.ru/addext.html?url=' . $post_link . '&title=' . $post_title .  '">';
-	$out .= $sep . $link . '<img border="0" title="bobrdobr.ru" alt="bobrdobr.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
+	$link = '<a rel="nofollow" href="http://bobrdobr.ru/addext.html?url=' . $post_link . '&amp;title=' . $post_title .  '">';
+	$out .= $sep . $link . '<img border="0" title="bobrdobr.ru" alt="bobrdobr.ru" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 	
 	$img_src = 'delicious.gif';
-	$link = '<a rel="nofollow" href="http://del.icio.us/post?url=' . $post_link . '&title=' . $post_title .  '">';
-	$out .= $sep . $link . '<img border="0" title="del.icio.us" alt="del.icio.us" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
+	$link = '<a rel="nofollow" href="http://del.icio.us/post?url=' . $post_link . '&amp;title=' . $post_title .  '">';
+	$out .= $sep . $link . '<img border="0" title="del.icio.us" alt="del.icio.us" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 
 	$img_src = 'technorati.gif';
 	$link = '<a rel="nofollow" href="http://www.technorati.com/faves?add=' . $post_link . '">';
-	$out .= $sep . $link . '<img border="0" title="technorati.com" alt="technorati.com" src="' . $path . $img_src  . '" /></a>';
+	$out .= $sep . $link . '<img border="0" title="technorati.com" alt="technorati.com" src="' . $path . $img_src  . '"></a>';
 
 	$img_src = 'linkstore.gif';
-	$link = '<a rel="nofollow" href="http://www.linkstore.ru/servlet/LinkStore?a=add&amp;url=' . $post_link . '&title=' . $post_title .  '">';
-	$out .= $sep . $link . '<img border="0" title="linkstore.ru" alt="linkstore.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
+	$link = '<a rel="nofollow" href="http://www.linkstore.ru/servlet/LinkStore?a=add&amp;url=' . $post_link . '&amp;title=' . $post_title .  '">';
+	$out .= $sep . $link . '<img border="0" title="linkstore.ru" alt="linkstore.ru" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 	
 	$img_src = 'news2-ru.gif';
 	$link = '<a rel="nofollow" href="http://news2.ru/add_story.php?url=' . $post_link . '">';
-	$out .= $sep . $link . '<img border="0" title="news2.ru" alt="news2.ru" src="' . $path . $img_src  . '" /></a>';
+	$out .= $sep . $link . '<img border="0" title="news2.ru" alt="news2.ru" src="' . $path . $img_src  . '"></a>';
 
 	$img_src = 'rumark.gif';
-	$link = '<a rel="nofollow" href="http://rumarkz.ru/bookmarks/?action=add&amp;popup=1&amp;address=' . $post_link . '&title=' . $post_title .  '">';
-	$out .= $sep . $link . '<img border="0" title="rumarkz.ru" alt="rumarkz.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
+	$link = '<a rel="nofollow" href="http://rumarkz.ru/bookmarks/?action=add&amp;popup=1&amp;address=' . $post_link . '&amp;title=' . $post_title .  '">';
+	$out .= $sep . $link . '<img border="0" title="rumarkz.ru" alt="rumarkz.ru" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 	
 	$img_src = 'memori.gif';
-	$link = '<a rel="nofollow" href="http://memori.ru/link/?sm=1&amp;u_data[url]=' . $post_link . '&u_data[name]=' . $post_title .  '">';
-	$out .= $sep . $link . '<img border="0" title="memori.ru" alt="memori.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
+	$link = '<a rel="nofollow" href="http://memori.ru/link/?sm=1&amp;u_data[url]=' . $post_link . '&amp;u_data[name]=' . $post_title .  '">';
+	$out .= $sep . $link . '<img border="0" title="memori.ru" alt="memori.ru" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 	
 	$img_src = 'moemesto.gif';
-	$link = '<a rel="nofollow" href="http://moemesto.ru/post.php?url=' . $post_link . '&title=' . $post_title .  '">';
-	$out .= $sep . $link . '<img border="0" title="moemesto.ru" alt="moemesto.ru" src="' . $path . $img_src  . '"' . $width_height . ' /></a>';
+	$link = '<a rel="nofollow" href="http://moemesto.ru/post.php?url=' . $post_link . '&amp;title=' . $post_title .  '">';
+	$out .= $sep . $link . '<img border="0" title="moemesto.ru" alt="moemesto.ru" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 
-	echo "\n<div class=\"addzakl\"><noindex>" . $out . "</noindex></div>\n";
+	echo "\n<div class=\"addzakl\"><span style=\"display: none\"><![CDATA[<noindex>]]></span>" . $out . "<span style=\"display: none\"><![CDATA[</noindex>]]></span></div>\n";
 	
 	return $args;
 }

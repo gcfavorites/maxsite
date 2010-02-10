@@ -69,7 +69,7 @@ function catclouds_widget_form($num = 1)
 	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
 	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
-	$form .= '<br /><div class="t150">&nbsp;</div> %SIZE% %URL% %CAT% %COUNT%';
+	$form .= '<br><div class="t150">&nbsp;</div> %SIZE% %URL% %CAT% %COUNT%';
 	
 	$form .= '<p><div class="t150">' . t('Мин. размер', 'plugins') . ' (%):</div> '. form_input( array( 'name'=>$widget . 'min_size', 'value'=>$options['min_size'] ) ) ;
 	

@@ -56,17 +56,17 @@ function events_widget_form($num = 1)
 	$form .= '<p><div class="t150">' . t('Формат даты:', 'plugins') . '</div> '. 
 			form_input( array( 'name'=>$widget . 'format_date', 'value'=>$options['format_date'] ) );
 			
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Как это <a href="http://ru.php.net/date" target="_blank">принято в PHP</a>', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Как это <a href="http://ru.php.net/date" target="_blank">принято в PHP</a>', 'plugins');
 	
 	
 	$form .= '<p><div class="t150">' . t('События:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'events', 'value'=>$options['events'] ) ) ;
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Указывайте по одному событию в каждом абзаце в формате:', 'plugins') . ' 
-			  <br /><div class="t150">&nbsp;</div><strong>' . t('дата | до | после | текст события', 'plugins') . '</strong>, ' . t('где', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div>' . t('<strong>дата</strong> в формате yyyy-mm-dd', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div>' . t('<strong>до</strong> - выводить событие до наступления N-дней', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div>' . t('<strong>после</strong> - выводить событие после прошествия N-дней', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div>' . t('<strong>В тексте события</strong> можно использовать HTML', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div>' . t('<strong>ПРИМЕР:</strong> 2008-09-01 | 3 | 1 | Пора в школу!', 'plugins') . '
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Указывайте по одному событию в каждом абзаце в формате:', 'plugins') . ' 
+			  <br><div class="t150">&nbsp;</div><strong>' . t('дата | до | после | текст события', 'plugins') . '</strong>, ' . t('где', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div>' . t('<strong>дата</strong> в формате yyyy-mm-dd', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div>' . t('<strong>до</strong> - выводить событие до наступления N-дней', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div>' . t('<strong>после</strong> - выводить событие после прошествия N-дней', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div>' . t('<strong>В тексте события</strong> можно использовать HTML', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div>' . t('<strong>ПРИМЕР:</strong> 2008-09-01 | 3 | 1 | Пора в школу!', 'plugins') . '
 			  ';
 	return $form;
 }

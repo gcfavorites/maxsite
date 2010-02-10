@@ -24,7 +24,7 @@ function mso_install_newsite($arg = array())
 	$collate = $CI->db->dbcollat ? $CI->db->dbcollat : 'utf8_general_ci';
 	$charset_collate = ' DEFAULT CHARACTER SET ' . $charset .' COLLATE '. $collate;
 	
-	$sql_file = realpath(dirname(FCPATH)) . '/' . APPPATH . 'views/install/model.sql';
+	$sql_file = FCPATH . '/' . APPPATH . 'views/install/model.sql';
 	$sql = _mso_install_sqlfile($sql_file);
 	
 	foreach($sql as $s)
@@ -51,7 +51,7 @@ function mso_install_newsite($arg = array())
 	
 	
 	if ($arg['demoposts']) {
-		$sql_file = realpath(dirname(FCPATH)) . '/' . APPPATH . 'views/install/demo.sql';
+		$sql_file = FCPATH . '/' . APPPATH . 'views/install/demo.sql';
 		$sql = _mso_install_sqlfile($sql_file);
 		foreach($sql as $s)
 		{

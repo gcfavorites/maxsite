@@ -38,7 +38,10 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'dxr'	=>	'application/x-director',
 				'dvi'	=>	'application/x-dvi',
 				'gtar'	=>	'application/x-gtar',
-				'gz'	=>	'application/x-gzip',
+				
+				# max 
+				'gz'	=>	array('application/octet-stream', 'application/gzip'),
+				
 				'php'	=>	'application/x-httpd-php',
 				'php4'	=>	'application/x-httpd-php',
 				'php3'	=>	'application/x-httpd-php',
@@ -97,7 +100,13 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'xlsx'	=>	'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 				'word'	=>	array('application/msword', 'application/octet-stream'),
 				'xl'	=>	'application/excel',
-				'eml'	=>	'message/rfc822'
+				'eml'	=>	'message/rfc822',
+				
+				# MAX
+				'rar'	=>	'application/octet-stream',
+				'7z'	=>	'application/octet-stream',
+				'flv'	=>	'application/octet-stream'
+
 			);
 
 

@@ -3,7 +3,7 @@
 $info = array(
 	'name' => 'XML Sitemap (google-sitemap)',
 	'description' => 'Использование XML-Sitemap (карта сайта)',
-	'version' => '1.1',
+	'version' => '1.2',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',

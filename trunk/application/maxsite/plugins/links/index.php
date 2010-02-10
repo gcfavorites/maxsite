@@ -55,10 +55,10 @@ function links_widget_form($num = 1)
 	
 	$form .= '<p><div class="t150">' . t('Ссылки:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'links', 'value'=>$options['links'] ) ) ;
 	
-	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Указывайте по одной ссылке в каждом абзаце в формате:', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div><strong>http://links/ | название | описание | noindex | _blank</strong>
-			  <br /><div class="t150">&nbsp;</div><strong>noindex</strong> - ' . t('обрамить ссылку в noindex, если не нужно - указать пробел', 'plugins') . '
-			  <br /><div class="t150">&nbsp;</div><strong>_blank</strong> - ' . t('открыть ссылку в новом окне, если не нужно - указать пробел', 'plugins') . '
+	$form .= '<br><div class="t150">&nbsp;</div>' . t('Указывайте по одной ссылке в каждом абзаце в формате:', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div><strong>http://links/ | название | описание | noindex | _blank</strong>
+			  <br><div class="t150">&nbsp;</div><strong>noindex</strong> - ' . t('обрамить ссылку в noindex, если не нужно - указать пробел', 'plugins') . '
+			  <br><div class="t150">&nbsp;</div><strong>_blank</strong> - ' . t('открыть ссылку в новом окне, если не нужно - указать пробел', 'plugins') . '
 			  ';
 	
 	$form .= '<p><div class="t150">' . t('Отображать:', 'plugins') . '</div> '. 
@@ -126,7 +126,7 @@ function links_widget_custom($options = array(), $num = 1)
 					
 					if ( isset($ar_link[2]) and trim($ar_link[2]) )// если есть описание 
 					{	
-						$descr = '<div>' . trim($ar_link[2]) . '</div>'; 
+						$descr = '<div>' . trim($ar_link[2]) . '</div>';
 					}	
 					else 
 					{
@@ -187,7 +187,7 @@ function links_widget_custom($options = array(), $num = 1)
 						$out .= NR . '<p>' . $noindex1 . '<a href="' . $href . '" title="' . $title . '"' . $nofollow . $blank . '>' 
 							. '<img src="http://webmorda.kz/site2img/?s=' . $s . '&u=' . $href_w . '" alt="' 
 							. $title . '" title="' . $title 
-							. '" width="' . $width . '" height="' . $height . '" /></a><span>' . $descr . '</span>' . $noindex2 . '</p>';
+							. '" width="' . $width . '" height="' . $height . '"></a>' . $descr . '' . $noindex2 . '</p>';
 							
 						/*
 						http://www.webmorda.kz/api.html

@@ -23,7 +23,7 @@
 				}
 				else
 				{
-					$arr[$key] = ' ' . mb_substr($val, 0, $max_char_count, 'UTF8') . ' &lt;...&gt; <br /> ';
+					$arr[$key] = ' ' . mb_substr($val, 0, $max_char_count, 'UTF8') . ' &lt;...&gt; <br> ';
 					$flag = true;
 				}
 			}

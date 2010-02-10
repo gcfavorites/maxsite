@@ -27,12 +27,13 @@
 			// [randomtext_widget-3] => 
 			
 			// разбиваем полученное значение на функцию и номер - они указываются через -
-			$arr_w = explode('-', $widget); // в массив
+			$arr_w = explode('--', $widget); // в массив
 
 			if ( sizeof($arr_w) > 1 ) // два или больше элементов
 			{
 				$widget = trim( $arr_w[0] ); // первый - функция
-				$num = (int) trim( $arr_w[1] ); // второй - номер виджета
+				$num = mso_slug( trim( $arr_w[1] ) ); // второй - номер виджета
+				$num = str_replace('--', '-', $num); 
 			}
 			else 
 			{
@@ -40,7 +41,7 @@
 			}
 			
 			$func = $widget . '_update'; // функция именуется по этому принципу
-			$num = (int) $num;
+			//$num = (int) $num;
 
 			if ( function_exists($func) ) $func($num);
 		}
@@ -87,7 +88,13 @@
 				if ( sizeof($arr_w) > 1 ) // два или больше элементов
 				{
 					$widget = trim( $arr_w[0] ); // первый - функция
-					$num = (int) trim( $arr_w[1] ); // второй - номер виджета
+					$num_orig = trim( $arr_w[1] ); // второй - номер виджета
+					
+					$num = mso_slug($num_orig);
+					$num = str_replace('--', '-', $num); 
+					
+					$num_orig = str_replace('_', ' ', $num_orig); // заменим _ на пробел
+					
 				}
 				else 
 				{
@@ -103,7 +110,7 @@
 					$d_id = 'd_' . $func . '_' . $num; 
 					$a_js = '<a href="#" onClick="showhide(\'' . $d_id . '\'); return false;">';
 					
-					if ($num != 0) $form .= '<h3>' . $a_js . $MSO->widgets[$widget] . ' (' . $num . ')</a></h3>';
+					if ($num) $form .= '<h3>' . $a_js . $MSO->widgets[$widget] . ' (' . $num_orig . ')</a></h3>';
 						else $form .= '<h3>' . $a_js . $MSO->widgets[$widget] . '</a></h3>';
 					
 					$form .= '<div id="' . $d_id . '" style="display: none;" >';
@@ -113,7 +120,7 @@
 					if ($res) $form .= $res;
 						else $form .= '<p>' . t('Виджет не содержит настроек', 'admin') . '</p>';
 					
-					$form .= '<input type="hidden" name="f_update_widgets[' . $widget . '-' . $num . ']" value="" />';
+					$form .= '<input type="hidden" name="f_update_widgets[' . $widget . '--' . $num . ']" value="">';
 					
 					$form .= '</div>' . NR; // div id=
 					
@@ -126,7 +133,7 @@
 	}
 	else 
 	{
-		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например:', 'admin') . ' <br /><b>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар', 'admin') . '\');</b></div>';
+		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например:', 'admin') . ' <br><b>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар', 'admin') . '\');</b></div>';
 	}
 	
 	if (!$error)
@@ -134,7 +141,7 @@
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'admin') . '" style="margin: 15px 0 5px 0;" />';
+		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'admin') . '" style="margin: 15px 0 5px 0;">';
 		echo '</form>';
 	}
 	else

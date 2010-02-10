@@ -17,7 +17,6 @@ function admin_users_autoload($args = array())
 function admin_users_admin_init($args = array()) 
 {
 
-
 	$this_plugin_url = 'users'; // url и hook
 	
 	if ( mso_check_allow('admin_users_users') ) 

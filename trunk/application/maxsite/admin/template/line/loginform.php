@@ -18,7 +18,7 @@
 </head>
 <body>
 <div style="width: 300px; text-align: center; margin: 100px auto; padding: 20px 20px 20px 0; border: 3px outset #D5DDF3; background: #D5DDF3;">
-	<p><strong>Введите свой логин и пароль</strong></p><br />
+	<p><strong>Введите свой логин и пароль</strong></p><br>
 
 <?php 
 	if (!is_login())
@@ -27,9 +27,9 @@
 		
 		mso_login_form(array( 
 			'login'=>'&nbsp;&nbsp;Логин: ', 
-			'password'=>'<br /><br />Пароль: ', 
-			'submit'=>'<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'submit_value'=>'&nbsp;&nbsp;&nbsp;Войти&nbsp;&nbsp;&nbsp;',
-			'form_end'=>'<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . getinfo('siteurl') . '">Вернуться к сайту</a>',
+			'password'=>'<br><br>Пароль: ', 
+			'submit'=>'<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'submit_value'=>'&nbsp;&nbsp;&nbsp;Войти&nbsp;&nbsp;&nbsp;',
+			'form_end'=>'<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . getinfo('siteurl') . '">Вернуться к сайту</a>',
 			
 			), 
 			$redirect_url);

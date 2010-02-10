@@ -126,11 +126,11 @@ else
 	
 	foreach( $options['fields_arr'] as $key => $val )
 	{
-		echo '<tr><td style="vertical-align: top; text-align: right;"><strong>' . t($val, __FILE__) . '</strong> </td><td>';
+		echo '<tr><td style="vertical-align: top; text-align: right;" class="td1"><strong>' . t($val, __FILE__) . '</strong> </td><td class="td2">';
 		
 		if ($key != 'text')
 		{
-			echo '<input name="f_fields_guestbook[' . $key . ']" type="text" style="width: 99%;" /></td></tr>';
+			echo '<input name="f_fields_guestbook[' . $key . ']" type="text" style="width: 99%;"></td></tr>';
 		}
 		else
 		{ 
@@ -140,18 +140,18 @@ else
 
 	// капча из плагина капчи
 	
-	echo '<tr><td style="vertical-align: top; text-align: right;"><strong>' . t('Введите нижние символы', 'plugins') . ' </td>
-			<td style="text-align: left;"><input type="text" name="f_guestbook_captha" value="" maxlength="4" /> <img src="' 
+	echo '<tr><td style="vertical-align: top; text-align: right;" class="td1"><strong>' . t('Введите нижние символы', 'plugins') . ' </td>
+			<td style="text-align: left;" class="td2"><input type="text" name="f_guestbook_captha" value="" maxlength="4"> <img src="' 
 			. getinfo('plugins_url') . 'captcha/img.php?image='
 			. $session['session_id']
 			. '&page='
 			. mso_slug(mso_current_url())
 			. '&code='
 			. time()
-			. '" title="' . t('Защита от спама: введите только нижние символы', 'plugins') . '" align="absmiddle" /></td></tr>';
+			. '" title="' . t('Защита от спама: введите только нижние символы', 'plugins') . '" align="absmiddle"></td></tr>';
 
 	
-	echo '<tr><td>&nbsp;</td><td style="vertical-align: top; text-align: left;"><input type="submit" name="f_submit_guestbook" value="' . t('Отправить', __FILE__) . '" /></td></tr>';
+	echo '<tr><td class="td1">&nbsp;</td><td style="vertical-align: top; text-align: left;" class="td2"><input type="submit" class="submit" name="f_submit_guestbook" value="' . t('Отправить', __FILE__) . '"></td></tr>';
 	
 	echo '</table></form></div>';
 }
@@ -226,7 +226,7 @@ if ($query->num_rows() > 0)
 				$book['guestbook_browser'],
 				mso_date_convert('Y-m-d H:i:s', $book['guestbook_date']),
 				htmlspecialchars($book['guestbook_name']),
-				str_replace("\n", "<br />", htmlspecialchars($book['guestbook_text'])),
+				str_replace("\n", "<br>", htmlspecialchars($book['guestbook_text'])),
 				htmlspecialchars($book['guestbook_title']),
 				htmlspecialchars($book['guestbook_email']),
 				htmlspecialchars($book['guestbook_icq']),

@@ -41,7 +41,7 @@
 ?>
 	<h1><?= t('Плагины') ?></h1>
 	<p class="info"><?= t('Плагины расширяют стандартные возможности сайта. Здесь вы можете включить или отключить плагины. Если вы деинсталируете плагин, то это удаляет его настройки, что позволяет избежать «замусоривания» базы данных.') ?></p>
-	<p class="info"><?= t('Отметьте необходимые плагины и выберите нужное действие.') ?></p>
+	<p class="info"><?= t('Другие плагины вы можете найти на форуме <a href="http://forum.max-3000.com/viewforum.php?f=6">MaxSite CMS</a>.') ?></p>
 
 <?php
 	// для вывода будем использовать html-таблицу
@@ -60,7 +60,7 @@
 	$CI->table->set_template($tmpl); // шаблон таблицы
 	
 	// заголовки
-	$CI->table->set_heading(t('Статус', 'admin'), ' ', t('Каталог', 'admin'), t('Название', 'admin'), t('Версия', 'admin'), t('Автор', 'admin'), t('Описание', 'admin'));
+	$CI->table->set_heading(' ', t('Каталог', 'admin'), ' ', t('Название', 'admin'), t('Версия', 'admin'), t('Автор', 'admin'), t('Описание', 'admin'));
 	
 	// проходимся по каталогу плагинов и выводим информацию о них
 	$CI->load->helper('directory');
@@ -114,11 +114,11 @@
 					
 					if (function_exists($dir . '_mso_options'))
 						// есть опции
-						$status = '<span style="text-decoration: underline;" title="' . t('Настройки плагина', 'admin') . '"><strong><a href="' . getinfo('site_admin_url') . 'plugin_options/' . $dir . '">' . t('вкл', 'admin') . '</a></strong></span>';
+						$status = '<span style="" title="' . t('Настройки плагина', 'admin') . '"><a href="' . getinfo('site_admin_url') . 'plugin_options/' . $dir . '">' . t('опции', 'admin') . '</a></span>&nbsp;';
 					else 
-						$status = '<span style="color: green;"><strong>' . t('вкл', 'admin') . '</strong></span>';
+						$status = '<span></span>';
 					
-					$dir = '<label for="f_check_submit_' . $dir . '">' . $dir . '</label>';
+					$dir = '<label for="f_check_submit_' . $dir . '"><span style="color: green;">' . $dir . '</span></label>';
 				}
 				else 
 				{
@@ -135,8 +135,7 @@
 				}
 				
 				
-				
-				$CI->table->add_row($status, $act, $dir , $name, $version, $author, $description);
+				$CI->table->add_row($act, $dir, $status, $name, $version, $author, $description);
 			}
 		}
 	}

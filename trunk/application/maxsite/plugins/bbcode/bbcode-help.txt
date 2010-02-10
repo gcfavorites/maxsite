@@ -26,7 +26,7 @@
 [pright]текст[/pright]   => <p style="text-align: right;">текст</p> - выравнивание в абзаце вправо
 [pcenter]текст[/pcenter] => <p style="text-align: center;">текст</p> - выравнивание в абзаце по центру
 
-[br] => <br clear="all" /> - принудительный перенос строки
+[br] => <br clear="all"> - принудительный перенос строки
 
 [h1]текст[/h1] => <h1>текст</h1> - заголовок 1-го уровня (самый большой)
 [h2]текст[/h2] => <h2>текст</h2> - заголовок 2-го уровня
@@ -51,12 +51,12 @@
 [code]текст[/code] => <code>текст</code> - код
 [pre]текст[/pre]   => <pre>текст</pre> - преформатированный текст 
 
-[img]адрес[/img]         => <img src="адрес" /> - картинка
-[img=300x500]адрес[/img] => <img src="адрес" style="width: 300px; height: 500px" /> - картинка с размерами
+[img]адрес[/img]         => <img src="адрес"> - картинка
+[img=300x500]адрес[/img] => <img src="адрес" style="width: 300px; height: 500px"> - картинка с размерами
 
-[imgleft]адрес[/imgleft]      => <img src="адрес" style="float: left; margin: 0 10px 0 0;" /> - картинка влево
-[imgright]адрес[/imgright]    => <img src="адрес" style="float: right; margin: 0 0 0 10px;" /> - картинка вправо
-[imgcenter]адрес[/imgcenter]  => <div style="text-align: center"><img src="адрес" /></div> - картинка по центру
+[imgleft]адрес[/imgleft]      => <img src="адрес" style="float: left; margin: 0 10px 0 0;"> - картинка влево
+[imgright]адрес[/imgright]    => <img src="адрес" style="float: right; margin: 0 0 0 10px;"> - картинка вправо
+[imgcenter]адрес[/imgcenter]  => <div style="text-align: center"><img src="адрес"></div> - картинка по центру
 
 - тоже, только с названиями/всплывающими подсказками
 - !!! в названии нельзя использовать кавычки !!!
@@ -70,8 +70,8 @@
 
 
  - Миниатюра (адрес-mini) со ссылкой на оригинал
-[imgmini=_адрес-mini]адрес[/imgmini] => <a href="адрес" target="_blank"><img src="адрес-mini" /></a> - в новом окне
-[imgmini=адрес-mini]адрес[/imgmini] => <a href="адрес"><img src="адрес-mini" /></a> - в том же окне
+[imgmini=_адрес-mini]адрес[/imgmini] => <a href="адрес" target="_blank"><img src="адрес-mini"></a> - в новом окне
+[imgmini=адрес-mini]адрес[/imgmini] => <a href="адрес"><img src="адрес-mini"></a> - в том же окне
 
 [quote]текст[/quote] => <blockquote>текст</blockquote> - цитата
 

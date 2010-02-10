@@ -91,6 +91,7 @@ mso_create_allow('edit_other_users', t('Разрешить изменять ан
 mso_create_allow('edit_self_users', t('Разрешить изменять свои анкетные данные', 'admin'));
 mso_create_allow('edit_users_password', t('Разрешить изменять пароль других участников', 'admin'));
 mso_create_allow('edit_add_new_users', t('Разрешить добавлять новых пользователей', 'admin'));
+mso_create_allow('edit_delete_users', t('Разрешить удалять пользователей', 'admin'));
 mso_create_allow('edit_page_author', t('Разрешить менять автора', 'admin'));
 
 mso_create_allow('admin_users_group', t('Админ-доступ к «Группам и разрешениям»', 'admin'));

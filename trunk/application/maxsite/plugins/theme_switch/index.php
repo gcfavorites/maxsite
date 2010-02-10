@@ -187,7 +187,7 @@ function theme_switch_widget_custom($options = array(), $num = 1)
 			else $checked = '';
 					
 		$out .= '<input type="radio" name="theme_switch_radio[]" value="' . $key . '" id="theme_switch_radio_' . $key . '" ' 
-				. $checked . '/> <label for="theme_switch_radio_' . $key . '" title="' . $key . '">' . $val . '</label><br />';
+				. $checked . '/> <label for="theme_switch_radio_' . $key . '" title="' . $key . '">' . $val . '</label><br>';
 	}
 	
 	if ($out) 
@@ -195,7 +195,7 @@ function theme_switch_widget_custom($options = array(), $num = 1)
 			. $options['header'] 
 			. '<form action="" method="post">' 
 			. mso_form_session('f_session_id') . $out 
-			. '<input type="submit" name="f_theme_switch_submit" class="submit" value="' . $options['submit'] . '" /></form></div>';
+			. '<input type="submit" name="f_theme_switch_submit" class="submit" value="' . $options['submit'] . '"></form></div>';
 	
 	return $out;	
 }

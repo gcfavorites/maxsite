@@ -197,7 +197,7 @@ mso_cur_dir_lang('admin');
 				
 				$key = urldecode($key);
 				
-				$r[] = '<input type="checkbox" name="f_check[' . $id . '][' . $key . ']"' . $sel . ' />';
+				$r[] = '<input type="checkbox" name="f_check[' . $id . '][' . $key . ']"' . $sel . '>';
 			}
 			$data_table[] = $r; // добавим строчку
 		}
@@ -231,12 +231,12 @@ mso_cur_dir_lang('admin');
 			
 			//$name = urldecode($name);
 			$id = $row['groups_id'];
-			$delete .= '<p><label><input type="checkbox" name="f_delete_check[' . $id . ']" /> ' . $name . '</label></p>';
+			$delete .= '<p><label><input type="checkbox" name="f_delete_check[' . $id . ']"> ' . $name . '</label></p>';
 		}
 		
 		if ($delete) 
 		{
-			$delete = '<br />' . $delete . '<input type="submit" name="f_delete_submit" value="' . t('Удалить отмеченные группы', 'admin') . '" onClick="if(confirm(\'' . t('Уверены?', 'admin') . '\')) {return true;} else {return false;}" >';
+			$delete = '<br>' . $delete . '<input type="submit" name="f_delete_submit" value="' . t('Удалить отмеченные группы', 'admin') . '" onClick="if(confirm(\'' . t('Уверены?', 'admin') . '\')) {return true;} else {return false;}" >';
 		}
 		
 		$delete = '<div style="padding: 15px 5px; margin-top: 20px; background: #E0E0E0;"><input type="submit" name="f_new_submit" value="' . t('Создать новую группу', 'admin') . '"> 

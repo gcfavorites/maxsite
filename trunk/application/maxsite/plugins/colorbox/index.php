@@ -2,7 +2,7 @@
 
 function colorbox_autoload($args = array())
 {
-	mso_create_allow('colorbox_edit', t('Админ-доступ к настройкам плагина ColorBox', 'plugins'));
+	mso_create_allow('colorbox_edit', 'Админ-доступ к настройкам плагина ColorBox');
 	mso_hook_add( 'admin_init', 'colorbox_admin_init');
 	mso_hook_add( 'head', 'colorbox_head');
 	mso_hook_add( 'admin_head', 'colorbox_head');
@@ -56,16 +56,16 @@ function colorbox_head($args = array())
 	if ( !isset($options['slideshowspeed']) ) $options['slideshowspeed'] = '2500';
 	
 	echo '<link type="text/css" rel="stylesheet" href="'.$url.'style/'.$options['style'].'/colorbox.css" media="screen" />';
-	if ($options['style'] == '1' || $options['style'] == '4') echo NR.'<!--[if IE]>'.NR.'<link type="text/css" rel="stylesheet" href="'.$url.'style/'.$options['style'].'/colorbox-ie.css" media="screen" />'.NR.'<![endif]-->'.NR;
 	
 	$size = '';
 	if ($options['size'] == '1') $size = ',width:"'.$options['width'].'",height:"'.$options['height'].'"';
 	echo '<script type="text/javascript" src="'.$url.'js/jquery.colorbox-min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-	$("div.gallery a").colorbox({rel:"true",transition:"'.$options['effect'].'"'.$size.'});
+	$(".gallery,.slideshow").find("a[href$=\'.jpg\'],a[href$=\'.jpeg\'],a[href$=\'.png\'],a[href$=\'.gif\'],a[href$=\'.bmp\']").attr("rel","cb");
+	$("div.gallery a[rel=cb]").colorbox({rel:"true",transition:"'.$options['effect'].'"'.$size.',photo:"true"});
 	$("a.lightbox").colorbox({transition:"'.$options['effect'].'"'.$size.'});
-	$("div.slideshow a").colorbox({rel:"true",transition:"'.$options['effect'].'"'.$size.',slideshow:"true",slideshowSpeed:"'.$options['slideshowspeed'].'"});
+	$("div.slideshow a[rel=cb]").colorbox({rel:"true",transition:"'.$options['effect'].'"'.$size.',slideshow:"true",slideshowSpeed:"'.$options['slideshowspeed'].'",photo:"true"});
 });
 </script>';
 
@@ -73,7 +73,6 @@ $(document).ready(function(){
 
 function colorbox_content($text = '')
 {
-	global $MSO;
 	$preg = array(
 		'~<p>\[gal=(.*?)\[\/gal\]</p>~si' => '[gal=$1[/gal]',
 		'~<p>\[slide=(.*?)\[\/slide\]</p>~si' => '[slide=$1[/slide]',

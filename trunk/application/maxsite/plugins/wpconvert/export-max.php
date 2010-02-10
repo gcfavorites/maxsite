@@ -41,12 +41,12 @@ foreach ( $authors as $id ) {
 $all_count = $wpdb->get_col("SELECT ID FROM $wpdb->posts $where");
 ?>
 
-<p>Начиная с записи <input type="text" name="limit_start" value="1" /> (всего <?= count($all_count) ?> записей)
-<br />Количество по <input type="text" name="limit_count" value="30" /></p>
+<p>Начиная с записи <input type="text" name="limit_start" value="1"> (всего <?= count($all_count) ?> записей)
+<br>Количество по <input type="text" name="limit_count" value="30"></p>
 
 
-<p class="submit"><input type="submit" name="submit" value="<?php _e('Download Export File'); ?> &raquo;" />
-<input type="hidden" name="download" value="true" />
+<p class="submit"><input type="submit" name="submit" value="<?php _e('Download Export File'); ?> &raquo;">
+<input type="hidden" name="download" value="true">
 </p>
 </form>
 </div>

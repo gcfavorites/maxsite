@@ -183,9 +183,9 @@ function xml_sitemap_custom($args = array())
 	
 	$out .= NR . '</urlset>' . NR;
 	
-	$fn = realpath(dirname(FCPATH)) . '/sitemap.xml';
+	$fn = getinfo('FCPATH') . 'sitemap.xml';
 	write_file($fn, $out);
-	
+
 	return $args; // для обеспечения цепочки хуков
 }
 

@@ -72,7 +72,7 @@ if ($pages) // есть страницы
 				}
 				else
 				{
-					$arr[$key] = ' ' . mb_substr($val, 0, $max_char_count, 'UTF8') . ' &lt;...&gt; <br /> ';
+					$arr[$key] = ' ' . mb_substr($val, 0, $max_char_count, 'UTF8') . ' &lt;...&gt; <br> ';
 					$flag = true;
 				}
 			}
@@ -123,7 +123,7 @@ else
 		echo '<p>'. t('Извините, ничего не найдено, попробуйте повторить поиск.'). '</p>';
 
 		echo '
-		<p><br /><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" class="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '" />&nbsp;<input type="submit" class="submit" name="Submit" value="  '. t('Поиск'). '  " /></form></p>';
+		<p><br><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" class="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '">&nbsp;<input type="submit" class="submit" name="Submit" value="  '. t('Поиск'). '  "></form></p>';
 		
 		echo mso_hook('page_404');
 	}

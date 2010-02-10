@@ -222,6 +222,7 @@ div.comments-link {margin: 10px 0 0 0; text-align: right; font-size: 8pt;}
 form.comusers-form p strong {width: 180px; display: block; float: left;}
 form.comusers-form p input {width: 260px; }
 form.comusers-form p input[type="submit"] {width: 120px; }
+form.comusers-form p input[type="checkbox"] {width: auto; margin-top: 3px;}
 form.comusers-form p textarea {width: 260px; height: 300px;}
 form.comusers-form p  {background: #EEEEEE;}
 form.comusers-form p.info  {background: none; color: #B00000; margin: 0 0 15px 0; border: 1px solid #B00000; padding: 3px; text-align: center;}
@@ -270,3 +271,4 @@ div.forms-post h2 {color: red; font-size: 18pt; margin: 20px 0;}
 /* OTHER */
 span.cut {display: block; }
 div.break {clear: both;}
+label {cursor: pointer;}

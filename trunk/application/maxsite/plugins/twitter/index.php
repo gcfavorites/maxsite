@@ -43,7 +43,7 @@ function twitter_widget_form($num = 1)
 	if ( !isset($options['url']) ) $options['url'] = 'http://twitter.com/statuses/user_timeline/14057433.rss';
 	if ( !isset($options['count']) ) $options['count'] = '7';
 	if ( !isset($options['max_word_description']) ) $options['max_word_description'] = '0';
-	if ( !isset($options['format']) ) $options['format'] = '<p><a href="%LINK%">%DATE%</a><br />%TITLE%</p>';
+	if ( !isset($options['format']) ) $options['format'] = '<p><a href="%LINK%">%DATE%</a><br>%TITLE%</p>';
 	if ( !isset($options['format_date']) ) $options['format_date'] = 'd/m/Y H:i:s';
 	if ( !isset($options['footer']) ) $options['footer'] = '';
 
@@ -104,7 +104,7 @@ function twitter_widget_custom($arg, $num)
 	# параметры ленты
 	if ( !isset($arg['url']) ) $arg['url'] = false;
 	if ( !isset($arg['count']) ) $arg['count'] = 5;
-	if ( !isset($arg['format']) ) $arg['format'] = '<p><strong>%DATE%</strong><br />%TITLE% <a href="%LINK%">&gt;&gt;&gt;</a></p>';
+	if ( !isset($arg['format']) ) $arg['format'] = '<p><strong>%DATE%</strong><br>%TITLE% <a href="%LINK%">&gt;&gt;&gt;</a></p>';
 	if ( !isset($arg['format_date']) ) $arg['format_date'] = 'd/m/Y H:i:s';
 	if ( !isset($arg['max_word_description']) ) $arg['max_word_description'] = false;
 
@@ -124,7 +124,7 @@ function twitter_widget_custom($arg, $num)
 }
 
 
-function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</strong><br />%TITLE% <a href="%LINK%">&gt;&gt;&gt;</a></p>', $format_date = 'd/m/Y H:i:s', $max_word_description = false)
+function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</strong><br>%TITLE% <a href="%LINK%">&gt;&gt;&gt;</a></p>', $format_date = 'd/m/Y H:i:s', $max_word_description = false)
 {	
 	global $MSO;
 
