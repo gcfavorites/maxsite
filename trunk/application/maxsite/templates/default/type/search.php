@@ -19,7 +19,7 @@
 	}
 	else
 	{
-		$par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'), 'cut'=>false ); 
+		$par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'), 'cut'=>false, 'type'=>false ); 
 		$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 	}
 	
@@ -113,14 +113,20 @@ if ($pages) // есть страницы
 }
 else 
 {
- 
-	echo '<h2>'. t('404. Ничего не найдено...'). '</h2>';
-	echo '<p>'. t('Извините, ничего не найдено, попробуйте повторить поиск.'). '</p>';
+	if ($f = mso_page_foreach('pages-not-found')) 
+	{
+		require($f); // подключаем кастомный вывод
+	}
+	else // стандартный вывод
+	{
+		echo '<h2>'. t('404. Ничего не найдено...'). '</h2>';
+		echo '<p>'. t('Извините, ничего не найдено, попробуйте повторить поиск.'). '</p>';
 
-	echo '
-	<p><br /><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '" />&nbsp;<input type="submit" name="Submit" value="  '. t('Поиск'). '  " /></form></p>';
-	
-	echo mso_hook('page_404');
+		echo '
+		<p><br /><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" class="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '" />&nbsp;<input type="submit" class="submit" name="Submit" value="  '. t('Поиск'). '  " /></form></p>';
+		
+		echo mso_hook('page_404');
+	}
 	
 } // endif $pages
 

@@ -20,8 +20,8 @@ function faq_custom_headers_callback($matches)
 # callback-функция вычленения текстов
 function faq_custom_text_callback($matches)
 {
-	return '<a name="' . mso_slug($matches[1]) . '"></a><h3>' . $matches[1] . '</h3>'
-			. '<div class="faq-text">' . $matches[2] . '<a href="#faq-top">' . t('К списку', 'plugins') . '</a></div>';
+	return '<a name="' . mso_slug($matches[1]) . '"></a><h3>' . trim($matches[1]) . '</h3>'
+			. '<div class="faq-text">' . trim($matches[2]) . '<a href="#faq-top">' . t('К списку', 'plugins') . '</a></div>';
 }
 
 function faq_custom_faqs_callback($matches)
@@ -35,7 +35,7 @@ function faq_custom_faqs_callback($matches)
 	
 	$text = '<div class="faq-list">' . $text1 . '</div><div class="faq-out">' . $text2 . '</div>';
 	
-	return $text;
+	return '<div class="faq"><a name="faq-top"></a>' . $text . '</div><!--div class="faq"-->';
 }
 
 # функции плагина
@@ -43,10 +43,12 @@ function faq_custom($text = '')
 {
 	if (strpos($text, '[faqs]') !== false) // есть вхождения [faqs]
 	{
-		$pattern = '~\[faqs\](.*?)\[/faqs\]~si';
-		$text = '<div class="faq"><a name="faq-top"></a>' 
-				. preg_replace_callback($pattern, 'faq_custom_faqs_callback', $text) 
-				. '</div><!--div class="faq"-->';
+		//$text = '<div class="faq"><a name="faq-top"></a>' 
+		//		. preg_replace_callback('~\[faqs\](.*?)\[/faqs\]~si', 'faq_custom_faqs_callback', $text) 
+		//		. '</div><!--div class="faq"-->';
+				
+		$text = preg_replace_callback('~\[faqs\](.*?)\[/faqs\]~si', 'faq_custom_faqs_callback', $text);
+				
 	}
 	return $text;
 }

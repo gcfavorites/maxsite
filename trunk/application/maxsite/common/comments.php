@@ -145,7 +145,10 @@ function mso_get_comments($page_id = 0, $r = array())
 
 
 			$comments_content = $comment['comments_content'];
+			
 			$comments_content = mso_hook('comments_content', $comments_content);
+			
+			$comments_content = str_replace("\n", "<br>", $comments_content);
 
 			$comments_content = str_replace('<p>', '&lt;p&gt;', $comments_content);
 			$comments_content = str_replace('</p>', '&lt;/p&gt;', $comments_content);
@@ -159,9 +162,9 @@ function mso_get_comments($page_id = 0, $r = array())
 			else
 			{
 				$comments_content = mso_auto_tag($comments_content, true);
-				$comments_content = mso_hook('content_auto_tag', $comments_content);
+				//$comments_content = mso_hook('content_auto_tag', $comments_content);
 				$comments_content = mso_hook('content_balance_tags', $comments_content);
-				$comments_content = mso_balance_tags($comments_content);
+			//	$comments_content = mso_balance_tags($comments_content);
 			}
 
 			if ($commentator==1) $comments_content = strip_tags($comments_content, $r['tags_comusers']);
@@ -577,12 +580,23 @@ function mso_get_new_comment($args = array())
 
 
 # получаем данные комюзера.
-# если id = 0, то номер получаем из текущего сегмента (2)
+# если id = 0, то номер получаем из сессии или текущего сегмента (2)
 function mso_get_comuser($id = 0, $args = array())
 {
-	$id = (int) $id;
-	if (!$id) $id = (int) mso_segment(2);
+	global $MSO;
+	
+	if (!$id)
+	{
+		// не указан id, получаем его из сессии
+		if (isset($MSO->data['session']['comuser']) and $MSO->data['session']['comuser'] )
+			$id = $MSO->data['session']['comuser']['comusers_id'];
+		else 
+			$id = mso_segment(2); // или сегмент в url
+	}
+	
 	if (!$id) return array(); // нет номера, выходим
+	
+	if (!is_numeric($id)) return array(); // если id указан не номером, выходим
 
 	if ( !isset($args['limit']) )	$args['limit'] = 20;
 	if ( !isset($args['tags']) )	$args['tags'] = '<p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
@@ -706,7 +720,11 @@ function mso_comuser_edit($args = array())
 	if ( !isset($args['css_ok']) )		$args['css_ok'] = 'comment-ok';
 	if ( !isset($args['css_error']) )	$args['css_error'] = 'comment-error';
 
-	
+	# id комюзера, который в сессии
+	if ( isset($MSO->data['session']['comuser']) and $MSO->data['session']['comuser'] )
+			$id_session = $MSO->data['session']['comuser']['comusers_id'];
+	else $id_session = false;
+
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comusers_activate_key')) ) // это активация
 	{
 		# защита рефера
@@ -719,6 +737,10 @@ function mso_comuser_edit($args = array())
 		$id = (int) mso_array_get_key($post['f_submit']);
 		if (!$id) return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
 
+		# проверяем id в сессии с сабмитом 
+		if ($id != $id_session) 
+			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
+			
 		$f_comusers_activate_key = trim($post['f_comusers_activate_key']);
 		if (!$f_comusers_activate_key) return '<div class="' . $args['css_error']. '">'. t('Неверный (пустой) ключ'). '</div>';
 
@@ -796,6 +818,11 @@ function mso_comuser_edit($args = array())
 		$id = (int) mso_array_get_key($post['f_submit']);
 		if (!$id) return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
 
+		# проверяем id в сессии с сабмитом 
+		if ($id != $id_session) 
+			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
+		
+		
 		$f_comusers_email = trim($post['f_comusers_email']);
 		$f_comusers_password = trim($post['f_comusers_password']);
 
@@ -871,7 +898,12 @@ function mso_comuser_lost($args = array())
 
 	if ( !isset($args['css_ok']) )		$args['css_ok'] = 'comment-ok';
 	if ( !isset($args['css_error']) )	$args['css_error'] = 'comment-error';
-
+	
+	# id комюзера, который в сессии
+	if ( isset($MSO->data['session']['comuser']) and $MSO->data['session']['comuser'] )
+			$id_session = $MSO->data['session']['comuser']['comusers_id'];
+	else $id_session = false;
+	
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comusers_email')) ) // это активация
 	{
 		# защита рефера
@@ -884,6 +916,10 @@ function mso_comuser_lost($args = array())
 		$id = (int) mso_array_get_key($post['f_submit']);
 		if (!$id) return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '!</div>';
 
+		# проверяем id в сессии с сабмитом 
+		if ($id != $id_session) 
+			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
+		
 		$comusers_email = trim($post['f_comusers_email']);
 		if (!$comusers_email) return '<div class="' . $args['css_error']. '">'. t('Нужно указать email'). '</div>';
 

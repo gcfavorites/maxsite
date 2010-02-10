@@ -37,9 +37,16 @@ if ($comusers)
 }
 else
 {
-	echo '<h1>'. t('404. Ничего не найдено...'). '</h1>';
-	echo '<p>'. t('Извините, на сайте пока нет зарегистрированных комментаторов.'). '</p>';
-	echo mso_hook('page_404');
+	if ($f = mso_page_foreach('pages-not-found')) 
+	{
+		require($f); // подключаем кастомный вывод
+	}
+	else // стандартный вывод
+	{
+		echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+		echo '<p>' . t('Извините, ничего не найдено') . '</p>';
+		echo mso_hook('page_404');
+	}
 }
 
 echo NR . '</div><!-- class="type type_users_all" -->' . NR;

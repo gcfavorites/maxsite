@@ -27,7 +27,11 @@ require(getinfo('template_dir') . 'main-start.php');
 echo NR . '<div class="type type_category">' . NR;
 
 if ($f = mso_page_foreach('category-do')) require($f); // подключаем кастомный вывод
-	else echo '<h1 class="category">' . $title_page . '</h1>';
+	else 
+	{
+		# выводим только если есть найденные страницы
+		if ($pages) echo '<h1 class="category">' . $title_page . '</h1>';
+	}
 
 if ($pages) // есть страницы
 { 	
@@ -92,9 +96,16 @@ if ($pages) // есть страницы
 }
 else 
 {
- 	echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
-	echo '<p>' . t('Извините, ничего не найдено') . '</p>';
-	echo mso_hook('page_404');
+	if ($f = mso_page_foreach('pages-not-found')) 
+	{
+		require($f); // подключаем кастомный вывод
+	}
+	else // стандартный вывод
+	{
+		echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+		echo '<p>' . t('Извините, ничего не найдено') . '</p>';
+		echo mso_hook('page_404');
+	}
 } // endif $pages
 
 echo NR . '</div><!-- class="type type_category" -->' . NR;

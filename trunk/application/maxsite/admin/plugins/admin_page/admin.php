@@ -255,7 +255,11 @@
 			if ($cats) $title .= '<br />' . t('Рубрика:', 'admin') . ' ' . $cats;
 			if ($tags) $title .= '<br />' . t('Метки:', 'admin') . ' ' . $tags;
 			
-			$CI->table->add_row($page['page_id'], $title, $page['page_date_publish'], 
+			// $date_p = '<span title="Дата и время сохранения записи">' . $page['page_date_publish'] . '</span>'; // это время публикации как установлено на сервере
+			
+			$date_p = '<span title="Дата отображения на блоге с учетом временной поправки">' . mso_date_convert('Y-m-d H:i:s', $page['page_date_publish']) . '</span>';
+			
+			$CI->table->add_row($page['page_id'], $title, $date_p, 
 					$page['page_type_name'], $page['page_status'], $page['users_nik']);
 		}
 	}

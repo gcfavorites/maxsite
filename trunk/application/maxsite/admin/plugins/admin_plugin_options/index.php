@@ -156,7 +156,8 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 				$form .= '<div class="admin_plugin_options"><strong>' 
 						. $val['name'] 
 						. '</strong><br /><input type="text" value="'
-						. stripslashes(htmlspecialchars($options[$m])) 
+						//. stripslashes(htmlspecialchars($options[$m])) 
+						. htmlspecialchars($options[$m]) 
 						. '" name="'
 						. $key . '-' . $type . '[' . $m . ']'
 						. '" /><br /><em>' 
@@ -169,7 +170,8 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 						. '</strong><br /><textarea name="'
 						. $key . '-' . $type . '[' . $m . ']'
 						. '">'
-						. stripslashes(htmlspecialchars($options[$m])) 
+						//. stripslashes(htmlspecialchars($options[$m])) 
+						. htmlspecialchars($options[$m]) 
 						. '</textarea><br /><em>' 
 						. $val['description'] . '</em></div>' . NR;
 			}
@@ -212,7 +214,7 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 						if (isset($ar[0])) $v = trim($ar[0]);
 						if (isset($ar[1])) $v_t = trim($ar[1]);
 						
-						if (stripslashes(htmlspecialchars($options[$m])) == $v) $checked = 'selected="selected"';
+						if (htmlspecialchars($options[$m]) == $v) $checked = 'selected="selected"';
 							else $checked = '';
 						$form .= NR . '<option value="' . $v . '" ' . $checked . ' />' . $v_t . '</option>';
 					}

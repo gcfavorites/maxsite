@@ -22,7 +22,7 @@ if ($f = mso_page_foreach('tag-do')) require($f); // подключаем кас
 	else echo '<h1 class="category">' . mso_segment(2) . '</h1>';
 
 if ($pages) // есть страницы
-{ 	
+{
 	foreach ($pages as $page) : // выводим в цикле
 
 		if ($f = mso_page_foreach('tag')) 
@@ -64,9 +64,16 @@ if ($pages) // есть страницы
 }
 else 
 {
- 	echo '<h1>'. t('404. Ничего не найдено...'). '</h1>';
-	echo '<p>'. t('Извините, ничего не найдено'). '</p>';
-	echo mso_hook('page_404');
+	if ($f = mso_page_foreach('pages-not-found')) 
+	{
+		require($f); // подключаем кастомный вывод
+	}
+	else // стандартный вывод
+	{
+		echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+		echo '<p>' . t('Извините, ничего не найдено') . '</p>';
+		echo mso_hook('page_404');
+	}
 } // endif $pages
 
 echo NR . '</div><!-- class="type type_tag" -->' . NR;

@@ -186,8 +186,14 @@ function calendar_widget_custom($arg = array(), $num = 1)
 	$month_en = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 	$day_en = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
 	
+	
 	$out = str_replace($month_en, $arg['months'], $out);
 	$out = str_replace($day_en, $arg['days'], $out);
+	
+	
+	# если используется английский, то заменим большие названия на маленькие
+	$out = str_replace(array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'), 
+		array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), $out);
 	
 	
 	$out = $arg['header'] . $arg['block_start'] . $out . $arg['block_end'];

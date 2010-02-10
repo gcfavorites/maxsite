@@ -47,7 +47,7 @@ mso_cur_dir_lang('admin');
 		
 		
 		# вывод данных комментария
-		$CI->db->select('comments.*, users.users_nik, comusers.comusers_nik, page.page_title, page.page_slug');
+		$CI->db->select('comments.*, users.users_nik, users.users_id, comusers.comusers_nik, page.page_title, page.page_slug, page.page_id');
 		$CI->db->from('comments');
 		$CI->db->join('users', 'users.users_id = comments.comments_users_id', 'left');
 		$CI->db->join('comusers', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
@@ -60,9 +60,36 @@ mso_cur_dir_lang('admin');
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row_array(); 
+		
+		//	pr($row);
+			
+
+			
+			
+			if ( $row['users_nik'] )
+			{
+				echo '<p><strong>' . t('Автор') . '</strong>: '
+				. '<a href="' . getinfo('site_admin_url') . 'users/edit/' . $row['users_id'] . '">'
+				. $row['users_nik'] 
+				. '</a></p>';
+			}
+			
+			if ( $row['comusers_nik'] )
+			{
+				echo '<p><strong>' . t('Автор') . '</strong>: '
+				. '<a href="' . getinfo('site_admin_url') . 'comusers/edit/' . $row['comments_comusers_id'] . '">'
+				. $row['comusers_nik'] 
+				. '</a></p>';
+			}			
+			
 			echo '<form action="" method="post">' . mso_form_session('f_session_id');
-			echo '<h3>' . t('Текст', 'admin') . '</h3>
-				<p><textarea name="f_comments_content" cols="90" rows="10">' . htmlspecialchars($row['comments_content']) . '</textarea></p>';
+			//echo '<h3>' . t('Текст', 'admin') . '</h3>';
+			
+			// хуки для текстового поля комментирования
+			mso_hook('admin_comment_edit');
+			mso_hook('comments_content_start');
+					
+			echo '<p><textarea name="f_comments_content" id="comments_content" style="width: 100%; height: 150px;">' . htmlspecialchars($row['comments_content']) . '</textarea></p>';
 			
 			echo '<h3>' . t('Дата') . '</h3>
 				<p><input name="f_comments_date" type="text" value="' . htmlspecialchars($row['comments_date']) .'"></p>';
@@ -72,6 +99,7 @@ mso_cur_dir_lang('admin');
 				echo '<h3>' . t('Автор') . '</h3>
 					<p><input name="f_comments_author_name" type="text" value="' . htmlspecialchars($row['comments_author_name']) .'"></p>';
 			}
+
 			
 			$checked1 = $checked2 = '';
 			 
@@ -88,7 +116,13 @@ mso_cur_dir_lang('admin');
 			echo '</form>';
 			
 			echo '<p><a href="' . getinfo('siteurl') . 'page/' . $row['page_slug'] . '#comment-' . $id . '">' 
-				. t('Вернуться к комментарию на сайте') . '</a></p>';
+				. t('Вернуться к комментарию на сайте') . '</a>'
+				
+				. ' | <a href="' . getinfo('site_admin_url') . 'page_edit/' . $row['page_id'] . '">' 
+				. t('Редактировать запись') . '</a>'
+				
+				
+				. '</p>';
 			
 			// pr($row);
 		}

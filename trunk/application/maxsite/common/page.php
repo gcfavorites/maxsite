@@ -185,12 +185,12 @@ function mso_get_pages($r = array(), &$pag)
 			$content = preg_replace('|\[cut\]\s*<br|', '[cut]<br', $content);
 			$content = preg_replace('|\[cut\](\&nbsp;)*<br|', '[cut]<br', $content);
 			$content = preg_replace('|\[cut\](\&nbsp;)*(\s)*<br|', '[cut]<br', $content);
-			
 
-			$content = mso_hook('content', $content);
-			$content = mso_hook('content_auto_tag', $content);
-			$content = mso_hook('content_balance_tags', $content);
-			$content = mso_hook('content_out', $content);
+			//$content = mso_hook('content', $content);
+			//$content = mso_hook('content_auto_tag', $content);
+			//$content = mso_hook('content_balance_tags', $content);
+			//$content = mso_hook('content_out', $content);
+			
 
 			$pages[$key]['page_slug'] = $page['page_slug'] = mso_slug($page['page_slug']);
 
@@ -212,8 +212,10 @@ function mso_get_pages($r = array(), &$pag)
 					$content = array($content);
 					$cut = '';
 				}
-
+				
+		
 				$output = $content[0];
+				
 				if ( count($content) > 1 )
 				{
 					// ссылка на «далее...»
@@ -221,6 +223,7 @@ function mso_get_pages($r = array(), &$pag)
 					{
 						if ($cut)
 						{
+							
 							if (isset($content[1]))
 							{
 								if (strpos($cut, '%wordcount%')!==false)
@@ -234,12 +237,14 @@ function mso_get_pages($r = array(), &$pag)
 					}
 					else
 					{
-						$output .= mso_balance_tags($content[1]);
+						
+						$output .= '<a name="cut"></a>' .  $content[1];
+						
 					}
 
 					$output = mso_balance_tags($output);
 				}
-
+				
 				if ($r['xcut'])
 				{
 					if (strpos($output, '[mso_xcut]') !== false)
@@ -252,9 +257,18 @@ function mso_get_pages($r = array(), &$pag)
 				
 			}
 			else $output = $content; // отдаем как есть
-
+			
+			$output = mso_hook('content_in', $output);
+			
+			$output = mso_hook('content', $output);
+			
+			$output = mso_hook('content_auto_tag', $output);
+			$output = mso_hook('content_balance_tags', $output);
+			
+			$output = mso_hook('content_out', $output);
+			
 			$output = mso_hook('content_complete', $output);
-
+			
 			$pages[$key]['page_content'] = $output;
 
 			$pages[$key]['page_categories'] = array();

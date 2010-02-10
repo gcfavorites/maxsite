@@ -16,8 +16,8 @@ function bbcode_pre_callback($matches)
 {
 	$m = $matches[1];
 
-	$m = str_replace('<br>', NR, $m);
-	$m = str_replace('<br />', NR, $m);
+//	$m = str_replace('<br>', NR, $m);
+//	$m = str_replace('<br />', NR, $m);
 	
 //	$m = str_replace('<', '&lt;', $m);
 //	$m = str_replace('>', '&gt;', $m);
@@ -94,7 +94,7 @@ function bbcode_custom($text = '')
 
 		// [code=language][/code]
 		'~\[code\](.*?)\[\/code\]~si'       => '<code>$1</code>',
-		// '~\[pre\](.*?)\[\/pre\]~si'         => '<pre>$1</pre>',
+		//'~\[pre\](.*?)\[\/pre\]~si'         => '<pre>$1</pre>',
 		// '~\[code=(.*?)\](.*?)\[\/code\]~si'     => '<pre><code class="$1">$2</code></pre>',               
 
 		// email with indexing prevention & @ replacement

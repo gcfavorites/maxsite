@@ -180,6 +180,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	{	
 		$pages = $query->result_array();
 		
+		require_once( getinfo('common_dir') . 'category.php' );
 		$all_cat = mso_cat_array_single(); // все рубрики
 		
 		$out = '';

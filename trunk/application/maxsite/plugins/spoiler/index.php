@@ -11,7 +11,14 @@
 function spoiler_autoload($args = array())
 {
 	mso_hook_add( 'head', 'spoiler_head');
-	mso_hook_add( 'content', 'spoiler_custom'); # хук на вывод контента
+	mso_hook_add( 'content_out', 'spoiler_custom'); # хук на вывод контента
+
+	$options_key = 'plugin_spoiler';
+	$options = mso_get_option($options_key, 'plugins', array());
+	if ( isset($options['comments']) && (isset($options['comments']) == 1) )
+	{
+		mso_hook_add( 'comments_content_out', 'spoiler_custom');
+	}
 }
 
 
@@ -38,9 +45,10 @@ function spoiler_custom($text)
 	$options = mso_get_option($options_key, 'plugins', array());
 	if ( !isset($options['hide']) ) $options['hide'] = t('Скрыть',__FILE__);
 	if ( !isset($options['show']) ) $options['show'] = t('Показать...',__FILE__);
+	if ( !isset($options['comments']) ) $options['comments'] = 0;
 
 	$showtext = $options['show'];
-    $hidetext = $options['hide'];
+	$hidetext = $options['hide'];
    
 	// dont edit!
 	//$pattern = '@(\[spoiler\](.*?)\[/spoiler\])@is';
@@ -60,6 +68,9 @@ function spoiler_custom($text)
 			{
 				if ( strpos($matches[2][$i], "/") !== false )
 				{
+					$matches[2][$i] = str_replace("'", "\'", $matches[2][$i]);
+					$matches[2][$i] = str_replace("\"", "&quot;", $matches[2][$i]);	
+					
 					$tm = explode("/", $matches[2][$i]);
 					if ( strpos($matches[2][$i], "/") === 0 )
 					{
@@ -86,7 +97,7 @@ function spoiler_custom($text)
 			}
 			  
 			$html .= '<a class="spoiler_link_show" href="javascript:void(0)" onclick="SpoilerToggle(document.getElementById(\''.
-			$id.'\'), this, \''.$showtext.'\', \''.$hidetext.'\')">'.$showtext.'</a>'.PHP_EOL;
+			$id.'\'), this, \''.$showtext.'\', \''.$hidetext.'\')">'.$showtext.'</a>'. PHP_EOL;
 			$html .= '<div class="spoiler_div" id="'.$id.'" style="display:none">'.$matches[3][$i].'</div>'.PHP_EOL;
 
 			//$text = str_replace($matches[0][$i], $html, $text);
@@ -138,6 +149,30 @@ function spoiler_mso_options()
 {
 	mso_cur_dir_lang(__FILE__);
 	
+//////////////////////// Взято из wp-converter
+//	if (!isset($f_style)) $f_style = t('без стилей',__FILE__);
+	$CI = & get_instance();
+	// найдем все файлы по маске *.css
+	$CI->load->helper('directory');
+//	$dir = directory_map(getinfo('uploads_dir'), true); // только в текущем каталоге
+	$path = getinfo('plugins_dir').'spoiler/style/';
+	$dir = directory_map($path, true);
+	
+	if (!$dir) $dir = array();
+	natsort($dir);
+	$option_select = '';
+	$option_select .= '||' . t('без стилей');
+
+	foreach ($dir as $file)
+	{
+		if (@is_dir(getinfo('plugins_url').'spoiler/style/' . $file)) continue; // это каталог
+		if (preg_match('|(.*?)\.css|', $file)) 
+		{
+			$option_select .= '#'. $file . '||' . $file;
+		}
+	}
+////////////////////////	
+	
     # ключ, тип, ключи массива
     mso_admin_plugin_options('plugin_spoiler', 'plugins', 
         array(
@@ -154,15 +189,23 @@ function spoiler_mso_options()
                             'default' => t('Показать...')
                         ), 
             'style' => array(
-                            'type' => 'text', 
-                            'name' => t('Выберите файл стилей:'), 
-                            'description' => t('Указывать только имя файла с расширением(Например: spoiler.css). Оставьте поле пустым, если не хотите использовать стили.<br />Стили лежат в следеющей папке: (.../plugins/spoiler/style/...)'),
-                            'default' => ' '
+                            'type' => 'select', 
+                            'name' => t('Файл стилей:'), 
+                            'description' => t('Стили лежат в следеющей папке: (.../plugins/spoiler/style/)'),
+							'values' => $option_select,
+                            'default' => ''
                         ),
+            'comments' => array(
+                            'type' => 'checkbox', 
+                            'name' => t('Использовать спойлеры в комментариях'), 
+                            'description' => t(' '), 
+                            'default' => 0
+                        ), 
             ),
 		t('Настройки плагина Spoiler'), // титул
 		t('<p>С помощью этого плагина вы можете скрывать текст под спойлер.<br />Для использования плагина обрамите нужный текст в код [spoiler]ваш текст[/spoiler]</p><p class="info">Также возможны такие варианты: <br />[spoiler=показать]ваш текст[/spoiler], [spoiler=показать/спрятать]ваш текст[/spoiler], [spoiler=/спрятать]ваш текст[/spoiler]</p>')  // инфа
     );
 }
+
 
 ?>

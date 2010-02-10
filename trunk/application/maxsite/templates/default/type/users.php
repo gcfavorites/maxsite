@@ -6,7 +6,7 @@ require_once( getinfo('common_dir') . 'comments.php' );
 
 // mso_get_comuser(0, array( 'limit'=> 20, 'tags'=>'<img><strong><em><i><b><u><s><font><pre><code><blockquote>' ) );
 
-$comuser_info = mso_get_comuser(); // получим всю информацию о комюзере
+$comuser_info = mso_get_comuser(mso_segment(2)); // получим всю информацию о комюзере - номер в сегменте url
 
 mso_head_meta('title', getinfo('title') . ' - ' . t('Комментаторы')); // meta title страницы
 
@@ -79,9 +79,16 @@ if ($comuser_info)
 }
 else
 {
-	echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
-	echo '<p>' . t('Извините, пользователь с указанным номером не найден.') . '</p>';
-	echo mso_hook('page_404');
+	if ($f = mso_page_foreach('pages-not-found')) 
+	{
+		require($f); // подключаем кастомный вывод
+	}
+	else // стандартный вывод
+	{
+		echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+		echo '<p>' . t('Извините, пользователь с указанным номером не найден.') . '</p>';
+		echo mso_hook('page_404');
+	}
 }
 
 echo NR . '</div><!-- class="type type_users" -->' . NR;

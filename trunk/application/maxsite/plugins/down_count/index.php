@@ -172,7 +172,7 @@ function down_count_content_callback($matches)
 	$matches[1] = str_replace('%COUNT%', $count, $matches[1]);
 	$matches[3] = str_replace('%COUNT%', $count, $matches[3]);
 	
-	$out = '<a' . $matches[1] . 'href="' . $url . '"' . $matches[3] . '>' . $matches[4] . '</a>' . $format_out;
+	$out = '<a' . $matches[1] . 'href="' . $url . '"' . ' title="' . $matches[2] . '" '. $matches[3] . '>' . $matches[4] . '</a>' . $format_out;
 	
 	return $out;
 }

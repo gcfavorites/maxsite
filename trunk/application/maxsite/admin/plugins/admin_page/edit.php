@@ -312,9 +312,8 @@ mso_cur_dir_lang('admin');
 		
 		}
 		
-		// echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
-		
-		// $input_style = 'style="width: 99%; border: 1px solid #3B619C; margin: 5px auto 5px auto; background: #E3FAFF; color: #333399; padding: 2px; font-size: 18pt;"';
+		// получим все опции редактора
+		$editor_options = mso_get_option('editor_options', 'admin', array());
 		
 		$f_header = htmlspecialchars($f_header);
 		$f_tags = htmlspecialchars($f_tags);
@@ -351,8 +350,9 @@ mso_cur_dir_lang('admin');
 			
 			// только первые 20
 			$f_all_tags .= tagclouds_widget_custom(array(
-				'max_num' => 20,
+				'max_num' => isset($editor_options['tags_count']) ? $editor_options['tags_count'] : 20,
 				'max_size' => '180',
+				'sort' => isset($editor_options['tags_sort']) ? $editor_options['tags_sort'] : 0, 
 				'block_start' => '<p id="f_all_tags_max_num"><br />',
 				'block_end' => ' <a title="' . t('Показать все метки', 'admin') . '" href="#" onClick="shtags(1); return false;">&gt;&gt;&gt;</a></p>',
 				'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
@@ -362,6 +362,7 @@ mso_cur_dir_lang('admin');
 			$f_all_tags .= tagclouds_widget_custom(array(
 				'max_num' => 9999,
 				'max_size' => '180',
+				'sort' => isset($editor_options['tags_sort']) ? $editor_options['tags_sort'] : 0, 
 				'block_start' => '<p id="f_all_tags_all" style="display: none;"><br />',
 				'block_end' => ' <a title="' . t('Показать только самые популярные метки', 'admin') . '" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',
 				'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
@@ -431,7 +432,15 @@ mso_cur_dir_lang('admin');
 		// $date_time = date('Y-m-d H:i:s');
 		
 		$date_cur = strtotime($page_date_publish);
-		$date_time = t('Сейчас:', 'admin') . ' ' . $page_date_publish;
+		
+		$date_time = t('Сохранено:', 'admin') . ' ' . $page_date_publish;
+		
+		$date_time .= '<br />' . t('На блоге как:', 'admin') . ' ' . mso_date_convert('Y-m-d H:i:s', $page_date_publish);
+		$date_time .= '<br />' . t('Тек. время:', 'admin') . ' ' . date('Y-m-d H:i:s');
+		
+		
+		// $date_time = t('Сохранено:', 'admin') . ' ' . $page_date_publish;
+		// $date_time .= '<br />' . t('Сейчас:', 'admin') . ' ' . mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 		
 		// $page_date_publish;
 		

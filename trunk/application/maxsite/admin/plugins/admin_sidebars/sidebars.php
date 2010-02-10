@@ -49,7 +49,7 @@
 
 <h1><?= t('Настройки сайдбаров') ?></h1>
 <p class="info"><?= t('Добавьте в сайдбары необходимые виджеты. Каждый виджет в одной строчке. Виджеты будут отображаться в указанном вами порядке. Если указанные виджеты не существуют, то они будут проигнорированы при выводе в сайдбаре.') ?></p>
-<p class="info"><?= t('Если вы указываете несколько виджетов, то через пробел указывайте его номер.') ?></p>
+<p class="info"><?= t('Если вы указываете несколько одинаковых виджетов, то через пробел указывайте их номера.') ?></p>
 <p class="info"><?= t('Для виджета можно указать <a href="http://max-3000.com/page/uslovija-otobrazhenija-vidzheta" target="_blank">условия отображения</a>.') ?></p>
 
 
@@ -108,20 +108,20 @@
 		</script>' . NR;
 
 
-		$form .= '<br /><br /><h2>' . t('Доступные виджеты (добавляйте только функцию/подчеркнуто)') . '</h2><ul class="widgets-allow">';
+		$form .= '<br /><br /><h2>' . t('Доступные виджеты (добавляйте только функцию)') . '</h2><table class="widgets-allow">';
 		foreach ($all_w as $function => $title)
 		{
 			// $form .= '<li><b>' . $function . '</b> (' . $title . ')</li>';
-			$form .= '<li><strong>' . $title . '</strong> » ';
+			$form .= '<tr><td><strong>' . $title . '</strong>&nbsp;</td>';
 			
 			foreach($all_name_sidebars as $sid=>$sid_title)
 			{
-				$form .= ' <input style="margin: 0 0px; border: 1px solid gray; font-size: .9em;" type="button" value=" ' . $sid_title . ' " title="' . t('Добавить') . ' «' . $function . '» ' . t('в сайдбар') . ' «' . $sid_title 
-						. '»" onClick="addText(\'' . $function . '\', \'f_sidebars[' . $sid . ']\') " />' . NR;
+				$form .= '<td><input style="margin: 0 0px; border: 1px solid gray; font-size: .9em; cursor: pointer;" type="button" value=" ' . $sid_title . ' " title="' . t('Добавить') . ' «' . $function . '» ' . t('в') . ' «' . $sid_title 
+						. '»" onClick="addText(\'' . $function . '\', \'f_sidebars[' . $sid . ']\') " />&nbsp;&nbsp;</td>' . NR;
 			}
-			$form .= ' (<em>' . $function . '</em>) </li>' . NR;
+			$form .= '<td><em>' . $function . '</em> </td></tr>' . NR;
 		}
-		$form .= '</ul>';
+		$form .= '</table>';
 	}
 	else 
 	{

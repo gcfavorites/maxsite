@@ -1175,7 +1175,7 @@ function mso_text_to_html($content)
 	// $content = str_replace('&amp;','&', $content);
 
 	// $content = htmlspecialchars($content, ENT_QUOTES);
-
+	
 	return $content;
 }
 
@@ -1212,7 +1212,7 @@ function mso_clean_pre_special_chars($matches)
 
 		$m = str_replace('<p>', '', $m);
 		$m = str_replace('</p>', '', $m);
-		$m = str_replace("<br />", "[mso_br_n]", $m);
+		$m = str_replace("<br />", "MSO_N", $m);
 
 		$m = htmlspecialchars($m, ENT_QUOTES);
 
@@ -1221,14 +1221,13 @@ function mso_clean_pre_special_chars($matches)
 		$arr2 = array('&#58;', '&#39;', '&#40;', '&#41;', '&#124;', '&#45;', '&#91;', '&#93;');
 		$m = str_replace($arr1, $arr2, $m);
 
-		$text = "\n\n" . $matches[1] . $m . "</pre>\n\n";
+		$text = "" . $matches[1] . $m . "</pre>\n";
 	}
 	else
 		$text = $matches;
 
 	$text = str_replace('<p>', '', $text);
 	$text = str_replace('</p>', '', $text);
-	//$text = str_replace("<br />", "[mso_br_n]", $text);
 
 	return $text;
 }
@@ -1238,26 +1237,49 @@ function mso_clean_pre_special_chars($matches)
 function mso_clean_pre($matches)
 {
 	if ( is_array($matches) )
-		$text = "\n\n" . $matches[1] . $matches[2] . "</pre>\n\n";
+		$text = "" . $matches[1] . $matches[2] . "</pre>\n";
 	else
 		$text = $matches;
-
+		
 	$text = str_replace('<p>', '', $text);
 	$text = str_replace('</p>', '', $text);
 	$text = str_replace('[', '&#91;', $text);
 	$text = str_replace(']', '&#93;', $text);
-	$text = str_replace("<br />", "[mso_br_n]", $text);
+	$text = str_replace("<br>", "MSO_N", $text);
+	$text = str_replace("<br />", "MSO_N", $text);
+	$text = str_replace("<br/>", "MSO_N", $text);
 
 	return $text;
 }
 
+# подчистка блоковых тэгов
+# удаляем в них <p>
+function mso_clean_block($matches)
+{
+
+	if ( is_array($matches) )
+		$text = "" . $matches[1] . $matches[2] . $matches[3] . "\n";
+	else
+		$text = $matches;
+
+	$text = str_replace('<p>', '', $text);
+	$text = str_replace('</p>', 'MSO_N_BLOCK', $text);
+	$text = str_replace('[', '&#91;', $text);
+	$text = str_replace(']', '&#93;', $text);
+	$text = str_replace("<br>", "MSO_N", $text);
+	$text = str_replace("<br />", "MSO_N", $text);
+	$text = str_replace("<br/>", "MSO_N", $text);
+	//$text = str_replace("\n", "MSO_N", $text);
+
+	return $text;
+}
 
 # преобразуем введенный html в тексте между [html] ... [/html] и для [volkman]
 # к обычному html
 function mso_clean_html($matches)
 {
 	$arr1 = array('<p>', '</p>', '<br />',      '&amp;', '&lt;', '&gt;', "\n");
-	$arr2 = array('',    '',     '[mso_br_n]',   '&',     '<',    '>',    '[mso_br_n]');
+	$arr2 = array('',    '',     'MSO_N',       '&',     '<',    '>',    'MSO_N');
 
 	$matches[1] = trim( str_replace($arr1, $arr2, $matches[1]) );
 
@@ -1289,20 +1311,140 @@ function mso_clean_html_posle($matches)
 
 
 # авторасстановка тэгов
-# переделка из WordPress wpautop() + мои правки
 function mso_auto_tag($pee, $pre_special_chars = false)
 {
-	if ( mso_hook_present('content_auto_tag_custom') ) return $pee = mso_hook('content_auto_tag_custom', $pee);
-	
-	$pee = $pee . "\n";
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
+	
+	if ( mso_hook_present('content_auto_tag_custom') ) 
+		return $pee = mso_hook('content_auto_tag_custom', $pee);
+	
+	$pee = mso_hook('content_auto_tag_do', $pee);
+
+	if ( // отдавать как есть - слово в начале текста
+		( strpos($pee, '[volkman]') !== false and strpos(trim($pee), '[volkman]') == 0 ) 
+		or ( strpos($pee, '[source]') !== false and strpos(trim($pee), '[source]') == 0 ) 
+	)
+	{
+		$pee = str_replace('[volkman]', '', $pee);
+		$pee = str_replace('[source]', '', $pee);
+		$pee = mso_clean_html( array('1'=>$pee) );
+		$pee = str_replace('MSO_N', "\n", $pee);
+		return $pee;
+	}
+	
+	//pr($pee, true); # контроль
+	
+	$pee = str_replace("\n", "", $pee);
+	$pee = $pee . "\n";
 
 	# если html в [html] код [/html]
-	// $pee = preg_replace('!(\[html\])(.*?)(\[\/html\])!is', '$1', $pee);
 	$pee = str_replace('<p>[html]</p>', '[html]', $pee);
 	$pee = str_replace('<p>[/html]</p>', '[/html]', $pee);
 	$pee = preg_replace_callback('!\[html\](.*?)\[\/html\]!is', 'mso_clean_html_do', $pee );
 
+	
+	# исправляем стили браузера
+	$pee = str_replace('<hr style="width: 100%; height: 2px;">', "<hr>", $pee);
+	
+
+	# всё приводим к MSO_N - признак переноса
+	$pee = str_replace('<br />', 'MSO_N', $pee);
+	$pee = str_replace('<br/>', 'MSO_N', $pee);
+	$pee = str_replace('<br>', 'MSO_N', $pee);
+	$pee = str_replace("\n", 'MSO_N', $pee); // все абзацы тоже <br>
+	
+	# удаляем двойные br
+	$pee = str_replace('MSO_NMSO_NMSO_NMSO_N', 'MSO_N', $pee); 
+	$pee = str_replace('MSO_NMSO_NMSO_N', 'MSO_N', $pee); 
+	$pee = str_replace('MSO_NMSO_N', 'MSO_N', $pee); 
+	
+
+	# все MSO_N это абзацы
+	$pee = str_replace('MSO_N', "\n", $pee); 
+	
+	# удалим перед всеми закрывающими тэгами абзац
+	$pee = str_replace("\n</", "</", $pee); 
+	
+	# отбивка некоторых блоков
+	$pee = str_replace("<pre>", "\n<pre>\n", $pee); 
+	$pee = str_replace("</pre>", "\n</pre>\n", $pee);
+	
+	# расставим все абзацы по p
+	$pee = preg_replace('!(.*)\n!', "\n<p>$1</p>", $pee);
+	
+	# исправим абзацы ошибочные
+	$pee = str_replace("<p></p>", "", $pee); 
+	$pee = str_replace("<p><p>", "<p>", $pee); 
+	$pee = str_replace("</p></p>", "</p>", $pee); 
+	
+	
+	# блочные тэги
+	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|embed|h1|h2|h3|h4|h5|h6|hr)';
+	
+	# здесь не нужно ставить <p> и </p>
+	$pee = preg_replace('!<p>(<' . $allblocks . '[^>]*>)</p>!', "\n$1", $pee); # <p><tag></p>
+	$pee = preg_replace('!<p>(<' . $allblocks . '[^>]*>)!', "\n$1", $pee); # <p><tag> 
+	$pee = preg_replace('!<p>(</' . $allblocks . '[^>]*>)!', "\n$1", $pee); # <p></tag> 
+	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)</p>!', "\n$1", $pee); # <tag></p>
+	$pee = preg_replace('!(</' . $allblocks . '>)</p>!', "$1", $pee); # </tag></p>
+	$pee = preg_replace('!(</' . $allblocks . '>) </p>!', "$1", $pee); # </tag></p>
+	
+	# если был cut, то уберем с ссылки абзац
+	$pee = str_replace('<p><a name="cut"></a></p>', '<a name="cut"></a>', $pee); 
+	
+	# специфичные ошибки
+	$pee = str_replace("<blockquote>\n<p>", "<blockquote>", $pee); 
+
+	# преформатированный текст
+	if ($pre_special_chars)
+	{
+		if ( strpos($pee, '<pre') !== false ) 
+			$pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre_special_chars', $pee );
+		else $pee = str_replace("\n\n", "\n", $pee);
+	}
+	else
+	{
+		if ( strpos($pee, '<pre') !== false) 
+			$pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre', $pee );
+		else $pee = str_replace("\n\n", "\n", $pee);
+	}
+	
+	$pee = str_replace("<pre>\n\n", "<pre>\n", $pee); 
+	$pee = str_replace("\n</pre>", "</pre>", $pee); 
+	
+	
+	### подчистим некоторые блочные тэги удалим <p> внутри. MSO_N_BLOCK = </p>
+	
+	# code
+	$pee = preg_replace_callback('!(<code.*?>)(.*?)(</code>)!is', 'mso_clean_block', $pee );
+	$pee = str_replace('MSO_N_BLOCK', "<br />", $pee); // заменим перенос в блочном на <br> 
+	
+	# blockquote
+	$pee = preg_replace_callback('!(<blockquote.*?>)(.*?)(</blockquote>)!is', 'mso_clean_block', $pee );
+	$pee = str_replace('MSO_N_BLOCK', "<br />", $pee); // заменим перенос в блочном на <br> 	
+	
+	
+	# еще раз подчистка
+	$pee = str_replace('MSO_N', "\n", $pee); 
+	
+	# завершим [html]
+	$pee = str_replace('<p>[html_base64]', '[html_base64]', $pee);
+	$pee = str_replace('[/html_base64]</p>', '[/html_base64]', $pee);
+	$pee = str_replace('[/html_base64] </p>', '[/html_base64]', $pee);
+	$pee = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $pee );
+
+	# перенос строки в конце текста
+	$pee = $pee . "\n";
+	
+	# кастомный автотэг
+	$pee = mso_hook('content_auto_tag_my', $pee);
+	
+	// _pr($pee, true); # контроль
+
+	return $pee;
+	
+	
+	/*
 	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|hr|embed|h1|h2|h3|h4|h5|h6|br)';
 	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
 	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
@@ -1312,7 +1454,6 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 
 	$pee = str_replace('<br />', "\n" . '<br />', $pee); // +
 
-	$pee = str_replace('<hr style="width: 100%; height: 2px;">', "<hr>", $pee); // +
 
 	if ( // отдавать как есть - это такая фишка :-)
 		( strpos($pee, '[volkman]') !== false and strpos(trim($pee), '[volkman]') == 0 ) 
@@ -1335,8 +1476,10 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	}
 
 	$pee = "\n<p>" . $pee;
-	$pee = preg_replace('|<br />\s*<br />|', "<p>", $pee); // +
+
+	$pee = preg_replace('|<br />\s*?<br />|', "<p>", $pee); // +
 	$pee = str_replace('<p><p>', "<p>", $pee);
+	
 	$pee = str_replace("<p>\n<br />", "<p>", $pee);
 	$pee = str_replace("<p><p ", "<p ", $pee);
 	$pee = str_replace("<br />", "<p>", $pee);
@@ -1385,9 +1528,10 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = mso_hook('content_auto_tag_my', $pee);
 	
 	return $pee;
+	*/
 }
 
-
+/*
 # вычищаем списки UL
 function mso_balance_tags_ul_callback($matches)
 {
@@ -1396,13 +1540,18 @@ function mso_balance_tags_ul_callback($matches)
 
 	return $matches[1] . $text . $matches[3];
 }
-
+*/
 
 # моя функция авторасстановки тэгов
 function mso_balance_tags($text)
 {
 	if ( mso_hook_present('content_balance_tags_custom') ) return $text = mso_hook('content_balance_tags_custom', $text);
 	
+	$text = mso_hook('content_balance_tags_my', $text);
+	
+	return $text;
+
+/*
 	//return $text;
 	// те тэги, которые нужно закрывать автоматом до конца строки
 	$blocks_for_close = 'p|li';
@@ -1418,6 +1567,7 @@ function mso_balance_tags($text)
 		$text = str_replace("</" . $t . "></" . $t . ">", "</" . $t . ">", $text);
 	}
 
+	// $text = str_replace("</p>\n</p>", "</p>", $text);
 	$text = str_replace('</div></p>', '</p></div>', $text);
 	$text = str_replace('<p></p></div>', '</div>', $text);
 	$text = str_replace('<p></ul></div></p>', '</ul></div>', $text);
@@ -1442,6 +1592,7 @@ function mso_balance_tags($text)
 
 	$text = str_replace('<p> </p>', '<p>&nbsp;</p>', $text);
 
+
 	$text = str_replace("\n\n\n\n", "\n", $text);
 	$text = str_replace("\n\n\n", "\n", $text);
 	$text = str_replace("\n\n", "\n", $text);
@@ -1455,6 +1606,7 @@ function mso_balance_tags($text)
 	$text = mso_hook('content_balance_tags_my', $text);
 	
 	return $text;
+	*/
 }
 
 
@@ -1896,17 +2048,30 @@ function mso_date_convert($format = 'Y-m-d H:i:s', $data, $timezone = true, $day
 		$day_en = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
 		$out = str_replace($day_en, $days, $out);
 	}
-
 	if ($month)
 	{
 		if (!is_array($month)) $month = explode(' ', trim($month));
-
-		$month_en = array('January', 'February', 'March', 'April', 'May', 'June', 'July',
-							'August', 'September', 'October', 'November', 'December');
+		
+		//$out = str_replace(' ', '_', $out);
+		
+		$month_en = array('January', 'February', 'March', 'April', 'May', 'June', 'July',	'August', 'September', 'October', 'November', 'December');
 		$out = str_replace($month_en, $month, $out);
-
+		
+		# возможна ситуация, когда стоит английский язык, поэтому следующая замена приведет к ошибке
+		# поэтому заменим $month_en на что-то своё
+		
+		
+		$out = str_replace($month_en, array('J_anuary', 'F_ebruary', 'M_arch', 'A_pril', 'M_ay', 'J_une', 'J_uly',	'A_ugust', 'S_eptember', 'O_ctober', 'N_ovember', 'D_ecember'), $out);
+		
 		$month_en = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 		$out = str_replace($month_en, $month, $out);
+		
+		# теперь назад
+		$out = str_replace(
+				array('J_anuary', 'F_ebruary', 'M_arch', 'A_pril', 'M_ay', 'J_une', 'J_uly',	'A_ugust', 'S_eptember', 'O_ctober', 'N_ovember', 'D_ecember'), 
+				array('January', 'February', 'March', 'April', 'May', 'June', 'July',	'August', 'September', 'October', 'November', 'December'), $out);
+		
+		
 	}
 
 	return $out;

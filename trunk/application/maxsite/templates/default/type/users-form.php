@@ -10,12 +10,18 @@ require_once( getinfo('common_dir') . 'comments.php' );
 # если авторизация не пройдена, то опять выводим форму
 
 
-// обработка отправленных данных - возвращает результат
+# обработка отправленных данных - возвращает результат
 $res_post = mso_comuser_edit(); 
 
-$comuser_info = mso_get_comuser(); // получим всю информацию о комюзере
+# получим всю информацию о комюзере из сессии или url
+$comuser_info = mso_get_comuser();
 
+# отображение формы залогирования
 $login_form = !is_login_comuser();
+
+# если нет данных юзера, то выводим форму
+if (!$comuser_info) $login_form = true;
+
 
 mso_head_meta('title', getinfo('title') . ' - ' . t('Форма редактирования комментатора')); // meta title страницы
 
@@ -113,9 +119,16 @@ if ($comuser_info)
 }
 else
 {
-	echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
-	echo '<p>' . t('Извините, пользователь с указанным номером не найден.') . '</p>';
-	echo mso_hook('page_404');
+	if ($f = mso_page_foreach('pages-not-found')) 
+	{
+		require($f); // подключаем кастомный вывод
+	}
+	else // стандартный вывод
+	{
+		echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+		echo '<p>' . t('Извините, пользователь с указанным номером не найден.') . '</p>';
+		echo mso_hook('page_404');
+	}
 }
 
 echo NR . '</div><!-- class="type type_users_form" -->' . NR;

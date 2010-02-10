@@ -8,7 +8,7 @@ require_once( getinfo('common_dir') . 'comments.php' );
 $res_post = mso_comuser_lost(); // обработка отправленных данных - возвращает результат
 
 
-$comuser_info = mso_get_comuser(); // получим всю информацию о комюзере
+$comuser_info = mso_get_comuser(mso_segment(2)); // получим всю информацию о комюзере
 
 mso_head_meta('title', getinfo('title') . ' - '. t('Восстановление пароля') ); // meta title страницы
 
@@ -59,9 +59,16 @@ if ($comuser_info)
 }
 else
 {
-	echo '<h1>'. t('404. Ничего не найдено...'). '</h1>';
-	echo '<p>'. t('Извините, пользователь с указанным номером не найден.'). '</p>';
-	echo mso_hook('page_404');
+	if ($f = mso_page_foreach('pages-not-found')) 
+	{
+		require($f); // подключаем кастомный вывод
+	}
+	else // стандартный вывод
+	{
+		echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+		echo '<p>' . t('Извините, ничего не найдено') . '</p>';
+		echo mso_hook('page_404');
+	}
 }
 
 echo NR . '</div><!-- class="type type_users_form_lost" -->' . NR;

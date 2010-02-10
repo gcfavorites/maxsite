@@ -26,6 +26,7 @@ $lang['Подписаться по RSS'] = 'Subscribe to RSS';
 $lang['Подписаться на эту рубрику по RSS'] = 'Subscribe for this rubric to RSS';
 $lang['Рубрика'] = 'Rubric';
 $lang['Метки'] = 'Tags';
+$lang['Дата'] = 'Date';
 $lang['Архивы'] = 'Archive';
 $lang['Читать полностью'] = 'Read fully';
 $lang['Обсудить'] = 'Discuss';
@@ -62,7 +63,7 @@ $lang['что искать?'] = 'what to find?';
 $lang['Совпадений'] = 'Coincidences';
 
 
-$lang['Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье'] = 'Monday Tuesday Ambience(Environment;Wednesday) Thursday Friday Saturday Sunday';
+$lang['Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье'] = 'Monday Tuesday Wednesday Thursday Friday Saturday Sunday';
 $lang['января февраля марта апреля мая июня июля августа сентября октября ноября декабря'] = 'January February March April May June July August September October November December';
 
 

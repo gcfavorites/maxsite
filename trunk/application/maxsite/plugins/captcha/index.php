@@ -52,7 +52,7 @@ function captcha_go($args = array())
 			. mso_slug(mso_current_url())
 			. '&code='
 			. time()
-			. '" title="' . t('Защита от спама: введите только нижние символы', 'plugins') . '" /> <span>' . t('(обязательно)', 'plugins') . '</span><br /><br />
+			. '" alt="" title="' . t('Защита от спама: введите только нижние символы', 'plugins') . '" /> <span>' . t('(обязательно)', 'plugins') . '</span><br /><br />
 		';
 }
 ?>

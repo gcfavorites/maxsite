@@ -224,6 +224,8 @@
 
 	};
 	
+	// получим все опции редактора
+	$editor_options = mso_get_option('editor_options', 'admin', array());
 	
 	echo '<h1 class="content">' . t('Создать страницу', 'admin') . '</h1>';
 	
@@ -267,8 +269,11 @@
 		
 		// только первые 20
 		$f_all_tags .= tagclouds_widget_custom(array(
-			'max_num' => 20,
+			'max_num' => isset($editor_options['tags_count']) ? $editor_options['tags_count'] : 20,
 			'max_size' => '180',
+			
+			'sort' => isset($editor_options['tags_sort']) ? $editor_options['tags_sort'] : 0, 
+			
 			'block_start' => '<p id="f_all_tags_max_num"><br />',
 			'block_end' => ' <a title="' . t('Показать все метки', 'admin') . '" href="#" onClick="shtags(1); return false;">&gt;&gt;&gt;</a></p>',
 			'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
@@ -278,6 +283,9 @@
 		$f_all_tags .= tagclouds_widget_custom(array(
 			'max_num' => 9999,
 			'max_size' => '180',
+			
+			'sort' => isset($editor_options['tags_sort']) ? $editor_options['tags_sort'] : 0, 
+			
 			'block_start' => '<p id="f_all_tags_all" style="display: none;"><br />',
 			'block_end' => ' <a title="' . t('Показать только самые популярные метки', 'admin') . '" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',
 			'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
@@ -343,8 +351,12 @@
 	// $date_time = date('Y-m-d H:i:s');
 	// $date_cur = strtotime($page_date_publish);
 	// $date_time = 'Сейчас: ' . $page_date_publish;
-	$date_time = 'Сейчас: ' . date('Y-m-d H:i:s');
 	
+	//$date_time = 'Сейчас: ' . date('Y-m-d H:i:s');
+		
+	$date_time = t('Тек. время:', 'admin') . ' ' . date('Y-m-d H:i:s');
+	
+		
 	$date_cur_y = date('Y');
 	$date_cur_m = date('m');
 	$date_cur_d = date('d');	
