@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  */
 
 /*
@@ -133,6 +133,51 @@ function xml_sitemap_custom()
 			$out .= $t . '</url>' . NR;
 		}
 	}		
+	
+	// все метки
+	require_once( getinfo('common_dir') . 'meta.php' );
+	$alltags = mso_get_all_tags_page();
+	foreach ($alltags as $tag => $count) 
+    {
+		$out .= $t . '<url>' . NR;
+		$out .= $t . $t . '<loc>' . $url . 'tag/' . htmlentities(urlencode($tag)) . '</loc>' . NR;
+		$out .= $t . $t . '<lastmod>' . $date . '</lastmod>' . NR;
+		$out .= $t . $t . '<changefreq>weekly</changefreq>' . NR;
+		$out .= $t . $t . '<priority>0.3</priority>' . NR;
+		$out .= $t . '</url>' . NR;
+    }
+		
+	// и все комюзеры
+	$CI->db->select('comusers_id');
+	$query = $CI->db->get('comusers');
+	if ($query->num_rows() > 0)	
+	{	
+		foreach ($query->result_array() as $row)
+		{
+			$out .= $t . '<url>' . NR;
+			$out .= $t . $t . '<loc>' . $url . 'users/' . $row['comusers_id'] . '</loc>' . NR;
+			$out .= $t . $t . '<lastmod>' . $date . '</lastmod>' . NR;
+			$out .= $t . $t . '<changefreq>weekly</changefreq>' . NR;
+			$out .= $t . $t . '<priority>0.3</priority>' . NR;
+			$out .= $t . '</url>' . NR;
+		}
+	}
+	
+	// и все юзеры
+	$CI->db->select('users_id');
+	$query = $CI->db->get('users');
+	if ($query->num_rows() > 0)	
+	{	
+		foreach ($query->result_array() as $row)
+		{
+			$out .= $t . '<url>' . NR;
+			$out .= $t . $t . '<loc>' . $url . 'author/' . $row['users_id'] . '</loc>' . NR;
+			$out .= $t . $t . '<lastmod>' . $date . '</lastmod>' . NR;
+			$out .= $t . $t . '<changefreq>weekly</changefreq>' . NR;
+			$out .= $t . $t . '<priority>0.3</priority>' . NR;
+			$out .= $t . '</url>' . NR;
+		}
+	}
 	
 	$out .= NR . '</urlset>' . NR;
 	

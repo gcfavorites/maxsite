@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (ñ) http://maxsite.org/
+ * (c) http://max-3000.com/
  */
 	$this->_view_i('contact');
 ?>

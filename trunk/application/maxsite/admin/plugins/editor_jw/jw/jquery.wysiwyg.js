@@ -36,7 +36,7 @@
         else
             return element.contentWindow.getSelection().toString();
     };
-
+	
     $.fn.wysiwyg = function( options )
     {
         if ( arguments.length > 0 && arguments[0].constructor == String )
@@ -86,11 +86,15 @@
             brIE         : true,
 
             controls : {},
+            controls_extra : {},
             messages : {}
         }, options);
 
         $.extend(options.messages, Wysiwyg.MSGS_EN);
-        $.extend(options.controls, Wysiwyg.TOOLBAR);
+		
+       // $.extend(options.controls, Wysiwyg.TOOLBAR);
+       $.extend(options.controls_extra, Wysiwyg.TOOLBAREXTRA);
+       $.extend(options.controls, Wysiwyg.TOOLBAR, options.controls_extra);
 
         for ( var control in controls )
         {
@@ -341,7 +345,10 @@
                     this.viewHTML = !( this.viewHTML );
                 }
             }
-        }
+        },
+		
+		TOOLBAREXTRA : {}
+		
     });
 
     $.extend(Wysiwyg.prototype,

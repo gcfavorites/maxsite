@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  */
 
 # функция автоподключения плагина
@@ -101,12 +101,12 @@ function sitemap($arg = array())
 		$out .= '</ul>' . NR . '</div>' . NR;
 	}
 	
-	if (function_exists('pagination_go')) 
-	{
-		$pagination['type'] = '';
-		$out .=  pagination_go($pagination); // вывод навигации
-	}
-		
+	$pagination['type'] = '';
+	ob_start();
+	mso_hook('pagination', $pagination);
+	$out .=  ob_get_contents();
+	ob_end_clean();
+
 	mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	
 	return $out;

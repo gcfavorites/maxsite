@@ -2,17 +2,26 @@
 
 /**
  * MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  */
+
+
+function pagination_autoload($a = array()) 
+{
+	mso_hook_add('pagination', 'pagination_go', 10);
+	return $a;
+}
 
 
 function pagination_go($r = array()) 
 {
 	global $MSO;
 	
-	if (!$r) return '';
-	if ( !isset($r['maxcount']) ) return '';
-	if ( !isset($r['limit']) ) return ''; // нужно указать сколько записей выводить
+	$r_orig = $r; 
+	
+	if (!$r) return $r;
+	if ( !isset($r['maxcount']) ) return $r;
+	if ( !isset($r['limit']) ) return $r; // нужно указать сколько записей выводить
 	if ( !isset($r['type']) )  $r['type'] = false; // можно задать свой тип
 	
 	if ( !isset($r['range']) ) 	$r['range'] = 3;
@@ -77,9 +86,10 @@ function pagination_go($r = array())
 				$r['format'],
 				$out);
 		
-		return NR . '<div class="pagination">' . $out . '</div>' . NR;
+		echo NR . '<div class="pagination">' . $out . '</div>' . NR;
 	}
-	else return '';
+	 
+	return $r_orig;
 }
 
 

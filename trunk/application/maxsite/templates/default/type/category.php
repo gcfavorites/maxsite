@@ -70,8 +70,7 @@ if ($pages) // есть страницы
 	
 	if (!$full_posts) echo '</ul>';
 	
-	if (function_exists('pagination_go')) 
-		echo pagination_go($pagination); // вывод навигации
+	mso_hook('pagination', $pagination);
 
 }
 else 

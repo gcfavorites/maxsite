@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  */
 
 	# http://localhost/codeigniter/url/maxsite.org

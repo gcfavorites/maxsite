@@ -2,7 +2,7 @@
 
 /**
  * Language for MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  * Author: (c) 
  * Author URL: 
  * Update URL: 

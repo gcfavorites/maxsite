@@ -5,7 +5,7 @@ $info = array(
 	'description' => 'Плагин для внутренней прелинковки страниц путем анализа наиболее часто встречающихся слов.',
 	'version' => '1.0',
 	'author' => 'Максим',
-	'plugin_url' => 'http://maxsite.org/',
+	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );

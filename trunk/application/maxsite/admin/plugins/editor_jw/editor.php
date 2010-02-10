@@ -21,7 +21,12 @@
 		  
 		  $('#wysiwyg').wysiwyg({
 				css: '<?= $editor_config['url'] ?>jw/styles.css',
-				controls : {}
+				controls : {},
+				controls_extra : 
+				{
+					separator1 : { separator : true }
+					<?php mso_hook('editor_controls_extra') ?>
+				}
 			});
 		});
 	</script>

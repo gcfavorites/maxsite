@@ -5,7 +5,7 @@ $info = array(
 	'description' => 'Подсчет количества подписчиков RSS',
 	'version' => '1.0',
 	'author' => 'Максим',
-	'plugin_url' => 'http://maxsite.org/',
+	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );

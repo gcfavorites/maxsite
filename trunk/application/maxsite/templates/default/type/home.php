@@ -152,9 +152,8 @@ if ($pages) // есть страницы
 	
 	if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '</ul><!--ul class="category"-->';
 	
-	if (function_exists('pagination_go')) 
-		echo pagination_go($pagination); // вывод навигации
-		
+	mso_hook('pagination', $pagination);
+
 }
 else 
 {

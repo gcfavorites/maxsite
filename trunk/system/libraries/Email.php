@@ -346,7 +346,14 @@ class CI_Email {
 	 */
 	function subject($subject)
 	{
-		$subject = $this->_prep_q_encoding($subject);
+		// $subject = $this->_prep_q_encoding($subject);
+		
+		$subject = preg_replace("/(\r\n)|(\r)|(\n)/", "", $subject);
+		$subject = preg_replace("/(\t)/", " ", $subject);
+		
+		$subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+		
+		
 		$this->_set_header('Subject', $subject);
 	}
   

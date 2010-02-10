@@ -2,10 +2,10 @@
 
 $info = array(
 	'name' => 'Pagination',
-	'description' => 'Пагинация страниц',
-	'version' => '1.0',
+	'description' => 'Пагинация страниц (« Первая · ‹ предыдущая | 1 · 2 · 3 · 4 ... 7 | следующая › · последняя »)',
+	'version' => '1.1',
 	'author' => 'Максим',
-	'plugin_url' => 'http://maxsite.org/',
+	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );

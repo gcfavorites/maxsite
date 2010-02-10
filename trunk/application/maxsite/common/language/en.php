@@ -1,8 +1,9 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Language for MaxSite CMS
- * (c) http://maxsite.org/
+ * MaxSite CMS
+ * Language file
+ * (c) http://max-3000.com/
  * Author: (c) Ваше имя
  * Author URL: 
  * Update URL: 

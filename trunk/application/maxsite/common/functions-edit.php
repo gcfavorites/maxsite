@@ -1,8 +1,9 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Функции для редактирования, удаления, добавления MaxSite CMS
- * (c) http://maxsite.org/
+ * MaxSite CMS
+ * (c) http://max-3000.com/
+ * Функции для редактирования, удаления, добавления
  *
  */
 

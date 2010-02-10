@@ -49,8 +49,7 @@ if ($pages) // есть страницы
 		
 	endforeach;
 	
-	if (function_exists('pagination_go')) 
-		echo pagination_go($pagination); // вывод навигации
+	mso_hook('pagination', $pagination);
 		
 }
 else 

@@ -2,7 +2,7 @@
 
 /**
  * Основные функции MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  * Функции для рубрик
  */
 
@@ -166,7 +166,7 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 		$CI->db->where('page_status', 'publish');
 	}
 	
-	if ($hide_empty) $CI->db->having('pages_count>', 0);
+	if ($hide_empty) $CI->db->having('pages_count > ', 0);
 	
 	// включить только указанные
 	if ($in) $CI->db->where_in('category.category_id', $in);
@@ -212,7 +212,7 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 	// если разрешено опцией для детей
 	if ($in_child and $in) $CI->db->where_in('category.category_id', $in);
 	
-	if ($hide_empty) $CI->db->having('pages_count>', 0);
+	if ($hide_empty) $CI->db->having('pages_count >', 0);
 	
 	// исключить указанные
 	if ($ex) $CI->db->where_not_in('category.category_id', $ex);

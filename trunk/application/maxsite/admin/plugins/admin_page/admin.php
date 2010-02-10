@@ -173,12 +173,12 @@
 		}
 	}
 	
-	if (function_exists('pagination_go')) 
-	{
-		$pagination['type'] = '';
-		$pagination['range'] = 10;
-		echo  pagination_go($pagination) . '<br />'; // вывод навигации
-	}
+
+	$pagination['type'] = '';
+	$pagination['range'] = 10;
+	mso_hook('pagination', $pagination);
+	echo  '<br />';
+	
 	
 	echo mso_load_jquery('jquery.tablesorter.js');
 	echo '
@@ -197,12 +197,12 @@
 	// добавляем форму для удаления записи
 	$all_pages = form_dropdown('f_page_delete', $all_pages, -1, '');
 	
-	if (function_exists('pagination_go')) 
-	{
-		$pagination['type'] = '';
-		$pagination['range'] = 10;
-		echo '<br />' . pagination_go($pagination); // вывод навигации
-	}
+
+	$pagination['type'] = '';
+	$pagination['range'] = 10;
+	echo '<br />';
+	mso_hook('pagination', $pagination);
+
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo '<br /><br /><h2>' . t('Удалить страницу', 'admin') . '</h2>';

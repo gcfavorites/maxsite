@@ -1,8 +1,8 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Основные функции MaxSite CMS
- * (c) http://maxsite.org/
+ * MaxSite CMS
+ * (c) http://max-3000.com/
  * Функции для ini-файлов
  */
 

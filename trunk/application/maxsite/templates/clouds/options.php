@@ -13,7 +13,12 @@
 	
 	// получим ini-файл
 	$all = mso_get_ini_file( getinfo('templates_dir') . 'default/options.ini'); // можно использовать дефолтный
-	// $all = mso_get_ini_file( getinfo('template_dir') . 'options.ini'); // или свой
+	
+	if (file_exists(getinfo('template_dir') . 'options.ini'))
+	{
+		$all_add = mso_get_ini_file( getinfo('template_dir') . 'options.ini'); // и свой
+		$all = array_merge($all, $all_add);
+	}
 	
 	// вывод всех ini-опций
 	echo mso_view_ini($all);

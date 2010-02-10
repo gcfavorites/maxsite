@@ -22,39 +22,36 @@
 		  );
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
-	$CI->table->set_heading('ID', t('Ник', 'admin'), t('Актив.', 'admin'), t('Последний вход', 'admin'),  t('E-mail', 'admin'), t('Сайт', 'admin'));
+	$CI->table->set_heading('ID', t('Ник', 'admin'), t('Актив.', 'admin'), t('Кол.', 'admin'), t('Последний вход', 'admin'),  t('E-mail', 'admin'), t('Сайт', 'admin'));
 	
 	
 	// для пагинации нам нужно знать общее количество записей
 	// только после этого выполняем запрос 
 	
-	if (function_exists('pagination_go')) 
-	{	
+	$pag = array(); // для пагинации
+	$pag['limit'] = 30; // записей на страницу
+	$offset = 0;
 	
-		$pag = array(); // для пагинации
-		$pag['limit'] = 30; // записей на страницу
-		$offset = 0;
-		
-		$CI->db->select('comusers_id');
-		$CI->db->from('comusers');
-		$query = $CI->db->get();
-		$pag_row = $query->num_rows();
-		
-		if ($pag_row > 0)
-		{
-			$pag['maxcount'] = ceil($pag_row / $pag['limit']); // всего станиц пагинации
-			$current_paged = mso_current_paged();
-			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
-			$offset = $current_paged * $pag['limit'] - $pag['limit'];
-		}
-		else $pag = false;
+	$CI->db->select('comusers_id');
+	$CI->db->from('comusers');
+	$query = $CI->db->get();
+	$pag_row = $query->num_rows();
+	
+	if ($pag_row > 0)
+	{
+		$pag['maxcount'] = ceil($pag_row / $pag['limit']); // всего станиц пагинации
+		$current_paged = mso_current_paged();
+		if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
+		$offset = $current_paged * $pag['limit'] - $pag['limit'];
 	}
+	else $pag = false;
 	
-	$CI->db->select('comusers_id, comusers_nik, comusers_email, comusers_url, comusers_activate_key, comusers_activate_string, comusers_date_registr, comusers_last_visit');
+	
+	$CI->db->select('comusers_id, comusers_nik, comusers_email, comusers_url, comusers_activate_key, comusers_activate_string, comusers_date_registr, comusers_last_visit, comusers_count_comments');
 	$CI->db->from('comusers');
 	$CI->db->order_by('comusers_id');
 	
-	if (function_exists('pagination_go')) 
+	if ($pag) 
 	{
 		if ($pag and $offset) $CI->db->limit($pag['limit'], $offset);
 			else $CI->db->limit($pag['limit']);
@@ -91,10 +88,11 @@
 		else
 			$date = $row['comusers_date_registr'];
 		
-		$CI->table->add_row($id, $nik, $activat, $date, $email, $url);
+		$CI->table->add_row($id, $nik, $activat, $row['comusers_count_comments'], $date, $email, $url);
 	}
 
-	if (function_exists('pagination_go')) echo  pagination_go($pag) . '<br />'; // вывод навигации
+	mso_hook('pagination', $pag);
+	echo '<br />'; // вывод навигации
 	
 	echo mso_load_jquery('jquery.tablesorter.js');
 	
@@ -109,6 +107,9 @@
 	';
 	
 	echo $CI->table->generate(); // вывод подготовленной таблицы
-	if (function_exists('pagination_go')) echo '<br />' . pagination_go($pag); // вывод навигации
+	
+	echo '<br />';
+	mso_hook('pagination', $pag);
+
 	
 ?>

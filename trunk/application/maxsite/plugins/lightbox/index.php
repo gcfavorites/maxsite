@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (с) http://max-3000.com/
  */
 
 

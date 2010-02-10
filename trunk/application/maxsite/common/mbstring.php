@@ -1,9 +1,9 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Функции замены mbstring 
  * MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
+ * Функции замены mbstring 
  */
 
 

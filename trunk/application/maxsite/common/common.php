@@ -1,8 +1,9 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Основные функции MaxSite CMS
- * (c) http://maxsite.org/
+ * MaxSite CMS
+ * (c) http://max-3000.com/
+ * Основные функции
  */
 
 # подключаем библиотеку mbstring
@@ -1508,12 +1509,16 @@ function mso_redirect($url, $absolute = false)
 
 # получение текущего url относительно сайта
 # ведущий и конечные слэши удаляем
-function mso_current_url()
+# если $absolute = true, то возвращается текущий урл как есть
+function mso_current_url($absolute = false)
 {
 	global $MSO;
 
 	$url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https://" : "http://";
 	$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	
+	if ($absolute) return $url;
+	
 	$url = str_replace($MSO->config['site_url'], "", $url);
 
 	$url = trim( str_replace('/', ' ', $url) );
@@ -2013,6 +2018,50 @@ function mso_current_paged($next = 'next')
 	return $current_paged;
 }
 
+# увеличение или уменьшение ссылки next на указанную величину $inc
+# http://site.com/home/next/2 -> +1 -> http://site.com/home/next/3
+# $url - исходный адрес (относительно сайта). Если адрес = пустой строке, 
+#	то берем mso_current_url Если первый сегмент пустой, то это home
+# $inc - величина изменения
+# $max - максимум - если $inc + текущий > $max, то ставится $max. Если $max = false, то он не учитывается
+# $min - минимальное значение
+# $next - признак сегмент после которого указывается номер страницы
+# $empty_no_range = true - отдает пустую строчку, если вышли текущая paged будет равна конечной
+# если $empty_no_range = false, то отдаем ссылку как обычно
+function mso_url_paged_inc($max = false, $inc = 1, $empty_no_range = true, $url = '', $min = 1, $next = 'next')
+{
+	if (!$url) $url = mso_current_url();
+	
+	$current_paged = mso_current_paged($next);
+	$result_paged = $current_paged + $inc;
+	
+	if ($max) if ($result_paged > $max) $result_paged = $max;
+	
+	if ($result_paged < $min) $result_paged = $min;
+	
+	if ($empty_no_range and $result_paged == $current_paged ) return '';
+	
+	// если нет $url, то это главная
+	if (!$url) $url = 'home/' . $next . '/' . $current_paged;
+	
+	if ( strpos($url, $next . '/') === false ) // нет вхождения next/ - нужно добавить
+		$url .= '/' . $next . '/' . $current_paged;
+	
+	// если $result_paged = , то $min, то	$next не пишем
+	if ($result_paged == $min)
+		$url = str_replace($next . '/' . $current_paged, '', $url);
+	else
+		$url = str_replace($next . '/' . $current_paged, $next . '/' . $result_paged, $url);
+	
+	
+	// удалим последние слэши
+	$url = trim(str_replace('/', ' ', $url));
+	$url = str_replace(' ', '/', $url);
+	
+	if ($url == 'home') $url = '';
+	
+	return getinfo('siteurl') . $url;
+}
 
 # регистрируем сайдбар
 function mso_register_sidebar($sidebar = '1', $title = 'Cайдбар', $options = array() )

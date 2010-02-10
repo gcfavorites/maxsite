@@ -2,11 +2,8 @@
 
 /**
  * MaxSite CMS
- * (c) http://maxsite.org/
+ * (c) http://max-3000.com/
  */
-
- 
-//global $MSO;
 
 echo 'trackback';
 

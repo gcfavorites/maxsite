@@ -1,19 +1,16 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 	global $MSO;
-	
 	$CI = & get_instance();
 	
 	$options = mso_get_option('samborsky_feedburner_count', 'plugins', array());
 	
-	if( $post = mso_check_post(array('submit_set_default')) )
-	{
+	if( $post = mso_check_post(array('submit_set_default')) ){
 		mso_checkreferer();
 		feedburner_count_set_default();
 		$options = mso_get_option('samborsky_feedburner_count', 'plugins', array());
 	}
-	else if( $post = mso_check_post(array('submit','feed_name','update_interval','template')) )
-	{
+	else if( $post = mso_check_post(array('submit','feed_name','update_interval','template')) ){
 		mso_checkreferer();
 		
 		$options = mso_get_option('samborsky_feedburner_count', 'plugins', array());
@@ -24,16 +21,17 @@
 		$options['last_update'] = 0;
 		$options['count'] = 'n/a';
 		
-		mso_add_option('samborsky_feedburner_count', $options,'plugins');
+		mso_add_option('samborsky_feedburner_count',$options,'plugins');
 	}
 	
 	if( $options['template'] )
 		$options['template'] = base64_decode($options['template']);
 	
 ?>
-<h1><?= t('Настройка FeedBurner Count от <a href="http://www.samborsky.com/">samborsky.com</a>', 'plugins') ?></h1>
-<p class="info"><?= t('Здравствуйте, последний раз счетчик обновлялся', 'plugins') ?> <strong><?= $options['last_update'] ? (round((time() - $options['last_update'])/60) . ' мин. назад') : 'Никогда' ?></strong></p>
-<p class="info"><?= t('Последнее показание счетчика:', 'plugins') ?> <strong><?= $options['count'] ?></strong></p>
+<h1>Настройка FeedBurner Count от <a href="http://www.samborsky.com/">samborsky.com</a></h1>
+Здравствуйте, последний раз счетчик обновлялся <strong><?= $options['last_update'] ? (round((time() - $options['last_update'])/60) . ' мин. назад') : 'Никогда' ?></strong>
+<br />
+Последнее показание счетчика: <strong><?= $options['count'] ?></strong>
 
 <form method="post">
 	<table cellspacing="10">

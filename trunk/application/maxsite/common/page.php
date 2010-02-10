@@ -1,8 +1,8 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Основные функции MaxSite CMS
- * (c) http://maxsite.org/
+ * MaxSite CMS
+ * (c) http://max-3000.com/
  * Функции для страниц
  */
 
@@ -227,11 +227,14 @@ function mso_get_pages($r = array(), &$pag)
 
 				if ($r['xcut'])
 				{
-					if ($r['cut'])
-						$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$1", $output);
-					else
-						$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$2", $output);
+					if (strpos($output, '[mso_xcut]') !== false)
+					{
+						$xcontent = explode('[mso_xcut]', $output);
+						if ($r['cut']) $output = $xcontent[0];
+							else $output = $xcontent[1];
+					}
 				}
+				
 			}
 			else $output = $content; // отдаем как есть
 
