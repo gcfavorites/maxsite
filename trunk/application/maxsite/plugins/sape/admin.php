@@ -9,7 +9,7 @@
 	
 	$options_key = 'sape';
 	
-	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_kod')) )
+	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_kod', 'f_articles_url', 'f_articles_template')) )
 	{
 		mso_checkreferer();
 		
@@ -38,6 +38,10 @@
 		$options['context_comment'] = isset($post['f_context_comment']) ? 1 : 0;
 		$options['test'] = isset($post['f_test']) ? 1 : 0;
 		$options['anticheck'] = isset($post['f_anticheck']) ? 1 : 0;
+		
+		$options['articles'] = isset($post['f_articles']) ? 1 : 0;
+		$options['articles_url'] = $post['f_articles_url'];
+		$options['articles_template'] = $post['f_articles_template'];
 
 		mso_add_option($options_key, $options, 'plugins');
 		echo '<div class="update">Настройки обновлены!</div>';
@@ -85,7 +89,7 @@
 
 <p>После проверки кода, вы можете войти в свой аккаунт на sape.ru и добавить свой сайт. В течение некоторого времени, робот <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a> его проиндексирует.</p>
 
-<p><strong>Обратите внимание! Помощь по установке кода <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a>, любые подсказки и разъяснения пр этому поводу я оказываю только в двух случаях: 1) Вы зарегистрировались по моей ссылке и являетесь моим рефералом; 2) На платной основе - 30WMZ.</strong></p>
+<p><strong>Обратите внимание! Помощь по установке кода <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a>, любые подсказки и разъяснения пр этому поводу я оказываю только на платной основе.</strong></p>
 <br>
 
 <?php
@@ -97,11 +101,17 @@
 		if ( !isset($options['start']) ) $options['start'] = true; 
 		if ( !isset($options['anticheck']) ) $options['anticheck'] = false; 
 		
+		if ( !isset($options['articles']) ) $options['articles'] = false; 
+		if ( !isset($options['articles_url']) ) $options['articles_url'] = ''; 
+		if ( !isset($options['articles_template']) ) $options['articles_template'] = ''; 
+		
 		$checked_context = $options['context'] ? ' checked="checked" ' : '';
 		$checked_context_comment = $options['context_comment'] ? ' checked="checked" ' : '';
 		$checked_test = $options['test'] ? ' checked="checked" ' : '';
 		$checked_start = $options['start'] ? ' checked="checked" ' : '';
 		$checked_anticheck = $options['anticheck'] ? ' checked="checked" ' : '';
+		
+		$checked_articles = $options['articles'] ? ' checked="checked" ' : '';
 		
 		$form = '';
 		$form .= '<p><strong>Ваш номер/код в <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a>:</strong> ' . ' <input name="f_kod" type="text" style="width: 300px;" value="' . $options['kod'] . '"></p>';
@@ -111,6 +121,20 @@
 		$form .= '<p><label><input name="f_context_comment" type="checkbox"' . $checked_context_comment . '> Использовать контекстные ссылки в комментариях</label></p>';
 		$form .= '<p><label><input name="f_test" type="checkbox"' . $checked_test . '> Режим проверки установленного кода</label></p>';
 		$form .= '<p><label><input name="f_anticheck" type="checkbox"' . $checked_anticheck . '> Включить антиобнаружитель продажных ссылок</label></p>';
+		
+		
+		$form .= '<hr>';
+		$form .= '<p>Размещение статей имеет некоторые свои особености. Вначале вам нужно разместить полученный код сапы на своем сайте. После этого выставьте все параметры ниже. Не забудьте расположить виджет Sape.ru с выводом статей, иначе робот Cапы не позволит добавить ваш сайт в систему. После всех этих приготовлений, вы можете указать в Сапе свой сайт.</p>';
+				
+		$form .= '<p><label><input name="f_articles" type="checkbox"' . $checked_articles . '> Включить публикацию статей</label>
+		<br>Не забудьте создать виджет «Sape.ru», где указать «Вывод статей».</p>';		
+		
+		$form .= '<p><strong>Ссылка для статей</strong> <input name="f_articles_url" type="text" value="' . $options['articles_url'] . '">, например «reklama» - http://сайт/<u>reklama</u>
+		<br>Данный параметр должен совпадать с заданным шаблоном URL в сапе. Например вы задали в сапе: «/articles/{id}», значит здесь нужно указать «articles». Указывать нужно только один сегмент URL. Обратите внимание, что менять «.htaccess» <strong>не нужно</strong>!</p>';
+		
+		$form .= '<p><strong>Ссылка на шаблон статей</strong> <input name="f_articles_template" type="text" value="' . $options['articles_template'] . '">, например «sape-articles-template» - http://сайт/<u>sape-articles-template</u>
+		<br>В этом поле укажите произвольный адрес. Этот адрес нужно указать в настройках сапы в «Шаблонах статей». Шаблон для сапы будет сгенерирован автоматически.</p>';		
+		
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;

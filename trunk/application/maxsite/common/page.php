@@ -135,8 +135,15 @@ function mso_get_pages($r = array(), &$pag)
 	// сегмент, признак пагинации
 	if ( !isset($r['pagination_next_url']) )	$r['pagination_next_url'] = 'next';
 	
-
-
+	
+	// функция со своим sql, в которой можно добавить свои условия
+	if ( !isset($r['function_add_custom_sql']) )
+		$r['function_add_custom_sql'] = false;
+	else 
+		if (!function_exists($r['function_add_custom_sql'])) $r['function_add_custom_sql'] = false;
+	
+	
+	
 	$CI = & get_instance();
 
 	# для каждого типа страниц строится свой sql-запрос
@@ -462,22 +469,11 @@ function _mso_sql_build_home($r, &$pag)
 		if ($exclude_page_id)
 			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
 
-
 		$CI->db->order_by('page_date_publish', 'desc');
 		
-		//$sql = $CI->db->_compile_select();
-		// pr($sql);
-		
-		//$sql = str_replace('SELECT `mso_page`.`page_id`', 'SELECT mso_page.page_id', $sql);
-
-		//pr($sql);
-		// сам запрос теперь сделаем вручную
-		//$query = $CI->db->query($sql);
-		//$CI->db->_reset_select();
-	
+		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 		
 		$query = $CI->db->get();
-
 
 		$pag_row = $query->num_rows();
 		if ($pag_row > 0)
@@ -567,7 +563,8 @@ function _mso_sql_build_home($r, &$pag)
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
 			else $CI->db->limit($r['limit']);
 	}
-
+	
+	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
 # одиночная страница по id или slug
@@ -619,6 +616,8 @@ function _mso_sql_build_page($r, &$pag)
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
 	}
+	
+	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
 	if ($id) // если slug число, то это может быть и номер и сам slug - неопределенность!
 	{
@@ -640,6 +639,8 @@ function _mso_sql_build_page($r, &$pag)
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->limit(1);
+	
+	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
 
@@ -712,7 +713,8 @@ function _mso_sql_build_category($r, &$pag)
 
 		if ($exclude_page_id)
 			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
-
+			
+		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 
 		$query = $CI->db->get();
 
@@ -796,6 +798,8 @@ function _mso_sql_build_category($r, &$pag)
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
 			else $CI->db->limit($r['limit']);
 	}
+	
+	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
 
@@ -846,6 +850,8 @@ function _mso_sql_build_tag($r, &$pag)
 		$CI->db->where('meta_key', $r['meta_key']);
 		$CI->db->where('meta_table', $r['meta_table']);
 		if ($slug) $CI->db->where('meta_value', $slug);
+		
+		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 
 		$query = $CI->db->get();
 
@@ -912,6 +918,8 @@ function _mso_sql_build_tag($r, &$pag)
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
 			else $CI->db->limit($r['limit']);
 	}
+	
+	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
 
@@ -991,6 +999,8 @@ function _mso_sql_build_archive($r, &$pag)
 		// $CI->db->order_by('page_date_publish', 'desc');
 
 		$CI->db->order_by($r['order'], $r['order_asc']);
+		
+		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 
 		$query = $CI->db->get();
 
@@ -1049,6 +1059,8 @@ function _mso_sql_build_archive($r, &$pag)
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
 			else $CI->db->limit($r['limit']);
 	}
+	
+	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
 
@@ -1102,6 +1114,8 @@ function _mso_sql_build_search($r, &$pag)
 
 		// $CI->db->order_by('page_date_publish', 'desc');
 		$CI->db->order_by($r['order'], $r['order_asc']);
+		
+		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 
 		$query = $CI->db->get();
 
@@ -1169,6 +1183,8 @@ function _mso_sql_build_search($r, &$pag)
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
 			else $CI->db->limit($r['limit']);
 	}
+	
+	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
 
@@ -1223,6 +1239,8 @@ function _mso_sql_build_author($r, &$pag)
 		//$CI->db->join('category', 'cat2obj.category_id = category.category_id');
 
 		$CI->db->where('page.page_id_autor', $id);
+		
+		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 
 		$query = $CI->db->get();
 
@@ -1290,6 +1308,8 @@ function _mso_sql_build_author($r, &$pag)
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
 			else $CI->db->limit($r['limit']);
 	}
+	
+	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
 
@@ -1768,8 +1788,8 @@ function mso_page_map($page_id = 0, $page_id_parent = 0)
 		$CI->db->where('page_id', $page_id);
 		$CI->db->where('page_id_parent', '0');
 		$CI->db->where('page_status', 'publish');
-		//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-		$CI->db->where('page_date_publish <', 'NOW');
+		$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+		// $CI->db->where('page_date_publish <', 'NOW');
 
 		$CI->db->or_where('page_id', $page_id_parent);
 	}
@@ -1807,8 +1827,8 @@ function _mso_page_map_get_child($page_id = 0, $cur_id = 0)
 	$CI->db->select('page_id, page_id_parent, page_title, page_slug');
 	$CI->db->where('page_id_parent', $page_id);
 	$CI->db->where('page_status', 'publish');
-	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-	$CI->db->where('page_date_publish <', 'NOW');
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	// $CI->db->where('page_date_publish <', 'NOW');
 	
 	$CI->db->order_by('page_menu_order');
 	

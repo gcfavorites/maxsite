@@ -56,7 +56,7 @@ function sape_admin_page($args = array())
 # подключаем функции сапы
 function sape_init($args = array()) 
 {
-	global $SAPE, $SAPE_CONTENT;
+	global $SAPE, $SAPE_CONTENT, $SAPE_ARTICLE;
 	
 	$options = mso_get_option('sape', 'plugins', array() ); // получаем опции
 	
@@ -81,7 +81,7 @@ function sape_init($args = array())
 				
 				$url = '/' . trim(str_replace('/', ' ', $url));
 				$url = str_replace(' ', '/', $url);
-				$url = 'http://'. $_SERVER['HTTP_HOST'] . $url;
+				$url = 'http://' . $_SERVER['HTTP_HOST'] . $url;
 				
 				header('HTTP/1.1 301 Moved Permanently');
 				header('Location: ' . $url);
@@ -105,12 +105,39 @@ function sape_init($args = array())
 			mso_hook_add( 'content_content', 'sape_content'); # хук на конечный текст для вывода
 			
 			if (isset($options['context_comment']) and $options['context_comment'])
-				mso_hook_add( 'comments_content_out', 'sape_content'); # хук на конечный текст для вывода в комментариях
+				mso_hook_add( 'comments_content_out', 'sape_content'); 
+				# хук на конечный текст для вывода в комментариях
 		}
 		else
 		{
 			$SAPE_CONTENT = false;
 		}
+		
+		
+		if (isset($options['articles']) and $options['articles'] )
+		{
+		
+			if ( !isset($SAPE_ARTICLE) ) $SAPE_ARTICLE = new SAPE_articles();
+			
+			// это вывод рекламной статьи
+			if (isset($options['articles_url']) and mso_segment(1) == $options['articles_url'] )
+			{
+				# хук для подключения к шаблону
+				mso_hook_add('custom_page_404', 'sape_articles_custom_page_404');
+			}
+			
+			// или запрос шаблона от робота сапы
+			if ( isset($options['articles_template']) and mso_segment(1) == $options['articles_template'] )
+			{
+				# хук для подключения к шаблону
+				mso_hook_add('custom_page_404', 'sape_articles_template_custom_page_404');
+			}
+		}
+		else
+		{
+			$SAPE_ARTICLE = false;
+		}
+		
 	}
 	
 	return $args;
@@ -143,6 +170,7 @@ function sape_widget_form($num = 1)
 	if ( !isset($options['count']) ) $options['count'] = '';
 	if ( !isset($options['htmldo']) ) $options['htmldo'] = '';
 	if ( !isset($options['htmlposle']) ) $options['htmlposle'] = '';
+	if ( !isset($options['links_or_articles']) ) $options['links_or_articles'] = 'links';
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -153,6 +181,10 @@ function sape_widget_form($num = 1)
 	$form .= '<p><div class="t150">&nbsp;</div> Если этот виджет последний или единственный, то оставьте это поле пустым или 0';
 	$form .= '<p><div class="t150">HTML до:</div> '. form_input( array( 'name'=>$widget . 'htmldo', 'value'=>$options['htmldo'] ) ) ;
 	$form .= '<p><div class="t150">HTML после:</div> '. form_input( array( 'name'=>$widget . 'htmlposle', 'value'=>$options['htmlposle'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . 'Выводить:' . '</div> '. 
+		form_dropdown( $widget . 'links_or_articles', array('links'=>'Ссылки', 'articles'=>'Статьи'), $options['links_or_articles']);
+	
 	
 	return $form;
 }
@@ -172,6 +204,7 @@ function sape_widget_update($num = 1)
 	$newoptions['count'] = (int) mso_widget_get_post($widget . 'count');
 	$newoptions['htmldo'] = mso_widget_get_post($widget . 'htmldo');
 	$newoptions['htmlposle'] = mso_widget_get_post($widget . 'htmlposle');
+	$newoptions['links_or_articles'] = mso_widget_get_post($widget . 'links_or_articles');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -184,17 +217,41 @@ function sape_widget_custom($options = array(), $num = 1)
 	if ( !isset($options['count']) ) $options['count'] = 0;
 	if ( !isset($options['htmldo']) ) $options['htmldo'] = '';
 	if ( !isset($options['htmlposle']) ) $options['htmlposle'] = '';
+	if ( !isset($options['links_or_articles']) ) $options['links_or_articles'] = 'links';
 	
-	$out = sape_out($options['count'] , false); // получаем ссылки
-	
-	if ($out == '<!--check code-->') // вернулся проверочный код
+	if ($options['links_or_articles'] == 'links')
 	{
-		$out = '<!--check code-->Код <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a> установлен верно!';
+		$out = sape_out($options['count'] , false); // получаем ссылки
+		
+		if ($out == '<!--check code-->') // вернулся проверочный код
+		{
+			$out = '<!--check code-->Код <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a> установлен верно!';
+			return $out;
+		}
+		elseif ($out and $options['header']) $out = $options['header'] . $options['htmldo'] . $out . $options['htmlposle'];
 		return $out;
 	}
-	else if ($out and $options['header']) $out = $options['header'] . $options['htmldo'] . $out . $options['htmlposle'];
-	
-	return $out;
+	elseif ($options['links_or_articles'] == 'articles')
+	{
+		global $SAPE_ARTICLE;
+		
+		//pr($SAPE_ARTICLE);
+		
+		$out = $SAPE_ARTICLE->return_announcements();
+		
+		// это чеккод
+		if ($out == $SAPE_ARTICLE->_data['index']['checkCode'])
+		{
+			return $out;
+		}
+		
+		$out_check = strip_tags($out); // есть тексты
+		
+		if ($out_check and $options['header']) 
+			$out = $options['header'] . $options['htmldo'] . $out . $options['htmlposle'];
+		
+		return $out;
+	}
 }
 
 # функция вывода блока ссылок
@@ -234,4 +291,22 @@ function sape_content($text = '')
 	return $text;
 }
 
-?>
+
+# подключаем свой файл к шаблону
+function sape_articles_template_custom_page_404($args = false)
+{
+	require( getinfo('plugins_dir') . 'sape/articles_template.php' ); // подключили свой файл вывода
+	return true; // выходим с true
+}
+
+function sape_articles_custom_page_404($args = false)
+{
+	global $SAPE_ARTICLE;
+	
+	$SAPE_ARTICLE->process_request();
+	
+	return true; // выходим с true
+}
+
+
+### end file

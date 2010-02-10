@@ -146,6 +146,21 @@ function mso_get_comments($page_id = 0, $r = array())
 
 			$comments_content = $comment['comments_content'];
 			
+			// защитим pre
+			$t = $comments_content;
+			
+			$t = preg_replace_callback('!<pre>(.*?)</pre>!is', 'mso_clean_html_do', $t);
+			
+			$t = mso_xss_clean($t);
+			
+			$t = str_replace('[html_base64]', '<pre>[html_base64]', $t); // проставим pre
+			$t = str_replace('[/html_base64]', '[/html_base64]</pre>', $t);
+			
+			// обратная замена
+			$t = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $t);
+			
+			$comments_content = $t; // сохраним как текст комментария
+			
 			$comments_content = mso_hook('comments_content', $comments_content);
 			
 			$comments_content = str_replace("\n", "<br>", $comments_content);
@@ -190,9 +205,11 @@ function mso_get_comments($page_id = 0, $r = array())
 # первый парметр id, второй данные текст и т.д.
 function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '')
 {
+	$CI = & get_instance();
 	
 	$data['page_title'] = $page_title; // заголовок страницы
 	$data['id'] = $id; // номер комментария
+	$data['comments_content'] =	mso_xss_clean($data['comments_content']);
 	
 	# хук на который можно повестить подписку на новые комментарии
 	mso_hook('mso_email_message_new_comment', $data);
@@ -227,7 +244,7 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	{
 		$text .= t('Комюзер'). ': id=' . $data['comments_comusers_id'];
 
-		$CI = & get_instance();
+		
 		$CI->db->select('comusers_nik, comusers_email');
 		$CI->db->from('comusers');
 		$CI->db->where('comusers_id', $data['comments_comusers_id']);
@@ -284,16 +301,30 @@ function mso_get_new_comment($args = array())
 	if ( $post = mso_check_post(array('comments_session', 'comments_submit', 'comments_page_id', 'comments_content')) )
 	{
 		// mso_checkreferer(); // если нужно проверять на реферер
-
+		$CI = & get_instance();
+		
+		// заголовок страницы
 		if ( !isset($args['page_title']) )		$args['page_title'] = '';
+		
+		// стили
 		if ( !isset($args['css_ok']) )		$args['css_ok'] = 'comment-ok';
 		if ( !isset($args['css_error']) )	$args['css_error'] = 'comment-error';
-		if ( !isset($args['tags']) )		$args['tags'] = '<p><a><br><span><strong><em><i><b><u><s><font><pre><code>';
-		if ( !isset($args['noword']) )		$args['noword'] = array('.com', '.ru', '.net', '.org', '.info', '.ua', '.com.ua',
-																	'.com.ru', '.su', '/', 'www.', 'http', ':', '-', '"',
+		
+		// разрешенные тэги
+		if ( !isset($args['tags']) )		$args['tags'] = '<p><blockquote><br><span><strong><strong><em><i><b><u><s><pre><code>';
+		
+		// обрабатывать текст на xss-атаку
+		if ( !isset($args['xss_clean']) )		$args['xss_clean'] = true;
+		
+		// если найдена xss-атака, то не публиковать комментарий
+		if ( !isset($args['xss_clean_die']) )		$args['xss_clean_die'] = false;
+		
+		if ( !isset($args['noword']) )		$args['noword'] = array('.com', '.ru', '.net', '.org', '.info', '.ua', 
+																	'.su', '.name', '/', 'www.', 'http', ':', '-', '"',
 																	'«', '»', '%', '<', '>', '&', '*', '+', '\'' );
 		
 		mso_hook('add_new_comment');
+
 
 		if (!mso_checksession($post['comments_session']) )
 			return '<div class="' . $args['css_error']. '">'. t('Ошибка сессии! Обновите страницу'). '</div>';
@@ -321,14 +352,46 @@ function mso_get_new_comment($args = array())
 				return '<div class="' . $args['css_error']. '">'. t('Ошибка! Неверно введены нижние символы!'). '</div>';
 			}
 		}
-
-		if (!trim($post['comments_content'])) return '<div class="' . $args['css_error']. '">'. t('Ошибка, нет текста!'). '</div>';
+		
+		// вычищаем от запрещенных тэгов
+		if ($args['tags']) 
+		{
+			// перед этим нужно все pre защитить
+			$t = $post['comments_content'];
+			
+			$t = preg_replace_callback('!<pre>(.*?)</pre>!is', 'mso_clean_html_do', $t);
+			
+			$t = strip_tags($t, $args['tags']); // теперь оставим только разрешенные тэги
+			
+			$t = str_replace('[html_base64]', '<pre>[html_base64]', $t); // проставим pre
+			$t = str_replace('[/html_base64]', '[/html_base64]</pre>', $t);
+			
+			// обратная замена
+			$t = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $t);
+			
+			$post['comments_content'] = $t; // сохраним как текст комментария
+			
+		}
+		
+		// если указано рубить коммент при обнаруженной xss-атаке 
+		if ($args['xss_clean_die'] and $mso_xss_clean($post['comments_content'], true, false) === true)
+		{
+			return '<div class="' . $args['css_error']. '">'. t('Обнаружена XSS-атака!'). '</div>';
+		}
+			
+		if (!trim($post['comments_content'])) 
+			return '<div class="' . $args['css_error']. '">'. t('Ошибка, нет текста!'). '</div>';
 
 		// возможно есть текст, но только из одних html - не пускаем
 		if ( !trim(strip_tags(trim($post['comments_content']))) )
 			return '<div class="' . $args['css_error']. '">'. t('Ошибка, нет полезного текста!'). '</div>';
-
-
+		
+		// вычищаем текст от xss
+		if ($args['xss_clean'])
+		{
+			$post['comments_content'] =  mso_xss_clean($post['comments_content']);
+		}	
+		
 		$comments_author_ip = $_SERVER['REMOTE_ADDR'];
 		$comments_date = date('Y-m-d H:i:s');
 
@@ -345,7 +408,7 @@ function mso_get_new_comment($args = array())
 										), false);
 
 		// если есть спам, то возвращается что-то отличное от comments_content
-		// если спама нет, то дожно вернуться false
+		// если спама нет, то должно вернуться false
 		// если есть подозрения, то возвращается массив с moderation (comments_approved)
 		// если есть параметр check_spam=true, значит определен спам и он вообще не пускается
 		// сообщение для вывода в парметре 'message'
@@ -370,7 +433,7 @@ function mso_get_new_comment($args = array())
 			}
 		}
 
-		$CI = & get_instance();
+		
 
 		// проверим есть ли уже такой комментарий
 		// проверка по ip и тексту
@@ -386,8 +449,9 @@ function mso_get_new_comment($args = array())
 		{
 			return '<div class="' . $args['css_error']. '">'. t('Похоже, вы уже отправили этот комментарий...'). '</div>';
 		}
-
-
+		
+		
+		
 		if (is_login()) // коммент от автора
 		{
 			$comments_users_id = $MSO->data['session']['users_id'];
@@ -406,7 +470,7 @@ function mso_get_new_comment($args = array())
 			if ($res)
 			{
 				mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
-				// mso_flush_cache();
+				mso_flush_cache();
 				$CI->db->cache_delete_all();
 				mso_hook('new_comment');
 				mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
@@ -712,6 +776,9 @@ function mso_get_comuser($id = 0, $args = array())
 			foreach ($comments as $key=>$comment)
 			{
 				$comments_content = $comment['comments_content'];
+				
+				$comments_content = mso_xss_clean($comments_content);
+				
 				$comments_content = mso_auto_tag($comments_content, true);
 				$comments_content = strip_tags($comments_content, $args['tags']);
 				$comments_content = mso_balance_tags($comments_content);
@@ -1253,7 +1320,7 @@ function mso_email_message_new_comment_subscribe($data)
 
 	$message = t('Новый комментарий к') . ' "' . $data['page_title'] . '"' . NR . NR;
 	
-	$message .= t('Текст:') . NR . $data['comments_content'];
+	$message .= t('Текст:') . NR . mso_xss_clean($data['comments_content']);
 	
 	$message .= NR . NR . t('Перейти к комментарию на сайте:') . NR .  mso_get_permalink_page($data['comments_page_id'])  . '#comment-' . $data['id'] . NR;
 	

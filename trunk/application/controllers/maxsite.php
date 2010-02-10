@@ -65,7 +65,6 @@ class Maxsite extends Controller
 			($method == 'users') or
 			($method == 'search') or
 			($method == 'tag') or
-			($method == 'home') or
 			($method == 'comments') or
 			($method == 'loginform')
 			)

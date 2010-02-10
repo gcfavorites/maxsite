@@ -60,8 +60,8 @@
 		$CI->xmlrpc->method('weblogUpdates.ping');
 		$CI->xmlrpc->request(array(
 			mso_get_option('name_site'),
-			$MSO->config['site_url'],
-			$MSO->config['site_url'] . 'feed'
+			getinfo('site_url'),
+			getinfo('site_url') . 'feed'
 		));
 		
 		$i = 0;

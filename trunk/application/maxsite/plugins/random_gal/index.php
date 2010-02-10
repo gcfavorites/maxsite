@@ -9,6 +9,7 @@
 function random_gal_autoload($args = array())
 {
 	mso_register_widget('random_gal_widget', t('Галерея', 'plugins')); # регистрируем виджет
+	mso_hook_add('custom_page_404', 'random_gal_custom_page_404'); # хук для подключения к шаблону
 }
 
 # функция выполняется при деинсталяции плагина
@@ -44,10 +45,14 @@ function random_gal_widget_form($num = 1)
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['gal']) ) $options['gal'] = '';
+	if ( !isset($options['galother']) ) $options['galother'] = '';
 	if ( !isset($options['count']) ) $options['count'] = 3;
 	if ( !isset($options['style']) ) $options['style'] = '';
 	if ( !isset($options['style_img']) ) $options['style_img'] = '';
 	if ( !isset($options['html']) ) $options['html'] = '';
+	if ( !isset($options['sort']) ) $options['sort'] = 'random';
+	if ( !isset($options['filter']) ) $options['filter'] = '';
+	if ( !isset($options['class']) ) $options['class'] = '';
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -64,19 +69,38 @@ function random_gal_widget_form($num = 1)
 			$out[$d] = $d;
 	}
 	
-	
 	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) . '</p>';
 	
 	$form .= '<p><div class="t150">' . t('Галерея:', 'plugins') . '</div> '. form_dropdown( $widget . 'gal', $out, $options['gal']) . '</p>';
+
+	$form .= '<p><div class="t150">' . t('несколько, через |:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'galother', 'value'=>$options['galother'] ) ) . '</p>' ;
 	
 	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) . '</p>' ;
 	
 	$form .= '<p><div class="t150">' . t('CSS-cтиль блока:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style', 'value'=>$options['style'] ) ) . '</p>' ;
 	
+	$form .= '<p><div class="t150">' . t('Дополнит. class:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'class', 'value'=>$options['class'] ) ) . '</p>' ;
+	
 	$form .= '<p><div class="t150">' . t('CSS-cтиль img:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style_img', 'value'=>$options['style_img'] ) ) . '</p>';
 	
 	$form .= '<p><div class="t150">' . t('Свой HTML-блок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'html', 'value'=>$options['html'] ) )  . '</p>';
 	
+	$form .= '<p><div class="t150">' . t('Сортировка:', 'plugins') . '</div> '. form_dropdown( $widget . 'sort', 
+		array(
+			'random'=>'Случайно', 
+			'name_file'=>'По именам файлов', 
+			'name_file_desc'=>'По именам файлов (обратный порядок)', 
+			'description'=>'По описанию',
+			'description_desc'=>'По описанию (обратный порядок)',
+			'name_file_description'=>'По именам, потом по описанию',
+			'description_name_file'=>'По описанию, потом по именам',
+			'datefile'=>'По времени создания файлов',
+			'datefile_desc'=>'По времени создания файлов (обратный порядок)',
+			
+			), $options['sort']) . '</p>';
+	
+	$form .= '<p><div class="t150">' . t('Фильтр:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'filter', 'value'=>$options['filter'] ) ) . '</p>'; 
+	$form .='<p><div class="t150">&nbsp;</div>Можно указать фразу, с которой должно начинаться хотя бы одно слово в описании файла.</p>';
 	
 	return $form;
 }
@@ -94,87 +118,304 @@ function random_gal_widget_update($num = 1)
 	# обрабатываем POST
 	$newoptions['header'] = mso_widget_get_post($widget . 'header');
 	$newoptions['gal'] = mso_widget_get_post($widget . 'gal');
+	$newoptions['galother'] = mso_widget_get_post($widget . 'galother');
 	$newoptions['count'] = mso_widget_get_post($widget . 'count');
 	$newoptions['style'] = mso_widget_get_post($widget . 'style');
 	$newoptions['style_img'] = mso_widget_get_post($widget . 'style_img');
 	$newoptions['html'] = mso_widget_get_post($widget . 'html');
+	$newoptions['sort'] = mso_widget_get_post($widget . 'sort');
+	$newoptions['filter'] = mso_widget_get_post($widget . 'filter');
+	$newoptions['class'] = mso_widget_get_post($widget . 'class');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
 }
 
-# функции плагина
+
+# вспомогательные для сортировки массива
+function random_gal_cmp_name_file($a, $b) 
+{
+	if ( $a['file'] == $b['file'] ) return 0;
+	return ( $a['file'] > $b['file'] ) ? 1 : -1;
+}
+
+function random_gal_cmp_name_file_desc($a, $b) 
+{
+	if ( $a['file'] == $b['file'] ) return 0;
+	return ( $a['file'] > $b['file'] ) ? -1 : 1;
+}
+
+function random_gal_cmp_description($a, $b) 
+{
+	if ( $a['descritions'] == $b['descritions'] ) return 0;
+	return ( $a['descritions'] > $b['descritions'] ) ? 1 : -1;
+}
+
+function random_gal_cmp_description_desc($a, $b) 
+{
+	if ( $a['descritions'] == $b['descritions'] ) return 0;
+	return ( $a['descritions'] > $b['descritions'] ) ? -1 : 1;
+}
+
+function random_gal_cmp_datefile($a, $b) 
+{
+	if ( $a['datefile'] == $b['datefile'] ) return 0;
+	return ( $a['datefile'] > $b['datefile'] ) ? 1 : -1;
+}
+
+function random_gal_cmp_datefile_desc($a, $b) 
+{
+	if ( $a['datefile'] == $b['datefile'] ) return 0;
+	return ( $a['datefile'] > $b['datefile'] ) ? -1 : 1;
+}
+
+# функция плагина
 function random_gal_widget_custom($options = array(), $num = 1)
 {
 	$out = '';
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['gal']) ) $options['gal'] = 'uploads/';
+	if ( !isset($options['galother']) ) $options['galother'] = '';
 	if ( !isset($options['count']) ) $options['count'] = 3;
 	if ( !isset($options['style']) ) $options['style'] = ''; // стиль div блока
 	if ( !isset($options['style_img']) ) $options['style_img'] = ''; // стиль каждой картинки
 	if ( !isset($options['html']) ) $options['html'] = ''; // дополнительный html в конце вывода
-	
+	if ( !isset($options['sort']) ) $options['sort'] = 'random'; 
+	if ( !isset($options['filter']) ) $options['filter'] = '';
+		else $options['filter'] = trim(mb_strtolower($options['filter'], 'UTF-8'));
+	if ( !isset($options['class']) ) $options['class'] = ''; // дополнительный class div блока
+
 	if ($options['gal'] == 'uploads/') $options['gal'] = '';
+	
+	$CI = & get_instance();
+	$CI->load->helper('file');
+	$CI->load->helper('directory');	
 	
 	// получим список всех файлов в указаном каталоге
 	if ($options['gal']) $options['gal'] .= '/';
 	
-	$dir0 = getinfo('uploads_dir') . $options['gal'] . '/';
-	$dir = getinfo('uploads_dir') . $options['gal'] . 'mini/';
-	$dir_url = getinfo('uploads_url') . $options['gal'];
-	$dir_url_mini = getinfo('uploads_url') . $options['gal'] . 'mini/';
-	
-	
-	if ( ! is_dir($dir) ) return ''; // нет каталога
-	
-	$CI = & get_instance();
-	$CI->load->helper('file');
-	$CI->load->helper('directory');
-	
-	$fn_mso_descritions = $dir0 . '_mso_i/_mso_descriptions.dat';
-	if (file_exists( $fn_mso_descritions )) 
+	if ($options['galother']) 
 	{
-		// массив данных: fn => описание 
-		$descritions = unserialize( read_file($fn_mso_descritions) ); // получим из файла все описания
+		if (trim($options['galother']) == '#all')
+		{
+			// это все каталоги в uploads
+			// вручную сформируем galother
+			$_dirs = directory_map(getinfo('uploads_dir'), true);
+			
+			$o = '/';
+			foreach ($_dirs as $d) 
+			{
+				if (@is_dir(getinfo('uploads_dir') . $d)) // это каталог
+				{
+					if ($d != 'mini' and $d != 'smiles' and $d != '_mso_float' and $d != '_mso_i')
+					$o .= $d . '|';
+				}
+			}
+			$options['galother'] = $o;
+		}
+		
+		// если указано несколько каталогов, то потрошим срочку 
+		$all_dirs = explode('|', $options['galother']);
+		
+		foreach($all_dirs as $key=>$var)
+			$all_dirs[$key] = trim($var) . '/'; 
+		
 	}
-	else $descritions = array();
-	
-	
-	$files = directory_map($dir, true); // все файлы в каталоге
-	if (!$files) $files = array();
+	else $all_dirs = array($options['gal']);
 	
 	$all_files = array(); // массив для всех нужных файлов
-	$allowed_ext = array('gif', 'jpg', 'jpeg', 'png');
-	foreach ($files as $file)
+	$allowed_ext = array('gif', 'jpg', 'jpeg', 'png');	
+	
+	foreach($all_dirs as $one_dir) // проходимся по каждому каталогу
 	{
-		if (@is_dir($dir . $file)) continue; // это каталог
-		else
+		if ($one_dir == '//') $one_dir = '';
+		
+		$dir0 = getinfo('uploads_dir') . $one_dir . '/';
+		$dir = getinfo('uploads_dir') . $one_dir . 'mini/';
+		$dir_url = getinfo('uploads_url') . $one_dir;
+		$dir_url_mini = getinfo('uploads_url') . $one_dir . 'mini/';
+		
+		if (!is_dir($dir)) return ''; // нет каталога
+		
+		$fn_mso_descritions = $dir0 . '_mso_i/_mso_descriptions.dat';
+		if (file_exists( $fn_mso_descritions )) 
 		{
-			$ext = strtolower(str_replace('.', '', strrchr($file, '.'))); // расширение файла
-			if ( !in_array($ext, $allowed_ext) ) continue; // запрещенный тип файла
-			$all_files[] = $file;
+			// массив данных: fn => описание 
+			$descritions = unserialize( read_file($fn_mso_descritions) ); // получим из файла все описания
+		}
+		else $descritions = array();
+		
+		
+		$files = directory_map($dir, true); // все файлы в каталоге
+		if (!$files) $files = array();
+		
+		foreach ($files as $file)
+		{
+			if (@is_dir($dir . $file)) continue; // это каталог
+			else
+			{
+				$ext = strtolower(str_replace('.', '', strrchr($file, '.'))); // расширение файла
+				if ( !in_array($ext, $allowed_ext) ) continue; // запрещенный тип файла
+
+				$description = (isset($descritions[$file])) ? $descritions[$file] : '';
+				
+				if ($options['filter']) // нужно применить фильтр в описании
+				{
+					$go = false;
+					
+					if ($description)
+					{
+						$arr_desc = array_unique(explode(' ', trim(mb_strtolower($description, 'UTF-8'))));
+						foreach ($arr_desc as $val)
+						{
+							if (strpos($val, $options['filter']) === 0) // есть вхождение
+							{
+								$go = true;
+								break;
+							}
+						}
+					}
+				}
+				else $go = true;
+				
+				if ($go)
+					$all_files[$one_dir . $file] = 
+						array(
+							'file' => $file, 
+							'dir' => $one_dir, 
+							'descritions' => str_replace('#', '', $description),
+							'datefile' => filemtime($dir . $file), 
+						);
+			}
 		}
 	}
 	
-	shuffle($all_files); // перемешиваем массив
+	if ($options['sort'] == 'random') shuffle($all_files); // перемешиваем массив
+	elseif ($options['sort'] == 'name_file') // отсортируем по ['file']
+	{
+		uasort($all_files, 'random_gal_cmp_name_file');
+	} 
+	elseif ($options['sort'] == 'description')// отсортируем по ['description']
+	{
+		uasort($all_files, 'random_gal_cmp_description'); 
+	}
+	elseif ($options['sort'] == 'name_file_description') // По именам, потом по описанию
+	{
+		uasort($all_files, 'random_gal_cmp_name_file');
+		uasort($all_files, 'random_gal_cmp_description');
+	}	
+	elseif ($options['sort'] == 'description_name_file') // По описанию, потом по именам
+	{
+		uasort($all_files, 'random_gal_cmp_description');
+		uasort($all_files, 'random_gal_cmp_name_file');
+	}
+	elseif ($options['sort'] == 'name_file_desc') // По именам файлов (обратный порядок)
+	{
+		uasort($all_files, 'random_gal_cmp_name_file_desc');
+	}
+	elseif ($options['sort'] == 'description_desc') // По описанию (обратный порядок)
+	{
+		uasort($all_files, 'random_gal_cmp_description_desc'); 
+	}
+	elseif ($options['sort'] == 'datefile') // По времени файла
+	{
+		uasort($all_files, 'random_gal_cmp_datefile'); 
+	}
+	elseif ($options['sort'] == 'datefile_desc') // По времени файла обратно
+	{
+		uasort($all_files, 'random_gal_cmp_datefile_desc'); 
+	}	
+	
+	// pr($all_files);
 	
 	$all_files = array_slice($all_files, 0, (int) $options['count']); // только нужное нам количество
 	
-	foreach ($all_files as $file)
+	if ($options['style_img']) $options['style_img'] = ' style="' . $options['style_img'] . '"';
+	
+	foreach ($all_files as $key=>$val)
 	{
-		if (isset($descritions[$file])) $title = ' title="' . $descritions[$file] . '" ';
+		if ($val['descritions']) $title = ' title="' . $val['descritions'] . '"';
 			else $title = '';
 		
-		$out .= '<a href="' . $dir_url . $file . '" class="lightbox"' . $title . '><img src="' 
-				. $dir_url_mini . $file . '" alt="" style="' . $options['style_img'] . '"></a>' . NR;
-	}	
+		$out .= '<a href="' . getinfo('uploads_url') . $val['dir'] . $val['file'] 
+				. '" class="lightbox"' . $title . '><img src="' 
+				. getinfo('uploads_url') . $val['dir'] . 'mini/' . $val['file'] 
+				. '" alt=""' . $options['style_img'] . '></a>' . NR;
+	}
 	
-	if ($out) $out = '<div class="random-gal-widget" style="' . $options['style'] . '">' . $out . '</div>' . $options['html'];
+	if ($out)
+	{ 
+		if ($options['class']) $options['class'] = ' class="random-gal-widget ' . $options['class']. '"';
+		else $options['class'] = ' class="random-gal-widget"';
+		
+		if ($options['style']) $options['style'] = ' style="' . $options['style'] . '"';
+
+		$out = '<div' . $options['class'] . $options['style'] . '>' . $out . '</div>' . $options['html'];
+
+	}
 	
 	if ($out and $options['header']) $out = $options['header'] . $out;
 
 	return $out;	
 }
 
-?>
+
+function random_gal_mso_options() 
+{
+	# ключ, тип, ключи массива
+	mso_admin_plugin_options('plugin_random_gal', 'plugins', 
+		array(
+			'on' => array(
+						'type' => 'checkbox', 
+						'name' => 'Включить галереи', 
+						'description' => '', 
+						'default' => '0' // для чекбоксов только 1 и 0
+					),
+					
+			'slug_gallery' => array(
+							'type' => 'text', 
+							'name' => 'Короткая ссылка на вывод гелерей', 
+							'description' => 'Укажите ссылку по которой будут выводиться гелереи. Например: <strong>gallery</strong> -&gt; ' . getinfo('site_url') . '<u>gallery</u>', 
+							'default' => 'gallery'
+						),
+						
+			'all' => array(
+						'type' => 'textarea', 
+						'name' => 'Список галерей', 
+						'description' => 'Укажите галереи. В одной строке - одна гелерея. Формат:
+						<br><strong>короткая ссылка | заголовок | каталоги через % | сортировка | количество | фильтр</strong>
+						<br>Например:
+						<br><strong>first | Моя галерея | / % my | name_file | 100</strong>
+						<br>Адрес: ' . getinfo('site_url') . 'gallery/first
+						<br>Название: Моя галерея
+						<br>Каталоги: uploads и my (если указать #all, то это все каталоги uploads)
+						<br>Сортировка: по имени файлов (все варианты: random, name_file, name_file_desc, description, description_desc, name_file_description, description_name_file, datefile, datefile_desc)
+						<br>Количество: 100
+						<br>Фильтр: нет
+						', 
+						'default' => ''
+					),
+			),
+		'Настройки галерей', // титул
+		'Укажите необходимые опции.'   // инфо
+	);
+}
+
+function random_gal_custom_page_404($args = array())
+{
+	$options = mso_get_option('plugin_random_gal', 'plugins', array());
+	
+	if (isset($options['on']) and $options['on'])
+	{
+		if ( mso_segment(1)==$options['slug_gallery'] ) 
+		{
+			require( getinfo('plugins_dir') . 'random_gal/gallery.php' ); // подключили свой файл вывода
+			return true; // выходим с true
+		}
+	}
+
+	return $args;
+}
+
+# end file

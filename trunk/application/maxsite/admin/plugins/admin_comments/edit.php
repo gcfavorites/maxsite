@@ -19,14 +19,6 @@ mso_cur_dir_lang('admin');
 	
 	if ($id) // есть корректный сегмент
 	{
-	
-	
-	
-	
-	
-	
-	
-	
 		# отредактировать комментарий
 		if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comments_content', 'f_comments_date', 'f_comments_approved', 'f_comments_email_subscribe')) )
 		{
@@ -114,8 +106,16 @@ mso_cur_dir_lang('admin');
 			// хуки для текстового поля комментирования
 			mso_hook('admin_comment_edit');
 			mso_hook('comments_content_start');
-					
-			echo '<p><textarea name="f_comments_content" id="comments_content">' . htmlspecialchars($row['comments_content']) . '</textarea></p>';
+			
+			
+			$text = mso_xss_clean($row['comments_content']);
+			if ($text != $row['comments_content'])
+			{
+				echo '<div class="error">Внимание! Возможна XSS-атака! Полный текст комментария</div><textarea>' 
+					. htmlspecialchars($row['comments_content']) . '</textarea><p>Исправленный текст комментария</p>';
+			}
+			
+			echo '<p><textarea name="f_comments_content" id="comments_content">' . htmlspecialchars($text) . '</textarea></p>';
 			
 			echo '<h3>' . t('Дата') . '</h3>
 				<p><input name="f_comments_date" type="text" value="' . htmlspecialchars($row['comments_date']) .'"></p>';

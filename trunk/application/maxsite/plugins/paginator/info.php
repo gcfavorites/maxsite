@@ -1,11 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 $info = array(
-	'name' => 'Paginator 3000',
+	'name' => 'Paginator',
 	'description' => 'Пагинация страниц (с использованием скроллбара)',
-	'version' => '1.2',
-	'author' => 'DRiVER',
-	'plugin_url' => 'http://DRiVERlab.ru/page/21',
+	'version' => '1.1',
+	'author' => 'DRiVER, Radik_Wind',
+	'plugin_url' => 'http://DRiVERlab.ru/page/28',
 	'author_url' => 'http://DRiVERlab.ru',
 	'group' => 'template'
 );

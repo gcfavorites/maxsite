@@ -13,6 +13,180 @@ require('mbstring.php');
 define("NR", "\n");
 
 
+# получение нужного значения
+function getinfo($info = '')
+{
+	global $MSO;
+
+	$out = '';
+
+	switch ($info) :
+		case 'version' :
+				$out = $MSO->version;
+				break;
+
+		case 'site_url' :
+		case 'siteurl' :
+				$out = $MSO->config['site_url'];
+				break;
+
+		case 'stylesheet_url' :
+		case 'template_url': 
+				$out = $MSO->config['templates_url']
+						. $MSO->config['template']
+						. '/';
+				break;
+				
+		case 'template' :
+				$out = $MSO->config['template'];
+				break;
+
+		case 'template_dir' :
+				$out = $MSO->config['templates_dir'] . $MSO->config['template'] . '/';
+				break;
+
+		case 'templates_dir' :
+				$out = $MSO->config['templates_dir'];
+				break;
+
+		case 'url_new_comment' :
+				$out = $MSO->config['site_url'] . 'newcomment';
+				break;
+
+		case 'pingback_url' :
+
+				break;
+
+		case 'rss_url' :
+				$out = $MSO->config['site_url'] . 'feed';
+				break;
+
+		case 'feed' :
+				$out = $MSO->config['site_url'] . 'feed';
+				break;
+
+		case 'atom_url' :
+
+				break;
+
+		case 'comments_rss2_url' :
+
+				break;
+
+		case 'admin_url' :
+				$out = $MSO->config['admin_url']; // [admin_url] => http://localhost/application/maxsite/admin/
+				break;
+
+		case 'site_admin_url' :
+				$out = $MSO->config['site_admin_url']; // [site_admin_url] => http://localhost/admin/
+				break;
+
+		case 'common_dir' :
+				$out = $MSO->config['common_dir'];
+				break;
+
+		case 'common_url' :
+				$out = $MSO->config['common_url'];
+				break;
+
+		case 'uploads_url' :
+				$out = $MSO->config['uploads_url'];
+				break;
+
+		case 'uploads_dir' :
+				$out = $MSO->config['uploads_dir'];
+				break;
+
+		case 'users_nik' :
+				if (isset($MSO->data['session']['users_nik']))
+					$out = $MSO->data['session']['users_nik'];
+				else $out = '';
+				break;
+
+		case 'users_id' :
+				if (isset($MSO->data['session']['users_id']))
+					$out = $MSO->data['session']['users_id'];
+				else $out = '';
+				break;
+
+		case 'name_site' :
+				$out = htmlspecialchars(mso_get_option('name_site', 'general'));
+				break;
+
+		case 'description_site' :
+				$out = htmlspecialchars(mso_get_option('description_site', 'general'));
+				break;
+
+		case 'title' :
+				$out = htmlspecialchars(mso_get_option('title', 'general'));
+				break;
+
+		case 'description' :
+				$out = htmlspecialchars(mso_get_option('description', 'general'));
+				break;
+
+		case 'keywords' :
+				$out = htmlspecialchars(mso_get_option('keywords', 'general'));
+				break;
+
+		case 'time_zone' :
+				$out = (string) mso_get_option('time_zone', 'general');
+				break;
+
+		case 'plugins_url' :
+				$out = $MSO->config['plugins_url'];;
+				break;
+
+		case 'plugins_dir' :
+				$out = $MSO->config['plugins_dir'];;
+				break;
+
+		case 'ajax' :
+				$out = $MSO->config['site_url'] . 'ajax/';
+				break;
+				
+		case 'require-maxsite' :
+				$out = $MSO->config['site_url'] . 'require-maxsite/';
+				break;
+				
+		case 'admin_plugins_dir' :
+				$out = $MSO->config['admin_plugins_dir'];
+				break;
+
+		case 'session' :
+				$out = $MSO->data['session'];
+				break;
+
+		case 'remote_key' :
+				$out = $MSO->config['remote_key'];
+				break;
+
+		case 'uri_get' :
+				$out = $MSO->data['uri_get'];
+				break;
+				
+		case 'admin_dir' :
+				$out = $MSO->config['admin_dir'];
+				break;
+				
+		case 'cache_dir' :
+				$out = $MSO->config['cache_dir'];
+				break;
+
+		case 'FCPATH' :
+				$out = $MSO->config['FCPATH'];
+				break;
+				
+		case 'type' :
+				$out = $MSO->data['type'];
+				break;
+				
+	endswitch;
+
+	return $out;
+}
+
+
 #  функция для отладки
 function pr($var, $html = false, $echo = true)
 {
@@ -378,183 +552,6 @@ function is_feed()
 {
 	global $MSO;
 	return $MSO->data['is_feed'] ? true : false;
-}
-
-
-# получение нужного значения
-function getinfo($info = '')
-{
-	global $MSO;
-
-	$out = '';
-
-	switch ($info) :
-		case 'version' :
-				$out = $MSO->version;
-				break;
-
-		case 'site_url' :
-		case 'siteurl' :
-				$out = $MSO->config['site_url'];
-				break;
-
-		case 'stylesheet_url' :
-				$out = $MSO->config['templates_url']
-						. $MSO->config['template']
-						. '/';
-				break;
-		case 'template_url': // аналог stylesheet_url
-				$out = $MSO->config['templates_url']
-						. $MSO->config['template']
-						. '/';
-				break;
-				
-		case 'template' :
-				$out = $MSO->config['template'];
-				break;
-
-		case 'template_dir' :
-				$out = $MSO->config['templates_dir'] . $MSO->config['template'] . '/';
-				break;
-
-		case 'templates_dir' :
-				$out = $MSO->config['templates_dir'];
-				break;
-
-		case 'url_new_comment' :
-				$out = $MSO->config['site_url'] . 'newcomment';
-				break;
-
-		case 'pingback_url' :
-
-				break;
-
-		case 'rss_url' :
-				$out = $MSO->config['site_url'] . 'feed';
-				break;
-
-		case 'feed' :
-				$out = $MSO->config['site_url'] . 'feed';
-				break;
-
-		case 'atom_url' :
-
-				break;
-
-		case 'comments_rss2_url' :
-
-				break;
-
-		case 'admin_url' :
-				$out = $MSO->config['admin_url']; // [admin_url] => http://localhost/application/maxsite/admin/
-				break;
-
-		case 'site_admin_url' :
-				$out = $MSO->config['site_admin_url']; // [site_admin_url] => http://localhost/admin/
-				break;
-
-		case 'common_dir' :
-				$out = $MSO->config['common_dir'];
-				break;
-
-		case 'common_url' :
-				$out = $MSO->config['common_url'];
-				break;
-
-		case 'uploads_url' :
-				$out = $MSO->config['uploads_url'];
-				break;
-
-		case 'uploads_dir' :
-				$out = $MSO->config['uploads_dir'];
-				break;
-
-		case 'users_nik' :
-				if (isset($MSO->data['session']['users_nik']))
-					$out = $MSO->data['session']['users_nik'];
-				else $out = '';
-				break;
-
-		case 'users_id' :
-				if (isset($MSO->data['session']['users_id']))
-					$out = $MSO->data['session']['users_id'];
-				else $out = '';
-				break;
-
-		case 'name_site' :
-				$out = htmlspecialchars(mso_get_option('name_site', 'general'));
-				break;
-
-		case 'description_site' :
-				$out = htmlspecialchars(mso_get_option('description_site', 'general'));
-				break;
-
-		case 'title' :
-				$out = htmlspecialchars(mso_get_option('title', 'general'));
-				break;
-
-		case 'description' :
-				$out = htmlspecialchars(mso_get_option('description', 'general'));
-				break;
-
-		case 'keywords' :
-				$out = htmlspecialchars(mso_get_option('keywords', 'general'));
-				break;
-
-		case 'time_zone' :
-				$out = (string) mso_get_option('time_zone', 'general');
-				break;
-
-		case 'plugins_url' :
-				$out = $MSO->config['plugins_url'];;
-				break;
-
-		case 'plugins_dir' :
-				$out = $MSO->config['plugins_dir'];;
-				break;
-
-		case 'ajax' :
-				$out = $MSO->config['site_url'] . 'ajax/';
-				break;
-				
-		case 'require-maxsite' :
-				$out = $MSO->config['site_url'] . 'require-maxsite/';
-				break;
-				
-		case 'admin_plugins_dir' :
-				$out = $MSO->config['admin_plugins_dir'];
-				break;
-
-		case 'session' :
-				$out = $MSO->data['session'];
-				break;
-
-		case 'remote_key' :
-				$out = $MSO->config['remote_key'];
-				break;
-
-		case 'uri_get' :
-				$out = $MSO->data['uri_get'];
-				break;
-				
-		case 'admin_dir' :
-				$out = $MSO->config['admin_dir'];
-				break;
-				
-		case 'cache_dir' :
-				$out = $MSO->config['cache_dir'];
-				break;
-
-		case 'FCPATH' :
-				$out = $MSO->config['FCPATH'];
-				break;
-		case 'type' :
-				$out = $MSO->data['type'];
-				break;
-				
-	endswitch;
-
-	return $out;
 }
 
 
@@ -1106,7 +1103,7 @@ function mso_flush_cache($full = false, $dir = false, $file = false)
 	if ($full)
 	{
 		$CI->load->helper('file_helper'); // этот хелпер удаляет все Файлы и во вложенных каталогах
-		delete_files($cache_path);
+		@delete_files($cache_path);
 	}
 	else
 	{
@@ -1590,16 +1587,19 @@ function mso_slug($slug)
 
 # редирект на страницу сайта. путь указывать относительно сайта
 # если $absolute = true - переход по указаному пути
-function mso_redirect($url, $absolute = false)
+# $header - 301 или 302 редирект
+function mso_redirect($url = '', $absolute = false, $header = false)
 {
 	global $MSO;
 
 	$url = strip_tags($url);
 	$url = str_replace( array('%0d', '%0a'), '', $url );
 	
-	$CI = & get_instance();
-	$url = $CI->input->xss_clean($url);
+	$url = mso_xss_clean($url);
 	
+	if ($header == 301) header('HTTP/1.1 301 Moved Permanently');
+	elseif ($header == 302) header('HTTP/1.1 302 Found'); 
+
 	if ($absolute)
 	{
 		header("Refresh: 0; url={$url}");
@@ -2157,7 +2157,7 @@ function mso_current_paged($next = 'next')
 # $max - максимум - если $inc + текущий > $max, то ставится $max. Если $max = false, то он не учитывается
 # $min - минимальное значение
 # $next - признак сегмент после которого указывается номер страницы
-# $empty_no_range = true - отдает пустую строчку, если вышли текущая paged будет равна конечной
+# $empty_no_range = true - отдает пустую строчку, если текущая paged будет равна конечной
 # если $empty_no_range = false, то отдаем ссылку как обычно
 function mso_url_paged_inc($max = false, $inc = 1, $empty_no_range = true, $url = '', $min = 1, $next = 'next')
 {
@@ -2213,10 +2213,9 @@ function mso_register_widget($widget = false, $title = 'Виджет')
 
 
 # вывод сайбрара
-function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
+function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '', $echo = true)
 {
-	global $MSO;
-	global $page; // чтобы был доступ к параметрам страниц в условиях виджетов
+	global $MSO, $page; // чтобы был доступ к параметрам страниц в условиях виджетов
 
 	static $num_widget = array(); // номер виджета по порядку в одном сайдбаре
 
@@ -2276,8 +2275,6 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 						$numw = $num_widget[$sidebar]['numw'] = 1;
 					}
 					
-
-					
 					$st = str_replace('[FN]', $widget, $block_start); // название функции виджета
 					$st = str_replace('[NUMF]', $num, $st); // номер функции
 					$st = str_replace('[NUMW]', $numw, $st);	//
@@ -2292,8 +2289,9 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 				}
 			}
 		}
-
-		echo $out;
+		
+		if ($echo) echo $out;
+		else return $out;
 	}
 }
 
@@ -2343,9 +2341,6 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false, $pre
 	$CI->email->subject($subject);
 	$CI->email->message($message);
 	$CI->email->_safe_mode = true; # иначе CodeIgniter добавляет -f к mail - не будет работать в не safePHP
-
-	// pr($admin_email);
-	// pr($CI->email);
 
 	$res = @$CI->email->send();
 	
@@ -2431,7 +2426,7 @@ function mso_load_jquery($plugin = '')
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.3.2.min.js"></script>' . NR;
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.4.1.min.js"></script>' . NR;
 	}
 }
 
@@ -3169,4 +3164,99 @@ function _mso_logout()
 	else mso_redirect(getinfo('site_url'), true);
 }
 
-?>
+
+# проверка на XSS-атаку входящего текста
+# если задан $out_error, то отдаем сообщение
+# если $die = true, то рубим выполнение с сообщением $out_error
+# иначе возвращаем очищенный текст
+# если xss не определен и есть $out_no_error, то возвращаем не текст, а $out_no_error
+function mso_xss_clean($text, $out_error = '_mso_xss_clean_out_error', $out_no_error = '_mso_xss_clean_out_no_error', $die = false)
+{
+	$CI = & get_instance();
+
+	// выполняем XSS-фильтрацию
+	$text_xss = $CI->input->xss_clean($text);
+    
+	// если тексты не равны, значит существует опасность XSS-атаки
+	if ($text != $text_xss)
+	{
+		if ($die)
+		{
+			die($out_error);
+		}
+		else
+		{
+			if ($out_error != '_mso_xss_clean_out_error') return $out_error;
+			else return $text_xss;
+		}
+	}
+	else // тексты нормальные
+	{
+		if ($out_no_error != '_mso_xss_clean_out_no_error') return $out_no_error;
+		else return $text;
+	}
+}
+
+
+# Функция возвращает массив для пагинации при выполнении предыдущего sql-запроса с SELECT SQL_CALC_FOUND_ROWS
+# при помощи sql-запроса SELECT FOUND_ROWS();
+# Использовать непосредственно после исходного get-запроса с указанным SQL_CALC_FOUND_ROWS
+# $limit - записей на страницу
+# $pagination_next_url - сегмент-признак пагинации (для определения текущей страницы пагинации)
+/*
+	пример использования:
+	формируем sql-запрос с SQL_CALC_FOUND_ROWS
+	
+	$CI->db->select('SQL_CALC_FOUND_ROWS comments_id, ...', false);
+	...
+	$limit = 20; // задаем кол-во записей на страницу
+	$CI->db->limit($limit, mso_current_paged() * $limit - $limit); // не более $limit
+	...
+	$query = $CI->db->get(); // выполнили запрос
+
+	$pagination = mso_sql_found_rows($limit); // получили массив для пагинации
+	
+	// $pagination - готовый массив для пагинации
+	mso_hook('pagination', $pagination); // вывод пагинации
+
+*/
+function mso_sql_found_rows($limit = 20, $pagination_next_url = 'next')
+{
+	$CI = & get_instance();
+	
+	// определим общее кол-во записей
+	$query_row = $CI->db->query('SELECT FOUND_ROWS() as found_rows', false);
+	
+	if ($query_row->num_rows() > 0)
+	{
+		$ar = $query_row->result_array();
+		$found_rows = $ar[0]['found_rows'];
+		
+		$maxcount = ceil($found_rows / $limit); // всего страниц пагинации
+
+		$current_paged = mso_current_paged($pagination_next_url);
+		
+		if ($current_paged > $maxcount) $current_paged = $maxcount;
+		
+		$offset = $current_paged * $limit - $limit;
+		
+		$out = array(
+					'limit' => $limit, // строк на страницу - для LIMIT
+					'offset' => $offset, // смещение для LIMIT
+					'found_rows' => $found_rows, // всего записей, как без LIMIT
+					'maxcount' => $maxcount, // всего страниц пагинации
+					'next_url' => $pagination_next_url, // признак пагинации
+					);
+	}
+	else
+	{
+		$out = false;
+	}
+
+	$CI->db->cache_delete_all();
+	
+	return $out;
+}
+
+
+# end file

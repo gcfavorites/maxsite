@@ -7,7 +7,7 @@
 
 class Maxsite_lib 
 {
-	var $version = '0.37';
+	var $version = '0.387';
 	var $config = array();
 	var $data = array();
 	var $hooks = array();
@@ -36,15 +36,6 @@ class Maxsite_lib
 		$this->config['admin_url'] = $this->config['base_url'] . 'admin/';
 		$this->config['site_admin_url'] = $this->config['site_url'] . 'admin/';
 		
-		# MaxSite CMS < 0.352 и CodeIgniter < 1.7.2
-		# $this->config['base_dir'] = realpath(dirname(FCPATH)) . '/' . APPPATH . 'maxsite/';
-		# $this->config['application_dir'] = realpath(dirname(FCPATH)) . '/' . APPPATH;
-		# $this->config['uploads_dir'] = realpath(dirname(FCPATH)) . '/uploads/';
-		# $this->config['cache_dir'] = $CI->config->config['cache_path'];
-		# if (!$this->config['cache_dir']) $this->config['cache_dir'] = realpath(dirname(FCPATH)) . '/system/cache/';		
-			
-			
-		# MaxSite CMS >= 0.353 и CodeIgniter >= 1.7.3
 		$this->config['base_dir'] = FCPATH . APPPATH . 'maxsite/';
 		$this->config['application_dir'] = FCPATH . APPPATH;
 		$this->config['uploads_dir'] = FCPATH . 'uploads/';
@@ -66,8 +57,6 @@ class Maxsite_lib
 		$this->config['secret_key'] = $this->config['site_url'];
 		$this->config['remote_key'] = '0'; // ключ удаленного постинга
 		
-
-		
 		# контроль. не использовать в проектах!
 		# константы определяет CodeIgniter
 		# меняются от версии
@@ -77,15 +66,12 @@ class Maxsite_lib
 		$this->config['BASEPATH'] = BASEPATH;	
 		$this->config['APPPATH'] = APPPATH;	
 			
-		#print_r($this->config);
 	}
 }
 
 global $MSO;
 
 if ( !isset($MSO) ) $MSO = new Maxsite_lib();
-#print_r($MSO);
-
 
 require_once( $MSO->config['common_dir'] . 'common.php' );
 

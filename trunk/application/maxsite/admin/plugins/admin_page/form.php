@@ -27,32 +27,30 @@
 	
 	# до 
 	$do = '
-	<table style="width: 99%; border: none; line-height: 1.4em;">
+	<table class="new_or_edit">
 	<tr>
-		<td style="vertical-align: top; padding: 0 10px 0 0;">
+		<td class="editor_and_meta">
 		<input type="text" value="' . $f_header . '" name="f_header" class="f_header">' . $fses;
 	
 	# после
 	$posle = '
 
-			<div style="margin: 10px 0;">
+			<div class="page_status">
 				
 				<a style="display: block; float: right;" href="'. $MSO->config['site_admin_url'] 
 						. 'files" target="_blank">' . t('Страница «Загрузки»', 'admin') . '</a>
 						
-				<p><input name="f_status[]" type="radio" ' . $f_status_publish . ' value="publish" id="f_status_publish">
-						<label for="f_status_publish">' . t('Опубликовать', 'admin') . '</label> 
-					<input name="f_status[]" type="radio" ' . $f_status_draft . ' value="draft" id="f_status_draft"> 
-						<label for="f_status_draft">' . t('Черновик', 'admin') . '</label> 
-					<input name="f_status[]" type="radio" ' . $f_status_private . ' value="private" id="f_status_private"> 
-						<label for="f_status_private">' . t('Личное', 'admin') . '</label>
+				<p>
+					<label><input name="f_status[]" type="radio" ' . $f_status_publish . ' value="publish" id="f_status_publish"> ' . t('Опубликовать', 'admin') . '</label> 
+					<label><input name="f_status[]" type="radio" ' . $f_status_draft . ' value="draft" id="f_status_draft"> ' . t('Черновик', 'admin') . '</label> 
+					<label><input name="f_status[]" type="radio" ' . $f_status_private . ' value="private" id="f_status_private"> ' . t('Личное', 'admin') . '</label>
 				</p>
 									
 				' . $f_return . '
 				<input type="submit" name="' . $name_submit . '" value="' . t('Готово', 'admin') . '" class="wymupdate"> <span class="autosave-editor"></span>
 			</div>
 			
-			<div style="margin: 20px 0;">
+			<div>
 				<div class="block_page page_meta">
 					<h3>' . t('Дополнительные поля', 'admin') . '</h3>
 					' . $all_meta . '
@@ -70,7 +68,7 @@
 			</div>
 		</td>
 		
-		<td style="vertical-align: top; width: 250px;">
+		<td class="page_info">
 			' . mso_hook('admin_page_form_add_block_1') . '
 			<div class="block_page">
 				<h3>' . t('Рубрика', 'admin') . '</h3>

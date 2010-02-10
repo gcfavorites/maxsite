@@ -239,7 +239,7 @@ mso_cur_dir_lang('admin');
 			$delete = '<p class="input checkbox wleft br"><strong>' . t('Удалить группы', 'admin') . ' </strong>' . $delete . '</p><p class="input_submit"><input type="submit" name="f_delete_submit" value="' . t('Удалить отмеченные группы', 'admin') . '" onClick="if(confirm(\'' . t('Уверены?', 'admin') . '\')) {return true;} else {return false;}" ></p>';
 		}
 		
-		$delete = '<div class="item usergroup"><h2>' . t('Добавить/Удалить группу пользователей', 'admin') . '</h2><p class="input short"><strong>' . t('Добавить группу', 'admin') . ' </strong><input type="text" name="f_new"> <input type="submit" name="f_new_submit" value="' . t('Создать новую группу', 'admin') . '"></p> 
+		$delete = '<div class="item usergroup"><h2>' . t('Добавить/Удалить группу пользователей', 'admin') . '</h2><p class="input"><strong>' . t('Добавить группу', 'admin') . ' </strong><input type="text" name="f_new"> <input type="submit" name="f_new_submit" value="' . t('Создать новую группу', 'admin') . '"></p> 
 		' . $delete . '</div>';
 		
 		// добавляем форму, а также текущую сессию

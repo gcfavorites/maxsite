@@ -2,16 +2,16 @@
 
 mso_cur_dir_lang('templates');
 
-?>
-<span><a name="comments"></a></span>
-<?php
+
 # коммментарии
+echo '<span><a name="comments"></a></span>';
 
 // получаем список комментариев текущей страницы
 require_once( getinfo('common_dir') . 'comments.php' ); // функции комментариев
 
 // если был отправлен новый коммент, то обрабатываем его и выводим сообщение в случае ошибки
 echo mso_get_new_comment( array('page_title'=>$page_title) ); 
+
 
 // получаем все разрешенные комментарии
 $comments = mso_get_comments($page_id);
@@ -32,7 +32,7 @@ if (isset($MSO->data['session']['comments']) and $MSO->data['session']['comments
 if (is_login()) $edit_link = getinfo('siteurl') . 'admin/comments/edit/';
 	else $edit_link = '';
 
-echo NR . '<div class="type type_page_comments">' . NR;
+if ($comments or $page_comment_allow) echo NR . '<div class="type type_page_comments">' . NR;
 
 if ($comments) // есть страницы
 { 	
@@ -107,7 +107,6 @@ if ($comments) // есть страницы
 
 if ($page_comment_allow)
 {
-
 	if ($f = mso_page_foreach('page-comment-form-do')) require($f); // подключаем кастомный вывод
 	else echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
 	
@@ -123,6 +122,6 @@ else
 	// echo '<div class="no-comments"><h3 class="comments">'. t('Комментарии запрещены'). '</h3></div>';
 }
 
-echo NR . '</div><!-- class="type type_page_comments" -->' . NR;
+if ($comments or $page_comment_allow) echo NR . '</div><!-- class="type type_page_comments" -->' . NR;
 
 ?>

@@ -102,11 +102,13 @@
 		if ($type == 'textfield')
 		{
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
+			//$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
+			$f .= '<input type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 		}
 		elseif ($type == 'textarea')
 		{
-			$f .= '<textarea style="width: 99%;" name="' . $name_f . '">'. $value . '</textarea>' . NR;
+			//$f .= '<textarea style="width: 99%;" name="' . $name_f . '">'. $value . '</textarea>' . NR;
+			$f .= '<textarea name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}
 		elseif ($type == 'radio')
 		{
@@ -130,7 +132,8 @@
 			
 			if ($values) // есть что-то
 			{
-				$f .= '<select style="width: 99%;" name="' . $name_f . '">';
+				//$f .= '<select style="width: 99%;" name="' . $name_f . '">';
+				$f .= '<select name="' . $name_f . '">';
 				
 				foreach( $values as $val ) 
 				{
@@ -153,6 +156,16 @@
 				}
 				$f .= NR . '</select>' . NR;
 			}
+		}
+		elseif ($type == 'checkbox')
+		{
+			if ($value) $checked = 'checked="checked"';
+				else $checked = '';
+
+			$f .= '<input type="hidden" value="0" name="' . $name_f . '">';
+			$f .= '<label><input type="checkbox" value="1" name="' . $name_f . '" ' . $checked . '> ' 
+			. $key . '</label>' 
+			. NR;
 		}
 		
 		if ($description) $f .= '<p>' .  $description . '</p>';

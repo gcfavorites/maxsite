@@ -43,13 +43,18 @@ function redirect_init($args = array())
 
 	foreach ($all as $row) // перебираем каждую строчку
 	{
-		$urls = explode('|', $row); //  адрес | редирект
+		$urls = explode('|', $row); //  адрес | редирект | 301, 302
 		if ( isset($urls[0]) and isset($urls[1]) and trim($urls[0]) and trim($urls[1]) ) // если есть урлы
 		{
 			if ( $current_url != trim(trim($urls[0])) ) 
+			{
 				continue; // адреса разные
+			}
 			else // совпали, делаем редирект
-				mso_redirect(trim($urls[1]), true);
+			{
+				if (isset($urls[2])) mso_redirect(trim($urls[1]), true, trim($urls[2]));
+				else mso_redirect(trim($urls[1]), true);
+			}
 		}
 	}
 

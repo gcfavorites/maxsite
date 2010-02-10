@@ -327,6 +327,8 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+if (file_exists(FCPATH . APPPATH . 'config/mso_config.php')) 
+	require(FCPATH . APPPATH . 'config/mso_config.php');
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */

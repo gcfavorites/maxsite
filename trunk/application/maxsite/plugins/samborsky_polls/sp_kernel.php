@@ -177,6 +177,7 @@
 			if( $ret = $CI->db->insert('sp_questions',$this->data) ){
 				
 				$this->id = $CI->db->insert_id();
+				$CI->db->cache_delete_all();
 				return true;
 			}
 			
@@ -193,7 +194,13 @@
 			
 			$CI = &get_instance();
 			$CI->db->where('q_id',$this->id);
-			return $CI->db->update('sp_questions',$this->data);
+			
+			
+			$r = $CI->db->update('sp_questions',$this->data);
+			
+			$CI->db->cache_delete_all();
+			
+			return $r;
 		}
 		
 		function check_allow(){
@@ -319,6 +326,7 @@
 			$CI = &get_instance();
 			$CI->db->where('a_id',$this->a_id);
 			$CI->db->update('sp_answers',$this->data);
+			$CI->db->cache_delete_all();
 		}
 		
 		/***
@@ -340,7 +348,7 @@
 			if( $ret = $CI->db->insert('sp_answers',$this->data) ){
 				
 				$this->id = $CI->db->insert_id();
-				
+				$CI->db->cache_delete_all();
 				return true;
 			}
 			

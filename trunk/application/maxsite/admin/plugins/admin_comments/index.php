@@ -52,21 +52,20 @@ function admin_comments_admin($args = array())
 		return $args;
 	}
 	
-	
 	$seg = mso_segment(3);
 	
-	if ($seg == '') 
-	{
-		mso_hook_add_dinamic( 'mso_admin_header', ' return $args . t("Комментарии", "admin"); ' );
-		mso_hook_add_dinamic( 'admin_title', ' return t("Комментарии", "admin") . " - " . $args; ' );
-		require($MSO->config['admin_plugins_dir'] . 'admin_comments/admin.php');
-	}
-	elseif ($seg == 'edit')
+	if ($seg == 'edit')
 	{
 		mso_hook_add_dinamic( 'mso_admin_header', ' return $args . t("Редактирование комментария", "admin"); ' );
 		mso_hook_add_dinamic( 'admin_title', ' return t("Редактирование комментария", "admin") . " - " . $args; ' );
 		require($MSO->config['admin_plugins_dir'] . 'admin_comments/edit.php');
 	} 
+	else
+	{
+		mso_hook_add_dinamic( 'mso_admin_header', ' return $args . t("Комментарии", "admin"); ' );
+		mso_hook_add_dinamic( 'admin_title', ' return t("Комментарии", "admin") . " - " . $args; ' );
+		require($MSO->config['admin_plugins_dir'] . 'admin_comments/admin.php');
+	}
 }
 
 ?>

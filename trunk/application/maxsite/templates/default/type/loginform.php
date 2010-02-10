@@ -34,8 +34,8 @@
 	}
 	else
 	{
-		// echo '<p>'. t('Привет'). ', ' . getinfo('users_nik') . '! [<a href="' . getinfo('siteurl') . 'logout'.'">'. t('выйти'). '</a>]</p>';
-		mso_redirect();
+		echo '<p>'. t('Привет'). ', ' . getinfo('users_nik') . '! [<a href="' . getinfo('siteurl') . 'logout'.'">'. t('выйти'). '</a>]</p>';
+		// mso_redirect();
 	}
 
 	echo '</div>';

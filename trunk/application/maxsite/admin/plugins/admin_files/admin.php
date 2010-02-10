@@ -70,6 +70,7 @@
 
 	// нужно вывести навигацию по каталогам в uploads
 	$all_dirs = directory_map($MSO->config['uploads_dir'], true); // только в uploads
+	asort($all_dirs);
 	$out = '';
 	foreach ($all_dirs as $d)
 	{

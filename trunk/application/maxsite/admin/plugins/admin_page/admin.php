@@ -88,7 +88,7 @@
 	$CI->load->helper('form');
 	
 	$tmpl = array (
-				'table_open'		  => '<table class="page tablesorter" border="0" width="99%" id="pagetable">',
+				'table_open'		  => '<table class="page tablesorter" border="0" id="pagetable">',
 				'row_alt_start'		  => '<tr class="alt">',
 				'cell_alt_start'	  => '<td class="alt">',
 				'heading_row_start' 	=> NR . '<thead><tr>',
@@ -248,7 +248,7 @@
 			}			
 			$tags = str_replace('  ', ', ', trim($tags));
 			
-			$title = '<a href="' . $this_url . $page['page_id'] . '">' . $page['page_title'] . '</a>'
+			$title = '<a class="title" href="' . $this_url . $page['page_id'] . '">' . $page['page_title'] . '</a>'
 					. ' [<a href="' . $view_url . $page['page_slug'] . '" target="_blank">' . t('Просмотр', 'admin') . '</a>]';
 			
 			
@@ -269,7 +269,7 @@
 	$pagination['type'] = '';
 	$pagination['range'] = 10;
 	mso_hook('pagination', $pagination);
-	echo  '<br>';
+	//echo  '<br>';
 	
 	
 	echo mso_load_jquery('jquery.tablesorter.js');
@@ -292,15 +292,15 @@
 
 	$pagination['type'] = '';
 	$pagination['range'] = 10;
-	echo '<br>';
+	//echo '<br>';
 	mso_hook('pagination', $pagination);
 
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
-	echo '<br><br><h2>' . t('Удалить страницу', 'admin') . '</h2>';
+	echo '<h2 class="br">' . t('Удалить страницу', 'admin') . '</h2><p>';
 	echo $all_pages;
-	echo ' <input type="submit" name="f_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Удалить страницу?', 'admin') . '\')) {return true;} else {return false;}" >';
-	echo '</form><br>';
+	echo ' <input type="submit" name="f_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Удалить страницу?', 'admin') . '\')) {return true;} else {return false;}" ></p>';
+	echo '</form>';
 	
 	
 ?>

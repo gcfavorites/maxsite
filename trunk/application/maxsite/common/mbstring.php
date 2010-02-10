@@ -57,7 +57,7 @@ if ( !function_exists('mb_convert_encoding') )
 
 if ( !function_exists('mb_stristr') )
 {
-	function mb_stristr($haystack, $needle, $part = '', $encoding = '')
+	function mb_stristr($haystack, $needle = '', $part = '', $encoding = '')
 	{
 		return stristr ($haystack, $needle);
 	}

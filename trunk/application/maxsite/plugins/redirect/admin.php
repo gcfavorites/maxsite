@@ -23,6 +23,8 @@
 <p class="info"><?= t('С помощью этого плагина вы можете организовать редиректы со своего сайта. Укажите исходный и конечный адрес через «|», например:', 'plugins') ?></p>
 <pre>http://mysite.com/about | http://newsite.com/hello</pre>
 <p class="info"><?= t('При переходе к странице вашего сайта «http://mysite.com/about» будет осуществлен автоматический редирект на указанный «http://newsite.com/hello».', 'plugins') ?></p>
+<p class="info"><?= t('Третьим параметром вы можете указать тип редиректа: 301 или 302.', 'plugins') ?></p>
+<pre>http://mysite.com/about | http://newsite.com/hello | 301</pre><br>
 
 <?php
 
@@ -30,8 +32,8 @@
 		if ( !isset($options['all']) ) $options['all'] = '';
 
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
-		echo '<textarea name="f_all" style="width: 650px; height: 300px;">' .  $options['all'] . '</textarea>';
-		echo '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
+		echo '<textarea name="f_all" style="width: 100%; height: 300px;">' .  $options['all'] . '</textarea>';
+		echo '<br><br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '">';
 		echo '</form>';
 
 ?>

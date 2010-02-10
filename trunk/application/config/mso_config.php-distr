@@ -1,0 +1,10 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+/*
+ Здесь можно переопределить конфигурацию CodeIgniter
+*/
+
+// $config['uri_protocol']	= "REQUEST_URI"; // для fastCGI
+// $config['compress_output'] = TRUE; // для сжатия трафика
+
+/* End of file */

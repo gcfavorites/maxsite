@@ -29,11 +29,15 @@ function addzakl_content_end($args = array())
 	
 	$post_title = urlencode ( stripslashes($page['page_title']) . ' - ' . getinfo('name_site') );
 	$post_link = getinfo('siteurl') . mso_current_url();
-
+	$out = '';
+	
+	$img_src = 'twitter.png';
+	$link = '<a rel="nofollow" href="http://twitter.com/home/?status=' . urlencode (stripslashes(mb_substr($page['page_title'], 0, 139 - mb_strlen($post_link, 'UTF8'), 'UTF8') . ' ' . $post_link)) . '">';
+	$out .= $link . '<img border="0" title="Retweet twitter.com" alt="twitter.com" src="' . $path . $img_src  . '"' . $width_height . '></a>';	
 	
 	$img_src = 'google_bmarks.gif';
 	$link = '<a rel="nofollow" href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=' . $post_link . '&amp;title=' . $post_title .  '">';
-	$out = $link . '<img border="0" title="google.com" alt="google.com" src="' . $path . $img_src  . '"' . $width_height . '></a>';
+	$out .= $sep . $link . '<img border="0" title="google.com" alt="google.com" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 	
 	$img_src = 'bobrdobr.gif';
 	$link = '<a rel="nofollow" href="http://bobrdobr.ru/addext.html?url=' . $post_link . '&amp;title=' . $post_title .  '">';

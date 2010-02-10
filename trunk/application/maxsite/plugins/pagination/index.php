@@ -152,9 +152,14 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	{
 		$page_link = $counter;
 
+			
 		if ($counter != $page_number)
 		{
-			$middle_page_links .= '<a href="' . $base_url . $page_u . $page_link . '">' . $counter . '</a>';
+			 
+			if ($counter == 1) 
+				$middle_page_links .= '<a href="' . $home_url . '">' . $counter . '</a>';
+			else
+				$middle_page_links .= '<a href="' . $base_url . $page_u . $page_link . '">' . $counter . '</a>';
 			
 			if ($counter < $count_to) $middle_page_links .= $sep;
 			
@@ -168,6 +173,7 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 			if ($counter < $count_to) $middle_page_links .= $sep;
 		}
 	}
+	
 	if ($page_number == 1)
 	{
 		$first_link = '%FIRST%' . $sep . '%PREV%' . $sep2;
@@ -179,11 +185,11 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 			$first_link =  '<a class="pagination-first" href="' . $home_url . '">%FIRST%</a>' . $sep 
 						. '<a class="pagination-prev" href="' . $home_url . '">%PREV%</a>' . $sep2;
 		else
-			$first_link =  '<a  class="pagination-first" href="' . $home_url . '">%FIRST%</a>' . $sep 
-						. '<a  class="pagination-prev" href="' . $base_url . $page_u . $prev_link_page.'">%PREV%</a>' . $sep2;
+			$first_link =  '<a class="pagination-first" href="' . $home_url . '">%FIRST%</a>' . $sep 
+						. '<a class="pagination-prev" href="' . $base_url . $page_u . $prev_link_page.'">%PREV%</a>' . $sep2;
 		
 		if($page_number > 3)
-			$first_dots = ' <a  class="pagination-start" href="' . $base_url . $page_u . '1">1</a> ... ';
+			$first_dots = ' <a class="pagination-start" href="' . $home_url . '">1</a> ... ';
 		else 
 			$first_dots = '';
 	}
@@ -195,11 +201,11 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	} 
 	else 
 	{
-		$last_link =  $sep2 . '<a  class="pagination-next" href="' . $base_url . $page_u . $next_link_page 
+		$last_link =  $sep2 . '<a class="pagination-next" href="' . $base_url . $page_u . $next_link_page 
 					. '">%NEXT%</a>' . $sep . '<a  class="pagination-last" href="' . $base_url . $page_u . $total_pages . '">%LAST%</a>';
 		
 		if ( $last_mid_link < $total_pages  )
-			$last_dots = ' ... <a  class="pagination-end" href="' . $base_url . $page_u . $total_pages . '">' . $total_pages . '</a> ';
+			$last_dots = ' ... <a class="pagination-end" href="' . $base_url . $page_u . $total_pages . '">' . $total_pages . '</a> ';
 		else 
 			$last_dots = '';
 	}

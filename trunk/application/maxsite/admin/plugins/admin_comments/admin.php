@@ -6,20 +6,8 @@
 	
 	$f_all_comments = false; // только неразрешенные комментарии
 	
-	# показать все комментарии
-	if ( $post = mso_check_post(array('f_session_id', 'f_all_comments')) )
-	{
-		mso_checkreferer();
-		$f_all_comments = true; 
-	}
-	
-	
-	# показать только требующие модерации
-	if ( $post = mso_check_post(array('f_session_id', 'f_moderation_comments')) )
-	{
-		mso_checkreferer();
-		$f_all_comments = false; 
-	}
+	if (mso_segment(3) == 'all') $f_all_comments = true; 
+	elseif (mso_segment(3) == 'moderation') $f_all_comments = false; 
 	
 	
 	# разрешить или запретить
@@ -77,10 +65,12 @@
 
 ?>
 <h1><?= t('Комментарии') ?></h1>
-<p class="info"><?= t('Список последних 20 комментариев.') ?></p>
+<p class="info"><?= t('Последние комментарии') ?></p>
+<p><?= t('<strong>Фильтр:</strong>') ?> <a href="<?= getinfo('site_admin_url') ?>comments/all">Все</a> | <a href="<?= getinfo('site_admin_url') ?>comments/moderation">Только требующие модерации</a></p>
+
 
 <?php
-	//pr($MSO);
+
 	$CI->load->library('table');
 	
 	$tmpl = array (
@@ -94,7 +84,8 @@
 	$CI->table->set_heading('ID', '&bull;', '+', t('Текст'),  t('Действие'));
 	
 	# подготавливаем выборку из базы
-	$CI->db->select('comments_id, comments_users_id, comments_comusers_id, comments_author_name, comments_date, comments_content, comments_approved, comments_author_ip, users.users_nik, comusers.comusers_nik, page.page_title, page.page_slug');
+	
+	$CI->db->select('SQL_CALC_FOUND_ROWS comments_id, comments_users_id, comments_comusers_id, comments_author_name, comments_date, comments_content, comments_approved, comments_author_ip, users.users_nik, comusers.comusers_nik, page.page_title, page.page_slug', false);
 	$CI->db->from('comments');
 	$CI->db->join('users', 'users.users_id = comments.comments_users_id', 'left');
 	$CI->db->join('comusers', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
@@ -104,10 +95,16 @@
 
 	$CI->db->order_by('comments_date', 'desc');
 	
-	$CI->db->limit(20); // не более 20
+	$limit = 20;
+
+	$CI->db->limit($limit, mso_current_paged() * $limit - $limit ); // не более $limit
 	
 	$query = $CI->db->get();
+
+	$pagination = mso_sql_found_rows($limit); // определим общее кол-во записей для пагинации
+	mso_hook('pagination', $pagination);
 	
+		
 	// если есть данные, то выводим
 	if ($query->num_rows() > 0)
 	{
@@ -134,6 +131,11 @@
 			$page_slug = $row['page_slug'];
 			$page_title = '<a target="_blank" href="' . $view_url . $page_slug . '#comment-' . $id . '">' . htmlspecialchars( $row['page_title'] ) . '</a>';
 			
+			// определим XSS и визуально выделим такой комментарий
+			$comments_content_xss_start = mso_xss_clean($row['comments_content'], '<span style="color: red">XSS!!! ', '');
+			if ($comments_content_xss_start) $comments_content_xss_end = '</span>';
+				else $comments_content_xss_end = '';
+			
 			$comments_content = htmlspecialchars($row['comments_content']);
 			$comments_content = str_replace('&lt;p&gt;', '<br>', $comments_content);
 			$comments_content = str_replace('&lt;/p&gt;', '', $comments_content);
@@ -143,7 +145,12 @@
 			if ( $row['comments_approved'] > 0 ) $comments_approved = '+';
 				else $comments_approved = '-';
 				
-			$out = '<strong>' . $author . t(' написал в') . ' «' . $page_title . '»</strong> (' . $comments_date. ') ip: ' . $row['comments_author_ip'] . '<p>' . $comments_content . '</p>' . NR;
+			$out = $comments_content_xss_start 
+					. '<strong>' . $author . t(' написал в') 
+					. ' «' . $page_title . '»</strong> (' . $comments_date. ') ip: ' 
+					. $row['comments_author_ip'] 
+					. $comments_content_xss_end 
+					. '<p>' . $comments_content . '</p>' . NR;
 						
 			
 			$CI->table->add_row($id, $id_out, $comments_approved, $out, $act);
@@ -152,10 +159,10 @@
 	
 
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
-	echo '
-		<p>' . t('Показать') . ' <input type="submit" name="f_all_comments" value="' . t('Все') . '"> <input type="submit" name="f_moderation_comments" value="' . t('Только требующие модерации') . '">
-		</p>';
+	
+
 	echo $CI->table->generate();
+	
 	echo '
 		<p class="br">' . t('C отмеченными:') . '
 		<input type="submit" name="f_aproved_submit" value="' . t('Разрешить') . '">
@@ -163,5 +170,8 @@
 		<input type="submit" name="f_delete_submit" onClick="if(confirm(\'' . t('Уверены?') . '\')) {return true;} else {return false;}" value="' . t('Удалить') . '"></p>
 		';
 	echo '</form>';
+	
+	mso_hook('pagination', $pagination);
+
 	
 ?>
