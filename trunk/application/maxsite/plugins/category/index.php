@@ -30,6 +30,8 @@ function category_widget($num = 1)
 	if ( isset($options['exclude']) ) $options['exclude'] = mso_explode($options['exclude']);
 		else $options['exclude'] = array();
 	
+	if ( !isset($options['format']) ) $options['format'] = '%LINK_START%%NAME% (%COUNT_PAGES%)<br/><i>%DESC%</i>%LINK_END%';
+	
 	return category_widget_custom($options, $num);
 }
 

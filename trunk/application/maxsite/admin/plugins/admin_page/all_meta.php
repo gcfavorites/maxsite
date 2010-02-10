@@ -5,12 +5,9 @@
  * (с) http://maxsite.org/
  */
 
-# получение всех мета из ini-файла 
-# результат в  $all_meta
-
-// мета-поля, которые следует здесь отобразить описываются в ini-файле.
-// из-за особенностей передачи данных _POST нельзя использовать chekbox
-// вместо него можно вять radio с двумя элементами
+	# получение всех мета из ini-файла 
+	# результат в  $all_meta
+	# мета-поля, которые следует здесь отобразить описываются в ini-файле.
 
 	$all_meta = '';
 	
@@ -39,6 +36,17 @@
 	
 	// получим все данные из ini-файла
 	$all = mso_get_ini_file( $MSO->config['admin_plugins_dir'] . 'admin_page/meta.ini');
+	
+	//  pr($all);
+	
+	// подключаем meta.ini из текущего шаблона
+	if (file_exists(getinfo('template_dir') . 'meta.ini')) 
+	{
+		$meta_templ = mso_get_ini_file( getinfo('template_dir') . 'meta.ini' );
+		//pr($meta_templ);
+		if ($meta_templ) $all = array_merge($all, $meta_templ);
+		
+	}
 
 	// pr($all);
 

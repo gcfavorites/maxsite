@@ -11,6 +11,7 @@
 # функция автоподключения плагина
 function %%%_autoload($args = array())
 {
+	mso_create_allow('%%%_edit', 'Админ-доступ к %%%');
 	mso_hook_add( 'admin_init', '%%%_admin_init'); # хук на админку
 }
 
@@ -23,14 +24,25 @@ function %%%_activate($args = array())
 # функция выполняется при деактивации (выкл) плагина
 function %%%_deactivate($args = array())
 {	
-	// mso_delete_option('', 'plugins'); // удалим созданные опции
+	// mso_delete_option('plugin_%%%', 'plugins'); // удалим созданные опции
 	return $args;
 }
 
+# функция выполняется при деинстяляции плагина
+function %%%_uninstall($args = array())
+{	
+	// mso_delete_option('plugin_%%%', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция выполняется при указаном хуке admin_init
 function %%%_admin_init($args = array()) 
 {
+	if ( !mso_check_allow('%%%_edit') ) 
+	{
+		return $args;
+	}
+	
 	$this_plugin_url = 'plugin_%%%'; // url и hook
 	
 	# добавляем свой пункт в меню админки

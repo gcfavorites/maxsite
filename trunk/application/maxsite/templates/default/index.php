@@ -1,6 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-	
+// pr($MSO);
+
 # глобальный кэш в каталоге html - должен быть создан и права на запись (777)!
 if ( mso_get_option('global_cache', 'templates', false) ) // если разрешено в опциях шаблона
 {
@@ -20,7 +21,7 @@ if ( is_feed() )
 	if ( is_type('page') ) require('feed-page.php'); 					// только комментарии к странице
 		elseif ( is_type('comments') ) require('feed-comments.php');	// все комментарии
 	#	elseif ( is_type('archive') ) require('feed-archive.php'); 		// по датам - нафига???
-	#	elseif ( is_type('category') ) require('feed-category.php'); 	// по рубрикам
+		elseif ( is_type('category') ) require('feed-category.php'); 	// по рубрикам
 	#	elseif ( is_type('tag') ) require('feed-tag.php'); 				// по меткам
 		else require('feed-home.php'); // все записи					// все страницы
 	
@@ -43,7 +44,11 @@ if ( is_type('archive') ) 			require('archive.php');		// архив по датам
 	elseif ( is_type('tag') )		require('tag.php');			// метки
 	# elseif ( is_type('author') ) 	require('author.php');
 	# elseif ( is_type('link') )	require('link.php');
-	# elseif ( is_type('users') )	require('users.php');
+	elseif ( is_type('users') )	
+	{
+		if (mso_segment(3)=='edit')	require('users-form.php');
+		else require('users.php');
+	}
 	else 							require('page_404.php');	// 404 - если не найдено
 
 # глобальный кэш на 300 секунд = 5 минут

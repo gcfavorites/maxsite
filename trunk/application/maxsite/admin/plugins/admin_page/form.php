@@ -61,10 +61,10 @@ EOF;
 			</div>			
 			
 			<div class="block_page">
-				<h3>Статус записи</h3>
-				<p><input name="f_status[]" type="radio" checked value="publish"> Опубликовать</p>
-				<p><input name="f_status[]" type="radio" value="draft"> Черновик</p>
-				<p><input name="f_status[]" type="radio" value="private"> Личное (только для себя)</p>
+				<h3>Статус записи</h3> 
+				<p><input name="f_status[]" type="radio" {$f_status_publish} value="publish"> Опубликовать</p>
+				<p><input name="f_status[]" type="radio" {$f_status_draft} value="draft"> Черновик</p>
+				<p><input name="f_status[]" type="radio" {$f_status_private} value="private"> Личное (только для себя)</p>
 			</div>
 			
 			<div class="block_page">

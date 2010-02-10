@@ -15,7 +15,12 @@
 			.'" type="text/css" media="screen">';
 		}
 	?>
+
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?= getinfo('rss_url') ?>">
+	<?= mso_load_jquery() ?>
+	<?= mso_load_jquery('ui/effects.core.js') ?>
+	<?= mso_load_jquery('ui/effects.highlight.js') ?>
+	<script type="text/javascript" src="<?= getinfo('stylesheet_url') ?>my_ef2.js"></script>
 
 	<?php mso_hook('head') ?>
 
@@ -23,4 +28,3 @@
 <body>
 <!-- end header -->
 <?php mso_hook('body_start') ?>
-

@@ -25,25 +25,10 @@ if ($comments) // есть страницы
 		extract($comment);
 
 		echo '<li><span><a href="' . getinfo('siteurl') . 'page/' . mso_slug($page_slug) . '#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $page_title . '</a>';
-		
-		if ($comments_users_id) // это автор
-		{
-			echo ' | ';
-			if ($users_url) echo '<a href="' . $users_url . '">' . $users_nik . '</a>';
-				else echo $users_nik;
-		}
-		elseif ($comments_comusers_id) // это комюзер
-		{
-			echo ' | <a href="' . getinfo('siteurl') . 'users/' . $comusers_id . '">';
-			if ($comusers_nik) echo $users_nik;
-				else echo 'Комментатор ' . $comusers_id;
-			echo '</a>';
-		}
-		elseif ($comments_author_name) echo ' | ' . $comments_author_name . ' (анонимно)'; // аноним
-
+		echo ' | ' . $comments_url;
 		echo '</span><br />' . $comments_date;
 		echo '</span><br />' . $comments_content;
-		echo '</li>'; 
+		echo '</li>';
 		
 	//	pr($comment);
 	}

@@ -116,8 +116,6 @@ mso_create_allow('admin_page_edit', 'Админ-доступ к «Редакти
 
 mso_create_allow('admin_sidebars', 'Админ-доступ к настройкам сайдбаров');
 
-mso_create_allow('admin_files', 'Админ-доступ к файлам (загрузка, просмотр)');
-
 mso_create_allow('admin_comments', 'Админ-доступ к просмотру комментариев');
 mso_create_allow('admin_comments_edit', 'Админ-доступ к редактированию комментариев');
 

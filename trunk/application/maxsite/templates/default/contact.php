@@ -113,15 +113,12 @@
 		<tr>
 			<td align="right"><label for="contact_subject">Выберите тему письма*</label></td>
 			<td><select id="contact_subject" name="contact_subject" style="width: 98%;">
-					<option>Тема письма1</option>
-					<option>Тема письма2</option>
-					<option>Тема письма3</option>
-					<option>Тема письма4</option>
-					<option>Тема письма5</option>
-					<option>Тема письма6</option>
-					<option>Тема письма7</option>
-					<option>Тема письма8</option>
-					<option>Тема письма9</option>
+					<option>Пожелания по сайту</option>
+					<option>Нашел ошибку на сайте</option>
+					<option>Подскажите, пожалуйста</option>
+					<option>Я вас люблю!</option>
+					<option>Я вас ненавижу...</option>
+					<option>Я вам пишу, чего же боле....</option>
 				</select></td>
 		</tr>
 		<tr>

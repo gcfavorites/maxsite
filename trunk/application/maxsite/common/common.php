@@ -341,6 +341,13 @@ function getinfo($info = '')
 		case 'time_zone' :
 				$out = (float) mso_get_option('time_zone', 'general');
 				break;
+				
+		case 'plugins_url' :
+				$out = $MSO->config['plugins_url'];;
+				break;
+		case 'plugins_dir' :
+				$out = $MSO->config['plugins_dir'];;
+				break;	
 		
 	endswitch;
 	
@@ -1789,12 +1796,13 @@ function mso_widget_get_post($option = '')
 
 
 # функция отправки письма по email
-function mso_mail($email = '', $subject = '', $message = '')
+function mso_mail($email = '', $subject = '', $message = '', $from = false)
 {
 	$CI = & get_instance();
 	$CI->load->library('email');
 	
-	$admin_email = mso_get_option('admin_email_server', 'general', 'admin@site.com');
+	if ($from) $admin_email = $from;
+		else $admin_email = mso_get_option('admin_email_server', 'general', 'admin@site.com');
 
 	$config['wordwrap'] = TRUE;
 	$config['wrapchars'] = 90;
@@ -1864,12 +1872,18 @@ function mso_wordwrap($str, $wid, $tag)
 }
 
 # возвращает script с jquery или +url
-function mso_load_jquery($plugin = false)
+function mso_load_jquery($plugin = '')
 {
-	if ($plugin)
-		return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
-	else 
-		return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery.pack.js"></script>' . NR;
+	global $MSO;
+	
+	if ( !isset($MSO->js['jquery'][$plugin]) ) // еще нет включения этого плагина
+	{
+		$MSO->js['jquery'][$plugin] = '1';
+		if ($plugin)
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
+		else 
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery.pack.js"></script>' . NR;
+	}
 }
 
 

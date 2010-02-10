@@ -19,7 +19,6 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 }
 else $page_top = false;
 
-
 // параметры для получения страниц
 $par = array( 
 			// колво записей на главной
@@ -51,7 +50,6 @@ $pages = mso_get_pages($par, $pagination); // получим все - второ
 # начальная часть шаблона
 require('main-start.php');
 
-
 // если есть верхняя страница, то выводим
 if ($page_top) // есть страницы
 { 	
@@ -63,9 +61,10 @@ if ($page_top) // есть страницы
 		mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 	
 		echo '<div class="page_content">';
-			mso_hook('content_start'); # хук на начало блока
-			echo mso_hook('content_content', $page_content);
-			mso_hook('content_end'); # хук на конец блока
+			//mso_hook('content_start'); # хук на начало блока
+			//echo mso_hook('content_content', $page_content);
+			//mso_hook('content_end'); # хук на конец блока
+			mso_page_content($page_content);
 			echo '<div class="break"></div>';
 		echo '</div>';
 	}
@@ -100,11 +99,26 @@ if ($pages) // есть страницы
 			echo '</div>';
 			
 			echo '<div class="page_content">';
-				mso_hook('content_start'); # хук на начало блока
-				echo mso_hook('content_content', $page_content);
-				mso_hook('content_end'); # хук на конец блока
+			
+				mso_page_content($page_content);
+				
+				// mso_hook('content_start'); # хук на начало блока
+				// echo mso_hook('content_content', $page_content);
+				// mso_hook('content_end'); # хук на конец блока
 				echo '<div class="break"></div>';
-				mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comments-link">', '</div>');
+				
+				mso_page_comments_link( array( 
+					'page_comment_allow' => $page_comment_allow,
+					'page_slug' => $page_slug,
+					'title' => 'Обсудить (' . $page_count_comments . ')',
+					'title_no_link' => 'Читать комментарии (' . $page_count_comments . ')',
+					'do' => '<div class="comments-link">',
+					'posle' => '</div>',
+					'page_count_comments' => $page_count_comments
+				 ));
+				
+				// mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comments-link">', '</div>');
+				
 			echo '</div>';
 		}
 		else // списком
@@ -130,7 +144,6 @@ else
 	
 } // endif $pages
 
-// pr($MSO);
 
 # конечная часть шаблона
 require('main-end.php');

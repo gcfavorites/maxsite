@@ -46,6 +46,7 @@ function last_pages_widget_form($num = 1)
 	if ( !isset($options['exclude_cat']) )  	$options['exclude_cat'] = '';
 	if ( !isset($options['include_cat']) )  	$options['include_cat'] = '';
 	if ( !isset($options['sort']) ) 	$options['sort'] = 'page_date_publish';
+	if ( !isset($options['sort_order']) ) 	$options['sort_order'] = 'desc';
 	if ( !isset($options['order']) ) 	$options['order'] = 'desc';
 	if ( !isset($options['date_format']) ) 	$options['date_format'] = 'd/m/Y';
 	if ( !isset($options['format']) ) 	$options['format'] = '%TITLE%';	
@@ -68,7 +69,9 @@ function last_pages_widget_form($num = 1)
 	$form .= '<p><div class="t150">Исключить рубрики:</div> '. form_input( array( 'name'=>$widget . 'exclude_cat', 'value'=>$options['exclude_cat'] ) ) ;
 	$form .= '<p><div class="t150">Включить рубрики:</div> '. form_input( array( 'name'=>$widget . 'include_cat', 'value'=>$options['include_cat'] ) ) ;
 	
-	// $form .= '<p><div class="t150">Сортировка:</div> '. form_input( array( 'name'=>$widget . 'sort', 'value'=>$options['sort'] ) ) ;
+	$form .= '<p><div class="t150">Сортировка:</div> '. form_dropdown( $widget . 'sort', array( 'page_date_publish'=>'По дате', 'page_title'=>'По алфавиту'), $options['sort']);
+	
+	$form .= '<p><div class="t150">Порядок сортировки:</div> '. form_dropdown( $widget . 'sort_order', array( 'asc'=>'Прямой', 'desc'=>'Обратный'), $options['sort_order']);
 	
 	return $form;
 }
@@ -92,6 +95,8 @@ function last_pages_widget_update($num = 1)
 	$newoptions['page_type'] = mso_widget_get_post($widget . 'page_type');
 	$newoptions['exclude_cat'] = mso_widget_get_post($widget . 'exclude_cat');
 	$newoptions['include_cat'] = mso_widget_get_post($widget . 'include_cat');
+	$newoptions['sort'] = mso_widget_get_post($widget . 'sort');
+	$newoptions['sort_order'] = mso_widget_get_post($widget . 'sort_order');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -105,7 +110,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	if ( !isset($arg['count']) ) 	$arg['count'] = 7;
 	if ( !isset($arg['page_type']) )  	$arg['page_type'] = 'blog';
 	if ( !isset($arg['sort']) ) 	$arg['sort'] = 'page_date_publish';
-	if ( !isset($arg['order']) ) 	$arg['order'] = 'desc';
+	if ( !isset($arg['sort_order']) ) 	$arg['sort_order'] = 'desc';
 	if ( !isset($arg['date_format']) ) 	$arg['date_format'] = 'd/m/Y';
 	if ( !isset($arg['format']) ) 	$arg['format'] = '%TITLE%';	
 	if ( !isset($arg['exclude_cat']) ) 	$arg['exclude_cat'] = '';	
@@ -118,7 +123,12 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	
 	$cache_key = mso_md5('last_pages_widget'. implode('', $arg) . $num);
 	$k = mso_get_cache($cache_key);
-	if ($k) return $k; // да есть в кэше
+	if ($k) // да есть в кэше
+	{
+		$current_url = getinfo('siteurl') . mso_current_url(); // текущий урл
+		$k = str_replace( '<a href="' . $current_url . '">', '<a href="' . $current_url . '" class="current_url">', $k);
+		return $k; 
+	}
 	
 	$arg['exclude_cat'] = mso_explode($arg['exclude_cat']); // рубрики из строки в массив
 	$arg['include_cat'] = mso_explode($arg['include_cat']); // рубрики из строки в массив
@@ -148,7 +158,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 		$CI->db->where_in('cat2obj.category_id', $arg['include_cat']);
 	}	
 	
-	$CI->db->order_by($arg['sort'], $arg['order']);
+	$CI->db->order_by($arg['sort'], $arg['sort_order']);
 	$CI->db->limit($arg['count']);
 	
 	$query = $CI->db->get();
@@ -172,6 +182,11 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 		$out = $arg['header'] . $arg['block_start'] . $out . $arg['block_end'];
 		
 		mso_add_cache($cache_key, $out); // сразу в кэш добавим
+		
+		// отметим текущую рубрику. Поскольку у нас к кэше должен быть весь список и не делать кэш для каждого url
+		// то мы просто перед отдачей заменяем текущий url на url с li.current_url 
+		$current_url = getinfo('siteurl') . mso_current_url(); // текущий урл
+		$out = str_replace( '<a href="' . $current_url . '">', '<a href="' . $current_url . '" class="current_url">', $out);
 		
 		return $out;
 	}

@@ -24,10 +24,16 @@ function %%%_activate($args = array())
 # функция выполняется при деактивации (выкл) плагина
 function %%%_deactivate($args = array())
 {	
-	// mso_delete_option('', 'plugins'); // удалим созданные опции
+	// mso_delete_option('%%%_widget_', 'plugins'); // удалим созданные опции
 	return $args;
 }
 
+# функция выполняется при деинстяляции плагина
+function %%%_uninstall($args = array())
+{	
+	// mso_delete_option('plugin_%%%', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция выполняется при указаном хуке admin_init
 function %%%_admin_init($args = array()) 

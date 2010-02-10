@@ -389,9 +389,6 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 
 
 
-
-
-
 # получение ul-списка всех рубрик
 # рекомендуется для использования
 function mso_cat_ul(
@@ -420,7 +417,16 @@ function mso_cat_ul(
 	$cache_key = mso_md5('mso_cat_ul' . $li_format . $show_empty . implode(' ',$checked_id) . implode(' ',$selected_id)
 						. $ul_class . $type_page . $type . $order . $asc . implode(' ', $include) . implode(' ', $exclude) );
 	$k = mso_get_cache($cache_key);
-	if ($k) return $k; // да есть в кэше
+	
+	if ($k) // да есть в кэше
+	{
+		// находим текущий url (код повтояет внизу)
+		$current_url = getinfo('siteurl') . mso_current_url(); // текущий урл
+		$out = str_replace( '<a href="' . $current_url . '">', '<a href="' . $current_url . '" class="current_url">', $k);
+		$pattern = '|<li class="(.*?)">(.*?)(<a href="' . $current_url . '")|ui';
+		$out = preg_replace($pattern, '<li class="$1 current_url">$2$3', $out);
+		return $out; 
+	}
 	
 	# получим все рубрики в виде одномерного массива
 	if ($custom_array) $all = $custom_array; // какой-то свой массив
@@ -453,7 +459,14 @@ function mso_cat_ul(
 		else $out = '<ul>' . "\n" . $out. "\n" . '</ul>';
 
 	mso_add_cache($cache_key, $out); // сразу в кэш добавим
-
+	
+	// отметим текущую рубрику. Поскольку у нас к кэше должен быть весь список и не делать кэш для каждого url
+	// то мы просто перед отдачей заменяем текущий url на url с li.current_url 
+	$current_url = getinfo('siteurl') . mso_current_url(); // текущий урл
+	$out = str_replace( '<a href="' . $current_url . '">', '<a href="' . $current_url . '" class="current_url">', $out);
+	$pattern = '|<li class="(.*?)">(.*?)(<a href="' . $current_url . '")|ui';
+	$out = preg_replace($pattern, '<li class="$1 current_url">$2$3', $out);
+	
 	return $out;
 }
 

@@ -37,6 +37,7 @@ h6 {font-size: 7pt; margin: 3px 0;}
 #mc {float: left; width: 100%;  background: url(bg-menu.gif) repeat-y;}
 
 div.admin-header {background: #0D419B; color: white; padding: 10px;}
+div.admin-header a {color: white;}
 div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; border-left: 2px #4472C5 solid; }
 div.admin-menu {width: 250px; background: #C3DAF9; color: #527FD0; float: left; min-hei1ght: 400px; border-right: 2px #4472C5 solid;}
 div.admin-footer {clear: both; background: #0D419B; color: white; padding: 5px 0; text-align: center;}

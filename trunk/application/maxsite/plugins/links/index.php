@@ -46,7 +46,7 @@ function links_widget_form($num = 1)
 	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	$form .= '<p><div class="t150">Ссылки:</div> '. form_textarea( array( 'name'=>$widget . 'links', 'value'=>$options['links'] ) ) ;
 	$form .= '<br /><div class="t150">&nbsp;</div>Указывайте по одной ссылке в каждом абзаце в формате:
-			  <br /><div class="t150">&nbsp;</div><strong>http://ссылка/ | название | noindex | _blank</strong>
+			  <br /><div class="t150">&nbsp;</div><strong>http://ссылка/ | название | описание | noindex | _blank</strong>
 			  <br /><div class="t150">&nbsp;</div><strong>noindex</strong> - обрамить ссылку в noindex, если не нужно - указать пробел
 			  <br /><div class="t150">&nbsp;</div><strong>_blank</strong> - открыть ссылку в новом окне, если не нужно - указать пробел
 			  ';
@@ -92,16 +92,25 @@ function links_widget_custom($options = array(), $num = 1)
 		{
 			$ar_link = explode('|', $row); // разбиваем по |
 			
-			// всего должно быть 4-е элемента
+			// всего должно быть 5 элементов
 			if ( isset($ar_link[0]) and trim($ar_link[0]) ) // если есть первый элемент
 			{
 				$href = trim($ar_link[0]); // адрес
 				
-				if ( $href and isset($ar_link[1]) and trim($ar_link[1]) ) // если есть второй элемент
+				if ( $href and isset($ar_link[1]) and trim($ar_link[1]) ) // если есть второй элемент - название
 				{
 					$title = trim($ar_link[1]); // название
 					
-					if ( isset($ar_link[2]) and trim($ar_link[2]) )// если есть noindex 
+					if ( isset($ar_link[2]) and trim($ar_link[2]) )// если есть описание 
+					{	
+						$descr = '<div>' . trim($ar_link[2]) . '</div>'; 
+					}	
+					else 
+					{
+						$descr = '';
+					}
+					
+					if ( isset($ar_link[3]) and trim($ar_link[3]) )// если есть noindex 
 					{	
 						$noindex1 = '<noindex>'; 
 						$noindex2 = '</noindex>';
@@ -112,11 +121,11 @@ function links_widget_custom($options = array(), $num = 1)
 						$noindex1 = $noindex2 = $nofollow = '';
 					}
 					
-					if ( isset($ar_link[3]) and trim($ar_link[3]) ) $blank = 'target="_blank"'; // если есть _blank
+					if ( isset($ar_link[4]) and trim($ar_link[4]) ) $blank = 'target="_blank"'; // если есть _blank
 						else $blank = '';
 					
 					$out .= NR . '<li>' . $noindex1 . '<a href="' . $href . '" title="' . $title . '"' . $nofollow . $blank . '>' 
-							. $title . '</a>' . $noindex2 . '</li>';
+							. $title . '</a>' . $descr . $noindex2 . '</li>';
 					
 				}
 			}

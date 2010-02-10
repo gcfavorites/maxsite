@@ -20,6 +20,36 @@
 					<li><a href="<?= getinfo('siteurl') ?>comments"><span>Комментарии</span></a></li>
 					<li><a href="<?= getinfo('feed') ?>"><span>RSS</span></a></li>
 					<?php
+						if ( $menu = mso_get_option('top_menu', 'templates', '') )
+						{
+							# в массив
+							$menu = explode("\n", trim($menu)); 
+							
+							# определим текущий url
+							$current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+							
+							# обходим в цикле
+							foreach ($menu as $elem) 
+							{
+								# разобъем строчку по адрес | название
+								$elem = explode('|', $elem);
+								
+								# должно быть два элемента
+								if (count($elem) > 1 ) 
+								{
+									$url = trim($elem[0]);  // адрес 
+									$name = trim($elem[1]); // название
+									
+									# если текущий адрес совпал, значит мы на этой странице
+									if ($url == $current_url) $class = ' class="selected"';
+										else $class = '';
+									
+									echo '<li' . $class . '><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+								}
+							}
+						}	
+					?>
+					<?php
 					if (is_login())	echo '<li><a href="' . getinfo('siteurl') . 'admin"><span>Admin</span></a></li>';
 					?>
 				</ul>

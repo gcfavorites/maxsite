@@ -223,11 +223,15 @@
 	
 	$name_submit = 'f_submit';
 	
+	
 
 	# мета большие,вынесена в отдельный файл
 	# из неё получается $all_meta = '<p>Нет</p>';
 	require($MSO->config['admin_plugins_dir'] . 'admin_page/all_meta.php');
 	
+	
+	$f_status_draft = $f_status_private = '';
+	$f_status_publish = 'checked';
 	
 	# форма вынесена в отдельный файл, поскольку она одна и таже для new и edit
 	# из неё получается $do и $posle

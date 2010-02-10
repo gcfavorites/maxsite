@@ -15,12 +15,18 @@ function admin_ip_autoload($args = array())
 
 
 # функция выполняется при деактивации (выкл) плагина
-function admin_ip_deactivate($args = array())
+//function admin_ip_deactivate($args = array())
+//{	
+//	mso_delete_option('plugin_admin_ip', 'plugins'); // удалим созданные опции
+//	return $args;
+//}
+
+# функция выполняется при деинстяляции плагина
+function admin_ip_uninstall($args = array())
 {	
 	mso_delete_option('plugin_admin_ip', 'plugins'); // удалим созданные опции
 	return $args;
 }
-
 
 # функция выполняется при указаном хуке admin_init
 function admin_ip_admin_init($args = array()) 
@@ -98,18 +104,17 @@ function admin_ip_admin_init($args = array())
 # функция вызываемая при хуке, указанном в mso_admin_url_hook
 function admin_ip_admin_page($args = array()) 
 {
-	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('admin_ip_admin_page') ) 
 	{
 		echo 'Доступ запрещен';
 		return $args;
 	}
 	
+	# выносим админские функции отдельно в файл
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Admin IP"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "Admin IP - " . $args; ' );
 
-	require($MSO->config['plugins_dir'] . 'admin_ip/admin.php');
+	require(getinfo('plugins_dir') . 'admin_ip/admin.php');
 }
 
 

@@ -30,13 +30,18 @@ if ($pages) // есть страницы
 			mso_page_tag_link($page_tags, ' | ', '<span>Метки:</span> ', '<br />');
 			mso_page_date($page_date_publish, 'd/m/Y H:i:s', '<span>Дата:</span> ', '');
 			mso_page_edit_link($page_id, 'Edit page', ' -', '-');
-			mso_page_feed($page_slug, 'комментарии по RSS', '<br /><span>Подписаться</span> на ', '', true);
+			
+			if (isset($page_meta['nastr'][0]) and $page_meta['nastr'][0]) echo '<br /><span>Настроение:</span> ' . $page_meta['nastr'][0];
+			if (isset($page_meta['music'][0]) and $page_meta['music'][0]) echo '<br /><span>В колонках звучит:</span> ' . $page_meta['music'][0];
+			
+			if ($page_comment_allow) mso_page_feed($page_slug, 'комментарии по RSS', '<br /><span>Подписаться</span> на ', '', true);
 		echo '</div>';
 		
 		echo '<div class="page_content">';
-			mso_hook('content_start'); # хук на начало блока
-			echo mso_hook('content_content', $page_content);
-			mso_hook('content_end'); # хук на конец блока
+			// mso_hook('content_start'); # хук на начало блока
+			// echo mso_hook('content_content', $page_content);
+			// mso_hook('content_end'); # хук на конец блока
+			mso_page_content($page_content);
 			echo '<div class="break"></div>';
 			require('page-comments.php'); // здесь форма комментариев
 		echo '</div>';

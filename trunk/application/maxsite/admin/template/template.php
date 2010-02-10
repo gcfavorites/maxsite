@@ -48,7 +48,7 @@
 <body>
 <div id="container">
 	<div class="admin-header">
-	<h1> <?= mso_get_option('name_site', 'general') ?></h1>
+	<h1><a href="<?= getinfo('siteurl') ?>"><?= mso_get_option('name_site', 'general') ?></a></h1>
 	<?= $admin_header ?>
 	</div><!-- div class=admin-header -->
 	<div id="mc">

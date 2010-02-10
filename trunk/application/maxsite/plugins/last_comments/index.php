@@ -134,7 +134,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 				}
 				elseif ($comments_comusers_id) // это комюзер
 				{
-					if ($comusers_nik) $out .= $users_nik;
+					if ($comusers_nik) $out .= $comusers_nik;
 						else $out .= 'Комментатор ' . $comusers_id;
 				}
 				elseif ($comments_author_name) $out .= $comments_author_name; // аноним . ' (анонимно)'

@@ -117,13 +117,17 @@ function _mso_sql_build_page($r, &$pag)
 	
 	$slug = mso_segment(2);
 	
+	// $page_status = 'publish'; // статус записи может быть сброшен, если это просматривает текущий автор и это не publish
+	
 	// если slug есть число, то выполняем поиск по id
 	$id = (int) $slug;
 	if ( (string) $slug != (string) $id ) $id = false; // slug не число
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, page.page_id_autor');
 	$CI->db->from('page');
-	$CI->db->where('page_status', 'publish');
+	
+	// if ($page_status) $CI->db->where('page_status', $page_status);
+	
 	// $CI->db->where('page_type_name', 'blog');
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	
@@ -551,6 +555,23 @@ function mso_get_pages($r = array(), &$pag)
 	if ($query->num_rows() > 0)	
 	{	
 		$pages = $query->result_array();
+		
+		
+		if (is_type('page'))
+		{
+			// проверяем статус публикации - если page_status <> publish то смотрим автора и саравниваем с текеущим юзером
+			$page_status = $pages[0]['page_status']; // в page - всегда одна запись
+			
+			if ($page_status<>'publish') // не опубликовано
+			{
+				if ( isset($MSO->data['session']['users_id']) ) // залогинен
+				{
+					if ( $pages[0]['page_id_autor'] <> $MSO->data['session']['users_id'] ) return array();
+					else $pages[0]['page_title'] .= ' (черновик)';
+				}
+				else return array(); // не залогинен
+			}
+		}
 
 		// массив всех page_id
 		$all_page_id = array();
@@ -791,19 +812,70 @@ function mso_page_feed($page_slug = '', $page_title = 'Подписаться', 
 		else return $do . $out . $posle;
 }
 
-# формирование ссылки «обсудить»
+# формирование ссылки для rss страницы
+function mso_page_content($page_content = '')
+{
+	mso_hook('content_start'); # хук на начало блока
+	echo mso_hook('content_content', $page_content);
+	mso_hook('content_end'); # хук на конец блока
+}
+
+
+
+# формирование ссылки «обсудить» если разрешен комментарий
 function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $title = 'Обсудить', $do = '', $posle = '', $echo = true)
 {
 	global $MSO;
 	
-	if (!$page_slug) return '';
-	if (!$page_comment_allow) return '';
-	
-	$out = $do . '<a href="' . $MSO->config['site_url'] . 'page/' . mso_slug($page_slug) . '#comments">' . $title . '</a>' . $posle;
-	
-	if ($echo) echo $out;
-		else return $out;
+	if (is_array($page_comment_allow)) // первый элемент - массив, значит принимаем его значения - остальное игнорируем
+	{
+		$def = array(
+			'page_comment_allow' => true, // разрешены комментарии?
+			'page_slug' => '', // короткая ссылка страницы
+			'title' => 'Обсудить', // титул, если есть ссылка
+			'title_no_link' => 'Посмотреть комментарии', // титул если ссылки нет
+			'do' => '', // текст ДО
+			'posle' => '', // текст ПОСЛЕ
+			'echo' => true, // выводить?
+			'page_count_comments' => 0 // колво комментов
+		);
+		$r = array_merge($def, $page_comment_allow); // объединяем дефолт с входящим
+		
+		if (!$r['page_slug']) return ''; // не указан slug - выходим
+		
+		// pr($r);
+		
+		$out = '';
+		
+		if (!$r['page_comment_allow']) // коментирование запрещено
+		{
+			if ( $r['page_count_comments'] ) // но если уже есть комментарии, то выводи строчку title_no_link
+			{
+				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . 'page/' 
+						. mso_slug($r['page_slug']) . '#comments">' . $r['title_no_link'] . '</a>' . $r['posle'];
+			}			
+		}
+		else 
+			$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . 'page/' 
+						. mso_slug($r['page_slug']) . '#comments">' . $r['title'] . '</a>' . $r['posle'];
+		
+		
+		if ($r['echo']) echo $out;
+			else return $out;	
+	}
+	else // обычные параметры
+	{
+		if (!$page_slug) return '';
+		if (!$page_comment_allow) return '';
+		
+		$out = $do . '<a href="' . $MSO->config['site_url'] . 'page/' . mso_slug($page_slug) . '#comments">' . $title . '</a>' . $posle;
+		if ($echo) echo $out;
+			else return $out;		
+	}
 }
+
+
+
 
 # функция из Calendar.php
 if ( !function_exists('get_total_days') ) 

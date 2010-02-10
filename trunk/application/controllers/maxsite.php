@@ -65,7 +65,6 @@ class Maxsite extends Controller
 		// elseif ($method == 'ping') $this->_view_i('ping', 'xmlrpc/ping');
 		elseif ($method == 'login') $this->_view_i('login', 'login');
 		elseif ($method == 'logout') $this->_view_i('logout', 'logout');
-		// elseif ($method == 'newcomment') $this->_view_i('newcomment', 'newcomment');
 		else $this->page_404();
 	}
 	

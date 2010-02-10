@@ -9,7 +9,7 @@ require_once( getinfo('common_dir') . 'comments.php' ); // функции ком
 echo mso_get_new_comment( array('page_title'=>$page_title) ); 
 
 // получаем все разрешенные комментарии
-$comments = mso_get_comments($page_id, array('tags'=>'<strong><em><i><b><u><s><font><pre><code>'));
+$comments = mso_get_comments($page_id);
 
 
 // в сессии проверяем может быть только что отправленный комментарий
@@ -18,7 +18,7 @@ if (isset($MSO->data['session']['comments']) and $MSO->data['session']['comments
 	$anon_comm = $MSO->data['session']['comments']; // массив: id-коммент
 	
 	// получаем комментарии для этого юзера
-	$an_comments = mso_get_comments($page_id, array('tags'=>'<strong><em><i><b><u><s><font><pre><code>', 'anonim_comments'=>$anon_comm));
+	$an_comments = mso_get_comments($page_id, array('tags'=>'<strong><em><i><b><u><s><font><pre><code><blockquote>', 'anonim_comments'=>$anon_comm));
 	
 	// добавляем в вывод
 	if ($an_comments) $comments = array_merge($comments, $an_comments);
@@ -39,22 +39,7 @@ if ($comments) // есть страницы
 		$comments_date = mso_date_convert('Y-m-d в H:i:s', $comments_date);
 		
 		echo '<li><span><a href="#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $comments_date . '</a>';
-		
-		if ($comments_users_id) // это автор
-		{
-			echo ' | ';
-			if ($users_url) echo '<a href="' . $users_url . '">' . $users_nik . '</a>';
-				else echo $users_nik;
-		}
-		elseif ($comments_comusers_id) // это комюзер
-		{
-			echo ' | <a href="' . getinfo('siteurl') . 'users/' . $comusers_id . '">';
-			if ($comusers_nik) echo $users_nik;
-				else echo 'Комментатор ' . $comusers_id;
-			echo '</a>';
-		}
-		elseif ($comments_author_name) echo ' | ' . $comments_author_name . ' (анонимно)'; // аноним
-		
+		echo ' | ' . $comments_url;
 		if (!$comments_approved) echo ' | Ожидает модерации';
 
 		echo '</span><br />' . $comments_content;

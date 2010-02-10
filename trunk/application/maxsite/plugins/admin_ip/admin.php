@@ -5,7 +5,8 @@
  * (с) http://maxsite.org/
  */
 
-
+	global $MSO;
+	
 	$CI = & get_instance();
 	$options_key = 'plugin_admin_ip';
 	
