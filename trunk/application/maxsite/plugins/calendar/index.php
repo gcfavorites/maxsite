@@ -135,7 +135,7 @@ function calendar_widget_custom($arg = array(), $num = 1)
 	if (is_type('archive'))
 	{
 		$year = (int) mso_segment(2);
-		if ($year>date('Y', mktime()) or $year<2008) $year = date('Y', mktime());
+		if ($year>date('Y', mktime()) or $year<2000) $year = date('Y', mktime());
 		
 		$month = (int) mso_segment(3);
 		if ($month>12 or $month<1) $month = date('m', mktime());

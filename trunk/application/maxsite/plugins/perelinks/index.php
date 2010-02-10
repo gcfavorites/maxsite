@@ -73,7 +73,7 @@ function perelinks_custom($content = '')
 		
 		//$key = mb_convert_encoding($key, "Windows-1251", "UTF-8");
 		
-		$r = '| (' . $key . ') |siu';
+		$r = '| (' . preg_quote($key) . ') |siu';
 		
 		if ( preg_match($r , $content) )
 		{

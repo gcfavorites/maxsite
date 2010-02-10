@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function psevdocode_autoload($args = array())
 {
-	mso_hook_add( 'content_out', 'psevdocode_go'); # хук на вывод контента
+	mso_hook_add( 'content', 'psevdocode_go'); # хук на вывод контента
 }
 
 

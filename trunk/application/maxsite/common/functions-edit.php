@@ -107,7 +107,8 @@
 		{
 			// проверим существование уже такой же рубрики с таким же именем
 			$CI->db->select('category_id');
-			$CI->db->where(array('category_name'=>$category_name));
+			// $CI->db->where(array('category_name'=>$category_name, 'category_id_parent'=>$category_id_parent));
+			$CI->db->where(array('category_slug'=>$category_slug));
 			$query = $CI->db->get('category');
 			
 			if ($query->num_rows() == 0 ) // нет такого
@@ -136,7 +137,7 @@
 			}
 			else
 			{   // есть такая рубрика - не добавляем
-				$response = array('result'=>'0', 'description'=>'Category existing');
+				$response = array('result'=>'0', 'description'=>'Category slug existing');
 			}
 		}
 		else
@@ -175,6 +176,10 @@
 			// нужно удалить у всех страниц этой рубрики эту рубрику
 			$CI->db->where('category_id', $category_id);
 			$CI->db->delete('cat2obj');
+			
+			# а также у всех у кого она стоит родительская
+			$CI->db->where('category_id_parent', $category_id);
+			$CI->db->update('category', array('category_id_parent'=>'0'));
 			
 			$CI->db->where('category_id', $category_id);
 			$res = ($CI->db->delete('category')) ? '1' : '0';

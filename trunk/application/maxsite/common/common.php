@@ -118,12 +118,22 @@ function mso_strip($s = '', $logical = false)
 function mso_initalizing()
 {
 	global $MSO;
+	$CI = & get_instance();
 	
 	# считываем файл конфигурации
 	$fn = $MSO->config['config_file'];
 	if ( file_exists($fn) ) require_once ($fn);
 	
-	$CI = & get_instance();
+	// если кэш старый, то очищаем его
+	$path = $CI->config->item('cache_path');
+	$mso_cache_last = ($path == '') ? BASEPATH . 'cache/' . '_mso_cache_last.txt' : $path . '_mso_cache_last.txt';
+	if (file_exists($mso_cache_last))
+	{
+		$time = filectime($mso_cache_last) + $MSO->config['cache_time'];
+		if (time() > $time) mso_flush_cache(); // время истекло - сбрасываем кэш
+	}
+	else mso_flush_cache(); // файла нет - сбрасываем кэш
+	
 	
 	# стоит ли флаг, что уже произведена инсталяция?
 	if ($mso_install == false)
@@ -697,7 +707,7 @@ function mso_get_option($key, $type = 'general', $return_value = false)
 	if (@preg_match( '|_serialize_|A', $result))
 	{
 		$result = preg_replace( '|_serialize_|A', '', $result, 1 );
-		$result = unserialize($result);
+		$result = @unserialize($result);
 	}
 
 	return $result;
@@ -882,6 +892,7 @@ function mso_flush_cache($full = false, $dir = false)
 	{
 		// удаляем файлы только в текущем каталоге кэша
 		// переделанная функция delete_files из file_helper
+		$mso_cache_last = $cache_path . '_mso_cache_last.txt';
 		
 		if ($dir) $cache_path .= $dir . '/'; // если указан $dir, удаляем только в нем
 		
@@ -894,6 +905,14 @@ function mso_flush_cache($full = false, $dir = false)
 			}
 		}
 		@closedir($current_dir);
+		
+		// создадим служебный файл _mso_cache_last.txt который используется для сброса кэша по дате создания
+		// при инициализации смотрится дата этого файла и если он создан позже, чем время жизни кэша, то кэш сбрасывается mso_flush_cache
+		if (!$dir)
+		{
+			if (file_exists($mso_cache_last)) unlink($mso_cache_last);
+			$fp = @fopen($mso_cache_last, 'w');
+		}
 	}
 }
 
@@ -1124,9 +1143,13 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 
 	// $pee = preg_replace("|</div>\s*</p>|", "</div>\n", $pee);
 
-	$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee);
-	$pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
+	$pee = preg_replace('|<p><blockquote([^>]*)></p>|i', "<blockquote$1>", $pee);
+	$pee = str_replace('<p></blockquote></p>', '</blockquote>', $pee);
 	
+	$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1>", $pee);
+	$pee = str_replace('</blockquote></p>', '</blockquote>', $pee);
+	
+
 	// $pee = str_replace('</div></p>', '</p></div>', $pee);
 
 	// $pee = preg_replace('|<hr([^>]*)>|i', "\n\n<hr$1>\n\n", $pee);
@@ -1170,6 +1193,7 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 # моя функция авторасстановки тэгов
 function mso_balance_tags( $text ) 
 {
+	//return $text;
 	// те тэги, которые нужно закрывать автоматом до конца строки
 	$blocks_for_close = 'p|li';
 	
@@ -2085,7 +2109,7 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false)
 	
 	// pr($CI->email);
 
-	return $CI->email->send();
+	return @$CI->email->send();
 }
 
 # для юникода отдельный wordwrap
@@ -2200,7 +2224,7 @@ function mso_menu_build($menu = '', $select_css = 'selected')
 	return $out;
 }
 
-# добавляем куку ко всему сайту с помощью сессии и редиректа на главную
+# добавляем куку ко всему сайту с помощью сессии и редиректа на главную или другую указанную страницу (после главной)
 function mso_add_to_cookie($name_cookies, $value, $expire, $redirect = false)
 {
 	$CI = & get_instance();
@@ -2211,6 +2235,7 @@ function mso_add_to_cookie($name_cookies, $value, $expire, $redirect = false)
 	$add_to_cookie[$name_cookies] = array('value'=>$value, 'expire'=> $expire );
 
 	$CI->session->set_userdata(	array(	'_add_to_cookie' => $add_to_cookie ) );
+	$CI->session->set_userdata(	array(	'_add_to_cookie_redirect' => $redirect ) ); // куда редиректимся
 	
 	if ($redirect) 
 	{
@@ -2242,20 +2267,37 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 	if (!$a) return '';
 	
 	if (!isset($options['class_ul'])) $options['class_ul'] = ''; // класс UL
+	if (!isset($options['class_ul_style'])) $options['class_ul_style'] = ''; // свой стиль для UL
 	if (!isset($options['class_child'])) $options['class_child'] = 'child'; // класс для ребенка
-	if (!isset($options['class_current'])) $options['class_current'] = 'current-page'; // класс текущей страницы
+	if (!isset($options['class_child_style'])) $options['class_child_style'] = ''; // свой стиль для ребенка
+	
+	if (!isset($options['class_current'])) $options['class_current'] = 'current-page'; // класс li текущей страницы
+	if (!isset($options['class_current_style'])) $options['class_current_style'] = ''; // стиль li текущей страницы
+	
+	if (!isset($options['class_li'])) $options['class_li'] = ''; // класс LI
+	if (!isset($options['class_li_style'])) $options['class_li_style'] = ''; // стиль LI
+	
 	if (!isset($options['format'])) $options['format'] = '[LINK][TITLE][/LINK]'; // формат ссылки
 	if (!isset($options['format_current'])) $options['format_current'] = '<span>[TITLE]</span>'; // формат для текущей
+	
 	if (!isset($options['title'])) $options['title'] = 'page_title'; // имя ключа для титула
 	if (!isset($options['link'])) $options['link'] = 'page_slug'; // имя ключа для слага
 	if (!isset($options['descr'])) $options['descr'] = 'category_desc'; // имя ключа для описания
+	if (!isset($options['id'])) $options['id'] = 'page_id'; // имя ключа для id
+	if (!isset($options['slug'])) $options['slug'] = 'page_slug'; // имя ключа для slug
+	if (!isset($options['menu_order'])) $options['menu_order'] = 'page_menu_order'; // имя ключа для menu_order
+	if (!isset($options['id_parent'])) $options['id_parent'] = 'page_id_parent'; // имя ключа для id_parent
+	
 	if (!isset($options['count'])) $options['count'] = 'count'; // имя ключа для количества элементов
+	
 	if (!isset($options['prefix'])) $options['prefix'] = 'page/'; // префикс для ссылки
 	if (!isset($options['current_id'])) $options['current_id'] = true; // текущая страница отмечается по page_id - иначе по текущему url
 	if (!isset($options['childs'])) $options['childs'] = 'childs'; // поле для массива детей
 	
-	if ($child) $out = NR . '	<ul class="' . $options['class_child'] . '">';
-		else $out = NR . '<ul class="' . $options['class_ul'] . '">';
+	
+	
+	if ($child) $out = NR . '	<ul class="' . $options['class_child'] . '" style="' . $options['class_child_style'] . '">';
+		else $out = NR . '<ul class="' . $options['class_ul'] . '" style="' . $options['class_ul_style'] . '">';
 	
 	$current_url = getinfo('siteurl') . mso_current_url(); // текущий урл
 	
@@ -2264,18 +2306,25 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 		$title = $elem[$options['title']];
 		$url = getinfo('siteurl') . $options['prefix'] . $elem[$options['link']];
 		
-		//if ($url == $current_url)
-		//	$link = '<a href="' . $url . '" title="' . mso_strip($title) . '" class="' . $options['class_current'] . '">';
-		//else
-		
 		$link = '<a href="' . $url . '" title="' . mso_strip($title) . '">';
 		
 		if (isset($elem[$options['descr']])) $descr = $elem[$options['descr']];
 		else $descr = '';
 
 		if (isset($elem[$options['count']])) $count = $elem[$options['count']];
-		else $count = '';		
+		else $count = '';
 		
+		if (isset($elem[$options['id']])) $id = $elem[$options['id']];
+		else $id = '';
+			
+		if (isset($elem[$options['slug']])) $slug = $elem[$options['slug']];
+		else $slug = '';
+
+		if (isset($elem[$options['menu_order']])) $menu_order = $elem[$options['menu_order']];
+		else $menu_order = '';
+
+		if (isset($elem[$options['id_parent']])) $id_parent = $elem[$options['id_parent']];
+		else $id_parent = '';
 		
 		$cur = false;
 		
@@ -2300,18 +2349,20 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 			
 		}
 		
-		
-		
 		$e = str_replace('[LINK]', $link, $e);
 		$e = str_replace('[/LINK]', '</a>', $e);
 		$e = str_replace('[TITLE]', $title, $e);
 		$e = str_replace('[DESCR]', $descr, $e);
+		$e = str_replace('[ID]', $id, $e);
+		$e = str_replace('[SLUG]', $slug, $e);
+		$e = str_replace('[MENU_ORDER]', $menu_order, $e);
+		$e = str_replace('[ID_PARENT]', $id_parent, $e);
 		$e = str_replace('[COUNT]', $count, $e);
 		
 		if (isset($elem[$options['childs']])) 
 		{
-			if ($cur) $out .= NR . '<li class="' . $options['class_current'] . '">' . $e;
-				else $out .= NR . '<li>' . $e;
+			if ($cur) $out .= NR . '<li class="' . $options['class_current'] . '" style="' . $options['class_current_style'] . '">' . $e;
+				else $out .= NR . '<li class="' . $options['class_li'] . '" style="' . $options['class_li_style'] . '">' . $e;
 			$out .= mso_create_list($elem[$options['childs']], $options, true);
 			$out .= NR . '</li>';
 		}
@@ -2320,8 +2371,8 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 			if ($child) $out .= NR . '	';
 				else $out .= NR;
 			
-			if ($cur) $out .= '<li class="' . $options['class_current'] . '">' . $e . '</li>';
-				else $out .= '<li>' . $e . '</li>';
+			if ($cur) $out .= '<li class="' . $options['class_current'] . '" style="' . $options['class_current_style'] . '">' . $e . '</li>';
+				else $out .= '<li class="' . $options['class_li'] . '" style="' . $options['class_li_style'] . '">' . $e . '</li>';
 		}
 	}
 	

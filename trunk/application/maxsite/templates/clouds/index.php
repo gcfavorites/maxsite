@@ -4,7 +4,6 @@
 $type_dir = getinfo('templates_dir') . 'default/type/';
 // $type_dir = 'type/'; // или свой
 
-
 # глобальный кэш в каталоге html - должен быть создан и права на запись (777)!
 if ( mso_get_option('global_cache', 'templates', false) ) // если разрешено в опциях шаблона
 {
@@ -46,6 +45,7 @@ if ( is_type('archive') ) 			require($type_dir . 'archive.php');	// архив �
 	elseif ( is_type('users') )	
 	{
 		if (mso_segment(3)=='edit')	require($type_dir . 'users-form.php'); // редактирование комюзера
+		elseif (mso_segment(3)=='lost') require($type_dir . 'users-form-lost.php');	// список всех комюзеров
 		elseif (mso_segment(2)=='') require($type_dir . 'users-all.php');	// список всех комюзеров
 		else require($type_dir . 'users.php');								// комюзер
 	}

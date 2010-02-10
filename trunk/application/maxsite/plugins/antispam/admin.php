@@ -23,6 +23,7 @@
 		$options['black_ip'] = $post['f_black_ip'];
 		$options['black_words'] = $post['f_black_words'];
 		$options['moderation_words'] = $post['f_moderation_words'];
+		$options['moderation_comusers'] = $post['f_moderation_comusers'];
 	
 	
 		mso_add_option($options_key, $options, 'plugins');
@@ -43,6 +44,7 @@
 		if ( !isset($options['black_ip']) ) $options['black_ip'] = ''; // черный список IP
 		if ( !isset($options['black_words']) ) $options['black_words'] = ''; // черный список слов
 		if ( !isset($options['moderation_words']) ) $options['moderation_words'] = ''; // список слов для модерации
+		if ( !isset($options['moderation_comusers']) ) $options['moderation_comusers'] = ''; // список слов для модерации комюзеров
 		if ( !isset($options['moderation_links']) ) $options['moderation_links'] = true; // модерация всех ссылок
 
 		
@@ -82,6 +84,11 @@
 		$form .= htmlspecialchars($options['moderation_words']);
 		$form .= '</textarea>';		
 		
+		$form .= '<br /><br /><h2>Номера комюзеров, которые всегда попадают в модерацию</h2>';
+		$form .= '<p>Укажите номера комюзеров, которые принудительно отравляют комментарий на премодерацию. Один номер в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.</p>';
+		$form .= '<textarea name="f_moderation_comusers" rows="7" style="width: 99%;">';
+		$form .= htmlspecialchars($options['moderation_comusers']);
+		$form .= '</textarea>';	
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;

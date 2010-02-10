@@ -61,7 +61,7 @@
 			
 			$text_email = "Вами отправлено сообщение: \n" . $text_email;
 			
-			$form_hide = mso_mail($email, $subject, $text_email);
+			$form_hide = mso_mail($email, $subject, $text_email, $_POST['contact_mail']);
 
 			if ( isset($_POST['subscribe']) ) 
 			{

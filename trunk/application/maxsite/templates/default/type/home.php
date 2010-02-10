@@ -1,5 +1,12 @@
 <?php 
 
+// нужно выводить рубрики блоками - сделаем отдельным файлом
+if (mso_get_option('home_cat_block', 'templates', '0'))
+{
+	require('home-cat-block.php'); 
+	return;
+}
+
 // возможно указана страница для отображения вверху перед всеми страницами
 if (mso_get_option('home_page_id_top', 'templates', '0'))
 {
@@ -13,7 +20,9 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 			// сортировка рубрик
 			'cat_order' => 'category_name', 
 			// порядок сортировки
-			'cat_order_asc' => 'asc' ); 
+			'cat_order_asc' => 'asc',
+			'pagination' => false,
+			); 
 	
 	$page_top = mso_get_pages($par, $pag);
 }
@@ -43,6 +52,9 @@ $par = array(
 			'cat_order_asc' => 'asc',
 	
 			); 
+
+// если только заголовки, то отключим пагинацию
+// if ( !mso_get_option('home_full_text', 'templates', '1') ) $par['pagination'] = false;
 
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
@@ -102,7 +114,7 @@ if ($pages) // есть страницы
 				# mso_page_feed($page_slug, 'комментарии по RSS', '<br /><span>Подписаться</span> на ', '', true);
 			echo '</div>';
 			
-			echo '<div class="page_content">';
+			echo '<div class="page_content type_home">';
 			
 				mso_page_content($page_content);
 				echo '<div class="break"></div>';

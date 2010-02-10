@@ -2,12 +2,12 @@
 
 /**
  * MaxSite CMS
- * (ñ) http://maxsite.org/
+ * (Ñ) http://maxsite.org/
  */
 
 class Maxsite_lib 
 {
-	var $version = '0.22';
+	var $version = '0.23';
 	var $config = array();
 	var $data = array();
 	var $hooks = array();
@@ -43,7 +43,7 @@ class Maxsite_lib
 		$this->config['admin_dir'] = $this->config['base_dir'] . 'admin/';
 		$this->config['config_file'] = $this->config['base_dir'] . 'mso_config.php';
 		
-		$this->config['cache_time'] = 86400; // â ñåêóíäàõ = 24 ÷àñà
+		$this->config['cache_time'] = 86400; // Ð² ÑÐµÐºÑƒÐ½Ð´Ð°Ñ… = 24 Ñ‡Ð°ÑÐ°
 		$this->config['template'] = 'default';
 		
 		$this->config['secret_key'] = $this->config['site_url'];

@@ -154,8 +154,8 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	
 	$CI->db->select('category.*, COUNT(cat2obj_id) AS pages_count');
 	
-	$CI->db->where('category_type', $type);
-	$CI->db->where('category_id_parent', $parent_id);
+	$CI->db->where('category.category_type', $type);
+	$CI->db->where('category.category_id_parent', $parent_id);
 	
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
 	
@@ -191,17 +191,17 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 {
 	$CI = & get_instance();
 	$CI->db->select('category.*, COUNT(cat2obj_id) AS pages_count');
-	$CI->db->where(array('category_type'=>$type, 'category_id_parent'=>$parent_id));
+	$CI->db->where(array('category.category_type'=>$type, 'category.category_id_parent'=>$parent_id));
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
 	
 	// включить только указанные
 	// если разрешено опцией для детей
-	if ($in_child and $in) $CI->db->where_in('category_id', $in);
+	if ($in_child and $in) $CI->db->where_in('category.category_id', $in);
 	
 	if ($hide_empty) $CI->db->having('pages_count>', 0);
 	
 	// исключить указанные
-	if ($ex) $CI->db->where_not_in('category_id', $ex);
+	if ($ex) $CI->db->where_not_in('category.category_id', $ex);
 	
 	$CI->db->order_by('category.'.$order, $asc);
 	$CI->db->group_by('category.category_id');
@@ -250,7 +250,6 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 # дополнительный параметр level указывает на левый отступ от края списка
 function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = 'ASC', $type_page = 'blog', $cache = true)
 {
-
 	if ($cache) // можно кэшировать
 	{
 		// возможно, что этот список уже сформирован, поэтому посмотрим в кэше
@@ -319,9 +318,15 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 		$r[$row['category_id']]['childs'] = '';
 		$r[$row['category_id']]['pages'] = array();
 		$r[$row['category_id']]['links'] = array();
+		
+		// ошибочный парент!
+		if ($r[$row['category_id']]['category_id_parent'] == $r[$row['category_id']]['category_id'])
+			$r[$row['category_id']]['category_id_parent'] = 0;
+		
 	}
-	// pr($r);
 	
+	// pr($r);
+
 	# вычисляем уровень вложенности
 	foreach ($r as $row)
 	{

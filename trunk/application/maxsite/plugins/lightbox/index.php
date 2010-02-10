@@ -2,16 +2,16 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (СЃ) http://maxsite.org/
  */
 
 
-# функция автоподключения плагина
+# С„СѓРЅРєС†РёСЏ Р°РІС‚РѕРїРѕРґРєР»СЋС‡РµРЅРёСЏ РїР»Р°РіРёРЅР°
 function lightbox_autoload($args = array())
 {
-	if (!is_type('admin') ) mso_hook_add( 'head', 'lightbox_head');
-	if (is_type('admin') ) mso_hook_add( 'admin_head', 'lightbox_head');
-	mso_hook_add( 'content_out', 'lightbox_content'); # хук на вывод контента после обработки всех тэгов
+	mso_hook_add( 'head', 'lightbox_head');
+	mso_hook_add( 'admin_head', 'lightbox_head');
+	mso_hook_add( 'content_out', 'lightbox_content'); # С…СѓРє РЅР° РІС‹РІРѕРґ РєРѕРЅС‚РµРЅС‚Р° РїРѕСЃР»Рµ РѕР±СЂР°Р±РѕС‚РєРё РІСЃРµС… С‚СЌРіРѕРІ
 }
 
 function lightbox_head($args = array()) 
@@ -57,7 +57,7 @@ function lightbox_content($text = '')
 	
 	$preg = array(
 	
-		// удалим раставленные абзацы
+		// СѓРґР°Р»РёРј СЂР°СЃС‚Р°РІР»РµРЅРЅС‹Рµ Р°Р±Р·Р°С†С‹
 		'~<p>\[gal=(.*?)\[\/gal\]</p>~si' => '[gal=$1[/gal]',
 		'~<p>\[gallery(.*?)\](\s)*</p>~si' => '[gallery$1]',
 		'~<p>\[\/gallery\](\s)*</p>~si' => '[/gallery]',
@@ -74,9 +74,13 @@ function lightbox_content($text = '')
 		
 		'~\[gal=(.*?)\](.*?)\[\/gal\]~si' => '<a href="$2"><img src="$1" alt="" /></a>',
 		
-		'~\[image=(.[^\s]*?)[\s]+(.*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox" title="$2"><img src="$1" alt="$2" /></a>',
-		'~\[image=(.*?)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$1" alt="" /></a>',
 		'~\[image\](.*?)\[\/image\]~si' => '<a href="$1" class="lightbox"><img src="$1" alt="" /></a>',
+	
+		'~\[image=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox" title="$2"><img src="$1" alt="$2" /></a>',
+		
+		'~\[image=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$1" alt="" /></a>',
+		
+	
 	
 		'~\[galname\](.*?)\[\/galname\]~si' => '<div>$1</div>',
 	);

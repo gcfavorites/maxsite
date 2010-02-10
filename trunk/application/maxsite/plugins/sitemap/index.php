@@ -41,17 +41,14 @@ function sitemap($arg = array())
 	// кэш строим по url, потому что у он меняется от пагинации
 	$cache_key = mso_md5('sitemap'. implode('', $MSO->data['uri_segment']));
 	$k = mso_get_cache($cache_key);
-	if ($k) 
-	{
-		return $k; // да есть в кэше
-	}
+	if ($k) return $k; // да есть в кэше
 	
 	$out = '';
 	// параметры для получения страниц
 	$par = array( 
 			//'no_limit' => true,
 			 'limit'=>300,
-			'type'=> false, 
+			// 'type'=> false, 
 			'custom_type'=> 'home', 
 			'content'=> false,
 			//'order_asc'=> 'desc',
@@ -76,9 +73,20 @@ function sitemap($arg = array())
 				$out .= '</ul>' . NR . '<h3>' . $date . '</h3>' . NR . '<ul>' . NR;
 			}
 			
+			$slug = mso_slug($page['page_slug']);
+			
 			$out .= '<li>' . mso_date_convert('d', $page['page_date_publish']) . ': <a href="' . getinfo('siteurl') 
-					. 'page/' . mso_slug($page['page_slug']) . '">' 
-					. $page['page_title'] . '</a></li>' . NR;
+					. 'page/' . $slug . '" title="' . $page['page_title'] . '">' 
+					. $page['page_title'] . '</a>'
+					
+					# синонимы ссылок
+					. ' ('
+					. '<a href="' . getinfo('siteurl') . $slug . '" title="slug: ' . $slug . '">slug</a>, '
+					. '<a href="' . getinfo('siteurl') . 'page/' . $page['page_id'] . '" title="page: ' . $page['page_id'] . '">page: ' . $page['page_id'] . '</a>, '
+					. '<a href="' . getinfo('siteurl') . $page['page_id'] . '" title="id: ' . $page['page_id'] . '">id: ' . $page['page_id'] . '</a>)'
+					# /синонимы ссылок
+					
+					. '</li>' . NR;
 					
 			$date1 = $date;
 		}

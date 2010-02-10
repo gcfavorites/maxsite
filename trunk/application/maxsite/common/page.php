@@ -1291,6 +1291,9 @@ function mso_page_map($page_id = 0, $page_id_parent = 0)
 	{
 		$CI->db->where('page_id', $page_id);
 		$CI->db->where('page_id_parent', '0');
+		$CI->db->where('page_status', 'publish');
+		$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		
 		$CI->db->or_where('page_id', $page_id_parent);
 	}
 	
@@ -1324,7 +1327,8 @@ function _mso_page_map_get_child($page_id = 0, $cur_id = 0)
 	$CI = & get_instance();
 	$CI->db->select('page_id, page_id_parent, page_title, page_slug');
 	$CI->db->where('page_id_parent', $page_id);
-	
+	$CI->db->where('page_status', 'publish');
+	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));	
 	$query = $CI->db->get('page');
 	
 	$result = $query->result_array(); // здесь все рубрики

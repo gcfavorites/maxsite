@@ -12,6 +12,7 @@ function antispam_autoload($args = array())
 	mso_create_allow('antispam_edit', 'Админ-доступ к antispam');
 	mso_hook_add( 'admin_init', 'antispam_admin_init'); # хук на админку
 	mso_hook_add( 'new_comments_check_spam', 'antispam_check_spam'); # хук новый комментарий
+	mso_hook_add( 'new_comments_check_spam_comusers', 'antispam_check_spam_comusers'); # хук новый комментарий для комюзера
 }
 
 
@@ -202,6 +203,31 @@ Array
 
 }
 
+# модерирование комюзеров
+function antispam_check_spam_comusers($arg = array())
+{
+	# входящий параметр 
+	# array( 'comments_page_id' => $comments_page_id, 'comments_comusers_id' => $comusers_id, 
+	# 'comments_com_approved' => $comments_com_approved
+	
+	# выход: 1 разрешить 0 - модерация
+	
+	// смотрим есть ли id в списке модерируемом. если есть, то возвращаем на модерацию = 0
+	$options_key = 'plugin_antispam';
+	
+	$options = mso_get_option($options_key, 'plugins', array()); // все опции
+	
+	if ( !isset($options['antispam_on']) ) return $arg['comments_com_approved']; // включен ли антиспам
+	if ( !isset($options['moderation_comusers']) ) return $arg['comments_com_approved']; // нет списка
 
+	$nums = split("\n", trim($options['moderation_comusers'])); // список комюзеров
+	
+	foreach ($nums as $num)
+	{
+		if ( ( (int) trim($num)) == $arg['comments_comusers_id']) return 0;
+	}
+	
+	return 1;
+}
 
 ?>

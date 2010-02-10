@@ -63,7 +63,7 @@ function xml_sitemap_custom()
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
 		<loc>' . $url . '</loc>
-		<lastmod>' . date('Y-m-d') . $time_zone . '</lastmod>
+		<lastmod>' . date('Y-m-d') . 'T' . date('H:i:s') . $time_zone . '</lastmod>
 		<changefreq>daily</changefreq>
 		<priority>1</priority>
 	</url>
@@ -119,9 +119,11 @@ function xml_sitemap_custom()
 	$query = $CI->db->get('category');
 	if ($query->num_rows()>0)
 	{
+		$date = date('Y-m-d') . 'T' . date('H:i:s') . $time_zone;
+		
 		foreach ($query->result_array() as $row)
 		{
-			$date = str_replace(' ', 'T', date('Y-m-d')) . $time_zone;
+			// $date = str_replace(' ', 'T', date('Y-m-d')) . $time_zone;
 			
 			$out .= $t . '<url>' . NR;
 			$out .= $t . $t . '<loc>' . $url . 'category/' . $row['category_slug'] . '</loc>' . NR;

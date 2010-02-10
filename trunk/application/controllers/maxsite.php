@@ -76,7 +76,7 @@ class Maxsite extends Controller
 		$data = array('type'=>$type);
 		$MSO->data = array_merge($this->data_def, $data);
 
-		// еси главная страница то проверим в сессии служебный массив _add_to_cookie
+		// если главная страница то проверим в сессии служебный массив _add_to_cookie
 		// если он есть, то внесем из него все данные в куки
 		//	[_add_to_cookie] => Array
 		//	(
@@ -86,6 +86,7 @@ class Maxsite extends Controller
 		//				[expire] => 1221749019
 		//			)
 		//	)
+		//	[_add_to_cookie_redirect] => http://max-3000.com/page/about
 		
 		if ($type == 'home' and isset($this->session->userdata['_add_to_cookie'])) // есть
 		{
@@ -99,8 +100,19 @@ class Maxsite extends Controller
 			
 			$this->session->unset_userdata('_add_to_cookie'); // удаляем добавленное
 			
-			// редирект пна главную страницу
-			mso_redirect(getinfo('siteurl'), true);
+			// редирект на главную страницу
+			if (isset($this->session->userdata['_add_to_cookie_redirect']))
+			{
+				
+				$r = $this->session->userdata['_add_to_cookie_redirect'];
+				if ($r === true or $r === false) // логическая переменная
+					mso_redirect(getinfo('siteurl'), true); // редирект на главную
+				else 
+					mso_redirect($r, true); // редирект по указанному адресу
+			}
+			else 
+				mso_redirect(getinfo('siteurl'), true); // редирект на главную
+				
 			exit;
 		}
 		

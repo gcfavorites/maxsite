@@ -41,7 +41,7 @@ if ($pages) // есть страницы
 			mso_page_edit_link($page_id, 'Edit page', '<br />[', ']');
 		echo '</div>';
 		
-		echo '<div class="page_content">';
+		echo '<div class="page_content type_page">';
 			mso_page_content($page_content);
 			echo '<div class="break"></div>';
 			

@@ -411,6 +411,17 @@ function mso_get_new_comment($args = array())
 						
 						if ($moderation == 1) $comments_com_approved = 0; // антиспам определил, что нужно премодерировать
 						
+						if ($comments_com_approved == 1) // если разрешено
+						{
+							$comments_com_approved = mso_hook('new_comments_check_spam_comusers', 
+											array( 
+												'comments_page_id' => $comments_page_id,
+												'comments_comusers_id' => $comusers_id,
+												'comments_com_approved' => $comments_com_approved,
+											), 1);
+						}
+						
+						
 						// комюзер добавлен или есть
 						// теперь сам коммент
 						$ins_data = array (

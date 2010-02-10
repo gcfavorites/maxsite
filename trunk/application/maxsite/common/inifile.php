@@ -169,9 +169,18 @@ function mso_view_ini($all = false)
 				
 				foreach( $values as $val ) 
 				{
-					if ($value == trim($val)) $checked = 'selected="selected"';
+					// $val может быть с || val - текст
+					
+					$val = trim($val);
+					$val_t = $val;
+					
+					$ar = explode('||', $val);
+					if (isset($ar[0])) $val = trim($ar[0]);
+					if (isset($ar[1])) $val_t = trim($ar[1]);
+					
+					if ($value == $val) $checked = 'selected="selected"';
 						else $checked = '';
-					$f .= NR . '<option value="' . trim($val) . '" ' . $checked . ' />' . trim($val) . '</option>';
+					$f .= NR . '<option value="' . $val . '" ' . $checked . ' />' . $val_t . '</option>';
 				}
 				$f .= NR . '</select>' . NR;
 			}

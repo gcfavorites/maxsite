@@ -528,7 +528,10 @@
             },
             
             // последнее сохранение автосаве
+            
             $('span.autosave-editor').html('<a target="_blank" href="' + autosaveold + '">Последнее автосохранение</a> (Ctrl+S - сохранить / фокус в визуальном редакторе)').css('margin-left', '20px')
+            
+            // $('span.autosave-editor').html('Ctrl+S - автосохранение / фокус в визуальном редакторе').css('margin-left', '20px')
             
         
             );
@@ -647,13 +650,23 @@
         {
 			autotext = this.getContent();
 			
-			$('span.autosave-editor').html('Сохранение...');
-				
-			$.post(autosaveurl, { "text": autotext }, function(data)
-			{ 
-				var dd = new Date();
-				$('span.autosave-editor').html('<a target="_blank" href="' + data + '">Автосохранение в ' + dd.toLocaleTimeString() + '</a>');
-			} );
+			if (autosavetextold != autotext)
+			{
+				$('span.autosave-editor').html('Сохранение...');
+					
+				$.post(autosaveurl, { "text": autotext, 'id': autosaveid }, function(data)
+				{ 
+					var dd = new Date();
+					$('span.autosave-editor').html('<a target="_blank" href="' + data + '">Автосохранение в ' + dd.toLocaleTimeString() + '</a>');
+					
+					autosavetextold = autotext;
+				} );
+			}
+			else
+			{
+				// $('span.autosave-editor').html('Сохранение не требуется');
+			}
+			
         },
         // max -
         

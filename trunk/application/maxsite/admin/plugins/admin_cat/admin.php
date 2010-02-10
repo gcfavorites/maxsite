@@ -2,6 +2,8 @@
 	
 	$CI = & get_instance();
 	
+	require_once( getinfo('common_dir') . 'category.php' ); // функции рубрик 
+	
 	# редактирование существующей рубрики
 	if ( $post = mso_check_post(array('f_session_id', 'f_edit_submit', 
 									'f_category_id_parent', 'f_category_name', 
@@ -13,7 +15,7 @@
 		// получаем номер опции id из fo_edit_submit[]
 		$f_id = mso_array_get_key($post['f_edit_submit']); 
 		
-		// подготавливаем данные для xmlrpc
+		// подготавливаем данные
 		$data = array(
 			'category_id' => $f_id,
 			'category_id_parent' => (int) $post['f_category_id_parent'][$f_id],
@@ -24,8 +26,6 @@
 			);
 		
 		// выполняем запрос и получаем результат
-		// $result = mso_xmlrpc_send('EditCategory', mso_xmlrpc_this($data));
-		
 		require_once( getinfo('common_dir') . 'functions-edit.php' ); // функции редактирования
 		
 		$result = mso_edit_category($data);
@@ -57,8 +57,7 @@
 			);
 		
 		// выполняем запрос и получаем результат
-		// $result = mso_xmlrpc_send('NewCategory', mso_xmlrpc_this($data));
-		
+
 		require_once( getinfo('common_dir') . 'functions-edit.php' ); // функции редактирования
 		
 		$result = mso_new_category($data);
@@ -80,11 +79,8 @@
 		// получаем номер опции id из fo_edit_submit[]
 		$f_id = mso_array_get_key($post['f_delete_submit']); 
 		
-		// подготавливаем данные для xmlrpc
+		// подготавливаем данные
 		$data = array('category_id' => $f_id );
-		
-		// выполняем запрос и получаем результат
-		// $result = mso_xmlrpc_send('DeleteCategory', mso_xmlrpc_this($data));
 		
 		require_once( getinfo('common_dir') . 'functions-edit.php' ); // функции редактирования
 		
@@ -105,76 +101,59 @@
 	<p class="info">Настройка рубрик</p>
 
 <?php
-	// для вывода будем использовать html-таблицу
-	$CI->load->library('table');
 	
-	# используем хелпер для формы
-	$CI->load->helper('form');
+	$all = mso_cat_array('page', 0);
 	
-	$tmpl = array (
-					'table_open'		  => '<table class="page" border="0" width="99%"><colgroup width="30"><colgroup width="45"><colgroup><colgroup><colgroup width="100"><colgroup width="50"><colgroup width="180">',
-					'row_alt_start'		  => '<tr class="alt">',
-					'cell_alt_start'	  => '<td class="alt">',
-			  );
-
-	$CI->table->set_template($tmpl); // шаблон таблицы
+	$format = '
+	<strong title="Номер рубрики. В этой рубрике [COUNT] страниц">[ID]</strong> - 
+	<input title="Номер родителя" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="500" size="50" style="width: 40px;" type="text" />
+	<input title="Название" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" size="50" style="width: 200px;" type="text" />
+	<input title="Описание" name="f_category_desc[[ID]]" value="[DESCR]" maxlength="500" size="50" style="width: 250px;" type="text" />
+	<input title="Короткая ссылка" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" size="50" style="width: 100px;" type="text" />
+	<input title="Порядок" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" size="50" style="width: 40px;" type="text" />
 	
-	// заголовки
-	$CI->table->set_heading('ID','Родитель', 'Название', 'Описание', 'Ссылка', 'Порядок', 'Действие');
-
-	// выполним sql-запрос на получение некоторых опций
-	$CI->db->where(array('category_type'=>'page'));
-	// $CI->db->order_by('category_id', 'asc');
-	$CI->db->order_by('category_id_parent', 'asc');
-	$CI->db->order_by('category_menu_order', 'asc');
+	<input type="submit" name="f_edit_submit[[ID]]" value="&nbsp;Изменить&nbsp;">
+	<input type="submit" name="f_delete_submit[[ID]]" value="&nbsp;Удалить&nbsp;" onClick="if(confirm(\'Удалить рубрику?\')) {return true;} else {return false;}" >
+	';
 	
-	// получили
-	$query = $CI->db->get('category');
 	
-	// обходим в цикле и выводим
-	foreach ($query->result_array() as $row)
-	{
-		$id = $row['category_id'];
-		
-		$parent = form_input( array( 'name'=>'f_category_id_parent[' . $id . ']', 
-								'value'=>$row['category_id_parent'],
-								'style'=>'width:95%') );
-		
-		$name = form_input( array( 'name'=>'f_category_name[' . $id . ']', 
-								'value'=>$row['category_name'],
-								'style'=>'width:98%') );
-									
-		$desc = form_input( array( 'name'=>'f_category_desc[' . $id . ']', 
-								'value'=>$row['category_desc'],
-								'style'=>'width:98%') );
+	$out = mso_create_list($all, 
+		array(
+			'childs'=>'childs', 
+			'format'=>$format, 
+			'format_current'=>$format, 
+			'class_ul'=>'', 
+			
+			'class_ul_style'=>'list-style-type: none; margin: 0;', 
+			'class_child_style'=>'list-style-type: none;', 
+			'class_li_style'=>'padding: 2px; margin: 2px;',
+			
+			'title'=>'category_name', 
+			'link'=>'category_slug', 
+			'current_id'=>false, 
+			'prefix'=>'category/', 
+			'count'=>'pages_count', 
+			'id'=>'category_id', 
+			'slug'=>'category_slug', 
+			'menu_order'=>'category_menu_order', 
+			'id_parent'=>'category_id_parent'
+			) );
 	
-		$slug = form_input( array( 'name'=>'f_category_slug[' . $id . ']', 
-								'value'=>$row['category_slug'],
-								'style'=>'width:95%') );
-									
-		$order = form_input( array( 'name'=>'f_category_menu_order[' . $id . ']', 
-								'value'=>$row['category_menu_order'],
-								'style'=>'width:95%') );			
-		
-		$act = '<input type="submit" name="f_edit_submit[' . $id . ']" value="&nbsp;Изменить&nbsp;">';
-		$act .= '<input type="submit" name="f_delete_submit[' . $id . ']" value="&nbsp;Удалить&nbsp;" onClick="if(confirm(\'Уверены?\')) {return true;} else {return false;}" >';
-
-		$CI->table->add_row($id, $parent, $name, $desc, $slug, $order, $act);
-	}
-	
-	# добавим строчку для добавления новой рубрики
-	$parent = '<b>Родитель</b><br /><input style="width: 99%;" type="text" name="f_new_parent" value="">';
-	$name = '<b>Название</b><br /><input style="width: 99%;" type="text" name="f_new_name" value="">';
-	$desc = '<b>Описание</b><br /><input style="width: 99%;" type="text" name="f_new_desc" value="">';
-	$slug = '<b>Ссылка</b><br /><input style="width: 99%;" type="text" name="f_new_slug" value="">';
-	$order = '<b>Порядок</b><br /><input style="width: 99%;" type="text" name="f_new_order" value="">';
-	$act = '<input type="submit" name="f_new_submit" value="&nbsp;Добавить новую рубрику&nbsp;">';
-	
-	$CI->table->add_row('', $parent, $name, $desc, $slug, $order, $act);
-
 	// добавляем форму, а также текущую сессию
-	echo '<form action="" method="post">' . mso_form_session('f_session_id');
-	echo $CI->table->generate(); // вывод подготовленной таблицы
-	echo '</form>';
+	echo '<form action="" method="post">' . mso_form_session('f_session_id') .
+		 '<pre><b>ID</b> <b>Родитель</b> <b>Название</b>                     <b>Описание</b>                            <b>Ссылка</b>          <b>Порядок</b></pre>';
+	
+	echo $out;
+	
+	# строчка для добавления новой рубрики
+	echo '
+	<br />
+	<br /><b>Название</b> <input style="width: 250px;" type="text" name="f_new_name" value="">
+	<br /><b>Описание</b> <input style="width: 250px;" type="text" name="f_new_desc" value="">
+	<br /><b>Ссылка</b> <input style="width: 250px;" type="text" name="f_new_slug" value="">
+	<br /><b>Родитель</b> <input style="width: 250px;" type="text" name="f_new_parent" value="">
+	<br /><b>Порядок</b> <input style="width: 250px;" type="text" name="f_new_order" value="">
+	<br /><br /><input type="submit" name="f_new_submit" value="Добавить новую рубрику">
+	</form>';
 	
 ?>

@@ -32,9 +32,6 @@ if ( is_feed() )
 require_once( getinfo('common_dir') . 'page.php' ); 			// функции страниц 
 require_once( getinfo('common_dir') . 'category.php' ); 		// функции рубрик
 
-
-// $language = mso_get_cookie('maxsite_language', 'ru' , array('ru', 'en')); // язык
-
 # в зависимости от типа данных подключаем нужный файл
 if ( is_type('archive') ) 			require($type_dir . 'archive.php');	// архив по датам
 	elseif ( is_type('home') ) 		require($type_dir . 'home.php');		// главная

@@ -19,7 +19,7 @@
 					<div id="tab">
 						<ul>
 							<?php
-								$def_menu = '/ | Ãëàâíàÿ_NR_about | Î ñàéòå_NR_comments | Êîììåíòàðèè_NR_contact | Êîíòàêòû_NR_sitemap | Àðõèâ_NR_feed | RSS';
+								$def_menu = '/ | Ð“Ð»Ð°Ð²Ð½Ð°Ñ_NR_about | Ðž ÑÐ°Ð¹Ñ‚Ðµ_NR_comments | ÐšÐ¾Ð¼Ð¼ÐµÐ½Ñ‚Ð°Ñ€Ð¸Ð¸_NR_contact | ÐšÐ¾Ð½Ñ‚Ð°ÐºÑ‚Ñ‹_NR_sitemap | ÐÑ€Ñ…Ð¸Ð²_NR_feed | RSS';
 								if ( $menu = mso_get_option('top_menu', 'templates', $def_menu) ) 
 									echo mso_menu_build($menu, 'selected');
 								

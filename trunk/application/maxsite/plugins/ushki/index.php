@@ -11,6 +11,7 @@ function ushki_autoload($args = array())
 	mso_create_allow('ushki_edit', 'Админ-доступ к Ушкам');
 	mso_hook_add( 'admin_init', 'ushki_admin_init'); # хук на админку
 	mso_register_widget('ushki_widget', 'Ушки'); # регистрируем виджет
+	mso_hook_add( 'content', 'ushki_content'); # хук на вывод контента
 }
 
 # функция выполняется при активации (вкл) плагина
@@ -151,6 +152,19 @@ function ushki_get_all($no_cashe = false)
 		return $all;
 }
 
+function ushki_content_callback($matches)
+{
+	if (isset($matches[1])) return ushka($matches[1]);
+	else return '';
+}
+
+# [ushka=ads] - выведет ушку ads
+function ushki_content($content = '')
+{
+	if (!is_feed()) $content = preg_replace_callback('!\[ushka=(.*?)\]!is', 'ushki_content_callback', $content);
+	
+	return $content;
+}
 
 # получение ушки
 function ushka($name = '', $delim = '<br />', $not_exists = '')
