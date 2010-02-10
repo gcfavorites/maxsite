@@ -5,14 +5,13 @@
  * (c) http://max-3000.com/
  */
 
-	global $MSO;
 	$CI = & get_instance();
 	
 	$CI->load->helper('directory');
 	
 	$options_key = 'theme_switch';
 	
-	$templates_dir = $MSO->config['templates_dir'];
+	$templates_dir = getinfo('templates_dir');
 	
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_templates')) )
 	{

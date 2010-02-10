@@ -315,15 +315,30 @@
 	
 	$all_cat = mso_cat_ul('<label><input name="f_cat[]" type="checkbox" %CHECKED% value="%ID%" title="id = %ID%"> %NAME%</label>', true, $f_cat, array());
 
+
+	// опция по-умолчанию разрешение комментирования отмечать или нет
+	if (isset($editor_options['comment_allow_checked']))
+		$comment_allow_checked = ($editor_options['comment_allow_checked'] == 0) ? '' : 'checked="checked"';
+	else
+		$comment_allow_checked = 'checked="checked"';
 	
-	if ($f_comment_allow) $f_comment_allow = 'checked="checked"';
+	if ($f_comment_allow) $f_comment_allow = $comment_allow_checked;
 		else $f_comment_allow = '';
 		
-	if ($f_ping_allow) $f_ping_allow = 'checked="checked"';
-		else $f_ping_allow = '';
+	
+	// опция по-умолчанию разрешение rss отмечать или нет
+	if (isset($editor_options['feed_allow_checked']))
+		$feed_allow_checked = ($editor_options['feed_allow_checked'] == 0) ? '' : 'checked="checked"';
+	else
+		$feed_allow_checked = 'checked="checked"';
 		
-	if ($f_feed_allow) $f_feed_allow = 'checked="checked"';
+	if ($f_feed_allow) $f_feed_allow = $feed_allow_checked;
 		else $f_feed_allow = '';
+	
+	
+	// не используется
+	if ($f_ping_allow) $f_ping_allow = 'checked="checked"';
+		else $f_ping_allow = '';	
 	
 	# получаем список юзеров
 	$CI->db->select('users_id, users_login, users_nik');

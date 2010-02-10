@@ -121,7 +121,7 @@
 			}
 			
 			// Куда отправлять POST
-			$ajax_path = getinfo('ajax') . base64_encode('plugins/samborsky_polls/ajax.php');
+			$ajax_path = getinfo('ajax') . base64_encode('plugins/samborsky_polls/ajax-ajax.php');
 			
 			$results_link = mso_get_option('show_results_link') ? '&nbsp;&nbsp;<a href="javascript: void(0);" onclick="javascript:sp_polls_results('.$this->id.');" class="sp_polls_ajax_link">Результаты</a>' : '';
 			

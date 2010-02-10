@@ -98,7 +98,6 @@ function guestbook_admin_init($args = array())
 function guestbook_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('guestbook_edit') ) 
 	{
 		echo t('Доступ запрещен', 'plugins');
@@ -108,9 +107,9 @@ function guestbook_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Гостевая книга', __FILE__) . '"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Гостевая книга', __FILE__) . ' - " . $args; ' );
 	
-	if ( mso_segment(3) == 'edit') require($MSO->config['plugins_dir'] . 'guestbook/edit.php');
-	elseif ( mso_segment(3) == 'editone') require($MSO->config['plugins_dir'] . 'guestbook/editone.php');
-	else require($MSO->config['plugins_dir'] . 'guestbook/admin.php');
+	if ( mso_segment(3) == 'edit') require(getinfo('plugins_dir') . 'guestbook/edit.php');
+	elseif ( mso_segment(3) == 'editone') require(getinfo('plugins_dir') . 'guestbook/editone.php');
+	else require(getinfo('plugins_dir') . 'guestbook/admin.php');
 }
 
 # подключаем свой файл к шаблону

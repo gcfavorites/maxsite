@@ -391,6 +391,7 @@ function getinfo($info = '')
 				$out = $MSO->version;
 				break;
 
+		case 'site_url' :
 		case 'siteurl' :
 				$out = $MSO->config['site_url'];
 				break;
@@ -443,11 +444,11 @@ function getinfo($info = '')
 				break;
 
 		case 'admin_url' :
-				$out = $MSO->config['admin_url']; // [admin_url] => http://localhost/codeigniter/application/maxsite/admin/
+				$out = $MSO->config['admin_url']; // [admin_url] => http://localhost/application/maxsite/admin/
 				break;
 
 		case 'site_admin_url' :
-				$out = $MSO->config['site_admin_url']; // [site_admin_url] => http://localhost/codeigniter/admin/
+				$out = $MSO->config['site_admin_url']; // [site_admin_url] => http://localhost/admin/
 				break;
 
 		case 'common_dir' :
@@ -479,23 +480,23 @@ function getinfo($info = '')
 				break;
 
 		case 'name_site' :
-				$out = mso_get_option('name_site', 'general');
+				$out = htmlspecialchars(mso_get_option('name_site', 'general'));
 				break;
 
 		case 'description_site' :
-				$out = mso_get_option('description_site', 'general');
+				$out = htmlspecialchars(mso_get_option('description_site', 'general'));
 				break;
 
 		case 'title' :
-				$out = mso_get_option('title', 'general');
+				$out = htmlspecialchars(mso_get_option('title', 'general'));
 				break;
 
 		case 'description' :
-				$out = mso_get_option('description', 'general');
+				$out = htmlspecialchars(mso_get_option('description', 'general'));
 				break;
 
 		case 'keywords' :
-				$out = mso_get_option('keywords', 'general');
+				$out = htmlspecialchars(mso_get_option('keywords', 'general'));
 				break;
 
 		case 'time_zone' :
@@ -513,7 +514,11 @@ function getinfo($info = '')
 		case 'ajax' :
 				$out = $MSO->config['site_url'] . 'ajax/';
 				break;
-
+				
+		case 'require-maxsite' :
+				$out = $MSO->config['site_url'] . 'require-maxsite/';
+				break;
+				
 		case 'admin_plugins_dir' :
 				$out = $MSO->config['admin_plugins_dir'];
 				break;
@@ -541,7 +546,9 @@ function getinfo($info = '')
 		case 'FCPATH' :
 				$out = $MSO->config['FCPATH'];
 				break;
-
+		case 'type' :
+				$out = $MSO->data['type'];
+				break;
 				
 	endswitch;
 
@@ -2207,6 +2214,7 @@ function mso_register_widget($widget = false, $title = 'Виджет')
 function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 {
 	global $MSO;
+	global $page; // чтобы был доступ к параметрам страниц в условиях виджетов
 
 	static $num_widget = array(); // номер виджета по порядку в одном сайдбаре
 
@@ -2313,7 +2321,14 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false, $pre
 	
 	$CI = & get_instance();
 	$CI->load->library('email');
-
+	
+	$CI->email->clear(true);
+	
+	if (isset($preferences['attach']) and trim($preferences['attach']))
+	{
+		$CI->email->attach($preferences['attach']);
+	}
+		
 	if ($from) $admin_email = $from;
 		else $admin_email = mso_get_option('admin_email_server', 'general', 'admin@site.com');
 
@@ -2333,7 +2348,13 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false, $pre
 	$res = @$CI->email->send();
 	
 	# mail($email, $subject, $message); # проверка
-	if (!$res) echo $CI->email->print_debugger();
+	if (!$res) 
+	{
+		if (isset($preferences['print_debugger']) and $preferences['print_debugger'])
+		{
+			echo $CI->email->print_debugger();
+		}
+	}
 	
 	$arg['res'] = $res;
 	mso_hook('mail_res', $arg); // хук, если нужно отслеживать отправку почты
@@ -2453,6 +2474,9 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			$url = trim($elem[0]);  // адрес
 			$name = trim($elem[1]); // название
 			
+			if (isset($elem[2])) $title = ' title="' . htmlspecialchars(trim($elem[2])) . '"';
+			else $title = '';
+			
 			if (($url != '#') and strpos($url, $http) === false) // нет в адресе http:// - значит это текущий сайт
 			{
 				if ($url == '/') $url = getinfo('siteurl'); // это главная
@@ -2460,7 +2484,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			}
 
 			# если текущий адрес совпал, значит мы на этой странице
-			if ($url == $current_url) $class = $select_css;
+			if ($url == $current_url) $class = ' ' . $select_css;
 				else $class = '';
 
 			# для первого элемента добавляем класс first
@@ -2469,17 +2493,17 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			# для последнего элемента добавляем класс last
 			if ($i == count($menu)) $class .= ' last';
 
-			$class = trim($class);
+			if ($class == ' ') $class = '';
 			
 			if ($group_in) // открываем группу
 			{
-				$out .= '<li class="group' . $class . '"><a href="' . $url . '"><span>' . $name . '</span></a>' 
+				$out .= '<li class="group' . $class . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a>' 
 						. NR . '<ul>' . NR;
 				$group_in = false;
 			}
 			else
 			{
-				$out .= '<li class="' . $class . '"><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+				$out .= '<li class="' . trim($class) . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a></li>' . NR;
 			}
 			
 			$i++;
@@ -3120,7 +3144,11 @@ function _mso_logout()
 {
 	$ci = & get_instance();
 	$ci->session->sess_destroy();
-	$url = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
+	$url = (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+	
+	// проверяем, чтобы url был текущего сайта
+	$pos = strpos($url, getinfo('site_url'));
+	if ($pos === false or $pos > 0) $url = ''; // чужой, сбрасываем переход
 	
 	// сразу же удаляем куку комюзера
 	$comuser = mso_get_cookie('maxsite_comuser', false);
@@ -3135,7 +3163,8 @@ function _mso_logout()
 		// mso_add_to_cookie('mso_edit_form_comuser', '', $expire); 
 		mso_add_to_cookie($name_cookies, $value, $expire, getinfo('siteurl') . mso_current_url()); // в куку для всего сайта
 	}
-	else mso_redirect($url, true);
+	elseif ($url) mso_redirect($url, true);
+	else mso_redirect(getinfo('site_url'), true);
 }
 
 ?>

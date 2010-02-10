@@ -88,7 +88,24 @@ function mso_get_pages($r = array(), &$pag)
 	// если юзер залогинен, то дата сбрасывается при выводе page
 	if ( !isset($r['date_now']) )		$r['date_now'] = true;
 
-
+	// смещение времени в формате ЧЧ:ММ
+	// если нет, то берется из настроек 
+	if ( !isset($r['time_zone']) )		
+	{
+		$time_zone = getinfo('time_zone');
+		if ($time_zone < 10 and $time_zone > 0) $time_zone = '0' . $time_zone;
+		elseif ($time_zone > -10 and $time_zone < 0) 
+		{ 
+			$time_zone = '0' . $time_zone; 
+			$time_zone = str_replace('0-', '-0', $time_zone); 
+		}
+		else $time_zone = '00.00';
+		$time_zone = str_replace('.', ':', $time_zone);
+		$r['time_zone'] = $time_zone;
+	}
+	
+	
+	
 	// учитывать ли опцию публикация RSS в странице -
 	// если true, то отдаются только те, которые отмечены с этой опцией, false - все
 	if ( !isset($r['only_feed']) )			$r['only_feed'] = false;
@@ -106,7 +123,20 @@ function mso_get_pages($r = array(), &$pag)
 	// получать ли информацию о метках и мета страницы
 	// объединены, потому что это один sql-запрос
 	// если false, то возвращает пустые массивы page_tags и page_meta
-	if ( !isset($r['get_page_meta_tags']) )	$r['get_page_meta_tags'] = true;	
+	if ( !isset($r['get_page_meta_tags']) )	$r['get_page_meta_tags'] = true;
+	
+	
+	// можно указать key и table для получения произвольных выборок мета, например метки
+	// используется только для _mso_sql_build_tag
+	// в качестве meta_value используется $slug
+	if ( !isset($r['meta_key']) )	$r['meta_key'] = 'tags';
+	if ( !isset($r['meta_table']) )	$r['meta_table'] = 'page';
+	
+	
+	// сегмент, признак пагинации
+	if ( !isset($r['pagination_next_url']) )	$r['pagination_next_url'] = 'next';
+	
+
 
 	$CI = & get_instance();
 
@@ -136,18 +166,15 @@ function mso_get_pages($r = array(), &$pag)
 	elseif ( is_type('author') ) _mso_sql_build_author($r, &$pag);
 	else return array();
 
-
+	// хук, если нужно поменять параметры
+	// $r_restore = $r; 
+	$r = mso_hook('mso_get_pages', $r);
 	
-	//$sql = $CI->db->_compile_select();
-	//$sql = str_replace('ORDER BY `` RAND()', 'ORDER BY RAND()', $sql); # fix CodeIgniter ORDER BY `` RAND()
-
-
 	// сам запрос и его обработка
 	$query = $CI->db->get();
 
-	// сам запрос теперь сделаем вручную
-	//$query = $CI->db->query($sql);
-	//$CI->db->_reset_select();
+	// восстанавливать после запроса???
+	// $r = mso_hook('mso_get_pages_restore', $r_restore);
 
 	if ($query->num_rows() > 0)
 	{
@@ -389,7 +416,8 @@ function _mso_sql_build_home($r, &$pag)
 	else $exclude_page_id = false;
 
 	// при получении учитываем часовой пояс
-	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	
 	if ($r['pagination'])
 	{
 		# пагинация
@@ -401,9 +429,17 @@ function _mso_sql_build_home($r, &$pag)
 
 		if ($r['page_status']) $CI->db->where('page.page_status', $r['page_status']);
 
-		if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-
-		if ($r['type']) $CI->db->where('page_type.page_type_name', $r['type']);
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'NOW');
+		
+		if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+		
+		if ($r['type']) 
+		{
+			if (is_array($r['type'])) $CI->db->where_in('page_type.page_type_name', $r['type']);
+				else $CI->db->where('page_type.page_type_name', $r['type']);
+		}
 
 		if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
 
@@ -447,7 +483,7 @@ function _mso_sql_build_home($r, &$pag)
 			$pag['maxcount'] = ceil($pag_row / $r['limit']); // всего станиц пагинации
 			$pag['limit'] = $r['limit']; // записей на страницу
 
-			$current_paged = mso_current_paged();
+			$current_paged = mso_current_paged($r['pagination_next_url']);
 			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
 
 			$offset = $current_paged * $pag['limit'] - $pag['limit'];
@@ -470,7 +506,6 @@ function _mso_sql_build_home($r, &$pag)
 		}
 		else
 		{
-			# это долболёбы переделали в 1.7.1 экранирование и теперь он кавычки "" экранирует. Дебилы...
 			# такие селекты теперь нужно вызывать с false в конце...
 			$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login', false);
 		}
@@ -486,10 +521,18 @@ function _mso_sql_build_home($r, &$pag)
 
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
-
-	if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now );
-
+	
+	if ($r['type']) 
+	{
+		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+			else $CI->db->where('page_type_name', $r['type']);
+	}
+	
+	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now );
+	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW' );
+	if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			
 	if ($r['only_feed']) $CI->db->where('page_feed_allow', '1');
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
@@ -557,14 +600,22 @@ function _mso_sql_build_page($r, &$pag)
 
 	// if ($page_status) $CI->db->where('page_status', $page_status);
 
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	if ($r['type']) 
+	{
+		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+			else $CI->db->where('page_type_name', $r['type']);
+	}
 
 	// при получении учитываем часовой пояс
-	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
 	if (!is_login())
 	{
-		if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+		if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+		
 	}
 
 	if ($id) // если slug число, то это может быть и номер и сам slug - неопределенность!
@@ -615,7 +666,7 @@ function _mso_sql_build_category($r, &$pag)
 	else $exclude_page_id = false;
 
 	// при получении учитываем часовой пояс
-	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
 	$offset = 0;
 
@@ -630,11 +681,17 @@ function _mso_sql_build_category($r, &$pag)
 
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-		//$CI->db->where('page_type_name', 'blog');
-		if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+		if ($r['type']) 
+		{
+			if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+				else $CI->db->where('page_type_name', $r['type']);
+		}
 
-		if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+		if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+		
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
@@ -664,7 +721,7 @@ function _mso_sql_build_category($r, &$pag)
 			$pag['maxcount'] = ceil($pag_row / $r['limit']); // всего станиц пагинации
 			$pag['limit'] = $r['limit']; // записей на страницу
 
-			$current_paged = mso_current_paged();
+			$current_paged = mso_current_paged($r['pagination_next_url']);
 			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
 
 			$offset = $current_paged * $pag['limit'] - $pag['limit'];
@@ -686,14 +743,21 @@ function _mso_sql_build_category($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+	if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
 
 	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
-	//$CI->db->where('page_type_name', 'blog');
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	if ($r['type']) 
+	{
+		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+			else $CI->db->where('page_type_name', $r['type']);
+	}
+	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 
@@ -746,7 +810,7 @@ function _mso_sql_build_tag($r, &$pag)
 	// $slug = mso_segment(2);
 
 	// при получении учитываем часовой пояс
-	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
 	$offset = 0;
 
@@ -761,17 +825,25 @@ function _mso_sql_build_tag($r, &$pag)
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 		// $CI->db->where('page_type_name', 'blog');
 
-		if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+		if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
 
-		if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+		if ($r['type']) 
+		{
+			if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+				else $CI->db->where('page_type_name', $r['type']);
+		}
 
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		$CI->db->join('meta', 'meta.meta_id_obj = page.page_id');
-		$CI->db->where('meta_key', 'tags');
-		$CI->db->where('meta_table', 'page');
-		$CI->db->where('meta_value', $slug);
+	
+		$CI->db->where('meta_key', $r['meta_key']);
+		$CI->db->where('meta_table', $r['meta_table']);
+		if ($slug) $CI->db->where('meta_value', $slug);
 
 		$query = $CI->db->get();
 
@@ -782,7 +854,7 @@ function _mso_sql_build_tag($r, &$pag)
 			$pag['maxcount'] = ceil($pag_row / $r['limit']); // всего станиц пагинации
 			$pag['limit'] = $r['limit']; // записей на страницу
 
-			$current_paged = mso_current_paged();
+			$current_paged = mso_current_paged($r['pagination_next_url']);
 			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
 
 			$offset = $current_paged * $pag['limit'] - $pag['limit'];
@@ -806,9 +878,16 @@ function _mso_sql_build_tag($r, &$pag)
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 	// $CI->db->where('page_type_name', 'blog');
 
-	if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+	if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			
+	if ($r['type']) 
+	{
+		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+			else $CI->db->where('page_type_name', $r['type']);
+	}
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
@@ -817,9 +896,9 @@ function _mso_sql_build_tag($r, &$pag)
 	$CI->db->join('meta', 'meta.meta_id_obj = page.page_id');
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 
-	$CI->db->where('meta_key', 'tags');
-	$CI->db->where('meta_table', 'page');
-	$CI->db->where('meta_value', $slug);
+	$CI->db->where('meta_key', $r['meta_key']);
+	$CI->db->where('meta_table', $r['meta_table']);
+	if ($slug) $CI->db->where('meta_value', $slug);
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
 
@@ -874,7 +953,7 @@ function _mso_sql_build_archive($r, &$pag)
 	// pr($date_in_59);
 
 	// при получении учитываем часовой пояс
-	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
 	// echo $year . $month . $day;
 
@@ -888,11 +967,16 @@ function _mso_sql_build_archive($r, &$pag)
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-		if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+		if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			
 
-		if ($r['type'])
+		if ($r['type']) 
 		{
-			$CI->db->where('page_type_name', $r['type']);
+			if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+				else $CI->db->where('page_type_name', $r['type']);
 		}
 
 		$CI->db->where('page_date_publish >= ', $date_in);
@@ -914,7 +998,7 @@ function _mso_sql_build_archive($r, &$pag)
 			$pag['maxcount'] = ceil($pag_row / $r['limit']); // всего станиц пагинации
 			$pag['limit'] = $r['limit']; // записей на страницу
 
-			$current_paged = mso_current_paged();
+			$current_paged = mso_current_paged($r['pagination_next_url']);
 			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
 
 			$offset = $current_paged * $pag['limit'] - $pag['limit'];
@@ -938,9 +1022,17 @@ function _mso_sql_build_archive($r, &$pag)
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
-	if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+	if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
 
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	if ($r['type']) 
+	{
+		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+			else $CI->db->where('page_type_name', $r['type']);
+	}
+	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
@@ -972,7 +1064,7 @@ function _mso_sql_build_search($r, &$pag)
 	$search = mso_strip(strip_tags($search));
 
 	// при получении учитываем часовой пояс
-	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	//$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
 	$offset = 0;
 
@@ -985,12 +1077,17 @@ function _mso_sql_build_search($r, &$pag)
 		$CI->db->select('page_id');
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
-		if ($r['type'])
+
+		if ($r['type']) 
 		{
-			$CI->db->where('page_type_name', $r['type']);
+			if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+				else $CI->db->where('page_type_name', $r['type']);
 		}
 
-		if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+		if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
 
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
@@ -1010,7 +1107,7 @@ function _mso_sql_build_search($r, &$pag)
 			$pag['maxcount'] = ceil($pag_row / $r['limit']); // всего станиц пагинации
 			$pag['limit'] = $r['limit']; // записей на страницу
 
-			$current_paged = mso_current_paged();
+			$current_paged = mso_current_paged($r['pagination_next_url']);
 			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
 
 			$offset = $current_paged * $pag['limit'] - $pag['limit'];
@@ -1032,14 +1129,21 @@ function _mso_sql_build_search($r, &$pag)
 
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+	if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
 	$CI->db->like('page_content', $search);
 	$CI->db->or_like('page_title', $search);
 
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	if ($r['type']) 
+	{
+		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+			else $CI->db->where('page_type_name', $r['type']);
+	}
 
 	$CI->db->join('users', 'users.users_id = page.page_id_autor', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
@@ -1078,7 +1182,8 @@ function _mso_sql_build_author($r, &$pag)
 		else $id = (int) $slug;
 
 	// при получении учитываем часовой пояс
-	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+	
 
 	$offset = 0;
 
@@ -1093,10 +1198,16 @@ function _mso_sql_build_author($r, &$pag)
 
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-		//$CI->db->where('page_type_name', 'blog');
-		if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+		if ($r['type']) 
+		{
+			if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+				else $CI->db->where('page_type_name', $r['type']);
+		}
 
-		if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+		if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
 
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		//$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
@@ -1113,7 +1224,7 @@ function _mso_sql_build_author($r, &$pag)
 			$pag['maxcount'] = ceil($pag_row / $r['limit']); // всего станиц пагинации
 			$pag['limit'] = $r['limit']; // записей на страницу
 
-			$current_paged = mso_current_paged();
+			$current_paged = mso_current_paged($r['pagination_next_url']);
 			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
 
 			$offset = $current_paged * $pag['limit'] - $pag['limit'];
@@ -1135,13 +1246,20 @@ function _mso_sql_build_author($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	// if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
+	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
+	if ($r['date_now']) 
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
 
 	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
 
 
-	//$CI->db->where('page_type_name', 'blog');
-	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	if ($r['type']) 
+	{
+		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
+			else $CI->db->where('page_type_name', $r['type']);
+	}
+	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 
@@ -1641,7 +1759,8 @@ function mso_page_map($page_id = 0, $page_id_parent = 0)
 		$CI->db->where('page_id', $page_id);
 		$CI->db->where('page_id_parent', '0');
 		$CI->db->where('page_status', 'publish');
-		$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+		//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+		$CI->db->where('page_date_publish <', 'NOW');
 
 		$CI->db->or_where('page_id', $page_id_parent);
 	}
@@ -1679,7 +1798,8 @@ function _mso_page_map_get_child($page_id = 0, $cur_id = 0)
 	$CI->db->select('page_id, page_id_parent, page_title, page_slug');
 	$CI->db->where('page_id_parent', $page_id);
 	$CI->db->where('page_status', 'publish');
-	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', 'NOW');
 	
 	$CI->db->order_by('page_menu_order');
 	

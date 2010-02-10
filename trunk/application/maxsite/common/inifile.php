@@ -99,6 +99,25 @@ function mso_view_ini($all = false)
 	
 	$out = '';
 	
+	
+	// сформируем массив всех опций - ключей
+	$k_where = array();
+	foreach ($all as $k=>$v)
+	{
+		if (isset($v['options_key']) and $v['options_key']) $k_where[] = $v['options_key'];
+	}
+	
+	// делаем одним запросов выборку всех опций по этим ключам
+	$CI->db->where_in('options_key', $k_where);
+	$query = $CI->db->get('options');
+	
+	if ($query->num_rows() > 0 ) // есть запись
+		$all_options = $query->result_array();
+	else 
+		$all_options = array();
+		
+	
+	
 	foreach ($all as $key=>$row)
 	{
 		if ( isset($row['options_key']) ) $options_key = stripslashes( trim( $row['options_key'] ) );
@@ -122,9 +141,24 @@ function mso_view_ini($all = false)
 		if ( !isset($row['default']) ) $default = '';
 			else $default = _mso_ini_check_php(stripslashes(htmlspecialchars(trim($row['default']))));
 		
-		$options_present = true; // признак, что опция есть в базе
+
+		// получаем текущее значение опции из массива $all_options
+		$options_present = false;
+		$value = $default; // нет значание, поэтому берем дефолт
+
+		foreach ($all_options as $v)
+		{
+			if ($v['options_type'] == $options_type and $v['options_key'] == $options_key) // нашли
+			{
+				$value = htmlspecialchars($v['options_value']);
+				$options_present = true; // признак, что опция есть в базе
+				break;
+			}
+		}
 		
-		// получаем текущее значение опции
+		/*
+		// получаем текущее значение опции 
+		// старый вариант - через много запросов БД
 		$CI->db->select('options_value');
 		$CI->db->where( array('options_type'=>$options_type, 'options_key'=>$options_key ) );
 		$query = $CI->db->get('options');
@@ -139,6 +173,7 @@ function mso_view_ini($all = false)
 			$options_present = false;
 			$value = $default; // нет значание, поэтому берем дефолт
 		}
+		*/
 		
 		$f = NR; 
 
@@ -228,6 +263,62 @@ function mso_view_ini($all = false)
 }
 
 
+# преобразование values в массив ключ => описание, заданного в ini-файле в виде ключ || описание
+# если описания нет, то описание = ключ 
+function mso_parse_ini_values($values = '')
+{
+	if (!$values) return array();
+	
+	$values = _mso_ini_check_php(stripslashes(htmlspecialchars(trim($values))));
+	
+	$values = explode('#', $values); // все значения разделены #
+	
+	$out = array();	
+	
+	if ($values) // есть что-то
+	{
+		foreach( $values as $val ) 
+		{
+			// $val может быть с || val - текст
+			
+			$val = trim($val);
+			$val_t = $val;
+			
+			$ar = explode('||', $val);
+			if (isset($ar[0])) $val = trim($ar[0]);
+			if (isset($ar[1])) $val_t = trim($ar[1]);
+				
+			$out[$val] = $val_t;
+		}	
+	}
+	
+	return $out;
+}
 
+
+# возвращает массив заданный в ini-файле в options_key
+# заменяет название элемента массива с названия на options_key 
+# при этом добавляет поле options_name, равное названию опции
+function mso_find_options_key($metas = array(), $key = '')
+{
+	if (!$metas) return array();
+	if (!$key) return array();
+	
+	// проходимся о массиву и смотрим все options_key
+	// как только находим нужное, выходим
+	
+	$out = array();
+	foreach ($metas as $k => $meta)
+	{
+		if (isset($meta['options_key']) and $meta['options_key'] == $key ) // нашли
+		{
+			$out[$key] = $meta;
+			$out[$key]['options_name'] = $k;
+			break;
+		}
+	}
+	
+	return $out;
+}
 
 ?>

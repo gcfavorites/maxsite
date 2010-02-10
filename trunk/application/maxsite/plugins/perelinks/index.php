@@ -42,7 +42,6 @@ function perelinks_admin_init($args = array())
 function perelinks_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('perelinks_edit') )
 	{
 		echo t('Доступ запрещен', 'plugins');
@@ -52,7 +51,7 @@ function perelinks_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Плагин perelinks', __FILE__) . '"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Плагин perelinks', __FILE__) . ' - " . $args; ' );
 
-	require($MSO->config['plugins_dir'] . 'perelinks/admin.php');
+	require(getinfo('plugins_dir') . 'perelinks/admin.php');
 }
 
 
@@ -82,7 +81,8 @@ function perelinks_custom($content = '')
 		$CI->db->select('page_title, page_slug');
 		if ($options['allowlate'] > 0)
 		{
-			$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+			//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+			$CI->db->where('page_date_publish <', 'NOW');
 		}
 		else
 		{

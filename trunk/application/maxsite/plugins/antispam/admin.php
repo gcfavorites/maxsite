@@ -5,8 +5,7 @@
  * (c) http://max-3000.com/
  */
 
-	global $MSO;
-	
+
 	$CI = & get_instance();
 	
 	$options_key = 'plugin_antispam';
@@ -61,9 +60,9 @@
 		$chk = $options['moderation_links'] ? ' checked="checked"  ' : '';
 		$form .= '<p><label><input name="f_moderation_links" type="checkbox" ' . $chk . '> <strong>' . t('Отправлять комментарий на модерацию, если в нем встречается, хоть одна ссылка.', 'plugins') . '</strong></label>';
 		
-		$form .= '<p><strong>' . t('Файл для логов:', 'plugins') . '</strong> ' . $MSO->config['uploads_dir'] . ' <input name="f_logging_file" type="text" value="' . $options['logging_file'] . '">';
-		if (file_exists( $MSO->config['uploads_dir'] . $options['logging_file'] ))
-			$form .= ' <a href="' . $MSO->config['uploads_url'] . $options['logging_file'] . '" target="_blank">' . t('Посмотреть', 'plugins') . '</a>';
+		$form .= '<p><strong>' . t('Файл для логов:', 'plugins') . '</strong> ' . getinfo('uploads_dir') . ' <input name="f_logging_file" type="text" value="' . $options['logging_file'] . '">';
+		if (file_exists( getinfo('uploads_dir') . $options['logging_file'] ))
+			$form .= ' <a href="' . getinfo('uploads_url') . $options['logging_file'] . '" target="_blank">' . t('Посмотреть', 'plugins') . '</a>';
 		
 		
 		$form .= '<br><br><h2>' . t('Черный список IP', 'plugins') . '</h2>';

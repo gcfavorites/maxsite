@@ -77,6 +77,7 @@ class Maxsite extends Controller
 		elseif ($method == 'install') $this->install();
 		elseif ($method == 'remote') $this->_view_i('remote', 'remote');
 		elseif ($method == 'ajax') $this->_view_i('ajax', 'ajax');
+		elseif ($method == 'require-maxsite') $this->_view_i('require-maxsite', 'require-maxsite');
 		elseif ($method == 'admin') $this->_view_i('admin', 'admin');
 		elseif ($method == 'url') $this->_view_i('url', 'url/url');
 		elseif ($method == 'xmlrpc') $this->_view_i('xmlrpc', 'xmlrpc/xmlrpc');

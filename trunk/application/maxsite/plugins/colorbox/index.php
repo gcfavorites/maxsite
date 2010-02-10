@@ -30,7 +30,6 @@ function colorbox_admin_init($args = array())
 
 function colorbox_admin_page($args = array()) 
 {
-	global $MSO;
 	if ( !mso_check_allow('colorbox_admin_page') ) 
 	{
 		echo 'Доступ запрещен';
@@ -39,13 +38,12 @@ function colorbox_admin_page($args = array())
 	
 	mso_hook_add_dinamic('mso_admin_header', ' return $args."ColorBox"; ' );
 	mso_hook_add_dinamic('admin_title', ' return "ColorBox - ".$args; ' );
-	require($MSO->config['plugins_dir'].'colorbox/admin.php');
+	require(getinfo('plugins_dir') . 'colorbox/admin.php');
 }
 
 function colorbox_head($args = array()) 
 {
-	global $MSO;
-	$url = $MSO->config['plugins_url'].'colorbox/';
+	$url = getinfo('plugins_url') . 'colorbox/';
 	$options = mso_get_option('plugin_colorbox', 'plugins', array());
 
 	if ( !isset($options['style']) ) $options['style'] = '1';

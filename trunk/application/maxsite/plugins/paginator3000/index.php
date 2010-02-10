@@ -7,8 +7,8 @@ function paginator3000_autoload() {
 }
 
 function paginator3000_head() {
-	global $MSO;
-	$url = $MSO->config['plugins_url'] . 'paginator3000/';
+	
+	$url = getinfo('plugins_url') . 'paginator3000/';
 	echo '<link rel="stylesheet" type="text/css" href="'.$url.'paginator3000.css" />
 <script type="text/javascript" src="'.$url.'paginator3000.js"></script>
 ';
@@ -51,7 +51,7 @@ function paginator3000_go($r = array()) {
 		else $type = $MSO->data['type'];
 
 	$a_cur_url = $MSO->data['uri_segment'];
-	$cur_url = $MSO->config['site_url'];
+	$cur_url = getinfo('site_url');
 
 	foreach ($a_cur_url as $val)
 	{
@@ -65,7 +65,7 @@ function paginator3000_go($r = array()) {
 	$cur_url = str_replace('//@@', '/', $cur_url);
 	$cur_url = str_replace('@@', '', $cur_url);
 
-	if ($type == 'home') $cur_url = $MSO->config['site_url'] . $type;
+	if ($type == 'home') $cur_url = getinfo('site_url') . $type;
 	
 	$options = mso_get_option('paginator3000', 'plugins', array());
 	if ( !isset($options['width']) ) $options['width'] = '100';

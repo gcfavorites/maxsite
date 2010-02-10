@@ -89,7 +89,8 @@ function random_pages_widget_custom($options = array(), $num = 1)
 	$CI = & get_instance();
 	
 	$CI->db->select('page_slug, page_title');
-	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', 'NOW');
 	$CI->db->where('page_status', 'publish');
 	if ($options['page_type']) $CI->db->where('page_type_name', $options['page_type']);
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');

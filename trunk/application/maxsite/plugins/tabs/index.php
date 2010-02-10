@@ -105,7 +105,6 @@ function tabs_widget_update($num = 1)
 # функции плагина
 function tabs_widget_custom($options = array(), $num = 1)
 {
-	if (!function_exists('ushka')) return ''; // не включены ушки - выходим
 	
 	$out = '';
 	if ( !isset($options['header']) ) $options['header'] = '';
@@ -155,7 +154,11 @@ function tabs_widget_custom($options = array(), $num = 1)
 					else $func = 'no-func';
 			
 			}
-			else $func = ushka($tab['ushka']);
+			else 
+			{
+				if (function_exists('ushka')) $func = ushka($tab['ushka']);
+				else $func = '';
+			}
 			
 			$out .= '<div id="tabs-widget-fragment-' . $num . $key . '" class="tabs-widget-fragment">' . $func . '</div>' . NR;
 		}

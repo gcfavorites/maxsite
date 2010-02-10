@@ -128,7 +128,8 @@ CREATE TABLE _PREFIX_cat2obj (
 	page_id bigint(20) NOT NULL default '0',
 	category_id bigint(20) NOT NULL default '0',
 	links_id bigint(20) NOT NULL default '0',
-	PRIMARY KEY (cat2obj_id)
+	PRIMARY KEY (cat2obj_id),
+	KEY category_id (category_id)
 ) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_cat2obj (page_id, category_id) VALUES ('1','1');
@@ -214,9 +215,7 @@ CREATE TABLE _PREFIX_page (
 	KEY page_menu_order (page_menu_order),
 	KEY page_rating (page_rating),
 	KEY page_view_count (page_view_count),
-	FULLTEXT page_title (page_title),
-	FULLTEXT page_content (page_content),
-	FULLTEXT page_content2 (page_content2)
+	KEY page_id_autor (page_id_autor)
 ) _CHARSETCOLLATE_ TYPE=MyISAM;
 ###
 INSERT INTO _PREFIX_page (page_title, page_content, page_slug, page_date_publish, page_last_modified) VALUES ('Привет, мир!', '<p>Это ваша первая запись. Вы можете её отредактировать или удалить через админ-панель.</p>', 'hello', NOW(), NOW());

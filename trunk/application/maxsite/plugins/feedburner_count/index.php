@@ -43,25 +43,23 @@ function feedburner_count_admin_init($args = array()){
 
 # функция вызываемая при хуке, указанном в mso_admin_url_hook
 function feedburner_count_admin_page($args = array()){
-	global $MSO;
-	
+
 	# выносим админские функции отдельно в файл
 	mso_hook_add_dinamic( 'mso_admin_header', 'return $args . "Настройка FeedBurner Count от samborsky.com"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "Настройка FeedBurner Count от samborsky.com - " . $args; ' );
-	require($MSO->config['plugins_dir'] . 'feedburner_count/admin.php');
+	require(getinfo('plugins_dir') . 'feedburner_count/admin.php');
 }
 
 
 # подключаем функции сапы
 function feedburner_count_update(){
-	global $MSO;
-	
+
 	$options = mso_get_option('samborsky_feedburner_count', 'plugins', array());
 	
 	if( empty($options['last_update']) ) $options['last_update'] = 0;
 	
 	if( feedburner_count_need_update($options['last_update'],$options['update_interval']*60) ){
-		require($MSO->config['plugins_dir'] . 'feedburner_count/download.php');
+		require(getinfo('plugins_dir') . 'feedburner_count/download.php');
 		
 		if( $content = get_download('https://feedburner.google.com/api/awareness/1.0/GetFeedData?uri=' . $options['feed_name']) ){
 
@@ -80,8 +78,7 @@ function feedburner_count_update(){
 }
 
 function feedburner_count(){
-	global $MSO;
-	
+
 	feedburner_count_update();
 	$options = mso_get_option('samborsky_feedburner_count', 'plugins', array());
 	echo str_replace(base64_decode($options['template']),'%COUNT%',$options['count']);

@@ -3,7 +3,7 @@
 /**
  * For MaxSite CMS
  * Spoiler Plugin
- * Author: (c) Sam
+ * Author: (c) Tux
  * Plugin URL: http://6log.ru/spoiler 
  */
 
@@ -21,7 +21,6 @@ function spoiler_autoload($args = array())
 	}
 }
 
-
 # функция выполняется при деинсталяции плагина
 function spoiler_uninstall($args = array())
 {
@@ -31,7 +30,6 @@ function spoiler_uninstall($args = array())
 	mso_delete_option($options_key,'plugins');
 	return $args;
 }
-
 
 # функции плагина
 function spoiler_custom($text)
@@ -55,7 +53,6 @@ function spoiler_custom($text)
 	$pattern = "@\[spoiler(=)?(.*?)\](.*?)\[\/spoiler\]@is";
 
 	// замена  [spoiler]...[/spoiler] тегов
-
 	if (preg_match_all($pattern, $text, $matches))
 	{
 		for ($i = 0; $i < count($matches[0]); $i++)
@@ -88,7 +85,6 @@ function spoiler_custom($text)
 					$showtext = $matches[2][$i];
 					$hidetext = $options['hide'];
 				}
-				
 			}
 			else
 			{
@@ -96,19 +92,15 @@ function spoiler_custom($text)
 				$hidetext = $options['hide'];			
 			}
 			  
-			$html .= '<a class="spoiler_link_show" href="javascript:void(0)" onclick="SpoilerToggle(document.getElementById(\''.
-			$id.'\'), this, \''.$showtext.'\', \''.$hidetext.'\')">'.$showtext.'</a>'. PHP_EOL;
+			$html .= '<a class="spoiler_link_show" href="javascript:void(0)" onclick="SpoilerToggle(\''.$id.'\', this, \''.$showtext.'\', \''.$hidetext.'\')">'.$showtext.'</a>'. PHP_EOL;
 			$html .= '<div class="spoiler_div" id="'.$id.'" style="display:none">'.$matches[3][$i].'</div>'.PHP_EOL;
-
 			//$text = str_replace($matches[0][$i], $html, $text);
 			$text = preg_replace($pattern, $html, $text,1);
 		}
-
     }
 
     return $text;
 }
-
 
 # JavaScript & css text добавляем в head
 function spoiler_head($args = array())
@@ -119,38 +111,18 @@ function spoiler_head($args = array())
 	if ( !isset($options['style'])  ) {$options['style'] = ''; }
 	if ($options['style'] != '')
 	{
-		echo '<link rel="stylesheet" href="' . getinfo('plugins_url') . 'spoiler/style/'.$options['style'].
-		'" type="text/css" media="screen">';
+		echo '
+		<link rel="stylesheet" href="' . getinfo('plugins_url') . 'spoiler/style/'.$options['style']. '" type="text/css" media="screen">';
 	}	
-	//echo <<<EOF
 	echo '	
-	<script type="text/javascript">
-		function SpoilerToggle(spoiler, link, showtext, hidetext)
-		{
-        	if (spoiler.style.display != "none")
-			{
-            	spoiler.style.display = "none";
-                link.innerHTML = showtext;
-                link.className = "spoiler_link_show";
-             }
-			 else
-			 {
-             	spoiler.style.display = "block";
-                link.innerHTML = hidetext;
-                link.className = "spoiler_link_hide";
-             }
-        }
-	</script>';
-	//EOF;
+	<script type="text/javascript" src="' . getinfo('plugins_url') . 'spoiler/spoiler.js"></script>';
 }
 
 # функция отрабатывающая миниопции плагина (function плагин_mso_options)
 function spoiler_mso_options() 
 {
 	mso_cur_dir_lang(__FILE__);
-	
-//////////////////////// Взято из wp-converter
-//	if (!isset($f_style)) $f_style = t('без стилей',__FILE__);
+//// Взято из wp-converter
 	$CI = & get_instance();
 	// найдем все файлы по маске *.css
 	$CI->load->helper('directory');
@@ -171,8 +143,7 @@ function spoiler_mso_options()
 			$option_select .= '#'. $file . '||' . $file;
 		}
 	}
-////////////////////////	
-	
+////	
     # ключ, тип, ключи массива
     mso_admin_plugin_options('plugin_spoiler', 'plugins', 
         array(
@@ -206,6 +177,4 @@ function spoiler_mso_options()
 		t('<p>С помощью этого плагина вы можете скрывать текст под спойлер.<br>Для использования плагина обрамите нужный текст в код [spoiler]ваш текст[/spoiler]</p><p class="info">Также возможны такие варианты: <br>[spoiler=показать]ваш текст[/spoiler], [spoiler=показать/спрятать]ваш текст[/spoiler], [spoiler=/спрятать]ваш текст[/spoiler]</p>')  // инфа
     );
 }
-
-
 ?>

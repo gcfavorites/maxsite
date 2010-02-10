@@ -46,7 +46,7 @@ function captcha_go($args = array())
 	echo '
 			<label for="comments_captha">' . t('Введите нижние символы', 'plugins') . '</label>
 			<input type="text" name="comments_captha" id="comments_captha" value="" maxlength="4" class="comments_captha"> <img src="' 
-			. $MSO->config['plugins_url'] . 'captcha/img.php?image='
+			. getinfo('plugins_url') . 'captcha/img.php?image='
 			. $MSO->data['session']['session_id']
 			. '&amp;page='
 			. mso_slug(mso_current_url())

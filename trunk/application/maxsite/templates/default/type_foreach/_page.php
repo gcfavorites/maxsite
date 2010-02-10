@@ -36,9 +36,14 @@
 			if ($bl_title = mso_get_option('page_other_pages', 'templates', t('Еще записи по теме', '')))
 			{
 				$bl_pages = mso_get_pages(
-									array( 'limit'=> 7, 'type'=> false, 'content'=> false, 'pagination'=>false, 
+									array(  'type'=> false, 'content'=> false, 'pagination'=>false, 
 											'custom_type'=> 'category', 'categories'=>$page_categories, 
-											'exclude_page_id'=>array($page_id), 'order_asc'=>'random'),
+											'exclude_page_id'=>array($page_id), 
+											'content'=>false,
+											'limit'=> mso_get_option('page_other_pages_limit', 'templates', 7), 
+											'order'=>mso_get_option('page_other_pages_order', 'templates', 'page_date_publish'),
+											'order_asc'=>mso_get_option('page_other_pages_order_asc', 'templates', 'random')
+											),
 											$_temp);
 				if ($bl_pages)
 				{

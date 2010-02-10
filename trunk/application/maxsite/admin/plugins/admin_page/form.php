@@ -54,8 +54,9 @@
 			
 			<div style="margin: 20px 0;">
 				<div class="block_page page_meta">
-					<h3>' . t('Дополнительные поля meta', 'admin') . '</h3>
+					<h3>' . t('Дополнительные поля', 'admin') . '</h3>
 					' . $all_meta . '
+					' . mso_hook('admin_page_form_add_all_meta') . '
 				</div>
 				<!--
 				<div class="block_page page_files">
@@ -70,7 +71,7 @@
 		</td>
 		
 		<td style="vertical-align: top; width: 250px;">
-			
+			' . mso_hook('admin_page_form_add_block_1') . '
 			<div class="block_page">
 				<h3>' . t('Рубрика', 'admin') . '</h3>
 				<div class="cat_page">' . $all_cat . '</div>

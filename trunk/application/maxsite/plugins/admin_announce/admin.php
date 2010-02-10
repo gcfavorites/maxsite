@@ -19,6 +19,7 @@
 		$options['delta']           = isset( $post['f_delta'])           ? (int)$post['f_delta'] : 10;
 		$options['admin_statistic'] = isset( $post['f_admin_statistic']) ? 1 : 0;
 		$options['admin_showall']   = isset( $post['f_admin_showall'])   ? 1 : 0;
+		$options['use_visual']      = isset( $post['f_use_visual'])      ? 1 : 0;
 
 		mso_add_float_option($options_key, $options, 'plugins');
 
@@ -36,6 +37,7 @@
 		if ( !isset($options['admin_statistic']) ) $options['admin_statistic'] = true;
 		if ( !isset($options['admin_showall']) )   $options['admin_showall']   = true;
 		if ( !isset($options['delta']) or ($options['delta'] == 0) ) $options['delta'] = 10;
+		if ( !isset($options['use_visual']) )      $options['use_visual']      = true;
 
 
 		$form  = '<h2>' . t('Настройки', 'plugins') . '</h2>';
@@ -47,20 +49,37 @@
 		$form .= '<p><label><input name="f_admin_showall" type="checkbox" ' . $chk . '> <strong>' . t('Показывать статистику всем') . '</strong></label><br>';
 		$form .= t('Если не отмечено, то показывается только для тех, кому разрешено редактировать «Админ-анонс»'). '</p>';
 
+		$chk   = $options['use_visual'] ? ' checked="checked"  ' : '';
+		$form .= '<p><label><input name="f_use_visual" type="checkbox" ' . $chk . '> <strong>' . t('Использовать редактор системы') . '</strong></label><br>';
+		$form .= t('Если отмечено, то используется визуальный редактор системы или подключенный плагин редактора. Иначе просто textarea и вывод не пропускается через балансировку тегов.'). '</p>';
+
 		$form .= '<br><br><p><input name="f_delta" type="text" value="' . $options['delta'] . '"> <strong>' . t('Приблизительность максимальных и минимальных страниц.') . '</strong><br>';
 		$form .= t('Насколько близко по количеству просмотров к минимуму и максимуму должны быть страницы в отчёте.');
 
 		$form .= '<br><br><h2>' . t('Текст на стартовой странице') . '</h2>';
 		$form .= '<p>' . t('Введите текст (с html-оформлением), который должен быть на стартовой странице админки.') . '</p>';
 
-		$ad_config = array(
-					'action'  => '',
-					'content' => htmlspecialchars($options['admin_announce']),
-					'do'      => mso_form_session('f_session_id'). $form,
-					'posle'   => '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">'
-					);
-		if (mso_hook_present('editor_custom')) mso_hook('editor_custom', $ad_config);
-			else editor_jw($ad_config);
+		if ($options['use_visual'] == 1)
+		{
+			$ad_config = array(
+						'action'  => '',
+						'content' => htmlspecialchars($options['admin_announce']),
+						'do'      => mso_form_session('f_session_id'). $form,
+						'posle'   => '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">'
+						);
+			if (mso_hook_present('editor_custom')) mso_hook('editor_custom', $ad_config);
+				else editor_jw($ad_config);
+		}
+		else
+		{
+			$form .= '<textarea name="f_content" rows="7" style="width: 99%;">';
+			$form .= htmlspecialchars($options['admin_announce']);
+			$form .= '</textarea>';
 
+			echo '<form action="" method="post">' . mso_form_session('f_session_id');
+			echo $form;
+			echo '<br /><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+			echo '</form>';
+		}
 
 ?>

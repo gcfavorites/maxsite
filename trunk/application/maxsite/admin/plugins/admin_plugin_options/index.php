@@ -82,7 +82,7 @@ function admin_plugin_options_admin($args = array())
 # функция проверяет входящий post
 # если все ок, то вносит новые значения в опции
 # если post нет, то выводит форму с текущими значениями опций
-function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
+function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $text_other = true)
 {
 
 	if ($title)
@@ -95,8 +95,10 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '')
 	else
 		echo '<p class="info">' . t('Укажите необходимые опции плагина.') . '</p>';
 		
-		
-	echo '<p><a href="' . getinfo('site_admin_url') . 'plugins">' . t('Вернуться на страницу плагинов') . '</a></p>';
+	
+	if ($text_other === true)
+		echo '<p><a href="' . getinfo('site_admin_url') . 'plugins">' . t('Вернуться на страницу плагинов') . '</a></p>';
+	elseif ($text_other) echo '<p>' . $text_other . '</p>';
 	
 	
 	# тут получаем текущие опции

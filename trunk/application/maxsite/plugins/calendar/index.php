@@ -71,8 +71,6 @@ function calendar_widget_update($num = 1)
 # основная функция, которая берет настройки из своих параметров
 function calendar_widget_custom($arg = array(), $num = 1) 
 {
-	global $MSO;
-
 	# массив названий месяцев
 	if ( !isset($arg['months']) ) $arg['months'] = array(t('Январь', 'plugins'), t('Февраль', 'plugins'), 
 													t('Март', 'plugins'), t('Апрель', 'plugins'), t('Май', 'plugins'), 
@@ -98,7 +96,7 @@ function calendar_widget_custom($arg = array(), $num = 1)
 				'day_type'	  		=> 'long',
 				'show_next_prev'	=> TRUE,
 				'local_time' 		=>	time(),
-				'next_prev_url'	 	=> $MSO->config['site_url'] . 'archive/'
+				'next_prev_url'	 	=> getinfo('site_url') . 'archive/'
 				);
 	
 	$prefs['template'] = '
@@ -176,7 +174,7 @@ function calendar_widget_custom($arg = array(), $num = 1)
 		foreach ($pages as $key=>$page)
 		{
 			$d = (int) mso_date_convert('d', $page['page_date_publish']);
-			$data[$d] = $MSO->config['site_url'] . 'archive/' . $year . '/' . $month . '/' . $d;
+			$data[$d] = getinfo('site_url') . 'archive/' . $year . '/' . $month . '/' . $d;
 		}
 		/*	$data = array(
 				   3  => 'http://your-site.com/news/article/2006/03/',

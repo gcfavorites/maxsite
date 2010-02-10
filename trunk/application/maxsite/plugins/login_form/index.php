@@ -27,8 +27,11 @@ function login_form_widget($num = 1)
 	}
 	elseif ($comuser = is_login_comuser())
 	{
-		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' 
-				. $comuser['comusers_nik'] . '!</strong><br> [<a href="' . getinfo('siteurl')
+		if (!$comuser['comusers_nik']) $cun = t('Привет!', 'plugins');
+			else $cun = t('Привет,', 'plugins') . ' ' . $comuser['comusers_nik'] . '!';
+			
+		$out = '<p><strong>' . $cun 
+				. '</strong><br> [<a href="' . getinfo('siteurl')
 				. 'logout'.'">' . t('выйти', 'plugins') . '</a>] [<a href="' 
 				. getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">' . t('своя страница', 'plugins') . '</a>]</p>';
 

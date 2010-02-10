@@ -20,8 +20,15 @@ mso_cur_dir_lang('admin');
 	if ($id) // есть корректный сегмент
 	{
 	
+	
+	
+	
+	
+	
+	
+	
 		# отредактировать комментарий
-		if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comments_content', 'f_comments_date', 'f_comments_approved')) )
+		if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comments_content', 'f_comments_date', 'f_comments_approved', 'f_comments_email_subscribe')) )
 		{
 			mso_checkreferer();
 			// pr($post);
@@ -43,8 +50,32 @@ mso_cur_dir_lang('admin');
 				echo '<div class="error">' . t('Ошибка обновления') . '</div>';
 			
 			$CI->db->cache_delete_all();
+			
+			if ($post['f_comments_email_subscribe']) // разослать подписчикам
+			{
+				require_once( getinfo('common_dir') . 'comments.php' );
+
+				// получим по номеру коммента номер страницы и её титул - нужно для отправки
+				$CI->db->select('comments_page_id, page_title');
+				$CI->db->from('comments, page');
+				$CI->db->where('comments_page_id = page_id');
+				$CI->db->where('comments_id', $id);
+				
+				$query = $CI->db->get();
+				if ($query->num_rows() > 0)
+				{
+					$row = $query->row_array();
+
+					mso_email_message_new_comment_subscribe(array(
+						'id' => $id,
+						'comments_approved' => (int) $post['f_comments_approved'],
+						'comments_content' => $post['f_comments_content'],
+						'comments_page_id' => $row['comments_page_id'],
+						'page_title' => $row['page_title']
+						));
+				}
+			}
 		}
-		
 		
 		# вывод данных комментария
 		$CI->db->select('comments.*, users.users_nik, users.users_id, comusers.comusers_nik, page.page_title, page.page_slug, page.page_id');
@@ -107,7 +138,14 @@ mso_cur_dir_lang('admin');
 				. '</label> <label><input type="radio" name="f_comments_approved" value="0" ' . $checked2 . '> ' . t('Запретить')
 				. '</label></p>';
 			
-			echo '<br><p><input type="submit" name="f_submit" value="' . t('Готово') . '"></p>';
+			echo '<br><p><input type="submit" name="f_submit" value="' . t('Готово') . '">' . 
+			'<input type="hidden" name="f_comments_email_subscribe" value="0">
+			<label><input type="checkbox" name="f_comments_email_subscribe" value="1" ' . $checked2 . '> ' 
+				. t('Сразу разослать подписчикам')
+				. '</label></p>';
+			
+			
+			
 			echo '</form>';
 			
 			echo '<p><a href="' . getinfo('siteurl') . 'page/' . $row['page_slug'] . '#comment-' . $id . '">' 

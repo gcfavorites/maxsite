@@ -7,8 +7,7 @@
  
 function _create_captha_img()
 {
-	global $MSO;
-	
+
 	$width = 100;
 	$height = 25;
 	

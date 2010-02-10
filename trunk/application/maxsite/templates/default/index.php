@@ -1,54 +1,84 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-# каталог type - можно использовать дефолтный
-$type_dir = getinfo('templates_dir') . 'default/type/';
-//$type_dir = 'type/';
-
-# глобальное кэширование выполняется на уровне хука при наличии соответствующего плагина
-# если хук вернул true, значит данные выведены из кэша, то есть выходим
-if (mso_hook('global_cache_start', false)) return;
-
-if ( is_feed() )
-{
-	# для rss используются другие шаблоны
-	if ( is_type('page') ) require($type_dir . 'feed-page.php'); 					// только комментарии к странице
-		elseif ( is_type('comments') ) require($type_dir . 'feed-comments.php');	// все комментарии
-		elseif ( is_type('category') ) require($type_dir . 'feed-category.php'); 	// по рубрикам
-		else require($type_dir . 'feed-home.php'); // все записи					// все страницы
+/**
+ * MaxSite CMS
+ * (c) http://max-3000.com/
+ *
+ * Вы можете использовать этот файл в своем шаблона вместо index.php
+ * В этом файле реализована автоматическое подключение type-файлов,
+ * а также неизвестных page_404 по первому сегменту.
+ * 
+ */
+ 
+ 
+	# глобальное кэширование выполняется на уровне хука при наличии соответствующего плагина
+	# если хук вернул true, значит данные выведены из кэша, то есть выходим
+	if (mso_hook('global_cache_start', false)) return;
 	
-	exit; // выходим
-}
-
-# подключаем нужные библиотеки - они используются почти везде
-require_once( getinfo('common_dir') . 'page.php' ); 			// функции страниц 
-require_once( getinfo('common_dir') . 'category.php' ); 		// функции рубрик
-
-# в зависимости от типа данных подключаем нужный файл
-if ( is_type('archive') ) 			require($type_dir . 'archive.php');	// архив по датам
-	elseif ( is_type('home') ) 		require($type_dir . 'home.php');		// главная
-	elseif ( is_type('page') ) 		require($type_dir . 'page.php');		// страницы 
-	elseif ( is_type('comments') ) 	require($type_dir . 'comments.php');	// все комментарии
-	elseif ( is_type('loginform') )	require($type_dir . 'loginform.php');	// форма логина
-	elseif ( is_type('contact') ) 	require($type_dir . 'contact.php');	// контактная форма
-	elseif ( is_type('category') )	require($type_dir . 'category.php');	// рубрики
-	elseif ( is_type('search') )	require($type_dir . 'search.php');		// поиск
-	elseif ( is_type('tag') )		require($type_dir . 'tag.php');		// метки
-	elseif ( is_type('author') ) 	require($type_dir . 'author.php');
-	elseif ( is_type('users') )	
+	# можно изменить язык шаблона
+	// $MSO->language = 'en';
+	
+	# для rss используются другие шаблоны
+	if (is_feed())
 	{
-		if (mso_segment(3)=='edit')	require($type_dir . 'users-form.php'); // редактирование комюзера
-		elseif (mso_segment(3)=='lost') require($type_dir . 'users-form-lost.php');	// список всех комюзеров
-		elseif (mso_segment(2)=='') require($type_dir . 'users-all.php');	// список всех комюзеров
-		else require($type_dir . 'users.php');								// комюзер
-	}
-	elseif ( mso_segment(1)=='sitemap' ) require($type_dir . 'sitemap.php'); // карта сайта
-	else
-	{
-		// ничего не найдено, пробуем проверить хук «custom_page_404»
-		if ( !mso_hook_present('custom_page_404') or !mso_hook('custom_page_404')) 
-			require($type_dir . 'page_404.php');	// 404 - если ничего так и не найдено
+		if (is_type('page')) $mso_type_file = 'feed-page'; 				// только комментарии к странице
+		elseif (is_type('comments')) $mso_type_file = 'feed-comments';	// все комментарии
+		elseif (is_type('category')) $mso_type_file = 'feed-category'; 	// по рубрикам
+		else $mso_type_file = 'feed-home'; 								// все страницы
+		
+		$fn1 = getinfo('template_dir') . 'type/' . $mso_type_file . '.php'; 		 // путь в шаблоне
+		$fn2 = getinfo('templates_dir') . 'default/type/' . $mso_type_file . '.php'; // путь в default
+		
+		if ( file_exists($fn1) ) require($fn1); // если есть, подключаем шаблонный
+		elseif (file_exists($fn2)) require($fn2); // нет, значит дефолтный
+			
+		exit; // выходим
 	}
 
-mso_hook('global_cache_end');
+	# подключаем нужные библиотеки - они используются почти везде
+	require_once(getinfo('common_dir') . 'page.php'); 	// функции страниц 
+	require_once(getinfo('common_dir') . 'category.php'); // функции рубрик
+	
+	# в зависимости от типа данных подключаем нужный файл
+	$mso_type_file = getinfo('type'); // текущий тип 
+	$mso_type_file_404 = false; // признак page_404
+	
+	# на page_404 может быть свой хук. Тогда ничего не подключаем
+	if ($mso_type_file == 'page_404' and mso_hook_present('custom_page_404') and mso_hook('custom_page_404')) $mso_type_file = false;
+	elseif ($mso_type_file == 'page_404') $mso_type_file_404 = mso_segment(1); // страница не найдена, попробуем найти по сегменту
+	
+	# анализ сегментов URL, где переопределяется файл типа
+	if ($mso_type_file == 'users')
+	{
+		if (mso_segment(3)=='edit')	$mso_type_file = 'users-form'; 			// редактирование комюзера
+		elseif (mso_segment(3)=='lost') $mso_type_file = 'users-form-lost';	// восстановление пароля комюзера
+		elseif (mso_segment(2)=='') $mso_type_file = 'users-all';			// список всех комюзеров
+	}
 
-?>
+	
+	if ($mso_type_file !== false) // указан файл?
+	{
+		$fn1 = getinfo('template_dir') . 'type/' . $mso_type_file . '.php'; 		 // путь в шаблоне
+		$fn2 = getinfo('templates_dir') . 'default/type/' . $mso_type_file . '.php'; // путь в default
+		
+		// страница page_404, попробуем её найти по сегменту
+		if ($mso_type_file_404) 
+		{
+			// файлы не найдены, пробуем подключить файл по первому сегменту
+			$fn3 = getinfo('template_dir') . 'type/' . $mso_type_file_404 . '.php'; 		 // путь в шаблоне
+			$fn4 = getinfo('templates_dir') . 'default/type/' . $mso_type_file_404 . '.php'; // путь в default
+			
+			if (file_exists($fn3)) require($fn3); // шаблонный по сегменту
+			elseif (file_exists($fn4)) require($fn4); // дефолтный по сегменту
+			elseif ( file_exists($fn1) ) require($fn1); // шаблонный по типу
+			elseif (file_exists($fn2)) require($fn2); // дефолтный по типу
+		}
+		else
+		{
+			if ( file_exists($fn1) ) require($fn1); // шаблонный по типу
+			elseif (file_exists($fn2)) require($fn2); // дефолтный по типу
+		}
+	}
+	
+	# хук глобального кэша
+	mso_hook('global_cache_end');

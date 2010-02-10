@@ -54,7 +54,6 @@ function antispam_admin_init($args = array())
 function antispam_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('antispam_admin_page') ) 
 	{
 		echo t('Доступ запрещен', 'plugins');
@@ -64,17 +63,15 @@ function antispam_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Антиспам', 'plugins') . ' "; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Антиспам', 'plugins') . ' - " . $args; ' );
 
-	require($MSO->config['plugins_dir'] . 'antispam/admin.php');
+	require(getinfo('plugins_dir') . 'antispam/admin.php');
 }
 
 # функция логгинга - сохраняем в файл все спамовские входы
 function antispam_log($file = '', $msg = '')
 {
-	global $MSO;
-	
 	if ($file)
 	{
-		$fn = $MSO->config['uploads_dir'] . $file;
+		$fn = getinfo('uploads_dir') . $file;
 		$fp = fopen( $fn, "a+");
 		fwrite($fp,  '====================' . "\n" . $msg . "\n\n");
 		fclose($fp);

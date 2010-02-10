@@ -1,6 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-	global $MSO;
 	$CI = & get_instance();
 	
 	$options = mso_get_option('samborsky_feedburner_count', 'plugins', array());

@@ -65,9 +65,14 @@ function main_menu_head($arg = array())
 	if (file_exists(getinfo('template_dir') . 'main-menu.css'))
 		echo NR . '		<link rel="stylesheet" href="' . getinfo('template_url') . 'main-menu.css' . '" type="text/css" media="screen">
 	';
+	elseif (file_exists(getinfo('template_dir') . 'css/main-menu.css'))
+		echo NR . '		<link rel="stylesheet" href="' . getinfo('template_url') . 'css/main-menu.css' . '" type="text/css" media="screen">
+	';
 	else
 		echo NR . '		<link rel="stylesheet" href="' . getinfo('plugins_url') . 'main_menu/main-menu.css' . '" type="text/css" media="screen">
-	';		
+	';
+	
+	
 }
 
 # функции плагина

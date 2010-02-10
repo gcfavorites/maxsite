@@ -20,7 +20,7 @@ function theme_switch_autoload($args = array())
 function theme_switch_init($args = array())
 {	
 	global $MSO;
-
+	
 	// проверяем есть ли post
 	if ( $post = mso_check_post(array('f_session_id', 'f_theme_switch_submit', 'theme_switch_radio')) )
 	{
@@ -29,7 +29,7 @@ function theme_switch_init($args = array())
 		$dir = $post['theme_switch_radio'][0]; // каталог шаблона
 		
 		// если он есть - проверяем, то пишем куку и редиректимся
-		if (file_exists( $MSO->config['templates_dir'] . $dir . '/index.php' )) // есть
+		if (file_exists( getinfo('templates_dir') . $dir . '/index.php' )) // есть
 		{	
 			$opt = mso_get_option('theme_switch', 'plugins', array());
 			if ( isset($opt['templates'][$dir]) ) 
@@ -44,7 +44,7 @@ function theme_switch_init($args = array())
 	if (isset($_COOKIE['theme_switch'])) 
 	{
 		$dir = $_COOKIE['theme_switch']; // значения текущего кука
-		if (file_exists( $MSO->config['templates_dir'] . $dir . '/index.php' )) 
+		if (file_exists( getinfo('templates_dir') . $dir . '/index.php' )) 
 		{
 			$opt = mso_get_option('theme_switch', 'plugins', array());
 			if ( isset($opt['templates'][$dir]) ) 
@@ -96,7 +96,6 @@ function theme_switch_admin_init($args = array())
 # функция вызываемая при хуке, указанном в mso_admin_url_hook
 function theme_switch_admin_page($args = array()) 
 {
-	global $MSO;
 	
 	# выносим админские функции отдельно в файл
 	if ( !mso_check_allow('theme_switch_edit') ) 
@@ -107,7 +106,7 @@ function theme_switch_admin_page($args = array())
 	# выносим админские функции отдельно в файл
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Theme switch', __FILE__) . '"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Theme switch', __FILE__) . ' - " . $args; ' );
-	require($MSO->config['plugins_dir'] . 'theme_switch/admin.php');
+	require(getinfo('plugins_dir') . 'theme_switch/admin.php');
 }
 
 

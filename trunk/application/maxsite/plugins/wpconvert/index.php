@@ -42,7 +42,6 @@ function wpconvert_admin_init($args = array())
 function wpconvert_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('wpconvert_admin_page') ) 
 	{
 		echo 'Доступ запрещен';
@@ -52,7 +51,7 @@ function wpconvert_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "WordPress convert "; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "WordPress convert - " . $args; ' );
 
-	require($MSO->config['plugins_dir'] . 'wpconvert/admin.php');
+	require(getinfo('plugins_dir') . 'wpconvert/admin.php');
 }
 
 

@@ -126,8 +126,6 @@ function twitter_widget_custom($arg, $num)
 
 function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</strong><br>%TITLE% <a href="%LINK%">&gt;&gt;&gt;</a></p>', $format_date = 'd/m/Y H:i:s', $max_word_description = false)
 {	
-	global $MSO;
-
 	if (!$url) return false;
 	
 	# проверим кеш, может уже есть в нем все данные
@@ -136,7 +134,7 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 	if ($k) return $k; // да есть в кэше
 	
 	if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 600); // время кэширования MAGPIE
-	require_once($MSO->config['common_dir'] . 'magpierss/rss_fetch.inc');
+	require_once(getinfo('common_dir') . 'magpierss/rss_fetch.inc');
 
 	$rss = fetch_rss($url);
 	$rss = array_slice($rss->items, 0, $count);

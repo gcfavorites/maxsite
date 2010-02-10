@@ -393,11 +393,14 @@ mso_cur_dir_lang('admin');
 		if ($f_comment_allow) $f_comment_allow = 'checked="checked"';
 			else $f_comment_allow = '';
 			
-		if ($f_ping_allow) $f_ping_allow = 'checked="checked"';
-			else $f_ping_allow = '';
-			
 		if ($f_feed_allow) $f_feed_allow = 'checked="checked"';
 			else $f_feed_allow = '';
+		
+		
+		// не используется
+		if ($f_ping_allow) $f_ping_allow = 'checked="checked"';
+			else $f_ping_allow = '';			
+			
 		
 		# получаем список юзеров
 		$CI->db->select('users_id, users_login, users_nik');

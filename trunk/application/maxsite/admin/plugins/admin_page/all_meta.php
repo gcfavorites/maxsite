@@ -40,12 +40,16 @@
 	//  pr($all);
 	
 	// подключаем meta.ini из текущего шаблона
+	// при этом складываем их с дефолтным
+	
+	$meta_def = mso_get_ini_file( getinfo('templates_dir') . 'default/meta.ini'); // можно использовать дефолтный
+	$all = array_merge($all, $meta_def);
+	
 	if (file_exists(getinfo('template_dir') . 'meta.ini')) 
 	{
 		$meta_templ = mso_get_ini_file( getinfo('template_dir') . 'meta.ini' );
 		//pr($meta_templ);
 		if ($meta_templ) $all = array_merge($all, $meta_templ);
-		
 	}
 
 	// pr($all);
@@ -63,16 +67,16 @@
 			else $type = stripslashes(trim($row['type']));
 		
 		if ( !isset($row['values']) ) $value = '';
-			else $values = stripslashes(htmlspecialchars(trim($row['values'])));
+			else $values = _mso_ini_check_php(stripslashes(htmlspecialchars(trim($row['values']))));
 			
 		if ( !isset($row['description']) ) $description = '';
-			else $description = stripslashes(trim($row['description']));
+			else $description = _mso_ini_check_php(stripslashes( trim( t($row['description']))));
 			
 		if ( !isset($row['delimer']) ) $delimer = '<br>';
 			else $delimer = stripslashes($row['delimer']);	
 			
 		if ( !isset($row['default']) ) $default = '';
-			else $default = stripslashes(htmlspecialchars(trim($row['default'])));
+			else $default = _mso_ini_check_php(stripslashes(htmlspecialchars(trim($row['default']))));
 		
 		$options_present = true; // признак, что опция есть в базе
 		

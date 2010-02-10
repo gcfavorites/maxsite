@@ -111,7 +111,7 @@ function samborsky_polls($id = 0){
  * Выводит архив голосований
  * @return 
  */
-function samborspy_polls_archive(){
+function samborsky_polls_archive(){
 	global $MSO;
 	
 	$archive = new sp_archive;

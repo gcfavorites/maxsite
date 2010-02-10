@@ -50,7 +50,6 @@ function feedburner_admin_init($args = array())
 function feedburner_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('feedburner_admin_page') ) 
 	{
 		echo 'Доступ запрещен';
@@ -60,15 +59,14 @@ function feedburner_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "FeedBurner"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "FeedBurner - " . $args; ' );
 	
-	require($MSO->config['plugins_dir'] . 'feedburner/admin.php');
+	require(getinfo('plugins_dir') . 'feedburner/admin.php');
 }
 
 
 # функции плагина
 function feedburner_init($args = array())
 {
-	global $MSO;
-	
+
 	if (!is_feed()) return $args;
 	
 	

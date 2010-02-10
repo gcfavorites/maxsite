@@ -39,8 +39,7 @@ function sape_admin_init($args = array())
 # функция вызываемая при хуке, указанном в mso_admin_url_hook
 function sape_admin_page($args = array()) 
 {
-	global $MSO;
-	
+
 	# выносим админские функции отдельно в файл
 	if ( !mso_check_allow('plugin_sape') ) 
 	{
@@ -50,14 +49,14 @@ function sape_admin_page($args = array())
 	# выносим админские функции отдельно в файл
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Настройка Sape.ru"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "Настройка Sape.ru - " . $args; ' );
-	require($MSO->config['plugins_dir'] . 'sape/admin.php');
+	require(getinfo('plugins_dir') . 'sape/admin.php');
 }
 
 
 # подключаем функции сапы
 function sape_init($args = array()) 
 {
-	global $SAPE, $SAPE_CONTENT, $MSO;
+	global $SAPE, $SAPE_CONTENT;
 	
 	$options = mso_get_option('sape', 'plugins', array() ); // получаем опции
 	

@@ -5,8 +5,8 @@
  * (c) http://max-3000.com/
  */
 
-	global $MSO;
 	mso_cur_dir_lang(__FILE__);
+
 	$CI = & get_instance();
 
 	$options_key = 'perelinks';

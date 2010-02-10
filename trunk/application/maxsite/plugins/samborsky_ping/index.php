@@ -26,7 +26,6 @@
 	
 	# функция выполняется при активации (вкл) плагина
 	function samborsky_ping_activate($args = array()){
-		global $MSO;
 
 		// Пинг-сервисы по умолчанию
 		mso_add_option('samborsky_ping_list',array(
@@ -51,18 +50,16 @@
 	
 	# функция вызываемая при хуке, указанном в mso_admin_url_hook
 	function samborsky_ping_admin_page($args = array()){
-		global $MSO;
 		
 		mso_hook_add_dinamic('mso_admin_header',' return $args . "' . t('samborsky_ping', __FILE__) . '"; ' );
 		mso_hook_add_dinamic('admin_title',' return "' . t('samborsky_ping', __FILE__) . ' - " . $args; ' );
 		
-		require($MSO->config['plugins_dir'] . 'samborsky_ping/admin.php');
+		require(getinfo('plugins_dir') . 'samborsky_ping/admin.php');
 	}	
 	
 	# Калбек-функция для хука
 	function samborsky_ping_do($result = null){
-		global $MSO;
-		
+	
 		if( !is_array($list = mso_get_option('samborsky_ping_list','plugins')) ){
 			$list = array();
 		}
@@ -73,8 +70,8 @@
 		$CI->xmlrpc->method('weblogUpdates.ping');
 		$CI->xmlrpc->request(array(
 			mso_get_option('name_site'),
-			$MSO->config['site_url'],
-			$MSO->config['site_url'] . 'feed'
+			getinfo('site_url'),
+			getinfo('site_url') . 'feed'
 		));		
 		
 		foreach( $list as $key => $value ){

@@ -16,11 +16,9 @@ function lightbox_autoload($args = array())
 
 function lightbox_head($args = array()) 
 {
-	global $MSO;
-	
 	echo mso_load_jquery();
 	
-	$url = $MSO->config['plugins_url'] . 'lightbox/';
+	$url = getinfo('plugins_url') . 'lightbox/';
 	
 	echo <<<EOF
 	
@@ -51,9 +49,7 @@ EOF;
 
 function lightbox_content($text = '')
 {
-	global $MSO;
-	
-	$url = $MSO->config['plugins_url'] . 'lightbox/images/';
+	$url = getinfo('plugins_url') . 'lightbox/images/';
 	
 	$preg = array(
 	

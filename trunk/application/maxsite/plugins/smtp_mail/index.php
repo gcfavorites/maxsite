@@ -143,7 +143,7 @@ function smtp_mail_custom($arg = array())
 			$CI->email->attach($arg['preferences']['attach']);
 		}
 
-		if ( ($options['protocol'] == 'smtp') and ( strpos($options['smtp_host'], 'ssl') !== false ) ) $config['newline']="\r\n";
+		if ( ($config['protocol'] == 'smtp') and ( strpos($config['smtp_host'], 'ssl') !== false ) ) $config['newline']="\r\n";
 		$config['wordwrap'] = TRUE;
 		$config['wrapchars'] = 90;
 
@@ -159,8 +159,11 @@ function smtp_mail_custom($arg = array())
 		$debug = '';
 		if (!$res)
 		{
-			$debug = '<div style="border: silver solid 1px; padding: 20px; margin: 20px;">' . $CI->email->print_debugger() . '<div>';
-			echo $debug;
+			if (isset(and $arg['preferences']['print_debugger']) and $arg['preferences']['print_debugger'])
+			{
+				$debug = '<div style="border: silver solid 1px; padding: 20px; margin: 20px;">' . $CI->email->print_debugger() . '<div>';
+				echo $debug;
+			}
 			$sent = '!error-not-sent-';
 		} else
 		{

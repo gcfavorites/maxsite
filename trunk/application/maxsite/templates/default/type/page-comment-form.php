@@ -51,7 +51,10 @@ mso_cur_dir_lang('templates');
 				<input type="hidden" name="comments_reg" value="reg">
 				
 				<div class="comments-user comments-comuser">
-					<?=t('Привет')?>, <?= $comuser['comusers_nik'] ?>! <a href="<?= getinfo('siteurl') ?>logout"><?=t('Выход')?></a>
+					<?php
+						if (!$comuser['comusers_nik']) echo t('Привет!');
+							else echo t('Привет,') . ' ' . $comuser['comusers_nik'] . '!';
+					?> <a href="<?= getinfo('siteurl') ?>logout"><?=t('Выход')?></a>
 				</div>
 			
 			<?php  } ?>

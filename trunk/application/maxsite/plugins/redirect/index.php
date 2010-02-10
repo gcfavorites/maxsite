@@ -86,7 +86,6 @@ function redirect_admin_init($args = array())
 function redirect_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('redirect_edit') ) 
 	{
 		echo t('Доступ запрещен', 'plugins');
@@ -96,7 +95,7 @@ function redirect_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Редиректы', __FILE__) . '"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Редиректы', __FILE__) . ' - " . $args; ' );
 	
-	require($MSO->config['plugins_dir'] . 'redirect/admin.php');
+	require(getinfo('plugins_dir') . 'redirect/admin.php');
 }
 
 ?>

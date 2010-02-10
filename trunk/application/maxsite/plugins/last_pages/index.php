@@ -116,8 +116,6 @@ function last_pages_widget_update($num = 1)
 
 function last_pages_widget_custom($arg = array(), $num = 1)
 {
-	global $MSO;
-	
 	if ( !isset($arg['count']) ) 	$arg['count'] = 7;
 	if ( !isset($arg['page_type']) )  	$arg['page_type'] = 'blog';
 	if ( !isset($arg['sort']) ) 	$arg['sort'] = 'page_date_publish';
@@ -153,7 +151,8 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 		
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
-	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', 'NOW');
 	
 	if ($arg['page_type']) $CI->db->where('page_type_name', $arg['page_type']);
 	

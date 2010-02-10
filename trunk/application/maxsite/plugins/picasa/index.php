@@ -123,8 +123,6 @@ function picasa_widget_custom($arg, $num)
 
 function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name = false, $img_size = 32)
 {	
-	global $MSO;
-
 	if (!$url) return false;
 	
 	# проверим кеш, может уже есть в нем все данные
@@ -133,7 +131,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 	if ($k) return $k; // да есть в кэше
 	
 	if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 3600); // время кэширования MAGPIE
-	require_once($MSO->config['common_dir'] . 'magpierss/rss_fetch.inc');
+	require_once(getinfo('common_dir') . 'magpierss/rss_fetch.inc');
 	
 	if ($show_type == 1) {
 		$rss = fetch_rss("http://picasaweb.google.com/data/feed/base/user/".$url."?alt=rss&kind=album&hl=ru&access=public");

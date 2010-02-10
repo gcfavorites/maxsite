@@ -9,7 +9,7 @@
 	$CI = & get_instance();
 	
 	if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 1000); // время кэширования MAGPIE
-	require_once($MSO->config['common_dir'] . 'magpierss/rss_fetch.inc');
+	require_once(getinfo('common_dir') . 'magpierss/rss_fetch.inc');
 	
 	
 	

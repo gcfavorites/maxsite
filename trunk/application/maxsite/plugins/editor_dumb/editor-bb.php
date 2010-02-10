@@ -7,7 +7,7 @@ echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_du
 
 ?>
 
-<form method="post" <?= $editor_config['action'] ?> >
+<form method="post" <?= $editor_config['action'] ?> enctype="multipart/form-data">
 <?= $editor_config['do'] ?>
 <p class="editor_button">
 	<!-- ВНИМАНИЕ: добавляем кнопки по следующему принципу:

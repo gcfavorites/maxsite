@@ -197,6 +197,9 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	# хук на который можно повестить подписку на новые комментарии
 	mso_hook('mso_email_message_new_comment', $data);
 	
+	# рассылаем комментарий всем, кто на него подписан
+	mso_email_message_new_comment_subscribe($data);
+	
 	$email = mso_get_option('admin_email', 'general', false); // email куда приходят уведомления
 
 	if (!$email) return false;
@@ -1111,18 +1114,104 @@ function mso_comuser_lost($args = array())
 # список всех комюзеров
 function mso_get_comusers_all($args = array())
 {
+
+	$cache_key = mso_md5('mso_get_comusers_all');
+	$k = mso_get_cache($cache_key);
+	if ($k) return $k; // да есть в кэше
+	
+	$comusers = array();
 	$CI = & get_instance();
 
 	$CI->db->select('*');
 	$CI->db->from('comusers');
 	$query = $CI->db->get();
-
+	
 	if ($query->num_rows() > 0)
 	{
 		$comusers = $query->result_array();
-		return $comusers;
+		mso_add_cache($cache_key, $comusers);
 	}
-	else return array();
+	
+	// получим все мета одним запросом
+	$CI->db->select('meta_id_obj, meta_key, meta_value');
+	$CI->db->where('meta_table', 'comusers');
+	$CI->db->order_by('meta_id_obj');
+	
+	$query = $CI->db->get('meta');
+	
+	if ($query->num_rows() > 0)
+		$all_meta = $query->result_array();
+	else 
+		$all_meta = array();
+	
+	// переделываем формат массива, чтобы индекс был равен номеру комюзера
+	$r_array = array();
+	
+	foreach ($all_meta as $val)
+	{
+		$r_array[$val['meta_id_obj']][$val['meta_key']] = $val['meta_value'];
+	}
+	
+	$all_meta = $r_array;
+	
+
+	// получить все номера страниц, где оставил комментарий комюзер
+	$CI->db->select('comments_id, comments_page_id, comments_comusers_id');
+	$CI->db->where('comments_comusers_id >', '0');
+	$CI->db->order_by('comments_comusers_id, comments_page_id');
+	$query = $CI->db->get('comments');
+	
+	if ($query->num_rows() > 0)
+		$all_comments = $query->result_array();
+	else 
+		$all_comments = array();
+	
+	// переделываем массив под удобный формат
+	$r_array = array();
+	$all_comments_page_id = array(); // тут массив номеров страниц, где участвовал комюзер
+	
+	foreach ($all_comments as $val)
+	{
+		$r_array[ $val['comments_comusers_id'] ][ $val['comments_id'] ] = $val['comments_page_id'];
+		
+		$all_comments_page_id[ $val['comments_comusers_id'] ][ $val['comments_page_id'] ] = $val['comments_page_id'];
+		
+	}
+	
+	$all_comments = $r_array;
+	
+
+	
+	// добавляем в каждого комюзера элемент массива meta, comments и comments_pages_id
+	$r_array = array();
+	foreach ($comusers as $key=>$val)
+	{
+		$r_array[$key] = $val;
+		
+		if (isset($all_meta[$val['comusers_id']])) 
+			$r_array[$key]['meta'] = $all_meta[$val['comusers_id']];
+		else 
+			$r_array[$key]['meta'] = array();
+		
+		
+		if (isset($all_comments[$val['comusers_id']])) 
+			$r_array[$key]['comments'] = $all_comments[$val['comusers_id']];
+		else 
+			$r_array[$key]['comments'] = array();
+			
+		if (isset($all_comments_page_id[$val['comusers_id']])) 
+			$r_array[$key]['comments_pages_id'] = $all_comments_page_id[$val['comusers_id']];
+		else 
+			$r_array[$key]['comments_pages_id'] = array();			
+			
+		
+	}
+	
+	$comusers = $r_array;	
+	
+	mso_add_cache($cache_key, $comusers);
+	
+	return $comusers;
 }
 
 
@@ -1131,5 +1220,72 @@ function mso_comments_content($text = '')
 	return $text;
 }
 
+# рассылаем по email уведомление о новом комментарии
+function mso_email_message_new_comment_subscribe($data)
+{
+	/*
+	Array
+	(
+	    [comments_page_id] => 153 - id страницы
+	    [comments_content] => sdafsadfsdaf - текст комментария
+	    [comments_approved] =>  - если 0, то отправки нет
+	    [page_title] => тест - заголовок страницы
+	    [id] => 607 - id комментария
+	    -- [comments_comusers_id] => 1 - номер комюзера - пока не используется
+	    -- [comments_date] => 2009-12-10 20:45:39 - дата - пока не используется
+	    -- [comments_author_ip] => 127.0.0.1 - ip - пока не используется
+	)
+	*/
+	
+	// комментарий не одобрен, не отсылаем
+	if ($data['comments_approved'] == 0) return;
+	
+	
+	// разослать нужно всем комюзерам у которых стоит получение уведомления о новом комментарии
+	$CI = & get_instance();
+	
+	$comusers_all = mso_get_comusers_all(); // все комюзеры
+	
+	$from = mso_get_option('admin_email_server', 'general', '');
+	
+	
+	$subject = '[' . getinfo('name_site') . '] ' . t('Новый комментарий к') . ' "'. $data['page_title'] . '"';
 
-?>
+	$message = t('Новый комментарий к') . ' "' . $data['page_title'] . '"' . NR . NR;
+	
+	$message .= t('Текст:') . NR . $data['comments_content'];
+	
+	$message .= NR . NR . t('Перейти к комментарию на сайте:') . NR .  mso_get_permalink_page($data['comments_page_id'])  . '#comment-' . $data['id'] . NR;
+	
+	foreach($comusers_all as $comuser)
+	{
+		// отправлять на все комментарии сайта
+		$subscribe_other_comments = (isset($comuser['meta']['subscribe_other_comments']) 
+					and $comuser['meta']['subscribe_other_comments']) ? true : false;
+					
+		//  только на свой			
+		$subscribe_my_comments = (isset($comuser['meta']['subscribe_my_comments']) 
+					and $comuser['meta']['subscribe_my_comments']) ? true : false;
+					
+		if ( $subscribe_other_comments // на любой коммент
+			or (
+				$subscribe_my_comments // только свой
+				and 
+				isset($comuser['comments_pages_id'][$data['comments_page_id']])
+				) 
+			)
+		{
+			// можно отправлять
+			if (mso_valid_email($comuser['comusers_email']))
+			{
+				$res = mso_mail($comuser['comusers_email'], $subject, $message, $from);
+				if (!$res) break; // ошибка отправки почты - рубим цикл
+			}
+		}
+	}
+
+}
+
+
+
+	# end file

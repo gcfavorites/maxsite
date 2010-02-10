@@ -61,7 +61,9 @@ function pagination_go($r = array())
 	// текущий урл сделаем
 	$a_cur_url = $MSO->data['uri_segment'];
 	
-	$cur_url = $MSO->config['site_url'] . $type;
+	$cur_url = getinfo('site_url') . $type;
+	
+	// pr($cur_url);
 	
 	foreach ($a_cur_url as $val)
 	{
@@ -76,10 +78,11 @@ function pagination_go($r = array())
 	
 	$cur_url = str_replace('//@@', '/', $cur_url);
 	$cur_url = str_replace('@@', '', $cur_url);
+	// pr($cur_url);
 	
 	
 	if ($type == 'home') 
-		$home_url = $MSO->config['site_url'];
+		$home_url = getinfo('site_url');
 	else
 		$home_url = $cur_url;
 	
@@ -175,7 +178,7 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 						. '<a class="pagination-prev" href="' . $home_url . '">%PREV%</a>' . $sep2;
 		else
 			$first_link =  '<a  class="pagination-first" href="' . $home_url . '">%FIRST%</a>' . $sep 
-						. '<a  class="pagination-prev" href="' . $base_url . $page_u . $prev_link_page.'/">%PREV%</a>' . $sep2;
+						. '<a  class="pagination-prev" href="' . $base_url . $page_u . $prev_link_page.'">%PREV%</a>' . $sep2;
 		
 		if($page_number > 3)
 			$first_dots = ' <a  class="pagination-start" href="' . $base_url . $page_u . '1">1</a> ... ';

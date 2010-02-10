@@ -66,9 +66,14 @@ function admin_announce($arg = array())
 	if ( !isset($options['admin_statistic']) ) $options['admin_statistic'] = true; // По умолчанию показываем статистику.
 	if ( !isset($options['admin_showall']) )   $options['admin_showall']   = true; // По умолчанию показываем статистику всем.
 	if ( !isset($options['delta']) or ($options['delta'] == 0) ) $options['delta'] = 10;
+	if ( !isset($options['use_visual']) )      $options['use_visual']      = true;
 
 
-	if (trim($options['admin_announce']) <> '') echo NR. '<div class="info">'. $options['admin_announce']. '</div>'. NR;
+	if (trim($options['admin_announce']) <> '')
+	{
+		if ($options['use_visual'] == 1) echo NR. '<div class="info">'. mso_hook('content', $options['admin_announce']). '</div>'. NR;
+			else echo NR. '<div class="info">'. $options['admin_announce']. '</div>'. NR;
+	}
 	if ( !$options['admin_statistic'] ) return; //Если статистику не показываем, то выходим.
 	if ( !$options['admin_showall'] ) if ( !mso_check_allow('admin_announce_admin_page') ) return;
 

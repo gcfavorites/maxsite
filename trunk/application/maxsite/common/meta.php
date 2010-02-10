@@ -41,7 +41,8 @@ function mso_get_all_tags_page($options = array())
 	$CI->db->join('page', 'page.page_id = meta.meta_id_obj' );
 
 	$CI->db->where( 'page_status', 'publish'); // только опубликованные
-	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s')); // и только раньше текущей
+	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s')); // и только раньше текущей
+	$CI->db->where('page_date_publish <', 'NOW'); // и только раньше текущей
 
 	$CI->db->group_by('meta_value');
 	$query = $CI->db->get('meta');

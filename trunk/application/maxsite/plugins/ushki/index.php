@@ -64,7 +64,6 @@ function ushki_admin_init($args = array())
 function ushki_admin_page($args = array()) 
 {
 	# выносим админские функции отдельно в файл
-	global $MSO;
 	if ( !mso_check_allow('plugin_ushki') ) 
 	{
 		echo t('Доступ запрещен', 'plugins');
@@ -74,7 +73,7 @@ function ushki_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . t("Настройки ушек", "plugins"); ' );
 	mso_hook_add_dinamic( 'admin_title', ' return t("Настройки ушек", "plugins") . " - " . $args; ' );
 	
-	require($MSO->config['plugins_dir'] . 'ushki/admin.php');
+	require(getinfo('plugins_dir') . 'ushki/admin.php');
 }
 
 
