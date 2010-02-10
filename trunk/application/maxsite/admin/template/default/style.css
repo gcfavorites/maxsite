@@ -1,0 +1,102 @@
+/* FIRST */
+
+* { padding: 0; margin: 0; }
+html, body { margin: 0; padding: 0; }
+body { font: 62.5% Verdana, Tahoma, Arial, sans-serif; }
+
+p { margin: 3px 0px 7px 0px;}
+p.info {margin: 7px 0px 15px 0px; font-style: italic;}
+
+
+ul, ol {margin-left: 30px;}
+
+
+
+a { color: #1B4DA6; text-decoration: none;}
+a:hover { color: blue; text-decoration: underline; }
+a:active { color: red; }
+
+a img { border: none; text-decoration: none;} /* ie fix*/
+a img, a:visited img, a:hover img, a img:hover, img+a, img+a:hover { border: none; text-decoration: none;}
+
+
+/* H */
+h1 {font-size: 14pt; font-weight: normal; margin: 0 0 5px 0;}
+div.admin-header h1 {font-size: 16pt; margin: 0; font-weight: normal;}
+h1.content {background: #FFCF8B; padding: 5px; color: maroon;}
+h2 {font-size: 11pt; margin: 5px 0;}
+h3 {font-size: 10pt; margin: 5px 0;}
+h4 {font-size: 9pt; margin: 3px 0;}
+h5 {font-size: 8pt; margin: 3px 0;}
+h6 {font-size: 7pt; margin: 3px 0;}
+
+
+/* STRUCTURE */
+
+#container {font-size: 9pt; width: 100%;}
+#mc {float: left; width: 100%;  background: url(images/bg-menu.gif) repeat-y;}
+
+div.admin-header {background: #0D419B url(images/bg-header.jpg) repeat-x; color: white; padding: 10px;}
+div.admin-header a {color: white;}
+
+div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; border-left: 2px #4472C5 solid; }
+
+div.admin-menu {width: 250px; background: #C3DAF9; color: #527FD0; float: left; border-right: 2px #4472C5 solid;}
+div.admin-menu div.r {padding: 10px 0 10px 0;}
+
+div.admin-footer {clear: both; background: #0D419B; color: white; padding: 5px 0; text-align: center;}
+div.admin-footer a {color: white;}
+
+
+div.admin-widget {margin: 0; border: 2px solid #527FD0; padding: 20px; text-align: center; color: #527FD0; -moz-border-radius: 10px; background: #F9FFEE;}
+
+ul.admin-menu {margin: 0 0 0 10px;}
+ul.admin-menu li {padding-top: 3px;  font-size: 10pt; }
+ul.admin-submenu {list-style-type: square;}
+ul.admin-menu li.admin-menu-top { font-size: 14pt; list-style-type: none; padding-top: 10px;}
+
+li.admin-menu-selected a {text-decoration: underline;}
+
+ul.widgets-allow {line-height: 2.1em;}
+ul.widgets-allow b {font-size: 10pt;}
+
+div.admin-h-menu {padding: 5px; background: #527FD0; color: white; margin-bottom: 10px; }
+div.admin-h-menu a {color: white;}
+div.admin-h-menu a.select {text-decoration: underline;}
+
+table.page td {padding: 3px;}
+table.page td.alt {}
+table.page th {padding: 3px;  background: #C3DAF9; color: #0D419B;}
+table.page tr {background: #E8E8F8;}
+table.page tr.alt {background: #F0F0FF;}
+
+div.update {padding: 10px; background: #D0FFD0; margin-bottom: 10px;}
+div.error {padding: 10px; background: #FFD0D0; margin-bottom: 10px;}
+
+.gray {color: gray;}
+.gray a {color: gray;}
+
+div.block_page {background: #D8E9FD; border: #6E9FEB 1px solid; margin: 0 0 10px 0; padding: 5px 10px 10px 10px; -moz-border-radius: 10px;}
+div.block_page h3 {border-bottom: #6E9FEB 1px solid; margin: 0 0 10px 0; color: #1B4DA6;}
+div.block_page p {margin: 0;}
+
+div.page_meta {background: #EEEEEE; border-color: silver; -moz-border-radius: 0px;}
+div.page_meta h3 {border: none; color: #404040; margin: 0 0 3px 0;}
+div.page_meta div {background: #D0D0D0; margin: 10px 0 10px 0; border: #EEEEEE 1px solid; padding: 5px 10px; -moz-border-radius: 10px;}
+div.page_meta p {font-style: italic;}
+
+div.cat_page ul {list-style-type: none; margin-left: 0px;}
+div.cat_page ul ul {margin-left: 20px;}
+
+div.admin-edit-widgets {margin-bottom: 30px; padding: 5px 10px 10px 10px; background: #D0D0EF; -moz-border-radius: 10px;}
+div.admin-edit-widgets-form {border: #A0A0F0 1px solid; margin: 10px 0 10px 0; padding: 1px 10px 10px 10px; background: white; -moz-border-radius: 10px; border-bottom: #707080 2px solid; border-right: #707080 2px solid;}
+div.admin-edit-widgets-form h3 {color: #0D419B;}
+div.admin-edit-widgets-form input {width: 600px; font: 10pt Courier New, mono;}
+div.admin-edit-widgets-form textarea {width: 600px;}
+div.admin-edit-widgets-form select {width: 600px;}
+
+
+div.t150, div.t200, div.t250 {width: 150px; text-align: right; float: left; margin: 0 5px; font-weight: bold;}
+div.t200 {width: 200px;}
+div.t250 {width: 200px;}
+

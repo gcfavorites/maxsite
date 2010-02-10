@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
  
 function _create_captha_img()

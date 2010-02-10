@@ -1,57 +1,54 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-// pr($MSO);
-
-# ãëîáàëüíûé êýø â êàòàëîãå html - äîëæåí áûòü ñîçäàí è ïðàâà íà çàïèñü (777)!
-if ( mso_get_option('global_cache', 'templates', false) ) // åñëè ðàçðåøåíî â îïöèÿõ øàáëîíà
+# Ð³Ð»Ð¾Ð±Ð°Ð»ÑŒÐ½Ñ‹Ð¹ ÐºÑÑˆ Ð² ÐºÐ°Ñ‚Ð°Ð»Ð¾Ð³Ðµ html - Ð´Ð¾Ð»Ð¶ÐµÐ½ Ð±Ñ‹Ñ‚ÑŒ ÑÐ¾Ð·Ð´Ð°Ð½ Ð¸ Ð¿Ñ€Ð°Ð²Ð° Ð½Ð° Ð·Ð°Ð¿Ð¸ÑÑŒ (777)!
+if ( mso_get_option('global_cache', 'templates', false) ) // ÐµÑÐ»Ð¸ Ñ€Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¾ Ð² Ð¾Ð¿Ñ†Ð¸ÑÑ… ÑˆÐ°Ð±Ð»Ð¾Ð½Ð°
 {
 	//$cache_key = mso_md5($_SERVER['REQUEST_URI']);
 	$cache_key = $_SERVER['REQUEST_URI'];
 	$cache_key = str_replace('/', '-', $cache_key);
 	$cache_key = mso_slug(' ' . $cache_key);
 	$cache_key = 'html/' . $cache_key . '.html';
-
-	if ( $k = mso_get_cache($cache_key, true) ) return print($k); // äà åñòü â êýøå
+	if ( $k = mso_get_cache($cache_key, true) ) return print($k); // Ð´Ð° ÐµÑÑ‚ÑŒ Ð² ÐºÑÑˆÐµ
 	ob_start();
 }
 
 if ( is_feed() )
 {
-	# äëÿ rss èñïîëüçóþòñÿ äðóãèå øàáëîíû
-	if ( is_type('page') ) require('feed-page.php'); 					// òîëüêî êîììåíòàðèè ê ñòðàíèöå
-		elseif ( is_type('comments') ) require('feed-comments.php');	// âñå êîììåíòàðèè
-	#	elseif ( is_type('archive') ) require('feed-archive.php'); 		// ïî äàòàì - íàôèãà???
-		elseif ( is_type('category') ) require('feed-category.php'); 	// ïî ðóáðèêàì
-	#	elseif ( is_type('tag') ) require('feed-tag.php'); 				// ïî ìåòêàì
-		else require('feed-home.php'); // âñå çàïèñè					// âñå ñòðàíèöû
+	# Ð´Ð»Ñ rss Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÑŽÑ‚ÑÑ Ð´Ñ€ÑƒÐ³Ð¸Ðµ ÑˆÐ°Ð±Ð»Ð¾Ð½Ñ‹
+	if ( is_type('page') ) require('type/feed-page.php'); 					// Ñ‚Ð¾Ð»ÑŒÐºÐ¾ ÐºÐ¾Ð¼Ð¼ÐµÐ½Ñ‚Ð°Ñ€Ð¸Ð¸ Ðº ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ðµ
+		elseif ( is_type('comments') ) require('type/feed-comments.php');	// Ð²ÑÐµ ÐºÐ¾Ð¼Ð¼ÐµÐ½Ñ‚Ð°Ñ€Ð¸Ð¸
+		elseif ( is_type('category') ) require('type/feed-category.php'); 	// Ð¿Ð¾ Ñ€ÑƒÐ±Ñ€Ð¸ÐºÐ°Ð¼
+		else require('type/feed-home.php'); // Ð²ÑÐµ Ð·Ð°Ð¿Ð¸ÑÐ¸					// Ð²ÑÐµ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹
 	
-	exit; // âûõîäèì
+	exit; // Ð²Ñ‹Ñ…Ð¾Ð´Ð¸Ð¼
 }
 
-# ïîäêëþ÷àåì íóæíûå áèáëèîòåêè - îíè èñïîëüçóþòñÿ ïî÷òè âåçäå
-require_once( getinfo('common_dir') . 'page.php' ); 			// ôóíêöèè ñòðàíèö 
-require_once( getinfo('common_dir') . 'category.php' ); 		// ôóíêöèè ðóáðèê
+# Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Ð½ÑƒÐ¶Ð½Ñ‹Ðµ Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÐ¸ - Ð¾Ð½Ð¸ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÑŽÑ‚ÑÑ Ð¿Ð¾Ñ‡Ñ‚Ð¸ Ð²ÐµÐ·Ð´Ðµ
+require_once( getinfo('common_dir') . 'page.php' ); 			// Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ† 
+require_once( getinfo('common_dir') . 'category.php' ); 		// Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ñ€ÑƒÐ±Ñ€Ð¸Ðº
 
-# â çàâèñèìîñòè îò òèïà äàííûõ ïîäêëþ÷àåì íóæíûé ôàéë
-if ( is_type('archive') ) 			require('archive.php');		// àðõèâ ïî äàòàì
-	elseif ( is_type('home') ) 		require('home.php');		// ãëàâíàÿ
-	elseif ( is_type('page') ) 		require('page.php');		// ñòðàíèöû 
-	elseif ( is_type('comments') ) 	require('comments.php');	// âñå êîììåíòàðèè
-	elseif ( is_type('loginform') )	require('loginform.php');	// ôîðìà ëîãèíà
-	elseif ( is_type('contact') ) 	require('contact.php');		// êîíòàêòíàÿ ôîðìà
-	elseif ( is_type('category') )	require('category.php');	// ðóáðèêè
-	elseif ( is_type('search') )	require('search.php');		// ïîèñê
-	elseif ( is_type('tag') )		require('tag.php');			// ìåòêè
-	# elseif ( is_type('author') ) 	require('author.php');
-	# elseif ( is_type('link') )	require('link.php');
+# Ð² Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑ‚Ð¸ Ð¾Ñ‚ Ñ‚Ð¸Ð¿Ð° Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Ð½ÑƒÐ¶Ð½Ñ‹Ð¹ Ñ„Ð°Ð¹Ð»
+if ( is_type('archive') ) 			require('type/archive.php');	// Ð°Ñ€Ñ…Ð¸Ð² Ð¿Ð¾ Ð´Ð°Ñ‚Ð°Ð¼
+	elseif ( is_type('home') ) 		require('type/home.php');		// Ð³Ð»Ð°Ð²Ð½Ð°Ñ
+	elseif ( is_type('page') ) 		require('type/page.php');		// ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ 
+	elseif ( is_type('comments') ) 	require('type/comments.php');	// Ð²ÑÐµ ÐºÐ¾Ð¼Ð¼ÐµÐ½Ñ‚Ð°Ñ€Ð¸Ð¸
+	elseif ( is_type('loginform') )	require('type/loginform.php');	// Ñ„Ð¾Ñ€Ð¼Ð° Ð»Ð¾Ð³Ð¸Ð½Ð°
+	elseif ( is_type('contact') ) 	require('type/contact.php');	// ÐºÐ¾Ð½Ñ‚Ð°ÐºÑ‚Ð½Ð°Ñ Ñ„Ð¾Ñ€Ð¼Ð°
+	elseif ( is_type('category') )	require('type/category.php');	// Ñ€ÑƒÐ±Ñ€Ð¸ÐºÐ¸
+	elseif ( is_type('search') )	require('type/search.php');		// Ð¿Ð¾Ð¸ÑÐº
+	elseif ( is_type('tag') )		require('type/tag.php');		// Ð¼ÐµÑ‚ÐºÐ¸
+	# elseif ( is_type('author') ) 	require('type/author.php');
 	elseif ( is_type('users') )	
 	{
-		if (mso_segment(3)=='edit')	require('users-form.php');
-		else require('users.php');
+		if (mso_segment(3)=='edit')	require('type/users-form.php'); // Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ÐºÐ¾Ð¼ÑŽÐ·ÐµÑ€Ð°
+		elseif (mso_segment(2)=='') require('type/users-all.php');	// ÑÐ¿Ð¸ÑÐ¾Ðº Ð²ÑÐµÑ… ÐºÐ¾Ð¼ÑŽÐ·ÐµÑ€Ð¾Ð²
+		else require('type/users.php');								// ÐºÐ¾Ð¼ÑŽÐ·ÐµÑ€
 	}
-	else 							require('page_404.php');	// 404 - åñëè íå íàéäåíî
+	elseif ( mso_segment(1)=='sitemap' ) require('type/sitemap.php'); // ÐºÐ°Ñ€Ñ‚Ð° ÑÐ°Ð¹Ñ‚Ð°
+	else 							require('type/page_404.php');	// 404 - ÐµÑÐ»Ð¸ Ð½Ð¸Ñ‡ÐµÐ³Ð¾ Ñ‚Ð°Ðº Ð¸ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾
 
-# ãëîáàëüíûé êýø íà 300 ñåêóíä = 5 ìèíóò
+
+# Ð³Ð»Ð¾Ð±Ð°Ð»ÑŒÐ½Ñ‹Ð¹ ÐºÑÑˆ Ð½Ð° 300 ÑÐµÐºÑƒÐ½Ð´ = 5 Ð¼Ð¸Ð½ÑƒÑ‚
 if ( mso_get_option('global_cache', 'templates', false) ) mso_add_cache($cache_key, ob_get_flush(), 300, true);
 
 ?>

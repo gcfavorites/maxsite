@@ -2,7 +2,7 @@
 
 /**
  * Функции для редактирования, удаления, добавления MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  * 
  */
 

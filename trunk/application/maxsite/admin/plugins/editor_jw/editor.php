@@ -1,6 +1,5 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');?>
 
-	<script type="text/javascript" src="<?= $editor_config['url'] ?>jw/jquery-1.2.3.pack.js"></script>
 	<script type="text/javascript" src="<?= $editor_config['url'] ?>jw/jquery.wysiwyg.js"></script>
 	<script type="text/javascript">
 		$(function()

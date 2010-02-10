@@ -2,7 +2,7 @@
 
 /**
  * Основные функции MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  * Функции для комментариев
  */
 
@@ -16,6 +16,8 @@ function mso_get_comments($page_id = 0, $r = array())
 	if ( !isset($r['limit']) )	$r['limit'] = false;
 	if ( !isset($r['order']) )	$r['order'] = 'asc';
 	if ( !isset($r['tags']) )	$r['tags'] = '<p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
+	if ( !isset($r['tags_users']) )	$r['tags_users'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
+	if ( !isset($r['tags_comusers']) )	$r['tags_comusers'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
 	if ( !isset($r['anonim_comments']) )	$r['anonim_comments'] = array();
 	
 
@@ -57,28 +59,33 @@ function mso_get_comments($page_id = 0, $r = array())
 		{
 			//pr($comment);
 			
+			$commentator = 3; // комментатор: 1-комюзер 2-автор 3-аноним
+			
 			if ($comment['comusers_id']) // это комюзер
 			{
 				if ($comment['comusers_nik']) $comment['comments_author_name'] = $comment['comusers_nik'];
 				else $comment['comments_author_name'] = 'Комментатор ' . $comment['comusers_id'];
 				$comment['comments_url'] = '<a href="' . getinfo('siteurl') . 'users/' . $comment['comusers_id'] . '">'
 						. $comment['comments_author_name'] . '</a>';
+				$commentator = 1;
 			}
 			elseif ($comment['users_id']) // это автор
 			{
-				
 				if ($comment['users_url']) 
 						$comment['comments_url'] = '<a href="' . $comment['users_url'] . '">' . $comment['users_nik'] . '</a>';
 					else $comment['comments_url'] = $comment['users_nik'];
+				$commentator = 2;
 			}
 			else $comment['comments_url'] = $comment['comments_author_name'] . ' (анонимно)'; // просто аноним
 			
 			
-			
 			$comments_content = $comment['comments_content'];
-			
 			$comments_content = mso_auto_tag($comments_content, true);
-			$comments_content = strip_tags($comments_content, $r['tags']);
+			
+			if ($commentator==1) $comments_content = strip_tags($comments_content, $r['tags_comusers']);
+			elseif ($commentator==2) $comments_content = strip_tags($comments_content, $r['tags_users']);
+			else $comments_content = strip_tags($comments_content, $r['tags']);
+			
 			$comments_content = mso_balance_tags($comments_content);
 			
 			$comments_content = mso_hook('comments_content', $comments_content);
@@ -184,6 +191,11 @@ function mso_get_new_comment($args = array())
 
 		if (!trim($post['comments_content'])) return '<div class="' . $args['css_error']. '">Ошибка, нет текста!</div>';
 		
+		// возможно есть текст, но только из одних html - не пускаем
+		if ( !trim(strip_tags(trim($post['comments_content']))) ) 
+			return '<div class="' . $args['css_error']. '">Ошибка, нет полезного текста!</div>';
+		
+		
 		$comments_author_ip = $_SERVER['REMOTE_ADDR'];
 		$comments_date = date('Y-m-d H:i:s');
 		
@@ -201,13 +213,29 @@ function mso_get_new_comment($args = array())
 		
 		// если есть спам, то возвращается что-то отличное от comments_content
 		// если спама нет, то дожно вернуться false
+		// если есть подозрения, то возвращается массив с moderation (comments_approved)
+		// если есть параметр check_spam=true, значит определен спам и он вообще не пускается
+		// сообщение для вывода в парметре 'message'
+		
+		// разрешение антиспама moderation
+		// -1 - не определено, 0 - можно разрешить, 1 - отдать на модерацию
+		$moderation = -1;
+		
 		if ($comments_check_spam) 
-			return '<div class="' . $args['css_error']. '">' . $comments_check_spam . '</div>';
-			
-			
-		// $comments_content = strip_tags($comments_content, $args['tags']);
-		// $comments_content = mso_auto_tag($comments_content);
-		// $comments_content = mso_balance_tags($comments_content);
+		{
+			if (isset($comments_check_spam['check_spam']) and $comments_check_spam['check_spam']==true)
+			{
+				if ( isset($comments_check_spam['message']) and $comments_check_spam['message'] )
+					return '<div class="' . $args['css_error']. '">' . $comments_check_spam['message'] . '</div>';
+				else 
+					return '<div class="' . $args['css_error']. '">Ваш комментарий определен как спам и удален.</div>';
+			}
+			else 
+			{
+				// спам не определен, но возможно стоит moderation - принудительная модерация
+				if (isset($comments_check_spam['moderation'])) $moderation = $comments_check_spam['moderation'];
+			}
+		}
 		
 		$CI = & get_instance();
 		
@@ -315,8 +343,11 @@ function mso_get_new_comment($args = array())
 					if ($comusers_id)
 					{
 						$comments_com_approved = mso_get_option('new_comment_comuser_moderate', 'general', 1);
+						
 						// но у нас в базе хранится значение наоборот - 1 разрешить 0 - запретить
 						$comments_com_approved = !$comments_com_approved;
+						
+						if ($moderation == 1) $comments_com_approved = 0; // антиспам определил, что нужно премодерировать
 						
 						// комюзер добавлен или есть
 						// теперь сам коммент
@@ -365,8 +396,11 @@ function mso_get_new_comment($args = array())
 					
 					// можно ли публиковать без модерации?
 					$comments_approved = mso_get_option('new_comment_anonim_moderate', 'general', 1);
+
 					// но у нас в базе хранится значение наоборот - 1 разрешить 0 - запретить
-					$comments_approved = !$comments_approved;					
+					$comments_approved = !$comments_approved;
+					
+					if ($moderation==1) $comments_approved = 0; // антиспам определил, что нужно премодерировать
 					
 					$ins_data = array (
 						'comments_page_id' => $comments_page_id,
@@ -422,7 +456,7 @@ function mso_get_comuser($id = 0, $args = array())
 	$CI->db->from('comusers');
 	$CI->db->where('comusers_id', $id);
 	$CI->db->limit(1);
-	
+		
 	$query = $CI->db->get();
 
 	if ($query->num_rows() > 0)
@@ -434,6 +468,7 @@ function mso_get_comuser($id = 0, $args = array())
 		$CI->db->from('comments');
 		$CI->db->where('comments_comusers_id', $id);
 		$CI->db->where('page.page_status', 'publish');
+		$CI->db->where('comments.comments_approved', '1');
 		$CI->db->join('page', 'page.page_id = comments.comments_page_id');
 		if ($args['limit']) $CI->db->limit($args['limit']);
 		
@@ -460,6 +495,8 @@ function mso_get_comuser($id = 0, $args = array())
 		}
 		else
 			$comuser[0]['comments'] = array();
+		
+		// pr($comuser);
 		
 		return $comuser;
 	}
@@ -598,9 +635,27 @@ function mso_comuser_edit($args = array())
 		else return '<div class="' . $args['css_error']. '">Ошибочный email и пароль</div>'; 
 	
 	} // обновление формы
-	
-	
-	
 }
+
+
+
+# список всех комюзеров
+function mso_get_comusers_all($args = array())
+{
+	$CI = & get_instance();
+	
+	$CI->db->select('*');
+	$CI->db->from('comusers');
+	$query = $CI->db->get();
+
+	if ($query->num_rows() > 0)
+	{
+		$comusers = $query->result_array(); 
+		return $comusers;
+	}
+	else return array();
+}
+
+
 
 ?>

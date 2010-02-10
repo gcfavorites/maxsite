@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 	$CI = & get_instance();
@@ -79,19 +79,8 @@
 
 	$tmpl = array (
                     'table_open'          => '<table class="page" border="0" width="99%"><colgroup width="30"><colgroup width="150"><colgroup><colgroup width="200">',
-                    'heading_row_start'   => '<tr>',
-                    'heading_row_end'     => '</tr>',
-                    'heading_cell_start'  => '<th  style="background: #808080;">',
-                    'heading_cell_end'    => '</th>',
-                    'row_start'           => '<tr style="background: #E8E8E8;">',
-                    'row_end'             => '</tr>',
-                    'cell_start'          => '<td>',
-                    'cell_end'            => '</td>',
-                    'row_alt_start'       => '<tr style="background: #F2F2FF;">',
-                    'row_alt_end'         => '</tr>',
-                    'cell_alt_start'      => '<td>',
-                    'cell_alt_end'        => '</td>',
-                    'table_close'         => '</table>'
+                    'row_alt_start'		  => '<tr class="alt">',
+					'cell_alt_start'	  => '<td class="alt">',
               );
 
 	$CI->table->set_template($tmpl); // шаблон таблицы

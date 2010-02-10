@@ -2,7 +2,7 @@
 
 /**
  * Основные функции MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  * Функции для ini-файлов
  */
 
@@ -70,9 +70,8 @@ function mso_view_ini($all = false)
 
 	$tmpl = array (
                     'table_open'          => '<table class="page" border="0" width="99%"><colgroup style="width: 25%;">',
-                    'heading_cell_start'  => '<th  style="background: #808080;">',
-                    'row_start'           => '<tr style="background: #E8E8E8;">',
-                    'row_alt_start'       => '<tr style="background: #F2F2FF;">',
+                    'row_alt_start'		  => '<tr class="alt">',
+					'cell_alt_start'	  => '<td class="alt">',
               );
 
 	$CI->table->set_template($tmpl); // шаблон таблицы
@@ -133,7 +132,7 @@ function mso_view_ini($all = false)
 		}
 		elseif ($type == 'textarea')
 		{
-			$f .= '<textarea style="width: 99%;" name="' . $name_f . '">'. $value . '</textarea>' . NR;
+			$f .= '<textarea style="width: 99%;" rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}
 		elseif ($type == 'checkbox')
 		{

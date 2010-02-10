@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 
@@ -171,8 +171,10 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 		foreach ($pages as $key=>$page)
 		{
 			$out .= $arg['format'];
+			
 			$out = str_replace('%TITLE%', 
-							mso_page_title($page['page_slug'], $page['page_title'], '', '', true, false), $out);
+							mso_page_title(mso_slug($page['page_slug']), $page['page_title'], '', '', true, false), $out);
+							
 			$out = str_replace('%DATE%', 
 							mso_page_date($page['page_date_publish'], $arg['date_format'], '', '', false), $out);
 							

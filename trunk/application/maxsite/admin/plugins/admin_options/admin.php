@@ -10,8 +10,8 @@
 	// само меню
 	$a  = mso_admin_link_segment_build($plugin_url, '', 'Настройки сайта', 'select') . ' | ';
 	$a .= mso_admin_link_segment_build($plugin_url, 'templates', 'Шаблон сайта', 'select') . ' | ';
-	$a .= mso_admin_link_segment_build($plugin_url, 'page_type', 'Типы страниц', 'select') . ' | ';
-	$a .= mso_admin_link_segment_build($plugin_url, 'other', 'Прочее', 'select');
+	$a .= mso_admin_link_segment_build($plugin_url, 'page_type', 'Типы страниц', 'select'); // . ' | ';
+	// $a .= mso_admin_link_segment_build($plugin_url, 'other', 'Прочее', 'select');
 	
 	$a = mso_hook('plugin_admin_options_menu', $a);
 	

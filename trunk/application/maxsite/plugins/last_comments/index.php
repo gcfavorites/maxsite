@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 
@@ -80,6 +80,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 	if (!isset($options['count'])) $options['count'] = 5;
 	if (!isset($options['words'])) $options['words'] = 20;
 	if (!isset($options['maxchars'])) $options['maxchars'] = 20;
+	if (!isset($options['header'])) $options['header'] = '';
 	
 	$options['count'] = (int) $options['count'];
 	if ($options['count'] < 1) $options['count'] = 5;

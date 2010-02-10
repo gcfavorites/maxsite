@@ -2,7 +2,7 @@
 
 /**
  * Основные функции MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  * Функции для страниц
  */
 
@@ -20,6 +20,14 @@ function _mso_sql_build_home($r, &$pag)
 	if ($r['cat_id']) $cat_id = mso_explode($r['cat_id']);
 	else $cat_id = false;
 	
+	// еслу указан массив номеров рубрик, значит выводим только его
+	if ($r['categories']) $categories = true;
+	else $categories = false;
+	
+	// если указаны номера записей, котоыре следует исключить
+	if ($r['exclude_page_id']) $exclude_page_id = true;
+	else $exclude_page_id = false;
+
 	if ($r['pagination'])
 	{
 		# пагинация
@@ -41,6 +49,13 @@ function _mso_sql_build_home($r, &$pag)
 			$CI->db->join('category', 'cat2obj.category_id = category.category_id');
 			$CI->db->where_in('category.category_id', $cat_id);
 		}
+		
+		if ($categories)
+			$CI->db->where_in('category.category_id', $r['categories']);
+		
+		if ($exclude_page_id)
+			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
+		
 		
 		$CI->db->order_by('page_date_publish', 'desc');
 		$query = $CI->db->get();
@@ -77,7 +92,7 @@ function _mso_sql_build_home($r, &$pag)
 		
 	$CI->db->from('page');
 	
-	if ($r['page_id']) $CI->db->where('page_id', $r['page_id']);
+	if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
 	
 	$CI->db->where('page_status', 'publish');
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
@@ -93,31 +108,34 @@ function _mso_sql_build_home($r, &$pag)
 		$CI->db->where_in('category.category_id', $cat_id);
 	}
 	
-	//$CI->db->where('comments.comments_approved', 1);
+	if ($categories)
+		$CI->db->where_in('category.category_id', $r['categories']);
 	
-	$CI->db->order_by('page_date_publish', 'desc');
+	if ($exclude_page_id)
+			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
+
+	
+	$CI->db->order_by($r['order'], $r['order_asc']);
 	
 	$CI->db->group_by('page.page_id');
 	$CI->db->group_by('comments_page_id');
 	
-	// $CI->db->distinct('page.page_id');
-	
-	
-	if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
-		else $CI->db->limit($r['limit']);
+	if (!$r['no_limit'])
+	{
+		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
+			else $CI->db->limit($r['limit']);
+	}
 
 }
 
-# 
+# одиночная страница по id или slug
 function _mso_sql_build_page($r, &$pag)
 {
 	$CI = & get_instance();
 	
-	$pag = false;
+	// $pag = false;
 	
 	$slug = mso_segment(2);
-	
-	// $page_status = 'publish'; // статус записи может быть сброшен, если это просматривает текущий автор и это не publish
 	
 	// если slug есть число, то выполняем поиск по id
 	$id = (int) $slug;
@@ -128,14 +146,26 @@ function _mso_sql_build_page($r, &$pag)
 	
 	// if ($page_status) $CI->db->where('page_status', $page_status);
 	
-	// $CI->db->where('page_type_name', 'blog');
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	
-	if ($id)
-		$CI->db->where('page_id', $id);
-	else 
-		$CI->db->where('page_slug', $slug);
-		
+	
+	if ($id) // если slug число, то это может быть и номер и сам slug - неопределенность!
+	{
+		$CI->db->where(array('page_slug'=>$slug));
+		$CI->db->or_where(array('page_id'=>$slug));
+	}
+	else
+	{
+		$CI->db->where(array('page_slug'=>$slug));
+	}
+
+	/*
+	#if ($id)
+	#	$CI->db->where('page_id', $id);
+	#else 
+	#	$CI->db->where('page_slug', $slug);
+	*/
+	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->limit(1);
@@ -152,6 +182,15 @@ function _mso_sql_build_category($r, &$pag)
 	// если slug есть число, то выполняем поиск по id
 	$id = (int) $slug;
 	if ( (string) $slug != (string) $id ) $id = false; // slug не число
+	
+	// еслу указан массив номеров рубрик, значит выводим только его
+	if ($r['categories']) $categories = true;
+	else $categories = false;
+	
+	// если указаны номера записей, котоыре следует исключить
+	if ($r['exclude_page_id']) $exclude_page_id = true;
+	else $exclude_page_id = false;
+	
 	
 	$offset = 0;
 
@@ -170,9 +209,20 @@ function _mso_sql_build_category($r, &$pag)
 		$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
 		$CI->db->join('category', 'cat2obj.category_id = category.category_id');
 		
-		if ($id) $CI->db->where('category.category_id', $id);
-			else $CI->db->where('category.category_slug', $slug);
-
+		if ($categories)
+		{
+			$CI->db->where_in('category.category_id', $r['categories']);
+		}
+		else
+		{
+			if ($id) $CI->db->where('category.category_id', $id);
+				else $CI->db->where('category.category_slug', $slug);
+		}
+		
+		if ($exclude_page_id)
+			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
+		
+		
 		$query = $CI->db->get();
 		
 		$pag_row = $query->num_rows();
@@ -212,20 +262,35 @@ function _mso_sql_build_category($r, &$pag)
 	$CI->db->join('category', 'cat2obj.category_id = category.category_id');
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 
-	
-	if ($id)
-		$CI->db->where('category.category_id', $id);
-	else 
-		$CI->db->where('category.category_slug', $slug);
 
-	$CI->db->order_by('page_date_publish', 'desc');
+	if ($categories)
+	{
+		$CI->db->where_in('category.category_id', $r['categories']);
+	}
+	else
+	{
+		if ($id)
+		{
+			$CI->db->where('category.category_id', $id);
+			$CI->db->or_where('category.category_slug', $slug);
+		}
+		else 
+			$CI->db->where('category.category_slug', $slug);
+	}	
+	
+	if ($exclude_page_id)
+			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
+
+	$CI->db->order_by($r['order'], $r['order_asc']);
 	
 	$CI->db->group_by('page.page_id');
 	$CI->db->group_by('comments_page_id');
-		
-	if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
-		else $CI->db->limit($r['limit']);
 	
+	if (!$r['no_limit'])
+	{
+		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
+			else $CI->db->limit($r['limit']);
+	}
 }
 
 
@@ -296,13 +361,17 @@ function _mso_sql_build_tag($r, &$pag)
 	$CI->db->where('meta_key', 'tags');
 	$CI->db->where('meta_table', 'page');
 	$CI->db->where('meta_value', $slug);
-	$CI->db->order_by('page_date_publish', 'desc');
+	
+	$CI->db->order_by($r['order'], $r['order_asc']);
 	
 	$CI->db->group_by('page.page_id');
 	$CI->db->group_by('comments_page_id');
 	
-	if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
-		else $CI->db->limit($r['limit']);
+	if (!$r['no_limit'])
+	{
+		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
+			else $CI->db->limit($r['limit']);
+	}
 }
 
 
@@ -357,7 +426,11 @@ function _mso_sql_build_archive($r, &$pag)
 		}
 		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
-		$CI->db->order_by('page_date_publish', 'desc');
+		
+		// $CI->db->order_by('page_date_publish', 'desc');
+		
+		$CI->db->order_by($r['order'], $r['order_asc']);
+		
 		$query = $CI->db->get();
 		
 		$pag_row = $query->num_rows();
@@ -400,14 +473,16 @@ function _mso_sql_build_archive($r, &$pag)
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 	
-	$CI->db->order_by('page_date_publish', 'desc');
+	$CI->db->order_by($r['order'], $r['order_asc']);
 	
 	$CI->db->group_by('page.page_id');
 	$CI->db->group_by('comments_page_id');
 	
-	if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
-		else $CI->db->limit($r['limit']);
-
+	if (!$r['no_limit'])
+	{
+		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
+			else $CI->db->limit($r['limit']);
+	}
 }
 
 
@@ -439,7 +514,10 @@ function _mso_sql_build_search($r, &$pag)
 		$CI->db->or_like('page_title', $search); 
 		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
-		$CI->db->order_by('page_date_publish', 'desc');
+		
+		// $CI->db->order_by('page_date_publish', 'desc');
+		$CI->db->order_by($r['order'], $r['order_asc']);
+		
 		$query = $CI->db->get();
 		
 		$pag_row = $query->num_rows();
@@ -479,13 +557,17 @@ function _mso_sql_build_search($r, &$pag)
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 	
-	$CI->db->order_by('page_date_publish', 'desc');
+	// $CI->db->order_by('page_date_publish', 'desc');
+	$CI->db->order_by($r['order'], $r['order_asc']);
 	
 	$CI->db->group_by('page.page_id');
 	$CI->db->group_by('comments_page_id');
-
-	if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
-		else $CI->db->limit($r['limit']);
+	
+	if (!$r['no_limit'])
+	{
+		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
+			else $CI->db->limit($r['limit']);
+	}
 }
 
 
@@ -497,15 +579,6 @@ function _mso_sql_build_author($r, &$pag)
 }
 
 
-# страницы ссылок
-function _mso_sql_build_link($r, &$pag)
-{
-	$CI = & get_instance();
-	_mso_sql_build_home($r, &$pag);
-}
-
-
-
 
 
 # функция получения выборки страниц
@@ -513,39 +586,78 @@ function mso_get_pages($r = array(), &$pag)
 {
 	global $MSO;
 	
-	if ( !isset($r['limit']) )			$r['limit'] = 7;
+	if ( !isset($r['limit']) )			$r['limit'] = 7; // сколько отдавать страниц 
 	else
 	{
-		// проверим входящий лимит
+		// проверим входящий лимит - он должен быть числом
 		$r['limit'] = (int) $r['limit'];
 		$r['limit'] = abs( $r['limit'] );
-		if (!$r['limit']) $r['limit'] = 7;
+		if (!$r['limit']) $r['limit'] = 7; // что-то не то, заменяем на дефолт=7
 	}
-	
-	if ( !isset($r['cut']) )			$r['cut'] = 'Далее';
-	if ( !isset($r['cat_order']) )		$r['cat_order'] = 'category_name';
-	if ( !isset($r['cat_order_asc']) )	$r['cat_order_asc'] = 'asc';
-	if ( !isset($r['pagination']) )		$r['pagination'] = true;
-	if ( !isset($r['content']) )		$r['content'] = true;
-	if ( !isset($r['type']) )			$r['type'] = 'blog'; // если false - то все, иначе blog или static
+
+	if ( !isset($r['cut']) )			$r['cut'] = 'Далее'; // ссылка на [cut]
+	if ( !isset($r['cat_order']) )		$r['cat_order'] = 'category_name'; // сортировка рубрик
+	if ( !isset($r['cat_order_asc']) )	$r['cat_order_asc'] = 'asc'; // порядок рубрик
+	if ( !isset($r['pagination']) )		$r['pagination'] = true; // использовать пагинацию
+	if ( !isset($r['content']) )		$r['content'] = true; // получать весь текст
 	if ( !isset($r['page_id']) )		$r['page_id'] = 0; // если 0, значить все страницы - только для главной
 	if ( !isset($r['cat_id']) )			$r['cat_id'] = 0; // если 0, значить все рубрики - только для главной
 	
+	if ( !isset($r['type']) )			$r['type'] = 'blog'; // если false - то все, иначе blog или static
 	if ($r['page_id']) $r['type'] = false; // если указан номер, то тип страницы сбрасываем
+	
+	if ( !isset($r['order']) )			$r['order'] = 'page_date_publish'; // поле сортировки страниц
+	if ( !isset($r['order_asc']) )		$r['order_asc'] = 'desc'; // поле сортировки страниц
+	
+	// если нужно вывести все данные, невзирая на limit, то no_limit=true - пагинация при этом отключается
+	if ( !isset($r['no_limit']) )		$r['no_limit'] = false;	
+	if ($r['no_limit']) $r['pagination'] = false;
+	
+	// custom_type - аналог is_type - анализ явного указания типа данных
+	if ( !isset($r['custom_type']) )	$r['custom_type'] = false;
+	
+	// кастомная функция - вызывается вместо автоанализа по is_type
+	// эта функция обязательно должна быть подобна _mso_sql_build_home($r, &$pag) и т.п.
+	if ( !isset($r['custom_func']) )	$r['custom_func'] = false;
+	
+	// для функции mso_page_title - передаем тип ссылки для страниц
+	if ( !isset($r['link_page_type']) )	$r['link_page_type'] = 'page';
+	
+	// для _mso_sql_build_category можно указать массив номеров рубрик
+	// и получить все записи указанных рубрик
+	if ( !isset($r['categories']) )		$r['categories'] = array();
+	
+	// исключить указанные в массиве записи
+	if ( !isset($r['exclude_page_id']) )$r['exclude_page_id'] = array();
+	
+	
 	
 	$CI = & get_instance();
 	
 	# для каждого типа страниц строится свой sql-запрос
 	# мы оформляем его в $CI, а здесь только выполняем $CI->db->get();
-	if ( is_type('home') ) _mso_sql_build_home($r, &$pag);
+	
+	// если указана кастомная функция, то выполняем r1
+	if ( $r['custom_func'] and function_exists($r['custom_func']) ) $r['custom_func']();
+	elseif ($r['custom_type']) // указан какой-то свой тип данных - аналог is_type
+	{
+		$custom_type = $r['custom_type'];
+		if ( $custom_type == 'home' ) _mso_sql_build_home($r, &$pag);
+		elseif ( $custom_type == 'page' ) _mso_sql_build_page($r, &$pag);
+		elseif ( $custom_type == 'category' ) _mso_sql_build_category($r, &$pag);
+		elseif ( $custom_type == 'tag' ) _mso_sql_build_tag($r, &$pag);
+		elseif ( $custom_type == 'archive' ) _mso_sql_build_archive($r, &$pag);
+		elseif ( $custom_type == 'search' ) _mso_sql_build_search($r, &$pag);
+		elseif ( $custom_type == 'author' ) _mso_sql_build_author($r, &$pag);
+		else return array();
+	}
+	elseif ( is_type('home') ) _mso_sql_build_home($r, &$pag);
 	elseif ( is_type('page') ) _mso_sql_build_page($r, &$pag);
 	elseif ( is_type('category') ) _mso_sql_build_category($r, &$pag);
 	elseif ( is_type('tag') ) _mso_sql_build_tag($r, &$pag);
 	elseif ( is_type('archive') ) _mso_sql_build_archive($r, &$pag);
 	elseif ( is_type('search') ) _mso_sql_build_search($r, &$pag);
 	elseif ( is_type('author') ) _mso_sql_build_author($r, &$pag);
-	elseif ( is_type('link') ) _mso_sql_build_link($r, &$pag);
-	// elseif ($MSO->data['is_feed']) _mso_sql_build_home($r, &$pag);
 	else return array();
 	
 	
@@ -589,6 +701,7 @@ function mso_get_pages($r = array(), &$pag)
 			$content = mso_auto_tag($content);
 			$content = mso_balance_tags($content);
 			
+			$pages[$key]['page_slug'] = $page['page_slug'] = mso_slug($page['page_slug']);
 			
 			// pr($content, 1);
 			// pr($page['page_content']);
@@ -606,7 +719,7 @@ function mso_get_pages($r = array(), &$pag)
 				if ($r['cut'])
 				{
 					$output .= mso_page_title( $page['page_slug'], $r['cut'], 
-								$do = '<span class="cut">', $posle = '</span>', true, false );
+								$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
 				}
 				else
 				{
@@ -621,6 +734,7 @@ function mso_get_pages($r = array(), &$pag)
 			
 			$pages[$key]['page_categories'] = array();
 			$pages[$key]['page_tags'] = array();
+			$pages[$key]['page_meta'] = array();
 		}
 		
 		// теперь одним запросом получим все рубрики каждой записи
@@ -682,7 +796,8 @@ function mso_get_pages($r = array(), &$pag)
 			
 			// остальные мета отдельно в page_meta
 			if ( isset($page_meta[$val['page_id']]) and $page_meta[$val['page_id']] )
-				$pages[$key]['page_meta'] = $page_meta[$val['page_id']];	
+				$pages[$key]['page_meta'] = $page_meta[$val['page_id']];
+				
 		}
 	}
 	else 
@@ -712,7 +827,7 @@ function mso_page_edit_link($id = 0, $title = 'Редактировать', $do 
 
 
 # получить ссылки на рубрики указанной страницы
-function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', $echo = true)
+function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', $echo = true, $type = 'category')
 {
 	global $MSO;
 	
@@ -725,7 +840,7 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 	foreach ($cat as $id)
 		$out .=  '<a href="' 
 					. $MSO->config['site_url'] 
-					. 'category/' 
+					. $type . '/' 
 					. $all_cat[$id]['category_slug'] 
 					. '">' 
 					. $all_cat[$id]['category_name'] 
@@ -739,7 +854,7 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 }
 
 # получить ссылки на метки указанной страницы
-function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', $echo = true)
+function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', $echo = true, $type = 'tag')
 {
 	global $MSO;
 	
@@ -752,7 +867,7 @@ function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', 
 	{
 		$out .=  '<a href="' 
 					. $MSO->config['site_url'] 
-					. 'tag/' 
+					. $type . '/' 
 					. $tag 
 					. '">' 
 					. $tag 
@@ -780,14 +895,14 @@ function mso_page_date($date = 0, $format = 'Y-m-d H:i:s', $do = '', $posle = ''
 
 
 # формирование титла или ссылки на страницу
-function mso_page_title($page_slug = '', $page_title = 'no title', $do = '<h1>', $posle = '</h1>', $link = true, $echo = true)
+function mso_page_title($page_slug = '', $page_title = 'no title', $do = '<h1>', $posle = '</h1>', $link = true, $echo = true, $type = 'page')
 {
 	global $MSO;
 	
 	if (!$page_slug) return '';
 	
 	if ($link)
-		$out = '<a href="' . $MSO->config['site_url'] . 'page/' . mso_slug($page_slug) . '">' . $page_title . '</a>';
+		$out = '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '">' . $page_title . '</a>';
 	else
 		$out = $page_title;
 	
@@ -797,14 +912,14 @@ function mso_page_title($page_slug = '', $page_title = 'no title', $do = '<h1>',
 
 
 # формирование ссылки для rss страницы
-function mso_page_feed($page_slug = '', $page_title = 'Подписаться', $do = '<p>', $posle = '</p>', $link = true, $echo = true)
+function mso_page_feed($page_slug = '', $page_title = 'Подписаться', $do = '<p>', $posle = '</p>', $link = true, $echo = true, $type = 'page')
 {
 	global $MSO;
 	
 	if (!$page_slug) return '';
 	
 	if ($link)
-		$out = '<a href="' . $MSO->config['site_url'] . 'page/' . mso_slug($page_slug) . '/feed">' . $page_title . '</a>';
+		$out = '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '/feed">' . $page_title . '</a>';
 	else
 		$out = $page_title;
 	
@@ -820,10 +935,30 @@ function mso_page_content($page_content = '')
 	mso_hook('content_end'); # хук на конец блока
 }
 
-
+# получение meta
+function mso_page_meta($meta = '', $page_meta = array(), $do = '', $posle = '', $razd = ', ', $echo = true)
+{
+	if (!$meta or !$page_meta) return '';
+	
+	if (isset($page_meta[$meta]) and $page_meta[$meta]) 
+	{
+		$out = '';
+		foreach ( $page_meta[$meta] as $val ) 
+			$out .= $val . '     ';
+		
+		$out = trim($out);
+		if (!$out) return '';
+		
+		$out = str_replace('     ', $razd, trim($out) );
+	}
+	else return '';
+	
+	if ($echo) echo $do . $out . $posle;
+		else return $do . $out . $posle;
+}
 
 # формирование ссылки «обсудить» если разрешен комментарий
-function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $title = 'Обсудить', $do = '', $posle = '', $echo = true)
+function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $title = 'Обсудить', $do = '', $posle = '', $echo = true, $type = 'page')
 {
 	global $MSO;
 	
@@ -851,13 +986,13 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		{
 			if ( $r['page_count_comments'] ) // но если уже есть комментарии, то выводи строчку title_no_link
 			{
-				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . 'page/' 
-						. mso_slug($r['page_slug']) . '#comments">' . $r['title_no_link'] . '</a>' . $r['posle'];
+				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/' 
+						. $r['page_slug'] . '#comments">' . $r['title_no_link'] . '</a>' . $r['posle'];
 			}			
 		}
 		else 
-			$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . 'page/' 
-						. mso_slug($r['page_slug']) . '#comments">' . $r['title'] . '</a>' . $r['posle'];
+			$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/' 
+						. $r['page_slug'] . '#comments">' . $r['title'] . '</a>' . $r['posle'];
 		
 		
 		if ($r['echo']) echo $out;
@@ -868,13 +1003,11 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		if (!$page_slug) return '';
 		if (!$page_comment_allow) return '';
 		
-		$out = $do . '<a href="' . $MSO->config['site_url'] . 'page/' . mso_slug($page_slug) . '#comments">' . $title . '</a>' . $posle;
+		$out = $do . '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '#comments">' . $title . '</a>' . $posle;
 		if ($echo) echo $out;
 			else return $out;		
 	}
 }
-
-
 
 
 # функция из Calendar.php
@@ -893,4 +1026,62 @@ if ( !function_exists('get_total_days') )
 }
 
 
+# Функции которые выполняют роль подсчета количества прочтения записи
+# первая функция, проверяет из кука значение массива с текущим url
+# если номера не совпадают, то функция устанавливает значение прочтений больше на 1
+# если совпадают, значит запись уже была прочитана с этого компа
+# если нужно убрать уникальность и учитывать все хиты, то $unique = false
+# начения хранятся в виде url1|url2|url2|url3 
+# url - второй сегмент
+# время жизни 30 дней: 1 час * 24 часа * 30 дней
+
+function mso_page_view_count_first($unique = true, $name_cookies = 'maxsite-cms', $expire = 2592000) 
+{
+	global $_COOKIE;
+	
+	if (isset($_COOKIE[$name_cookies]))	$all_slug = $_COOKIE[$name_cookies]; // значения текущего кука
+		else $all_slug = ''; // нет такой куки вообще
+	
+	$slug = mso_segment(2);
+	
+	$all_slug = explode('|', $all_slug); // разделим в массив
+	
+	if ( $unique ) 
+		if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
+	
+	// нужно увеличить счетчик
+	$all_slug[] = $slug; // добавляем текущий id
+	$all_slug = array_unique($all_slug); // удалим дубли на всякий пожарный
+	$all_slug = implode('|', $all_slug); // соединяем обратно в строку
+	$expire = time() + $expire; 
+	@setcookie($name_cookies, $all_slug, $expire); // записали в кук
+	
+	// получим текущее значение page_view_count
+	// и увеличиваем значение на 1
+	$CI = & get_instance();
+	$CI->db->select('page_view_count');
+	$CI->db->where('page_slug', $slug);
+	$CI->db->limit(1);
+	$query = $CI->db->get('page');
+	
+	if ($query->num_rows() > 0)	
+	{	
+		$pages = $query->row_array();
+		$page_view_count = $pages['page_view_count'] + 1;
+		
+		$CI->db->where('page_slug', $slug);
+		$CI->db->update('page', array('page_view_count'=>$page_view_count));
+		
+		return true;
+	}
+}
+
+# вывод количества просмотров текущей записи
+function mso_page_view_count($page_view_count = 0, $do = '<span>Прочтений:</span> ', $posle = '', $echo = true)
+{
+	if (!$page_view_count) return '';
+	
+	if ($echo) echo $do . $page_view_count . $posle;
+		else return $do . $page_view_count . $posle;
+}
 ?>

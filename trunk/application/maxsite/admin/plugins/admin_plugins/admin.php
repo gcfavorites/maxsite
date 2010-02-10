@@ -25,7 +25,9 @@
 					elseif ($act == 'uninstall') mso_plugin_uninstall($f_name); # унинстал 
 					$out .= ' &#149; ' . $f_name;
 				}
-				echo '<div class="update">' . $out . ' &#149;</div>';
+				mso_redirect('admin/plugins');
+				// mso_admin_menu();
+				// echo '<div class="update">' . $out . ' &#149;</div>';
 			}
 			else
 				echo '<div class="error">Ошибка обновления</div>';
@@ -45,19 +47,8 @@
 	
 	$tmpl = array (
 					'table_open'		  => '<table class="page" border="0" width="99%">',
-					'heading_row_start'	  => '<tr>',
-					'heading_row_end'	  => '</tr>',
-					'heading_cell_start'  => '<th  style="background: #808080;">',
-					'heading_cell_end'	  => '</th>',
-					'row_start'			  => '<tr style="background: #E8E8E8;">',
-					'row_end'			  => '</tr>',
-					'cell_start'		  => '<td>',
-					'cell_end'			  => '</td>',
-					'row_alt_start'		  => '<tr style="background: #F2F2FF;">',
-					'row_alt_end'		  => '</tr>',
-					'cell_alt_start'	  => '<td>',
-					'cell_alt_end'		  => '</td>',
-					'table_close'		  => '</table>'
+					'row_alt_start'		  => '<tr class="alt">',
+					'cell_alt_start'	  => '<td class="alt">',
 			  );
 
 	$CI->table->set_template($tmpl); // шаблон таблицы
@@ -98,8 +89,8 @@
 				*/
 				
 				$name = isset($info['name']) ? mso_strip($info['name']) : '';
-				$version = isset($info['version']) ? mso_strip($info['version']) : '';
-				$description = isset($info['description']) ? mso_strip($info['description']) : '';
+				$version = isset($info['version']) ? $info['version'] : '';
+				$description = isset($info['description']) ? $info['description'] : '';
 				$author = isset($info['author']) ? mso_strip($info['author']) : '';
 				$author_url = isset($info['author_url']) ? $info['author_url'] : false;
 				$plugin_url = isset($info['plugin_url']) ? $info['plugin_url'] : false;

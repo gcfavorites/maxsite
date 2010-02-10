@@ -10,9 +10,8 @@
 	<?php 
 		if ( $menu = mso_get_option('menu_header', 'templates', 'custom_menu-034-1.css') ) 
 		{
-			echo '<link rel="stylesheet" href="'. getinfo('stylesheet_url') . 'menu/'
-			. $menu
-			.'" type="text/css" media="screen">';
+			echo '<link rel="stylesheet" href="'. getinfo('stylesheet_url') . 'menu/' . $menu
+					.'" type="text/css" media="screen">';
 		}
 	?>
 
@@ -20,7 +19,7 @@
 	<?= mso_load_jquery() ?>
 	<?= mso_load_jquery('ui/effects.core.js') ?>
 	<?= mso_load_jquery('ui/effects.highlight.js') ?>
-	<script type="text/javascript" src="<?= getinfo('stylesheet_url') ?>my_ef2.js"></script>
+	<script type="text/javascript" src="<?= getinfo('stylesheet_url') ?>js/my_ef2.js"></script>
 
 	<?php mso_hook('head') ?>
 

@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
  
 global $MSO;
@@ -12,7 +12,10 @@ $dir_admin = $MSO->config['admin_dir'];
 
 if (!is_login())
 {
-	require($dir_admin . 'template/loginform.php');
+	// require($dir_admin . 'template/loginform.php');
+	
+	require($dir_admin . 'template/' . mso_get_option('admin_template', 'general', 'default') .  '/loginform.php');
+	
 }
 else
 {
@@ -22,7 +25,8 @@ else
 	mso_admin_init(); # инициализация
 	
 	# подключаем шаблон админки
-	require($dir_admin . 'template/template.php');
+	
+	require($dir_admin . 'template/' . mso_get_option('admin_template', 'general', 'default') . '/template.php');
 }
 
 ?>

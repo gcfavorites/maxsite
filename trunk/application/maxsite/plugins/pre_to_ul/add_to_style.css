@@ -1,5 +1,0 @@
-div.pre {background: #F0F0F0; padding: 5px; overflow: auto; width: 99%;}
-ol.pre {line-height: 1em; font-family: monospace; padding: 0; margin: 0 0 0 30px;  }
-ol.pre li {padding: 0; margin: 0; white-space: pre; line-height: 0.8em;}
-ol.pre li.odd {background: none;}
-ol.pre span.php-comment {color: gray;}

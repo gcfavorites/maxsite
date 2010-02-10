@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 
@@ -145,9 +145,11 @@ Array
 	if 	(!$options['antispam_on']) return;
 	
 	if ( !isset($options['logging']) ) $options['logging'] = false; // разрешено ли логирование?
+	if ( !isset($options['moderation_links']) ) $options['moderation_links'] = true; // модерировать все ссылки
 	if ( !isset($options['logging_file']) ) $options['logging_file'] = ''; // разрешено ли логирование?
 	if ( !isset($options['black_ip']) ) $options['black_ip'] = ''; // черный список IP
 	if ( !isset($options['black_words']) ) $options['black_words'] = ''; // черный список слов
+	if ( !isset($options['moderation_words']) ) $options['moderation_words'] = ''; // список слов модерации
 	
 	
 	$black_ip = split("\n", trim($options['black_ip']));
@@ -160,7 +162,7 @@ Array
 												. 'DATE: ' . $arg['comments_date'] . NR
 												. 'CONTENT: ' . NR . $arg['comments_content']
 												);
-		return 'Для вашего IP комментирование запрещено!';
+		return array('check_spam'=>true, 'message'=>'Для вашего IP комментирование запрещено!');
 	}
 	
 	$black_words = split("\n", trim($options['black_words']));
@@ -176,10 +178,28 @@ Array
 												. 'DATE: ' . $arg['comments_date'] . NR
 												. 'CONTENT: ' . NR . $arg['comments_content']
 												);
-			return 'Вы используете запрещенные слова!';
+			return array('check_spam'=>true, 'message'=>'Вы используете запрещенные слова!');
 		} 
 	}
 	
+	if ($options['moderation_links'])
+	{
+		// Если в комментарии хоть одна ссылка - сразу на модерацию
+		$check_a = (strpos( $arg['comments_content'], '<a') === false ) ? false : true;
+		if ($check_a) return array('moderation'=>1); // отправим на модерацию
+	}
+
+
+	$moderation_words = split("\n", trim($options['moderation_words']));
+	
+	foreach ($moderation_words as $word)
+	{
+		if (mb_stristr($arg['comments_content'], $word, false, 'UTF-8')) // есть какое-то вхождение
+		{
+			return array('moderation'=>1);
+		} 
+	}
+
 }
 
 

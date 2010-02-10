@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 class Maxsite extends Controller 
@@ -87,11 +87,8 @@ class Maxsite extends Controller
 		# возможно существует расширение 
 		# для этого подключим нужный файл если есть
 		
-		if ( count($this->data_def['uri_segment']) > 1 )
-			$fn = APPPATH . 'controllers/' . $this->data_def['uri_segment'][2] . EXT;
-		else 
-			$fn = APPPATH . 'controllers/' . $this->data_def['uri_segment'][1] . EXT;
-		
+		$fn = APPPATH . 'controllers/' . $this->data_def['uri_segment'][1] . EXT;
+	
 		if ( file_exists($fn) ) 
 			require($fn);
 		else 

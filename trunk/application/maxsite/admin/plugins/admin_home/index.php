@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 
@@ -47,8 +47,8 @@ function admin_home_admin($args = array())
 	# выносим админские функции отдельно в файл
 	global $MSO;
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Админ-панель"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Админ-панель - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Информация"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "Информация - " . $args; ' );
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_home/admin.php');
 }

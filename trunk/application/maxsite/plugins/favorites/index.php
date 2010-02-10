@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 
@@ -74,10 +74,10 @@ function favorites_widget_update($num = 1)
 # функции плагина
 function favorites_widget_custom($options = array(), $num = 1)
 {
-	// кэш 
-	$cache_key = mso_md5('favorites_widget_custom'. implode('', $options) . $num);
-	$k = mso_get_cache($cache_key);
-	// if ($k) return $k; // да есть в кэше
+	// кэш  - здесь не нужен
+	//$cache_key = mso_md5('favorites_widget_custom'. implode('', $options) . $num);
+	//$k = mso_get_cache($cache_key);
+	//if ($k) return $k; // да есть в кэше
 	
 	$out = '';
 	
@@ -121,7 +121,7 @@ function favorites_widget_custom($options = array(), $num = 1)
 	
 	if ($out) $out = $options['header'] . NR . '<ul class="is_link favorites">' . $out . NR . '</ul>' .NR ;
 	
-	mso_add_cache($cache_key, $out); // сразу в кэш добавим
+	// mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	
 	return $out;
 }

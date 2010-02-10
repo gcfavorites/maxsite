@@ -2,7 +2,7 @@
 
 /**
  * Основные функции MaxSite CMS
- * (с) http://maxsite.org/
+ * (c) http://maxsite.org/
  */
 
 define("NR", "\n");
@@ -1401,6 +1401,8 @@ function mso_xmlrpc_send($method = 'Hello', $request = array('Test'), $debug = f
 # также удаляются все служебные символы
 function mso_slug($slug)
 {
+	$slug = mso_hook('slug_do', $slug);
+	
 	// таблица замены
 	$repl = array(
 	"А"=>"a", "Б"=>"b",  "В"=>"v",  "Г"=>"g",   "Д"=>"d",
@@ -1433,6 +1435,7 @@ function mso_slug($slug)
 	$slug = str_replace('---', '-', $slug);
 	$slug = str_replace('--', '-', $slug);
 	
+	$slug = mso_hook('slug', $slug);
 
 	return $slug;
 }
@@ -1442,7 +1445,7 @@ function mso_create_allow($act = '', $desc = '')
 {
 	global $MSO;
 	
-	$act = mso_slug($act); // защищаем имя действия
+	// $act = mso_slug($act); // защищаем имя действия
 	
 	// считываем опцию 
 	$d = mso_get_option('groups_allow', 'general');
@@ -1470,7 +1473,7 @@ function mso_remove_allow($act = '')
 {
 	global $MSO;
 	
-	$act = mso_slug($act); // защищаем имя действия
+	// $act = mso_slug($act); // защищаем имя действия
 
 	$d = mso_get_option('groups_allow', 'general');
 
@@ -1488,7 +1491,7 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 {
 	global $MSO;
 	
-	$act = mso_slug($act); // защищаем имя действия
+	// $act = mso_slug($act); // защищаем имя действия
 	
 	if (!$act) return false;
 	
@@ -1646,7 +1649,7 @@ function mso_get_permalink_page($id = 0)
 		foreach ($query->result_array() as $row)
 			$slug = $row['page_slug'];
 
-		return  $MSO->config['site_url'] . 'page/' . mso_slug($slug);
+		return  $MSO->config['site_url'] . 'page/' . $slug;
 	}
 	else return '';
 }
@@ -1656,7 +1659,7 @@ function mso_get_permalink_cat_slug($slug = '')
 {
 	global $MSO;
 	if (!$slug) return '';
-	return  $MSO->config['site_url'] . 'category/' . mso_slug($slug);
+	return  $MSO->config['site_url'] . 'category/' . $slug;
 }
 
 
@@ -1732,7 +1735,7 @@ function mso_register_sidebar($sidebar = '1', $title = 'Cайдбар', $options
 {
 	global $MSO;
 	
-	$sidebar = mso_slug($sidebar);
+	//$sidebar = mso_slug($sidebar);
 	
 	$MSO->sidebars[$sidebar] = array('title' => $title, 'options' => $options);
 }
@@ -1750,9 +1753,10 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 {
 	global $MSO;
 	
-	$sidebar = mso_slug($sidebar);
+	//$sidebar = mso_slug($sidebar);
 	
-	$widgets = mso_get_option('sidebars-' . mso_slug($sidebar), 'sidebars', array());
+	// $widgets = mso_get_option('sidebars-' . mso_slug($sidebar), 'sidebars', array());
+	$widgets = mso_get_option('sidebars-' . $sidebar, 'sidebars', array());
 	
 	$out = '';
 	
@@ -1886,5 +1890,55 @@ function mso_load_jquery($plugin = '')
 	}
 }
 
+# формируем li-элементы для меню
+# элементы представляют собой текст, где каждая строчка один пункт
+# каждый пункт делается так:  http://ссылка|название
+# на выходе так:
+# <li class="selected"><a href="url"><span>ссылка</span></a></li>
+function mso_menu_build($menu = '', $select_css = 'selected')
+{
+	global $MSO;
+	# в массив
+	$menu = explode("\n", trim($menu)); 
+	
+	# определим текущий url
+	$current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	
+	$out = '';
+	# обходим в цикле
+	foreach ($menu as $elem) 
+	{
+		# разобъем строчку по адрес | название
+		$elem = explode('|', $elem);
+		
+		# должно быть два элемента
+		if (count($elem) > 1 ) 
+		{
+			$url = trim($elem[0]);  // адрес 
+			$name = trim($elem[1]); // название
+			
+			if (strpos($url, 'http://') === false) // нет в адресе http:// - значит это текущий сайт
+			{
+				if ($url == '/') $url = getinfo('siteurl'); // это главная 
+					else $url = getinfo('siteurl') . $url;
+			}
+			
+			# если текущий адрес совпал, значит мы на этой странице
+			if ($url == $current_url) $class = ' class="' . $select_css . '"';
+				else $class = '';
+			
+			$out .= '<li' . $class . '><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+		}
+	}
+	return $out;
+}
+
+/*
+# кастомизируем slug
+function mso_custom_slug($slug = '')
+{
+	return mso_hook('custom_slug', $slug);
+}
+*/
 
 ?>
