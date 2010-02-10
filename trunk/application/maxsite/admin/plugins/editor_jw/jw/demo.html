@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title></title>
+	
+	<link rel="stylesheet" href="jquery.wysiwyg.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="jquery-1.2.3.pack.js"></script>
+	<script type="text/javascript" src="jquery.wysiwyg.js"></script>
+
+	<script type="text/javascript">
+	/*<![CDATA[*/
+
+	$(function()
+	{
+	  $('#wysiwyg').wysiwyg({
+			css: 'styles.css',
+			controls : {
+				//separator04 : { visible : true },
+				//insertOrderedList : { visible : true },
+				//insertUnorderedList : { visible : true },
+				//html : { visible : true },
+			}
+			
+		});
+	});
+
+
+	/*]]>*/
+	</script>
+
+</head>
+<body>
+
+<h1>Каля маля</h1>
+
+<form method="post" action="">
+	<textarea id="wysiwyg" style="height: 400px; width: 650px;" >&lt;h1&gt;Каля маля&lt;/h1&gt;Привет!</textarea>
+	<br /><input type="submit" name="f_submit" />
+</form>
+
+</body>
+</html>

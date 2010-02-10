@@ -1,0 +1,112 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+/**
+ * MaxSite CMS
+ * (с) http://maxsite.org/
+ */
+
+### каркас для плагина
+### вместо _null укажите свой плагин
+
+
+# функция автоподключения плагина
+function admin_page_autoload($args = array())
+{	
+	mso_hook_add( 'admin_init', 'admin_page_admin_init');
+}
+
+# функция выполняется при указаном хуке admin_init
+function admin_page_admin_init($args = array()) 
+{
+
+	if ( mso_check_allow('admin_page') ) 
+	{
+		$this_plugin_url = 'page'; // url и hook
+		
+		# добавляем свой пункт в меню админки
+		# первый параметр - группа в меню
+		# второй - это действие/адрес в url - http://сайт/admin/demo
+		#			можно использовать добавочный, например demo/edit = http://сайт/admin/demo/edit
+		# Третий - название ссылки	
+		# четвертый номер по порядку
+		
+		mso_admin_menu_add('page', $this_plugin_url, 'Список', 2);
+
+		# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
+		# связанную функцию именно она будет вызываться, когда 
+		# будет идти обращение по адресу http://сайт/admin/_null
+		mso_admin_url_hook ($this_plugin_url, 'admin_page_admin');
+	}
+	
+	if ( mso_check_allow('admin_page_new') ) 
+	{
+		$this_plugin_url = 'page_edit'; // url и hook
+		//mso_admin_menu_add('page', $this_plugin_url, 'Редактировать запись', 2);
+		mso_admin_url_hook ($this_plugin_url, 'admin_page_edit');
+		
+		$this_plugin_url = 'page_new'; // url и hook
+		mso_admin_menu_add('page', $this_plugin_url, 'Создать', 1);
+		mso_admin_url_hook ($this_plugin_url, 'admin_page_new');	
+	}
+	
+	return $args;
+}
+
+# функция вызываемая при хуке, указанном в mso_admin_url_hook
+function admin_page_admin($args = array()) 
+{
+	# выносим админские функции отдельно в файл
+	global $MSO;
+	if ( !mso_check_allow('admin_page') ) 
+	{
+		echo 'Доступ запрещен';
+		return $args;
+	}
+	
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Список страниц"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "Список страниц - " . $args; ' );
+	
+	require($MSO->config['admin_plugins_dir'] . 'admin_page/admin.php');
+}
+
+
+# функция вызываемая при хуке, указанном в mso_admin_url_hook
+function admin_page_edit($args = array()) 
+{
+	# выносим админские функции отдельно в файл
+	global $MSO;
+	
+	if ( !mso_check_allow('admin_page_edit') ) 
+	{
+		echo 'Доступ запрещен';
+		return $args;
+	}
+	
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Редактирование страницы"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "Редактирование страницы - " . $args; ' );
+	
+	require($MSO->config['admin_plugins_dir'] . 'admin_page/edit.php');
+}
+
+
+# функция вызываемая при хуке, указанном в mso_admin_url_hook
+function admin_page_new($args = array()) 
+{
+	# выносим админские функции отдельно в файл
+	global $MSO;
+	
+	if ( !mso_check_allow('admin_page_new') ) 
+	{
+		echo 'Доступ запрещен';
+		return $args;
+	}
+	
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Создать страницу"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "Создать страницу - " . $args; ' );
+	
+	require($MSO->config['admin_plugins_dir'] . 'admin_page/new.php');
+}
+
+
+
+?>

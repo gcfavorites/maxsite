@@ -1,0 +1,19 @@
+
+body {font-family: Verdana; font-size: 9pt; cursor: text; line-height: 1.4em;} 
+
+br {ma1rgin-bottom: 10px; background: red; width: 10px; height: 10px;}
+
+pre {background: #E0E0E0; padding: 10px;}
+code {background: #E0E0E0; padding: 10px;}
+
+ul, ol {background: #E0E0F0; padding: 5px 5px 5px 30px;}
+li {margin-bottom: 5px;}
+
+
+h1 {font-size: 1.8em; font-family: Arial;}
+h2 {font-size: 1.6em; font-family: Arial;}
+h3 {font-size: 1.4em; font-family: Arial;}
+h4 {font-size: 1.2em; font-family: Arial;}
+h5 {font-size: 1.1em; font-family: Arial;}
+h6 {font-size: 1em; font-family: Arial;}
+

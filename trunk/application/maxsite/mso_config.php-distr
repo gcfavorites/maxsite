@@ -1,0 +1,23 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+global $mso_install;
+
+$mso_install = false; # после инсталяции блога можно установить true
+
+# можно переопределить дефолтные настройки
+$MSO->config['cache_time'] = 900; # время действия кэша в секундах
+$MSO->config['secret_key'] = ''; # она будет использоваться при генерации ключей
+
+# подключаем нужные плагины, настройки и т.д.
+function mso_autoload_custom()
+{
+
+}
+
+# аналогичная функция только для админки
+function mso_autoload_admin_custom()
+{
+
+}
+
+?>
