@@ -160,6 +160,12 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	$text = 'Новый комментарий на "' . $page_title . '"'. NR ;
 	$text .= mso_get_permalink_page($data['comments_page_id'])  . '#comment-' . $id . NR . NR;
 	
+	if ($data['comments_approved'] == 0) // нужно промодерировать
+	{
+		$text .= 'Комментарий требует модерации: ' . NR 
+			. getinfo('site_admin_url') . 'comments/edit/' . $id . NR . NR;
+	}
+	
 	$text .= 'Автор IP: ' . $data['comments_author_ip'] . NR;
 	$text .= 'Referer: ' . $_SERVER['HTTP_REFERER'] . NR;
 	$text .= 'Дата: ' . $data['comments_date'] . NR;
@@ -188,7 +194,7 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	$text .= NR . 'Текст: ' . NR . $data['comments_content'] . NR;
 	
 	$text .= NR . 'Администрировать комментарий вы можете по ссылке: ' . NR 
-			. getinfo('site_admin_url') . 'comments' . NR;
+			. getinfo('site_admin_url') . 'comments/edit/' . $id . NR;
 	
 	return mso_mail($email, $subject, $text);
 }

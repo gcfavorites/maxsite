@@ -1,4 +1,4 @@
-<?php 
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 	require(getinfo('template_dir') . 'main-start.php');
 ?>
 
@@ -6,13 +6,6 @@
 
 <?php
 
-	function valid_email($em) {
-		if ( eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,3}$", $em) )
-			return true;
-		else
-			return false;
-	}
-	
 	$form_hide = false; //отобразить форму
 	
 	if ($_POST and
@@ -32,7 +25,7 @@
 		)
 	{
 		// проверяем мыло
-		$ok = valid_email($_POST['contact_mail']);
+		$ok = mso_valid_email($_POST['contact_mail']);
 		
 		if ($ok) 
 		{	// антиспам

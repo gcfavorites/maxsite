@@ -44,7 +44,7 @@ div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; borde
 div.admin-menu {width: 250px; background: #D7E7C8; color: #10330F; float: left; border-right: 2px #235826 solid;}
 div.admin-menu div.r { padding: 10px 0 10px 0;}
 
-div.admin-footer {clear: both; background: #10330F; color: white; padding: 5px 0; text-align: center;}
+div.admin-footer {clear: both; background: #10330F url(images/maxsitelogo-green.png) no-repeat right 3px; padding: 15px 0 10px 10px; color: white; text-align: center;}
 div.admin-footer a {color: white;}
 
 
@@ -70,6 +70,9 @@ table.page th {padding: 3px;  background: #D7E7C8; color: #10330F;}
 table.page tr {background: #FEFEFB;}
 table.page tr.alt {background: #D7E7C8;}
 
+input.f_header {width: 99%; margin: 5px auto 5px auto; color: #333399; padding: 2px; font-size: 18pt;}
+
+
 div.update {padding: 10px; background: #D0FFD0; margin-bottom: 10px;}
 div.error {padding: 10px; background: #FFD0D0; margin-bottom: 10px;}
 
@@ -84,6 +87,24 @@ div.page_meta {background: #D7E7C8; border-color: #235826; -moz-border-radius: 0
 div.page_meta h3 {border: none; color: #404040; margin: 0 0 3px 0;}
 div.page_meta div {background: #FEFEFB; margin: 10px 0 10px 0; border: #235826 1px solid; padding: 5px 10px; -moz-border-radius: 10px;}
 div.page_meta p {font-style: italic;}
+
+div.page_files {}
+
+div.page_files div.frame {height: 470px; width: auto; overflow: auto;}
+*html div.page_files div.frame {overflow: scroll;}
+*+html div.page_files div.frame {overflow: scroll;}
+
+div.page_files div.frame table {backgro1und: #F0F0F0;}
+div.page_files div.frame table td {backg1round: #E0E0E0;}
+*html div.page_files div.frame table {width: 96%;}
+*+html div.page_files div.frame table {width: 96%;}
+
+div.page_files div.frame input {width: 99%;}
+*html div.page_files div.frame input {width: 500px;}
+*+html div.page_files div.frame input {width: 500px;}
+
+div.page_files div.frame input.check_files {width: auto;}
+div.page_files div.frame #gallerycodeclick {width: auto;}
 
 div.cat_page ul {list-style-type: none; margin-left: 0px;}
 div.cat_page ul ul {margin-left: 20px;}

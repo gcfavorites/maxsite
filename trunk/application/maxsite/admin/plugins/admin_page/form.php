@@ -5,14 +5,23 @@
  * (c) http://maxsite.org/
  */
 
-# Форма - работает совместно с edit и new
-
+	# Форма - работает совместно с edit и new
+	
+	
+	# загрузки
+	ob_start();	
+	require($MSO->config['admin_plugins_dir'] . 'admin_page/files.php');
+	$page_files = ob_get_contents();
+	ob_end_clean();
+	
+	$page_admin_files = '<p>Скопируйте код в редактор. (<a href="'. $MSO->config['site_admin_url'] . 'files" target="_blank">Страница «Загрузки»</a>)</p>';
+	
 	# до 
 	$do = <<<EOF
 	<table style="border-col1lapse: collapse; width: 99%; border: none; line-height: 1.4em;">
 	<tr>
 		<td style="vertical-align: top; padding: 0 10px 0 0;">
-		<input type="text" value="{$f_header}" name="f_header" {$input_style} />
+		<input type="text" value="{$f_header}" name="f_header" class="f_header" />
 		{$fses}
 EOF;
 	
@@ -28,6 +37,14 @@ EOF;
 					<h3>Дополнительные поля meta</h3>
 					{$all_meta}
 				</div>
+				
+				<div class="block_page page_files">
+					<h3>Файлы</h3>
+					{$page_admin_files}
+					<div class="frame">
+					{$page_files}
+					</div>
+				</div>				
 			</div>
 		</td>
 		

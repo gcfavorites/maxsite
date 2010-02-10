@@ -36,15 +36,15 @@ h6 {font-size: 7pt; margin: 3px 0;}
 #container {font-size: 9pt; width: 100%;}
 #mc {float: left; width: 100%;  background: url(images/bg-menu.gif) repeat-y;}
 
-div.admin-header {background: #0D419B url(images/bg-header.jpg) repeat-x; color: white; padding: 10px;}
+div.admin-header {background: #0D419B url(images/bg-header.jpg) repeat-x; color: white; padding: 5px;}
 div.admin-header a {color: white;}
 
-div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; border-left: 2px #4472C5 solid; }
+div.admin-content {margin: 0 0 0 250px; padding: 10px; border-left: 2px #4472C5 solid; }
 /*C3DAF9 */
 div.admin-menu {width: 250px; background: #A4C5EF; color: #527FD0; float: left; border-right: 2px #4472C5 solid;}
 div.admin-menu div.r {padding: 10px 0 10px 0;}
 
-div.admin-footer {clear: both; background: #0D419B; color: white; padding: 5px 0; text-align: center;}
+div.admin-footer {clear: both; background: #0D419B url(images/maxsitelogo-blue.png) no-repeat right 3px; color: white; padding: 15px 0 10px 10px; te2xt-align: center;}
 div.admin-footer a {color: white;}
 
 
@@ -70,6 +70,8 @@ table.page th {padding: 3px;  background: #C3DAF9; color: #0D419B;}
 table.page tr {background: #E8E8F8;}
 table.page tr.alt {background: #F0F0FF;}
 
+input.f_header {width: 99%; border: 1px solid #3B619C; margin: 5px auto 5px auto; background: #E3FAFF; color: #333399; padding: 2px; font-size: 18pt;}
+
 div.update {padding: 10px; background: #D0FFD0; margin-bottom: 10px;}
 div.error {padding: 10px; background: #FFD0D0; margin-bottom: 10px;}
 
@@ -84,6 +86,25 @@ div.page_meta {background: #EEEEEE; border-color: silver; -moz-border-radius: 0p
 div.page_meta h3 {border: none; color: #404040; margin: 0 0 3px 0;}
 div.page_meta div {background: #D0D0D0; margin: 10px 0 10px 0; border: #EEEEEE 1px solid; padding: 5px 10px; -moz-border-radius: 10px;}
 div.page_meta p {font-style: italic;}
+
+div.page_files {}
+
+div.page_files div.frame {height: 470px; width: auto; overflow: auto;}
+*html div.page_files div.frame {overflow: scroll;}
+*+html div.page_files div.frame {overflow: scroll;}
+
+div.page_files div.frame table {background: #F0F0F0;}
+div.page_files div.frame table td {background: #D8E9FD;}
+*html div.page_files div.frame table {width: 96%;}
+*+html div.page_files div.frame table {width: 96%;}
+
+div.page_files div.frame input {width: 99%;}
+*html div.page_files div.frame input {width: 500px;}
+*+html div.page_files div.frame input {width: 500px;}
+
+div.page_files div.frame input.check_files {width: auto;}
+div.page_files div.frame #gallerycodeclick {width: auto;}
+
 
 div.cat_page ul {list-style-type: none; margin-left: 0px;}
 div.cat_page ul ul {margin-left: 20px;}

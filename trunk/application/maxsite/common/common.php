@@ -46,7 +46,7 @@ function pr($var, $html = false)
 #  правильность email 
 function mso_valid_email($em = '') 
 {
-	if ( eregi("^[a-z0-9\._+-]+@+[a-z0-9\._-]+\.+[a-z]{2,3}$", $em) )
+	if ( eregi("^[a-z0-9\._+-]+@+[a-z0-9\._-]+\.+[a-z]{2,4}$", $em) )
 		return true;
 	else
 		return false;
@@ -431,11 +431,15 @@ function getinfo($info = '')
 				break;				
 				
 		case 'users_nik' :
-				$out = $MSO->data['session']['users_nik'];
+				if (isset($MSO->data['session']['users_nik']))
+					$out = $MSO->data['session']['users_nik'];
+				else $out = '';
 				break;
 		
 		case 'users_id' :
-				$out = $MSO->data['session']['users_id'];
+				if (isset($MSO->data['session']['users_id']))
+					$out = $MSO->data['session']['users_id'];
+				else $out = '';
 				break;
 				
 		case 'name_site' :
@@ -1608,7 +1612,8 @@ EOF;
 
 # посыл в хидере no-кэш
 # кажется не работает - как проверить хз...
-function mso_nocache_headers() {
+function mso_nocache_headers() 
+{
 	@header('Expires: Wed, 11 Jan 1984 05:00:00 GMT');
 	@header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 	@header('Cache-Control: no-cache, must-revalidate, max-age=0');

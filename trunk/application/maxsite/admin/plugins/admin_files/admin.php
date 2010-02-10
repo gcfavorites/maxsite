@@ -387,7 +387,7 @@
 	
 	
 	$tmpl = array (
-					'table_open'		  => '<table class="page" border="0" width="100%"><colgroup width="300"><colgroup width="100">',
+					'table_open'		  => '<table class="page" border="0" width="100%"><colgroup width="100">',
 					'row_alt_start'		  => '<tr class="alt">',
 					'cell_alt_start'	  => '<td class="alt">',
 			  );
@@ -395,7 +395,7 @@
 	$CI->table->set_template($tmpl); // шаблон таблицы
 	
 	// заголовки
-	$CI->table->set_heading('Файл', '', 'Коды для вставки');
+	$CI->table->set_heading('&bull;', 'Коды для вставки');
 	
 	// проходимся по каталогу аплоада и выводим их списком
 	
@@ -460,7 +460,7 @@
 		}
 		else $predpr = '';
 		
-		$CI->table->add_row($sel, $predpr, $cod);
+		$CI->table->add_row($predpr, $sel . $cod);
 	}
 	
 	// добавляем форму, а также текущую сессию

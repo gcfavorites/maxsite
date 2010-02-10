@@ -383,8 +383,10 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 	// сделаем ключом массива номер рубрики
 	$cat = array();
 	foreach ($r as $row) 
+	{
 		$cat[$row['category_id']] = $row;
-		
+		$cat[$row['category_id']]['childs'] = trim($cat[$row['category_id']]['childs']);
+	}	
 		
 	// нам нужно получить количество записей по каждой рубрике
 	$CI->db->select('cat2obj.*');
@@ -596,5 +598,28 @@ function _mso_cat_ul_glue($in, &$all, $li_format, $checked_id, $selected_id, $sh
 	return implode("\n", $out);
 }
 
+# Получает ID категории по slug
+# false - не найдено, иначе вернет ID категории
+# если slug не указан, то берется mso_segment(2)
+# если $full = false, то возвращаем только category_id
+# если $full = true, то возвращаем массив всех данных рубрики (mso_cat_array_single)
+# идея Евгений Самборский (http://www.samborsky.com/)
+# http://forum.maxsite.org/viewtopic.php?pid=38939
+function mso_get_cat_from_slug($slug = '', $full = false)
+{
+	if (!$slug) $slug = mso_segment(2);
+	$all_cats = mso_cat_array_single();
+	
+	foreach ($all_cats as $val)
+	{
+		if ($val['category_slug'] == $slug)
+		{
+			if ($full) return $val;
+			else return $val['category_id'];
+		}
+	}
+	
+	return false;
+}
 
 ?>

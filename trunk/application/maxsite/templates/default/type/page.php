@@ -1,4 +1,4 @@
-<?php 
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 mso_page_view_count_first(); // для подсчета количества прочтений страницы
 

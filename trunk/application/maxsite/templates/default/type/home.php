@@ -1,4 +1,4 @@
-<?php 
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 // нужно выводить рубрики блоками - сделаем отдельным файлом
 if (mso_get_option('home_cat_block', 'templates', '0'))

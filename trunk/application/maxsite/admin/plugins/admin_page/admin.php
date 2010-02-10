@@ -60,14 +60,18 @@
 	$CI->load->helper('form');
 	
 	$tmpl = array (
-				'table_open'		  => '<table class="page" border="0" width="99%">',
+				'table_open'		  => '<table class="page tablesorter" border="0" width="99%" id="pagetable">',
 				'row_alt_start'		  => '<tr class="alt">',
 				'cell_alt_start'	  => '<td class="alt">',
+				'heading_row_start' 	=> NR . '<thead><tr>',
+				'heading_row_end' 		=> '</tr></thead>' . NR,
+				'heading_cell_start'	=> '<th style="cursor: pointer;">',
+				'heading_cell_end'		=> '</th>',
 		  );
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
 
-	$CI->table->set_heading('ID','Тип', 'Заголовок', 'Дата', 'Статус', 'Автор', 'Действие');
+	$CI->table->set_heading('ID', 'Заголовок', 'Дата', 'Тип','Статус', 'Автор');
 	
 	
 	if ( !mso_check_allow('admin_page_edit_other') )
@@ -104,7 +108,7 @@
 		foreach ($pages as $page) // выводим в цикле
 		{
 			// pr($page);
-			$act = '<a href="' . $this_url . $page['page_id'] . '">Изменить</a>';
+			// $act = '<a href="' . $this_url . $page['page_id'] . '">Изменить</a>';
 			
 			$all_pages[$page['page_id']] = $page['page_id'] . ' - ' . $page['page_title'] 
 				. ' - ' . $page['page_date_publish'] . ' - ' . $page['page_status'];
@@ -127,16 +131,38 @@
 			$tags = str_replace('  ', ', ', trim($tags));
 			
 			
-			$title = '<a href="' . $view_url . $page['page_slug'] . '">' . $page['page_title'] . '</a>';
+			$title = '<a href="' . $this_url . $page['page_id'] . '">' . $page['page_title'] . '</a>'
+					. ' [<a href="' . $view_url . $page['page_slug'] . '" target="_blank">Просмотр</a>]';
+			
+			
 			
 			if ($cats) $title .= '<br />Рубрика: ' . $cats;
 			if ($tags) $title .= '<br />Метки: ' . $tags;
 			
-			$CI->table->add_row($page['page_id'], $page['page_type_name'], $title, 
-					$page['page_date_publish'], $page['page_status'], $page['users_nik'], $act);
+			$CI->table->add_row($page['page_id'], $title, $page['page_date_publish'], 
+					$page['page_type_name'], $page['page_status'], $page['users_nik']);
 		}
 	}
 	
+	if (function_exists('pagination_go')) 
+	{
+		$pagination['type'] = '';
+		$pagination['range'] = 10;
+		echo  pagination_go($pagination) . '<br />'; // вывод навигации
+	}
+	
+	echo mso_load_jquery('jquery.tablesorter.js');
+	echo '
+	<script type="text/javascript">
+	$(function() {
+		$("table.tablesorter th").animate({opacity: 0.7});
+		$("table.tablesorter th").hover(function(){ $(this).animate({opacity: 1}); }, function(){ $(this).animate({opacity: 0.7}); });
+		$("#pagetable").tablesorter();
+	});	
+	</script>
+	';
+	
+
 	echo $CI->table->generate(); // вывод подготовленной таблицы
 
 	// добавляем форму для удаления записи

@@ -132,9 +132,9 @@
 	
 	<td><input title="Порядок" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text" /></td>
 	
-	<td><input type="submit" name="f_edit_submit[[ID]]" value="Изменить" style="width: 100%; margin: 0 -4px;"></td>
+	<td><input type="submit" name="f_edit_submit[[ID]]" value="Изменить" style="width: 100%; margin: 0 -2px;"></td>
 	
-	<td><input type="submit" name="f_delete_submit[[ID]]" value="Удалить" style="width: 100%; margin: 0 -4px;" onClick="if(confirm(\'Удалить рубрику?\')) {return true;} else {return false;}" ></td>
+	<td><input type="submit" name="f_delete_submit[[ID]]" value="Удалить" style="width: 100%; margin: 0 -2px;" onClick="if(confirm(\'Удалить рубрику?\')) {return true;} else {return false;}" ></td>
 	
 	</tr></table>
 	

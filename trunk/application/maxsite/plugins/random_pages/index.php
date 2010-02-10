@@ -25,7 +25,7 @@ function random_pages_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box">' . $options['header'] . '</h2>';
+	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
 		else $options['header'] = '';
 	
 	return random_pages_widget_custom($options, $num);
@@ -43,6 +43,7 @@ function random_pages_widget_form($num = 1)
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['count']) ) $options['count'] = 3;
+	if ( !isset($options['page_type']) ) $options['page_type'] = 'blog';
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -50,6 +51,7 @@ function random_pages_widget_form($num = 1)
 	
 	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	$form .= '<p><div class="t150">Количество:</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
+	$form .= '<p><div class="t150">Тип страниц:</div> '. form_input( array( 'name'=>$widget . 'page_type', 'value'=>$options['page_type'] ) ) ;
 	
 	return $form;
 }
@@ -67,6 +69,7 @@ function random_pages_widget_update($num = 1)
 	# обрабатываем POST
 	$newoptions['header'] = mso_widget_get_post($widget . 'header');
 	$newoptions['count'] = mso_widget_get_post($widget . 'count');
+	$newoptions['page_type'] = mso_widget_get_post($widget . 'page_type');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -78,12 +81,15 @@ function random_pages_widget_custom($options = array(), $num = 1)
 	$out = '';
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['count']) ) $options['count'] = 3;
+	if ( !isset($options['page_type']) ) $options['page_type'] = 'blog';
 	
 	$CI = & get_instance();
 	
 	$CI->db->select('page_slug, page_title');
 	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 	$CI->db->where('page_status', 'publish');
+	if ($options['page_type']) $CI->db->where('page_type_name', $options['page_type']);
+	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->from('page');
 	$CI->db->order_by('page_id', 'random');
 	$CI->db->limit($options['count']);

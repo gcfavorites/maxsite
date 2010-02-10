@@ -203,7 +203,8 @@
 	echo '<h1 class="content">Создать страницу</h1>';
 	
 	
-	$input_style = 'style="width: 99%; border: 1px solid #3B619C; margin: 5px auto 5px auto; background: #E3FAFF; color: #333399; padding: 2px; font-size: 18pt;"';
+	// $input_style = 'class="f_header"'; 
+	// 'style="width: 99%; border: 1px solid #3B619C; margin: 5px auto 5px auto; background: #E3FAFF; color: #333399; padding: 2px; font-size: 18pt;"';
 	
 	$f_header = mso_text_to_html($f_header);
 	$f_tags = mso_text_to_html($f_tags);
@@ -250,6 +251,7 @@
 		
 		// все метки
 		$f_all_tags .= tagclouds_widget_custom(array(
+			'max_num' => 9999,
 			'max_size' => '180',
 			'block_start' => '<p id="f_all_tags_all" style="display: none;"><br />',
 			'block_end' => ' <a title="Показать только самые популярные метки" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',

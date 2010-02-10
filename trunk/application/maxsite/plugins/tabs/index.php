@@ -38,7 +38,7 @@ function tabs_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box">' . $options['header'] . '</h2>';
+	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
 		else $options['header'] = '';
 	
 	return tabs_widget_custom($options, $num);
@@ -125,10 +125,10 @@ function tabs_widget_custom($options = array(), $num = 1)
 	
 	if ($tabs) // есть закладки, можно выводить
 	{
-		$out .= NR . '<div id="tabs-widget-' . $num . '" class="flora"><ul>';
+		$out .= NR . '<div id="tabs-widget-' . $num . '" class="tabs-widget-all"><ul class="tabs-menu">';
 		foreach($tabs as $key => $tab)
-			$out .= NR .  '<li><a href="#tabs-widget-fragment-' . $num . $key . '"><span>' . $tab['title'] . '</span></a></li>' . NR;
-		$out .= '</ul>' . NR;
+			$out .= '<li><a href="#tabs-widget-fragment-' . $num . $key . '"><span>' . $tab['title'] . '</span></a></li>' . NR;
+		$out .= '</ul>';
 		
 		foreach($tabs as $key => $tab)
 		{
@@ -152,7 +152,7 @@ function tabs_widget_custom($options = array(), $num = 1)
 			}
 			else $func = ushka($tab['ushka']);
 			
-			$out .= NR . '<div id="tabs-widget-fragment-' . $num . $key . '">' . $func . '</div>' . NR;
+			$out .= '<div id="tabs-widget-fragment-' . $num . $key . '" class="tabs-widget-fragment">' . $func . '</div>' . NR;
 		}
 			
 		$out .= '</div>' . NR;

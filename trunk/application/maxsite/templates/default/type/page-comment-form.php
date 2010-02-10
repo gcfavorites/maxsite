@@ -57,7 +57,7 @@
 			
 			<label for="comments_content">Ваш комментарий</label>
 			<?php mso_hook('comments_content_start')  ?>
-			<textarea name="comments_content" id="comments_content" rows="20"></textarea>
+			<textarea name="comments_content" id="comments_content" rows="10"></textarea>
 
 			<?php mso_hook('comments_content_end')  ?>
 			

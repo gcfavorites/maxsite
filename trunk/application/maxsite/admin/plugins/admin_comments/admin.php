@@ -89,7 +89,7 @@
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
 
-	$CI->table->set_heading('ID', '', '+', 'Текст',  'Действие');
+	$CI->table->set_heading('ID', '&bull;', '+', 'Текст',  'Действие');
 	
 	# подготавливаем выборку из базы
 	$CI->db->select('comments_id, comments_users_id, comments_comusers_id, comments_author_name, comments_date, comments_content, comments_approved, comments_author_ip, users.users_nik, comusers.comusers_nik, page.page_title, page.page_slug');

@@ -24,7 +24,7 @@ function twitter_widget($num = 1)
 	$widget = 'twitter_widget_' . $num; // имя для опций = виджет + номер
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box">' . $options['header'] . '</h2>';
+	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
 		else $options['header'] = '';
 
 	return twitter_widget_custom($options, $num);
@@ -99,7 +99,7 @@ function twitter_widget_custom($arg, $num)
 	if ( !isset($arg['max_word_description']) ) $arg['max_word_description'] = false;
 
 	# оформление виджета
-	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box">Мой Twitter</h2>';
+	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box"><span>Мой Twitter</span></h2>';
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="twitter">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</div>';
 

@@ -1,4 +1,4 @@
-<?php 
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 // параметры для получения страниц
 $par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'), 

@@ -1,3 +1,4 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 <span><a name="comments"></a></span>
 <?php
 # коммментарии

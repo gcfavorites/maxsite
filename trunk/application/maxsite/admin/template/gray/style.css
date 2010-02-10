@@ -38,7 +38,7 @@ h6 {font-size: 7pt; margin: 3px 0;}
 #container {font-size: 9pt; width: 100%;}
 #mc {float: left; width: 100%;  background: url(images/bg-menu.gif) repeat-y;}
 
-div.admin-header {background: #5A5A5A; color: white; padding: 10px; border-bottom: 1px #505050 solid;}
+div.admin-header {background: #5A5A5A url(images/maxsitelogo-gray.png) no-repeat right 3px; color: white; padding: 10px; border-bottom: 1px #505050 solid;}
 div.admin-header a {color: white;}
 
 div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; border-left: 2px #425667 solid; }
@@ -46,7 +46,7 @@ div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; borde
 div.admin-menu {width: 250px; background: #A4A4AB; color: #231B24; float: left; border-right: 2px #425667 solid;}
 div.admin-menu div.r { padding: 10px 0 10px 0;}
 
-div.admin-footer {clear: both; background: #231B24; color: white; padding: 5px 0; text-align: center;}
+div.admin-footer {clear: both; background: #231B24; padding: 5px; color: white; text-align: center;}
 div.admin-footer a {color: white;}
 
 
@@ -72,6 +72,9 @@ table.page th {padding: 3px;  background: #A4A4AB; color: #231B24;}
 table.page tr {background: #FEFEFB;}
 table.page tr.alt {background: #ECECEC;}
 
+input.f_header {width: 99%; margin: 5px auto 5px auto; color: #333399; padding: 2px; font-size: 18pt;}
+
+
 div.update {padding: 10px; background: #D0FFD0; margin-bottom: 10px;}
 div.error {padding: 10px; background: #FFD0D0; margin-bottom: 10px;}
 
@@ -86,6 +89,25 @@ div.page_meta {background: #A4A4AB; border-color: #425667; -moz-border-radius: 0
 div.page_meta h3 {border: none; color: #404040; margin: 0 0 3px 0;}
 div.page_meta div {background: #FEFEFB; margin: 10px 0 10px 0; border: #425667 1px solid; padding: 5px 10px; -moz-border-radius: 10px;}
 div.page_meta p {font-style: italic;}
+
+div.page_files {}
+
+div.page_files div.frame {height: 470px; width: auto; overflow: auto;}
+*html div.page_files div.frame {overflow: scroll;}
+*+html div.page_files div.frame {overflow: scroll;}
+
+div.page_files div.frame table {background: #F0F0F0;}
+div.page_files div.frame table td {background: #E0E0E0;}
+*html div.page_files div.frame table {width: 96%;}
+*+html div.page_files div.frame table {width: 96%;}
+
+div.page_files div.frame input {width: 99%;}
+*html div.page_files div.frame input {width: 500px;}
+*+html div.page_files div.frame input {width: 500px;}
+
+div.page_files div.frame input.check_files {width: auto;}
+div.page_files div.frame #gallerycodeclick {width: auto;}
+
 
 div.cat_page ul {list-style-type: none; margin-left: 0px;}
 div.cat_page ul ul {margin-left: 20px;}

@@ -355,7 +355,7 @@
 
 
 	# новый юзер
-	function mso_new_user($data)
+	function mso_new_user($data, $check_user_password = true)
 	{
 		global $MSO;
 		
@@ -367,10 +367,13 @@
 		if (isset($data['password'])) $password = $data['password'];
 			else $password = $MSO->data['session']['users_password'];
 		
-		# проверка доступа этому пользователю с этим паролем и этим разрешением
-		if ( !mso_check_user_password($user_login, $password, 'edit_add_new_users') )
+		# нужно ли проверять разрешение?
+		if ($check_user_password)
+		{
+			# проверка доступа этому пользователю с этим паролем и этим разрешением
+			if ( !mso_check_user_password($user_login, $password, 'edit_add_new_users') )
 				return array( 'result' => 0, 'description' => 'Login/password incorrect');
-		
+		}
 		
 		$users_login = isset($data['users_login']) ? $data['users_login'] : false;
 		$users_email = isset($data['users_email']) ? $data['users_email'] : false;

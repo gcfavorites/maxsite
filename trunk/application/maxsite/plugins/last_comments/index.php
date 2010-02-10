@@ -46,7 +46,7 @@ function last_comments_widget($num = 1)
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
 	if ( isset($options['header']) and $options['header'] ) 
-				$options['header'] = '<h2 class="box">' . $options['header'] . '</h2>';
+				$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
 		else $options['header'] = '';
 	
 	return last_comments_widget_custom($options, $num);

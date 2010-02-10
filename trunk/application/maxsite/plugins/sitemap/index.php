@@ -80,10 +80,12 @@ function sitemap($arg = array())
 					. $page['page_title'] . '</a>'
 					
 					# синонимы ссылок
+					/*
 					. ' ('
 					. '<a href="' . getinfo('siteurl') . $slug . '" title="slug: ' . $slug . '">slug</a>, '
 					. '<a href="' . getinfo('siteurl') . 'page/' . $page['page_id'] . '" title="page: ' . $page['page_id'] . '">page: ' . $page['page_id'] . '</a>, '
 					. '<a href="' . getinfo('siteurl') . $page['page_id'] . '" title="id: ' . $page['page_id'] . '">id: ' . $page['page_id'] . '</a>)'
+					*/
 					# /синонимы ссылок
 					
 					. '</li>' . NR;

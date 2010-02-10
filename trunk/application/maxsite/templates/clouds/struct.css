@@ -29,7 +29,7 @@ h6 {font-size: 7pt; margin: 5px 0 10px 0;}
 
 /* structure */
 
-#container {width: 910px; margin: 0 auto; font-size: 9pt; line-height: 1.3em;}
+#container {width: 910px; margin: 0 auto; font-size: 9pt; line-height: 1.3em; background: white;}
 
 #headers {}
 #headers-wrap {}

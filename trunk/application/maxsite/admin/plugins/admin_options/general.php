@@ -15,7 +15,11 @@
 	require_once( getinfo('common_dir') . 'inifile.php' ); // функции для работы с ini-файлом
 	
 	// проверяем входящие данные
-	if (mso_check_post_ini()) echo '<div class="update">Обновлено!</div>'; // проверка на обновление
+	if (mso_check_post_ini()) 
+	{
+		// echo '<div class="update">Обновлено!</div>'; // проверка на обновление
+		mso_redirect('admin/options');
+	}
 	
 	$all = mso_get_ini_file( $MSO->config['admin_plugins_dir'] . 'admin_options/general.ini');
 	echo mso_view_ini($all); // вывод таблицы ini 

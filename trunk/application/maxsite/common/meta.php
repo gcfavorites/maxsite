@@ -16,7 +16,7 @@ function mso_get_tags_page($id = 0)
 	$CI = & get_instance();
 	
 	$CI->db->select('meta_value');
-	$CI->db->where( array (	'meta_key' => 'tags', 'meta_id_obj' => $id, 'meta_table' => 'page' ) );
+	$CI->db->where( array ( 'meta_key' => 'tags', 'meta_id_obj' => $id, 'meta_table' => 'page' ) );
 	$CI->db->group_by('meta_value');
 	$query = $CI->db->get('meta');
 	
@@ -57,5 +57,67 @@ function mso_get_all_tags_page($options = array())
 	}
 	else return array();
 }
+
+# получение данных из таблицы mso_meta
+# если указать id, то позвращается meta_value для указанного meta_id_obj
+# если не указано, то возвращаются все meta_value ключа 
+function mso_get_meta($meta_key = '', $meta_table = '', $id = 0)
+{
+	if (!$meta_key or !$meta_table) return array();
+	
+	$CI = & get_instance();
+	
+	$CI->db->select('meta_value, meta_id_obj, meta_desc, meta_slug, meta_menu_order');
+	if ($id) $CI->db->where( array ( 'meta_key' => $meta_key, 'meta_id_obj' => $id, 'meta_table' => $meta_table ) );
+		else $CI->db->where( array ( 'meta_key' => $meta_key, 'meta_table' => $meta_table ) );
+	
+	// $CI->db->group_by('meta_value');
+	$CI->db->order_by('meta_menu_order');
+	$query = $CI->db->get('meta');
+	
+	if ($query->num_rows() > 0)
+	{
+		return $query->result_array();
+	}
+	else return array();
+}
+
+# Запись данных в таблицу mso_meta
+function mso_add_meta($meta_key = '', $meta_id_obj = '', $meta_table = '', $meta_value = '', 
+		$meta_desc = '', $meta_menu_order = 0, $meta_slug = '')
+{
+
+    # Если обязательные поля отсутствуют возвращаем ошибку
+    if( !$meta_key or !$meta_id_obj or !$meta_table ) return false;
+    
+    $data = array(
+        'meta_key' => $meta_key,
+        'meta_id_obj' => $meta_id_obj,
+        'meta_table' => $meta_table,
+        'meta_value' => $meta_value,
+        'meta_desc' => $meta_desc,
+        'meta_menu_order' => $meta_menu_order,
+        'meta_slug' => $meta_slug
+    );    
+
+    $CI = &get_instance();
+    
+    # Ищем ID записи по meta_key и meta_id_obj
+    $CI->db->select('meta_id');
+    $query = $CI->db->get_where('meta', array('meta_key' => $meta_key, 'meta_id_obj' => $meta_id_obj, 'meta_table' => $meta_table ));
+    
+    if( !$query->num_rows() )
+    {
+		# такой записи нет, ее нужно вставить
+        return $CI->db->insert('meta', $data);
+    }
+    else
+    {
+		# такая запись есть, ее нужно обновить
+        $row = $query->row();
+        return $CI->db->update('meta', $data, 'meta_id = ' . $row->meta_id);
+    }
+}
+
 
 ?>
