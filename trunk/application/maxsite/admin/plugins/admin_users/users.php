@@ -30,17 +30,17 @@
 		if (isset($result['result'])) 
 		{
 			if ($result['result'] == 1)
-				echo '<div class="update">Пользователь создан!</div>'; // . $result['description'];
+				echo '<div class="update">' . t('Пользователь создан!', 'admin') . '</div>'; // . $result['description'];
 			else 
-				echo '<div class="error">Произошла ошибка<p>' . $result['description'] . '</p></div>';
+				echo '<div class="error">' . t('Произошла ошибка', 'admin') . '<p>' . $result['description'] . '</p></div>';
 		}
 		else
-			echo '<div class="error">Ошибка обновления</div>';
+			echo '<div class="error">' . t('Ошибка обновления', 'admin') . '</div>';
 	}
 
 ?>
-<h1>Пользователи</h1>
-<p class="info">Список пользователей сайта</p>
+<h1><?= t('Пользователи') ?></h1>
+<p class="info"><?= t('Список пользователей сайта') ?></p>
 
 <?php
 	$CI->load->library('table');
@@ -53,7 +53,7 @@
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
 
-	$CI->table->set_heading('ID','Логин', 'Ник', 'E-mail', 'Сайт', 'Группа', 'Действие');
+	$CI->table->set_heading('ID', t('Логин', 'admin'), t('Ник', 'admin'), t('E-mail', 'admin'), t('Сайт', 'admin'), t('Группа', 'admin'), t('Действие', 'admin'));
 	
 	
 	$CI->db->select('*');
@@ -76,7 +76,7 @@
 		
 		$groups_name = $row['groups_name'];
 		
-		$act = '<a href="'.$this_url.'/edit/' . $id . '">Изменить</a>';
+		$act = '<a href="'.$this_url.'/edit/' . $id . '">' . t('Изменить', 'admin') . '</a>';
 		
 		$CI->table->add_row($id, $login, $nik, $email, $url, $groups_name, $act);
 	}
@@ -109,12 +109,12 @@
 		foreach ($q->result_array() as $rw)
 			$groups[$rw['groups_id']] = $rw['groups_name'];
 
-		$form .= '<br />Группа: '. form_dropdown('f_user_group', $groups, '', ' style="width: 200px;" ');	
-		$form .=  '<br/ ><br /><input type="submit" name="f_submit" value="Создать пользователя" />';
+		$form .= '<br />' . t('Группа:', 'admin') . ' '. form_dropdown('f_user_group', $groups, '', ' style="width: 200px;" ');	
+		$form .=  '<br/ ><br /><input type="submit" name="f_submit" value="' . t('Создать пользователя', 'admin') . '" />';
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
-		echo '<br /><br /><h2>Создать нового пользователя</h2>';
-		echo '<p>Если данные некорректны, то пользователь создан не будет. Для нового пользователя-админа нужно обновить разрешения.</p>';
+		echo '<br /><br /><h2>' . t('Создать нового пользователя', 'admin') . '</h2>';
+		echo '<p>' . t('Если данные некорректны, то пользователь создан не будет. Для нового пользователя-админа нужно обновить разрешения.', 'admin') . '</p>';
 		echo $form;
 		echo '</form>';
 	}

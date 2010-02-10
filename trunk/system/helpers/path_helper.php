@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -35,9 +35,9 @@
  * @param	bool	checks to see if the path exists
  * @return	string
  */	
-if (! function_exists('set_realpath'))
+if ( ! function_exists('set_realpath'))
 {
-	function set_realpath($path, $check_existance = TRUE)
+	function set_realpath($path, $check_existance = FALSE)
 	{
 		// Security check to make sure the path is NOT a URL.  No remote file inclusion!
 		if (preg_match("#^(http:\/\/|https:\/\/|www\.|ftp|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#i", $path))
@@ -67,4 +67,6 @@ if (! function_exists('set_realpath'))
 	}
 }
 
-?>
+
+/* End of file path_helper.php */
+/* Location: ./system/helpers/path_helper.php */

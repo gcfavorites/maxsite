@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+mso_cur_dir_lang('templates');
+
 $cache_key = mso_md5('feed_' . mso_current_url());
 $k = mso_get_cache($cache_key);
 if ($k) return print($k); // да есть в кэше
@@ -19,11 +21,11 @@ else $time_zone = '+00.00';
 $time_zone = str_replace('.', '', $time_zone);
 
 
-$feed_name = mso_head_meta('title') . ' (Последние комментарии)';
+$feed_name = mso_head_meta('title') . ' ('. t('Последние комментарии'). ')';
 $description = mso_head_meta('description');
 $feed_url = getinfo('siteurl');
 $language = 'en-ru';
-$generator = 'MaxSite CMS (http://maxsite.org/)';
+$generator = 'MaxSite CMS (http://max-3000.com/)';
 
 $comments = mso_get_comments(false, array('limit'=>'20', 'order'=>'desc'));
 
@@ -46,7 +48,7 @@ if ($comments)
 		<copyright>Copyright <?= gmdate("Y", time()) ?>, <?= getinfo('siteurl') ?></copyright>
 		<?php foreach ($comments as $comment) : extract($comment); ?>
 		<item>
-			<title><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?> к "<?= xml_convert(strip_tags($page_title)) ?>"</title>
+			<title><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?> <?= t('к') ?> "<?= xml_convert(strip_tags($page_title)) ?>"</title>
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></guid>
 			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($comments_date)) ?></pubDate>

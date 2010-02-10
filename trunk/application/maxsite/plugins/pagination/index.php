@@ -17,7 +17,10 @@ function pagination_go($r = array())
 	
 	if ( !isset($r['range']) ) 	$r['range'] = 3;
 	if ( !isset($r['next_url']) ) $r['next_url'] = 'next';
-	if ( !isset($r['format']) )	$r['format'] = array('« Первая', '‹ предыдущая', 'следующая ›', 'последняя »');
+	if ( !isset($r['format']) )	$r['format'] = array('« ' . t('Первая', 'plugins'), 
+													'‹ ' . t('предыдущая', 'plugins'), 
+													t('следующая', 'plugins') . ' ›', 
+													t('последняя', 'plugins') . ' »');
 	if ( !isset($r['sep']) ) 	$r['sep'] = ' &middot; ';
 	if ( !isset($r['sep2']) ) 	$r['sep2'] = ' | ';
 	

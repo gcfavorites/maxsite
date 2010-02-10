@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+mso_cur_dir_lang('templates');
+
+?>
 <span><a name="comments"></a></span>
 <?php
 # коммментарии
@@ -31,7 +35,7 @@ if (is_login()) $edit_link = getinfo('siteurl') . 'admin/comments/edit/';
 if ($comments) // есть страницы
 { 	
 	echo '<div class="comments">';
-	echo '<h3 class="comments">Комментариев: ' . count($comments) . '</h3>';
+	echo '<h3 class="comments">'. t('Комментариев'). ': ' . count($comments) . '</h3>';
 	
 	// pr($comments);
 	
@@ -50,7 +54,7 @@ if ($comments) // есть страницы
 		
 		if ($edit_link) echo ' | <a href="' . $edit_link . $comments_id . '">edit</a>';
 		
-		if (!$comments_approved) echo ' | Ожидает модерации';
+		if (!$comments_approved) echo ' | '. t('Ожидает модерации');
 
 		
 		$avatar_url = '';
@@ -91,12 +95,12 @@ if ($comments) // есть страницы
 
 if ($page_comment_allow)
 {
-	echo '<div class="break"></div><h3 class="comments">Оставьте комментарий!</h3>';
+	echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
 	require( 'page-comment-form.php' ); // форма комментариев
 }
 else
 {
-	// echo '<div class="no-comments"><h3 class="comments">Комментарии запрещены</h3></div>';
+	// echo '<div class="no-comments"><h3 class="comments">'. t('Комментарии запрещены'). '</h3></div>';
 }
 
 

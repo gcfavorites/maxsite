@@ -2,10 +2,10 @@
 УСТАНОВКА MaxSite CMS
 =====================
 Официальный сайт: http://max-3000.com/
+Центр помощи: http://max-3000.com/help
+Форум: http://forum.max-3000.com/
 Блог разработчика: http://maxsite.org/
-Центром помощи: http://max-3000.com/help
 Поддержка: http://max-3000.com/page/support
-
 
 ==================
 ТРЕБОВАНИЯ СИСТЕМЫ

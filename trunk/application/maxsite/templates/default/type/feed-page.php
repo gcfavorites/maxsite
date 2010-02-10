@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+mso_cur_dir_lang('templates');
+
 $cache_key = mso_md5('feed_' . mso_current_url());
 $k = mso_get_cache($cache_key);
 if ($k) return print($k); // да есть в кэше
@@ -22,9 +24,9 @@ $time_zone = str_replace('.', '', $time_zone);
 $description = mso_head_meta('description');
 $feed_url = getinfo('siteurl');
 $language = 'en-ru';
-$generator = 'MaxSite CMS (http://maxsite.org/)';
+$generator = 'MaxSite CMS (http://max-3000.com/)';
 
-$par = array( 'limit'=>1, 'cut'=>'Читать полностью »', 'type'=>false ); 
+$par = array( 'limit'=>1, 'cut'=>t('Читать полностью'). ' »', 'type'=>false ); 
 $pages = mso_get_pages($par, $pagination); 
 
 if ($pages) 
@@ -40,8 +42,8 @@ if ($pages)
 	$page = $pages[0];
 	extract($page);
 	
-	// $feed_name = mso_meta_title($page_title) . ' (Комментарии к странице)';
-	$feed_name = mso_head_meta('title', &$pages, '%page_title%', '', true ) . ' (комментарии к странице)' ;
+	// $feed_name = mso_meta_title($page_title) . ' ('. t('Комментарии к странице'). ')';
+	$feed_name = mso_head_meta('title', &$pages, '%page_title%', '', true ) . ' ('. t('комментарии к странице'). ')' ;
 	
 	$comments = mso_get_comments($page_id);
 ?>

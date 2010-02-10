@@ -19,7 +19,7 @@
 					<div id="tab">
 						<ul>
 							<?php
-								$def_menu = '/ | Главная_NR_about | О сайте_NR_comments | Комментарии_NR_contact | Контакты_NR_sitemap | Архив_NR_feed | RSS';
+								$def_menu = t('/ | Главная_NR_about | О сайте_NR_comments | Комментарии_NR_contact | Контакты_NR_sitemap | Архив_NR_feed | RSS', 'templates');
 								if ( $menu = mso_get_option('top_menu', 'templates', $def_menu) ) 
 									echo mso_menu_build($menu, 'selected', true);
 							?>

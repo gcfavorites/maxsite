@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function antispam_autoload($args = array())
 {
-	mso_create_allow('antispam_edit', 'Админ-доступ к antispam');
+	mso_create_allow('antispam_edit', t('Админ-доступ к antispam', 'plugins'));
 	mso_hook_add( 'admin_init', 'antispam_admin_init'); # хук на админку
 	mso_hook_add( 'new_comments_check_spam', 'antispam_check_spam'); # хук новый комментарий
 	mso_hook_add( 'new_comments_check_spam_comusers', 'antispam_check_spam_comusers'); # хук новый комментарий для комюзера
@@ -40,7 +40,7 @@ function antispam_admin_init($args = array())
 	#			можно использовать добавочный, например demo/edit = http://сайт/admin/demo/edit
 	# Третий - название ссылки	
 	
-	mso_admin_menu_add('plugins', $this_plugin_url, 'Антиспам');
+	mso_admin_menu_add('plugins', $this_plugin_url, t('Антиспам', 'plugins'));
 
 	# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 	# связанную функцию именно она будет вызываться, когда 
@@ -57,12 +57,12 @@ function antispam_admin_page($args = array())
 	global $MSO;
 	if ( !mso_check_allow('antispam_admin_page') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен', 'plugins');
 		return $args;
 	}
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Admin "; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Admin - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Антиспам', 'plugins') . ' "; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Антиспам', 'plugins') . ' - " . $args; ' );
 
 	require($MSO->config['plugins_dir'] . 'antispam/admin.php');
 }
@@ -85,59 +85,6 @@ function antispam_log($file = '', $msg = '')
 # функция проверки 
 function antispam_check_spam($arg = array())
 {
-	// в аргумента куча информации
-	/*
-Array
-(
-    [comments_content] => текст
-    [comments_date] => 2008-07-10 13:39:30
-    [comments_author_ip] => 127.0.0.1
-    [comments_page_id] => 13
-    [comments_server] => Array
-        (
-            [REDIRECT_STATUS] => 200
-            [HTTP_HOST] => localhost
-            [HTTP_USER_AGENT] => Mozilla/5.0 (Windows; U; Windows NT 5.1; ru; rv:1.9) Gecko/2008052906 Firefox/3.0
-            [HTTP_ACCEPT] => text/html,application/xhtml+xml,application/xml;q=0.9, ;q=0.8
-            [HTTP_ACCEPT_LANGUAGE] => ru
-            [HTTP_ACCEPT_ENCODING] => gzip,deflate
-            [HTTP_ACCEPT_CHARSET] => windows-1251,utf-8;q=0.7,*;q=0.7
-            [HTTP_KEEP_ALIVE] => 300
-            [HTTP_CONNECTION] => keep-alive
-            [HTTP_REFERER] => http://localhost/codeigniter/page/souvlaki-ignitus-carborundum
-            [HTTP_COOKIE] => PHPSESSID=
-            [CONTENT_TYPE] => application/x-www-form-urlencoded
-            [CONTENT_LENGTH] => 187
-            [WINDIR] => C:\WINDOWS
-            [SERVER_SIGNATURE] => Apache/2.2.4 (Win32) DAV/2 mod_ssl/2.2.4 Open
-            [SERVER_SOFTWARE] => Apache/2.2.4 (Win32) DAV/2 mod_ssl/2.2.4 OpenSSL/0.9.8e mod_autoindex_color PHP/5.2.3
-            [SERVER_NAME] => localhost
-            [SERVER_ADDR] => 127.0.0.1
-            [SERVER_PORT] => 80
-            [REMOTE_ADDR] => 127.0.0.1
-            [DOCUMENT_ROOT] => D:/xampplite/htdocs
-            [SERVER_ADMIN] => admin@localhost
-            [SCRIPT_FILENAME] => D:/xampplite/htdocs/codeigniter/index.php
-            [REMOTE_PORT] => 3339
-            [REDIRECT_URL] => /codeigniter/page/souvlaki-ignitus-carborundum
-            [GATEWAY_INTERFACE] => CGI/1.1
-            [SERVER_PROTOCOL] => HTTP/1.1
-            [REQUEST_METHOD] => POST
-            [QUERY_STRING] => 
-            [REQUEST_URI] => /codeigniter/page/souvlaki-ignitus-carborundum
-            [SCRIPT_NAME] => /codeigniter/index.php
-            [PATH_INFO] => /page/souvlaki-ignitus-carborundum
-            [PATH_TRANSLATED] => D:\xampplite\htdocs\page\souvlaki-ignitus-carborundum
-            [PHP_SELF] => /codeigniter/index.php/page/souvlaki-ignitus-carborundum
-            [REQUEST_TIME] => 1215686369
-            [argv] => Array
-                (
-                )
-            [argc] => 0
-        )
-)
-	*/
-	
 	$options_key = 'plugin_antispam';
 	
 	$options = mso_get_option($options_key, 'plugins', array()); // все опции
@@ -163,7 +110,7 @@ Array
 												. 'DATE: ' . $arg['comments_date'] . NR
 												. 'CONTENT: ' . NR . $arg['comments_content']
 												);
-		return array('check_spam'=>true, 'message'=>'Для вашего IP комментирование запрещено!');
+		return array('check_spam'=>true, 'message'=>t('Для вашего IP комментирование запрещено!', 'plugins'));
 	}
 	
 	$black_words = split("\n", trim($options['black_words']));
@@ -179,7 +126,7 @@ Array
 												. 'DATE: ' . $arg['comments_date'] . NR
 												. 'CONTENT: ' . NR . $arg['comments_content']
 												);
-			return array('check_spam'=>true, 'message'=>'Вы используете запрещенные слова!');
+			return array('check_spam'=>true, 'message'=>t('Вы используете запрещенные слова!', 'plugins'));
 		} 
 	}
 	

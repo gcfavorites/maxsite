@@ -4,8 +4,8 @@ mso_cur_dir_lang('admin');
 
 ?>
 
-<h1>Группы пользователей</h1>
-<p class="info">Здесь вы можете настроить группы пользователей. Вы не можете удалить группы <strong>«admins»</strong> и <strong>«users»</strong>. Группе <strong>«admins»</strong> разрешены все действия.</p>
+<h1><?= t('Группы пользователей') ?></h1>
+<p class="info"><?= t('Здесь вы можете настроить группы пользователей. Вы не можете удалить группы <strong>«admins»</strong> и <strong>«users»</strong>. Группе <strong>«admins»</strong> разрешены все действия.') ?></p>
 
 <?php
 
@@ -28,14 +28,14 @@ mso_cur_dir_lang('admin');
 			if ($query->num_rows() == 0 ) // нет такого типа страниц
 			{
 					if ($CI->db->insert('groups', array( 'groups_name'=>$f_new)))
-							echo '<div class="update">Новая группа добавлена!</div>';
+							echo '<div class="update">' . t('Новая группа добавлена!', 'admin') . '</div>';
 						else
-							echo '<div class="error">Ошибка добавления!</div>';
+							echo '<div class="error">' . t('Ошибка добавления!', 'admin') . '</div>';
 			}
 			else
-				echo '<div class="error">Такая группа уже существует!</div>';
+				echo '<div class="error">' . t('Такая группа уже существует!', 'admin') . '</div>';
 		}
-		else echo '<div class="error">Ошибочное имя</div>';
+		else echo '<div class="error">' . t('Ошибочное имя', 'admin') . '</div>';
 			
 	}
 	elseif ( $post = mso_check_post(array('f_session_id', 'f_delete_submit', 'f_delete_check')) )
@@ -53,9 +53,9 @@ mso_cur_dir_lang('admin');
 			$CI->db->where_not_in('groups_name', array('admins', 'users'));
 			
 			if ( $CI->db->delete('groups') )
-						echo '<div class="update">Удаление выполнено</div>';
+						echo '<div class="update">' . t('Удаление выполнено', 'admin') . '</div>';
 					else
-						echo '<div class="error">Ошибка удаления!</div>';
+						echo '<div class="error">' . t('Ошибка удаления!', 'admin') . '</div>';
 		}
 		else echo '<div class="error">Ошибка удаления!</div>';
 	}
@@ -81,6 +81,7 @@ mso_cur_dir_lang('admin');
 		
 		
 		// получаем группы
+		$CI->db->order_by('groups_name');
 		$query = $CI->db->get('groups');
 		$us = $query->result_array();
 		
@@ -121,9 +122,9 @@ mso_cur_dir_lang('admin');
 		// сбросить весь кэш
 		mso_flush_cache();
 		
-		echo '<div class="update">Обновление выполнено</div>';
+		echo '<div class="update">' . t('Обновление выполнено', 'admin') . '</div>';
 	}
-	elseif ($_POST) echo '<div class="error">Ошибочный запрос</div>';
+	elseif ($_POST) echo '<div class="error">' . t('Ошибочный запрос', 'admin') . '</div>';
 	
 	$CI->load->library('table');
 	
@@ -145,9 +146,10 @@ mso_cur_dir_lang('admin');
 		// все группы
 		$query = $CI->db->get('groups');
 		$us = $query->result_array();
+		
 
 		// формируем первую строчку таблицы
-		$r = array('Действие');
+		$r = array(t('Действие', 'admin'));
 		foreach ($us as $row) $r[] = $row['groups_name'];
 		
 		$data_table[] = $r; // добавим первую строчку
@@ -161,7 +163,6 @@ mso_cur_dir_lang('admin');
 			foreach ($us as $row)
 			{	
 				$id = $row['groups_id'];
-				
 				$rules = (array) @unserialize($row['groups_rules']);
 				
 				$name = $row['groups_name'];
@@ -188,7 +189,7 @@ mso_cur_dir_lang('admin');
 			$data_table[] = $r; // добавим строчку
 		}
 		
-		$dop = '<div style="margin: 10px 0;"><p><input type="submit" name="f_submit" value="&nbsp;Изменить разрешения&nbsp;"></div>';
+		$dop = '<div style="margin: 10px 0;"><p><input type="submit" name="f_submit" value="' . t('Изменить разрешения', 'admin') . '"></div>';
 		
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
@@ -210,11 +211,11 @@ mso_cur_dir_lang('admin');
 		
 		if ($delete) 
 		{
-			$delete = '<br />' . $delete . '<input type="submit" name="f_delete_submit" value="&nbsp;Удалить отмеченные группы&nbsp;" onClick="if(confirm(\'Уверены?\')) {return true;} else {return false;}" >';
+			$delete = '<br />' . $delete . '<input type="submit" name="f_delete_submit" value="' . t('Удалить отмеченные группы', 'admin') . '" onClick="if(confirm(\'' . t('Уверены?', 'admin') . '\')) {return true;} else {return false;}" >';
 		}
 		
-		$delete = '<div style="padding: 15px 5px; margin-top: 20px; background: #E0E0E0;"><input type="submit" name="f_new_submit" value="&nbsp;Создать новую группу&nbsp;"> 
-		-&gt; <input type="text" name="f_new"> введите название новой группы</div>' . $delete ;
+		$delete = '<div style="padding: 15px 5px; margin-top: 20px; background: #E0E0E0;"><input type="submit" name="f_new_submit" value="' . t('Создать новую группу', 'admin') . '"> 
+		-&gt; <input type="text" name="f_new"> ' . t('введите название новой группы', 'admin') . '</div>' . $delete ;
 		
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
@@ -223,7 +224,7 @@ mso_cur_dir_lang('admin');
 	}
 	else // $all
 	{
-		echo'<div class="error">Пока нет ни одного действия...</div>';
+		echo'<div class="error">' . t('Пока нет ни одного действия...', 'admin') . '</div>';
 	}
 	
 ?>

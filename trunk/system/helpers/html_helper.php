@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -37,8 +37,8 @@
  * @param	string
  * @param	integer
  * @return	string
- */	
-if (! function_exists('heading'))
+ */
+if ( ! function_exists('heading'))
 {
 	function heading($data = '', $h = '1')
 	{
@@ -57,8 +57,8 @@ if (! function_exists('heading'))
  * @param	array
  * @param	mixed
  * @return	string
- */	
-if (! function_exists('ul'))
+ */
+if ( ! function_exists('ul'))
 {
 	function ul($list, $attributes = '')
 	{
@@ -77,8 +77,8 @@ if (! function_exists('ul'))
  * @param	array
  * @param	mixed
  * @return	string
- */	
-if (! function_exists('ol'))
+ */
+if ( ! function_exists('ol'))
 {
 	function ol($list, $attributes = '')
 	{
@@ -95,12 +95,12 @@ if (! function_exists('ol'))
  *
  * @access	private
  * @param	string
- * @param	mixed		
- * @param	mixed		
- * @param	intiger		
+ * @param	mixed
+ * @param	mixed
+ * @param	intiger
  * @return	string
- */	
-if (! function_exists('_list'))
+ */
+if ( ! function_exists('_list'))
 {
 	function _list($type = 'ul', $list, $attributes = '', $depth = 0)
 	{
@@ -109,10 +109,10 @@ if (! function_exists('_list'))
 		{
 			return $list;
 		}
-	
+
 		// Set the indentation based on the depth
 		$out = str_repeat(" ", $depth);
-	
+
 		// Were any attributes submitted?  If so generate a string
 		if (is_array($attributes))
 		{
@@ -123,21 +123,21 @@ if (! function_exists('_list'))
 			}
 			$attributes = $atts;
 		}
-	
+
 		// Write the opening list tag
 		$out .= "<".$type.$attributes.">\n";
 
-		// Cycle through the list elements.  If an array is 
+		// Cycle through the list elements.  If an array is
 		// encountered we will recursively call _list()
 
 		static $_last_list_item = '';
 		foreach ($list as $key => $val)
-		{	
+		{
 			$_last_list_item = $key;
 
 			$out .= str_repeat(" ", $depth + 2);
 			$out .= "<li>";
-		
+
 			if ( ! is_array($val))
 			{
 				$out .= $val;
@@ -149,19 +149,19 @@ if (! function_exists('_list'))
 				$out .= str_repeat(" ", $depth + 2);
 			}
 
-			$out .= "</li>\n";		
+			$out .= "</li>\n";
 		}
 
 		// Set the indentation for the closing tag
 		$out .= str_repeat(" ", $depth);
-	
+
 		// Write the closing list tag
 		$out .= "</".$type.">\n";
 
 		return $out;
 	}
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -170,15 +170,15 @@ if (! function_exists('_list'))
  * @access	public
  * @param	integer
  * @return	string
- */	
-if (! function_exists('br'))
+ */
+if ( ! function_exists('br'))
 {
 	function br($num = 1)
 	{
 		return str_repeat("<br />", $num);
 	}
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -189,8 +189,8 @@ if (! function_exists('br'))
  * @access	public
  * @param	mixed
  * @return	string
- */	
-if (! function_exists('img'))
+ */
+if ( ! function_exists('img'))
 {
 	function img($src = '', $index_page = FALSE)
 	{
@@ -199,8 +199,8 @@ if (! function_exists('img'))
 			$src = array('src' => $src);
 		}
 
-		$img = '<img ';
-		
+		$img = '<img';
+
 		foreach ($src as $k=>$v)
 		{
 
@@ -232,6 +232,46 @@ if (! function_exists('img'))
 // ------------------------------------------------------------------------
 
 /**
+ * Doctype
+ *
+ * Generates a page document type declaration
+ *
+ * Valid options are xhtml-11, xhtml-strict, xhtml-trans, xhtml-frame,
+ * html4-strict, html4-trans, and html4-frame.  Values are saved in the
+ * doctypes config file.
+ *
+ * @access	public
+ * @param	string	type	The doctype to be generated
+ * @return	string
+ */
+if ( ! function_exists('doctype'))
+{
+	function doctype($type = 'xhtml-strict')
+	{
+		global $_doctypes;
+
+		if ( ! is_array($_doctypes))
+		{
+			if ( ! require_once(APPPATH.'config/doctypes.php'))
+			{
+				return FALSE;
+			}
+		}
+
+		if (isset($_doctypes[$type]))
+		{
+			return $_doctypes[$type];
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+}
+
+// ------------------------------------------------------------------------
+
+/**
  * Link
  *
  * Generates link to a CSS file
@@ -242,10 +282,10 @@ if (! function_exists('img'))
  * @param	string	type
  * @param	string	title
  * @param	string	media
- * @param	boolean	should index_page be added to the css path 
+ * @param	boolean	should index_page be added to the css path
  * @return	string
- */	
-if (! function_exists('link_tag'))
+ */
+if ( ! function_exists('link_tag'))
 {
 	function link_tag($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = FALSE)
 	{
@@ -257,7 +297,7 @@ if (! function_exists('link_tag'))
 		{
 			foreach ($href as $k=>$v)
 			{
-				if ($k == 'href' AND strpos($k, '://') === FALSE)
+				if ($k == 'href' AND strpos($v, '://') === FALSE)
 				{
 					if ($index_page === TRUE)
 					{
@@ -273,8 +313,8 @@ if (! function_exists('link_tag'))
 					$link .= "$k=\"$v\" ";
 				}
 			}
-			
-			$link .= "/>\n";
+
+			$link .= "/>";
 		}
 		else
 		{
@@ -290,9 +330,9 @@ if (! function_exists('link_tag'))
 			{
 				$link .= ' href="'.$CI->config->slash_item('base_url').$href.'" ';
 			}
-				
+
 			$link .= 'rel="'.$rel.'" type="'.$type.'" ';
-			
+
 			if ($media	!= '')
 			{
 				$link .= 'media="'.$media.'" ';
@@ -302,11 +342,11 @@ if (! function_exists('link_tag'))
 			{
 				$link .= 'title="'.$title.'" ';
 			}
-			
-			$link .= '/>'."\n";
+
+			$link .= '/>';
 		}
 
-	
+
 		return $link;
 	}
 }
@@ -319,15 +359,35 @@ if (! function_exists('link_tag'))
  * @access	public
  * @param	array
  * @return	string
- */	
-if (! function_exists('meta'))
+ */
+if ( ! function_exists('meta'))
 {
-	function meta($meta = array(), $newline = "\n")
+	function meta($name = '', $content = '', $type = 'name', $newline = "\n")
 	{
-		$str = '';
-		foreach ($meta as $key => $val)
+		// Since we allow the data to be passes as a string, a simple array
+		// or a multidimensional one, we need to do a little prepping.
+		if ( ! is_array($name))
 		{
-			$str .= '<meta http-equiv="'.$key.'" content="'.$val.'" />'.$newline;
+			$name = array(array('name' => $name, 'content' => $content, 'type' => $type, 'newline' => $newline));
+		}
+		else
+		{
+			// Turn single array into multidimensional
+			if (isset($name['name']))
+			{
+				$name = array($name);
+			}
+		}
+
+		$str = '';
+		foreach ($name as $meta)
+		{
+			$type 		= ( ! isset($meta['type']) OR $meta['type'] == 'name') ? 'name' : 'http-equiv';
+			$name 		= ( ! isset($meta['name'])) 	? '' 	: $meta['name'];
+			$content	= ( ! isset($meta['content']))	? '' 	: $meta['content'];
+			$newline	= ( ! isset($meta['newline']))	? "\n"	: $meta['newline'];
+
+			$str .= '<meta '.$type.'="'.$name.'" content="'.$content.'" />'.$newline;
 		}
 
 		return $str;
@@ -342,8 +402,8 @@ if (! function_exists('meta'))
  * @access	public
  * @param	integer
  * @return	string
- */	
-if (! function_exists('nbs'))
+ */
+if ( ! function_exists('nbs'))
 {
 	function nbs($num = 1)
 	{
@@ -351,4 +411,6 @@ if (! function_exists('nbs'))
 	}
 }
 
-?>
+
+/* End of file html_helper.php */
+/* Location: ./system/helpers/html_helper.php */

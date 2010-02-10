@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function text_block_autoload($args = array())
 {
-	mso_register_widget('text_block_widget', 'Текстовый блок'); # регистрируем виджет
+	mso_register_widget('text_block_widget', t('Текстовый блок', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -26,8 +26,9 @@ function text_block_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 		
 	if ( !isset($options['text']) ) $options['text'] = '';
 	if ( !isset($options['type']) ) $options['type'] = 'html';
@@ -54,12 +55,14 @@ function text_block_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Текст:</div> '. form_textarea( array( 'name'=>$widget . 'text', 'value'=>$options['text'] ) ) ;
-	$form .= '<p><div class="t150">Тип:</div> '. form_dropdown( $widget . 'type', array( 'html'=>'HTML или текст', 'php'=>'PHP'), $options['type']);
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Текст:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'text', 'value'=>$options['text'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Тип:', 'plugins') . '</div> '. form_dropdown( $widget . 'type', array( 'html'=>t('HTML или текст', 'plugins'), 'php'=>'PHP'), $options['type']);
 	
 	
-	$form .= '<br /><div class="t150">&nbsp;</div>Можно использовать HTML-тэги. Если тип PHP, то код должен выполняться без ошибок!';
+	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Можно использовать HTML-тэги. Если тип PHP, то код должен выполняться без ошибок!', 'plugins');
 	
 	return $form;
 }

@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+mso_cur_dir_lang('templates');
+
 // нужно выводить рубрики блоками - сделаем отдельным файлом
 if (mso_get_option('home_cat_block', 'templates', '0'))
 {
@@ -55,7 +57,6 @@ $par = array(
 
 // если только заголовки, то отключим пагинацию
 // if ( !mso_get_option('home_full_text', 'templates', '1') ) $par['pagination'] = false;
-
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
 
@@ -109,12 +110,12 @@ if ($pages) // есть страницы
 			echo '<div class="info">';
 				mso_page_date($page_date_publish, 
 							array(	'format' => 'D, j F Y г.', // 'd/m/Y H:i:s'
-									'days' => 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье',
-									'month' => 'января февраля марта апреля мая июня июля августа сентября октября ноября декабря' ), 
+									'days' => t('Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье'),
+									'month' => t('января февраля марта апреля мая июня июля августа сентября октября ноября декабря')), 
 							'<span>', '</span><br />');
 				
-				mso_page_cat_link($page_categories, ' -&gt; ', '<span>Рубрика:</span> ', '<br />');
-				mso_page_tag_link($page_tags, ' | ', '<span>Метки:</span> ', '');
+				mso_page_cat_link($page_categories, ' -&gt; ', '<span>'.t('Рубрика').':</span> ', '<br />');
+				mso_page_tag_link($page_tags, ' | ', '<span>'.t('Метки').':</span> ', '');
 				mso_page_edit_link($page_id, 'Edit page', ' [', ']');
 				# mso_page_feed($page_slug, 'комментарии по RSS', '<br /><span>Подписаться</span> на ', '', true);
 			echo '</div>';
@@ -128,8 +129,8 @@ if ($pages) // есть страницы
 				mso_page_comments_link( array( 
 					'page_comment_allow' => $page_comment_allow,
 					'page_slug' => $page_slug,
-					'title' => 'Обсудить (' . $page_count_comments . ')',
-					'title_no_link' => 'Читать комментарии (' . $page_count_comments . ')',
+					'title' => t('Обсудить'). ' (' . $page_count_comments . ')',
+					'title_no_link' => t('Читать комментарии').' (' . $page_count_comments . ')',
 					'do' => '<div class="comments-link"><span>',
 					'posle' => '</span></div>',
 					'page_count_comments' => $page_count_comments
@@ -158,8 +159,8 @@ if ($pages) // есть страницы
 else 
 {
  
-	echo '<h1>404. Ничего не найдено...</h1>';
-	echo '<p>Извините, ничего не найдено</p>';
+	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
+	echo '<p>'.t('Извините, ничего не найдено').'</p>';
 	
 } // endif $pages
 

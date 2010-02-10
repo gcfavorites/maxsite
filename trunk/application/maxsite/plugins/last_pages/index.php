@@ -10,7 +10,7 @@
 function last_pages_autoload($args = array())
 {
 	# регистрируем виджет
-	mso_register_widget('last_pages_widget', 'Последние записи'); 
+	mso_register_widget('last_pages_widget', t('Последние записи', 'plugins')); 
 }
 
 # функция выполняется при деинсталяции плагина
@@ -63,22 +63,26 @@ function last_pages_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 		
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Формат:</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
 	
-	$form .= '<br /><div class="t150">&nbsp</div> %TITLE% %DATE% %TEXT%';
+	$form .= '<br /><div class="t150">&nbsp</div> %TITLE% %DATE% %TEXT% %TEXT_CUT%';
 	
 	
 	
-	$form .= '<p><div class="t150">Формат даты:</div> '. form_input( array( 'name'=>$widget . 'date_format', 'value'=>$options['date_format'] ) ) ;
-	$form .= '<p><div class="t150">Количество:</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
-	$form .= '<p><div class="t150">Тип страниц:</div> '. form_input( array( 'name'=>$widget . 'page_type', 'value'=>$options['page_type'] ) ) ;
-	$form .= '<p><div class="t150">Исключить рубрики:</div> '. form_input( array( 'name'=>$widget . 'exclude_cat', 'value'=>$options['exclude_cat'] ) ) ;
-	$form .= '<p><div class="t150">Включить рубрики:</div> '. form_input( array( 'name'=>$widget . 'include_cat', 'value'=>$options['include_cat'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Формат даты:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'date_format', 'value'=>$options['date_format'] ) ) ;
 	
-	$form .= '<p><div class="t150">Сортировка:</div> '. form_dropdown( $widget . 'sort', array( 'page_date_publish'=>'По дате', 'page_title'=>'По алфавиту'), $options['sort']);
+	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
 	
-	$form .= '<p><div class="t150">Порядок сортировки:</div> '. form_dropdown( $widget . 'sort_order', array( 'asc'=>'Прямой', 'desc'=>'Обратный'), $options['sort_order']);
+	$form .= '<p><div class="t150">' . t('Тип страниц:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'page_type', 'value'=>$options['page_type'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Исключить рубрики:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'exclude_cat', 'value'=>$options['exclude_cat'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Включить рубрики:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'include_cat', 'value'=>$options['include_cat'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Сортировка:', 'plugins') . '</div> '. form_dropdown( $widget . 'sort', array( 'page_date_publish'=>t('По дате', 'plugins'), 'page_title'=>t('По алфавиту', 'plugins')), $options['sort']);
+	
+	$form .= '<p><div class="t150">' . t('Порядок сортировки:', 'plugins') . '</div> '. form_dropdown( $widget . 'sort_order', array( 'asc'=>t('Прямой', 'plugins'), 'desc'=>t('Обратный', 'plugins')), $options['sort_order']);
 	
 	return $form;
 }
@@ -123,7 +127,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	if ( !isset($arg['exclude_cat']) ) 	$arg['exclude_cat'] = '';	
 	if ( !isset($arg['include_cat']) ) 	$arg['include_cat'] = '';	
 	
-	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box"><span>Последние записи</span></h2>';
+	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box"><span>' . t('Последние записи', 'plugins') . '</span></h2>';
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="last-pages"><ul class="is_link">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</ul></div>';
 	
@@ -142,14 +146,14 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	
 	$CI = & get_instance();
 	
-	if (strpos($arg['format'], '%TEXT%') === false)
-		$CI->db->select('page.page_id, page_type_name, page_type_name AS page_content, page_slug, page_title, page_date_publish, page_status');
+	if (strpos($arg['format'], '%TEXT%') === false and strpos($arg['format'], '%TEXT_CUT%') === false)
+		$CI->db->select('page.page_id, page_type_name, page_type_name AS page_content, page_slug, page_title, page_date_publish, page_status', false);
 	else	
 		$CI->db->select('page.page_id, page.page_content, page_type_name, page_slug, page_title, page_date_publish, page_status');
 		
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
-	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	
 	if ($arg['page_type']) $CI->db->where('page_type_name', $arg['page_type']);
 	
@@ -186,8 +190,24 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 							
 			$out = str_replace('%DATE%', 
 							mso_page_date($page['page_date_publish'], $arg['date_format'], '', '', false), $out);
-							
-			$out = str_replace('%TEXT%', mso_balance_tags( mso_auto_tag( $page['page_content'] ) ), $out);
+			
+			$page_content = $page['page_content'];
+			$page_content = mso_hook('content', $page_content);
+			$page_content = mso_hook('content_auto_tag', $page_content);
+			$page_content = mso_hook('content_balance_tags', $page_content);
+			$page_content = mso_hook('content_out', $page_content);
+			
+			$out = str_replace('%TEXT%', mso_balance_tags( mso_auto_tag( mso_hook('content_complete', $page['page_content']) ) ), $out);
+			
+			# если есть cut, то обрабатываем и его
+			if ( preg_match('/\[cut(.*?)?\]/', $page_content, $matches) )
+			{
+				$page_content = explode($matches[0], $page_content, 2);
+				$page_content = $page_content[0];
+				$page_content = mso_hook('content_complete', $page_content);
+			}
+			
+			$out = str_replace('%TEXT_CUT%', mso_balance_tags( mso_auto_tag( $page_content ) ), $out);
 		}
 		
 		$out = $arg['header'] . $arg['block_start'] . $out . $arg['block_end'];

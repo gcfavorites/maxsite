@@ -14,7 +14,6 @@ function mso_admin_menu_default($args = array())
 	# вначале нужно добавить все главные меню в той последовательности, которая нужна
 
 	mso_admin_menu_add('', '', t('Начало', 'admin') );
-
 	mso_admin_menu_add('page', '', t('Страницы', 'admin'));
 	mso_admin_menu_add('options', '', t('Настройки', 'admin'));
 	mso_admin_menu_add('users', '', t('Пользователи', 'admin'));
@@ -46,10 +45,11 @@ function mso_admin_footer_default($args = '')
 	$CI = & get_instance(); 
 	$query_count = $CI->db->query_count;
 	$ver = $MSO->version;
-	$out = '<p>Страница создавалась {elapsed_time} секунд. Потребление памяти: {memory_usage}. Запросов MySQL: '
-	. $query_count
-	. '. Работает на <a href="http://max-3000.com/" style="color: white;">MaxSite CMS</a>. Версия '
-	. $ver . ' [<a href="' . $MSO->config['site_url'] . 'logout'.'">выйти</a>]</p>';
+	$out = '<p>' . t('Страница создавалась {elapsed_time} секунд. Потребление памяти: {memory_usage}. Запросов MySQL:', 'admin') . ' '
+	. $query_count . '. '
+	. t('Работает на <a href="http://max-3000.com/" style="color: white;">MaxSite CMS</a>.', 'admin'). ' ' 
+	. t('Версия') . ' '
+	. $ver . ' [<a href="' . $MSO->config['site_url'] . 'logout'.'">' . t('выйти', 'admin') . '</a>]</p>';
 	
 	return $out;
 }
@@ -67,22 +67,8 @@ function mso_admin_plugins_default($args = array())
 	{
 		mso_admin_plugin_load($dir);
 	}
-	/*
-	mso_admin_plugin_load('admin_page');
-	mso_admin_plugin_load('admin_home');
-	mso_admin_plugin_load('admin_cat');
-	mso_admin_plugin_load('admin_options');
-	mso_admin_plugin_load('admin_plugins');
-	mso_admin_plugin_load('admin_users');
-	mso_admin_plugin_load('admin_menu');
-	mso_admin_plugin_load('admin_sidebars');
-	mso_admin_plugin_load('admin_files');
-	mso_admin_plugin_load('admin_comments');
-	mso_admin_plugin_load('editor_jw');
-	mso_admin_plugin_load('template_options');
-	*/
 	
-	# кустомная функция, если есть
+	# кастомная функция, если есть
 	if (function_exists('mso_autoload_admin_custom')) mso_autoload_admin_custom();
 	
 	return $args;
@@ -126,5 +112,6 @@ mso_create_allow('admin_comments', t('Админ-доступ к просмот�
 mso_create_allow('admin_comments_edit', t('Админ-доступ к редактированию комментариев', 'admin'));
 
 
+mso_create_allow('admin_comusers', t('Админ-доступ к «Комментаторам»', 'admin'));
 
 ?>

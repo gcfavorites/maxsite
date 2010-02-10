@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.3
@@ -51,4 +51,6 @@ function &get_instance()
 }
 
 
-?>
+
+/* End of file Base5.php */
+/* Location: ./system/codeigniter/Base5.php */

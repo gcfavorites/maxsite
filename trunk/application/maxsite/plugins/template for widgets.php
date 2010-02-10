@@ -11,7 +11,7 @@
 # функция автоподключения плагина
 function %%%_autoload($args = array())
 {
-	mso_register_widget('%%%_widget', 'Виджет'); # регистрируем виджет
+	mso_register_widget('%%%_widget', t('%%%', __FILE__)); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -28,8 +28,9 @@ function %%%_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return %%%_widget_custom($options, $num);
 }
@@ -50,7 +51,8 @@ function %%%_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. 
+			form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
 	return $form;
 }

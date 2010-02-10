@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function search_form_autoload($args = array())
 {
-	mso_register_widget('search_form_widget', 'Форма поиска'); # регистрируем виджет
+	mso_register_widget('search_form_widget', t('Форма поиска', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -26,8 +26,9 @@ function search_form_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return search_form_widget_custom($options, $num);
 }
@@ -43,8 +44,8 @@ function search_form_widget_form($num = 1)
 	$options = mso_get_option($widget, 'plugins', array());
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
-	if ( !isset($options['text']) ) $options['text'] = 'Что искать?';
-	if ( !isset($options['submit']) ) $options['submit'] = 'Поиск';
+	if ( !isset($options['text']) ) $options['text'] = t('Что искать?', 'plugins');
+	if ( !isset($options['submit']) ) $options['submit'] = t('Поиск', 'plugins');
 	if ( !isset($options['style_text']) ) $options['style_text'] = 'width: 120px;';
 	if ( !isset($options['style_submit']) ) $options['style_submit'] = 'margin-left: 5px; font-size: 8pt;';
 	
@@ -52,11 +53,15 @@ function search_form_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Текст подсказки:</div> '. form_input( array( 'name'=>$widget . 'text', 'value'=>$options['text'] ) ) ;
-	$form .= '<p><div class="t150">Текст на кнопке:</div> '. form_input( array( 'name'=>$widget . 'submit', 'value'=>$options['submit'] ) ) ;
-	$form .= '<p><div class="t150">CSS-стиль текста:</div> '. form_input( array( 'name'=>$widget . 'style_text', 'value'=>$options['style_text'] ) ) ;
-	$form .= '<p><div class="t150">CSS-стиль кнопки:</div> '. form_input( array( 'name'=>$widget . 'style_submit', 'value'=>$options['style_submit'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Текст подсказки:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'text', 'value'=>$options['text'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Текст на кнопке:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'submit', 'value'=>$options['submit'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('CSS-стиль текста:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style_text', 'value'=>$options['style_text'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('CSS-стиль кнопки:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style_submit', 'value'=>$options['style_submit'] ) ) ;
 	
 	return $form;
 }
@@ -88,8 +93,8 @@ function search_form_widget_custom($options = array(), $num = 1)
 {
 	$out = '';
 	if ( !isset($options['header']) ) $options['header'] = '';
-	if ( !isset($options['text']) ) $options['text'] = 'Что искать?';
-	if ( !isset($options['submit']) ) $options['submit'] = 'Поиск';
+	if ( !isset($options['text']) ) $options['text'] = t('Что искать?', 'plugins');
+	if ( !isset($options['submit']) ) $options['submit'] = t('Поиск', 'plugins');
 	if ( !isset($options['style_text']) ) $options['style_text'] = 'width: 120px;';
 	if ( !isset($options['style_submit']) ) $options['style_submit'] = 'margin-left: 5px; font-size: 8pt;';
 	

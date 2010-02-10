@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function random_pages_autoload($args = array())
 {
-	mso_register_widget('random_pages_widget', 'Случайные статьи'); # регистрируем виджет
+	mso_register_widget('random_pages_widget', t('Случайные статьи', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -25,8 +25,9 @@ function random_pages_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return random_pages_widget_custom($options, $num);
 }
@@ -49,9 +50,11 @@ function random_pages_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Количество:</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
-	$form .= '<p><div class="t150">Тип страниц:</div> '. form_input( array( 'name'=>$widget . 'page_type', 'value'=>$options['page_type'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Тип страниц:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'page_type', 'value'=>$options['page_type'] ) ) ;
 	
 	return $form;
 }
@@ -86,7 +89,7 @@ function random_pages_widget_custom($options = array(), $num = 1)
 	$CI = & get_instance();
 	
 	$CI->db->select('page_slug, page_title');
-	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	$CI->db->where('page_status', 'publish');
 	if ($options['page_type']) $CI->db->where('page_type_name', $options['page_type']);
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');

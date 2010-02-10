@@ -45,13 +45,13 @@
 			if ( function_exists($func) ) $func($num);
 		}
 		
-		echo '<div class="update">Обновлено!</div>';
+		echo '<div class="update">' . t('Обновлено!', 'admin') . '</div>';
 	}
 	
 ?>
 
-<h1>Настройки виджетов</h1>
-<p class="info">Здесь вы можете настроить виджеты. Для открытия настроек виджета, кликните на его заголовок.</p>
+<h1><?= t('Настройки виджетов') ?></h1>
+<p class="info"><?= t('Здесь вы можете настроить виджеты. Для открытия настроек виджета, кликните на его заголовок.') ?></p>
 
 <script>
 	function showhide(obj_id){
@@ -111,7 +111,7 @@
 					$res = $func($num);
 					
 					if ($res) $form .= $res;
-						else $form .= '<p>Виджет не содержит настроек</p>';
+						else $form .= '<p>' . t('Виджет не содержит настроек', 'admin') . '</p>';
 					
 					$form .= '<input type="hidden" name="f_update_widgets[' . $widget . '-' . $num . ']" value="" />';
 					
@@ -126,7 +126,7 @@
 	}
 	else 
 	{
-		$error .= '<div class="error">Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например: <br /><b>mso_register_sidebar(\'1\', \'Первый сайдбар\');</b></div>';
+		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например:', 'admin') . ' <br /><b>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар', 'admin') . '\');</b></div>';
 	}
 	
 	if (!$error)
@@ -134,7 +134,7 @@
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="Сохранить изменения" style="margin: 15px 0 5px 0;" />';
+		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'admin') . '" style="margin: 15px 0 5px 0;" />';
 		echo '</form>';
 	}
 	else

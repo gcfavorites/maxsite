@@ -15,7 +15,7 @@ function rater_autoload($args = array())
 		mso_hook_add( 'content_end', 'rater_content_end');
 	}
 	
-	mso_register_widget('rater_widget', 'Рейтинг страниц'); # регистрируем виджет
+	mso_register_widget('rater_widget', t('Рейтинг страниц', 'plugins')); # регистрируем виджет
 }
 
 function rater_head($args = array())
@@ -43,15 +43,19 @@ function rater_content_end($arg = array())
 	if ($curvalue > 10) $curvalue = 10;
 	if ($curvalue < 0) $curvalue = 0;
 	
-	$page_slug = $page['page_slug'];
+	$page_id = $page['page_id'];
 	
 	$path = getinfo('ajax') . base64_encode('plugins/rater/ratings-post.php');
 	
-	echo <<<EOF
-	<div id="rater"><script type="text/javascript">
-		$('#rater').rater('{$path}', {maxvalue:10, style:'basic', curvalue:{$curvalue}, slug:'{$page_slug}'});
+	
+	echo '
+	<div id="rater" title="' . t('Текущая оценка:', 'plugins') . ' ' . $curvalue . '. ' 
+		. t('Голосов:', 'plugins') . ' ' . $page['page_rating_count'] 
+		. '"><script type="text/javascript">
+		$(\'#rater\').rater(\'' . $path 
+		. '\', {maxvalue:10, style:\'basic\', curvalue:' . $curvalue . ', slug:\''. $page_id . '\'});
 	</script></div>
-EOF;
+	';
 
 	return $arg;
 }
@@ -70,8 +74,9 @@ function rater_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return rater_widget_custom($options, $num);
 }
@@ -86,7 +91,7 @@ function rater_widget_form($num = 1)
 	// получаем опции 
 	$options = mso_get_option($widget, 'plugins', array());
 	
-	if ( !isset($options['header']) ) $options['header'] = 'Рейтинг страниц';
+	if ( !isset($options['header']) ) $options['header'] = t('Рейтинг страниц', 'plugins');
 	if ( !isset($options['count']) ) $options['count'] = 10;
 	if ( !isset($options['format']) ) $options['format'] = '[A][TITLE][/A] <sup>[BALL]</sup>';
 	
@@ -94,14 +99,17 @@ function rater_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Количество:</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
-	$form .= '<p><div class="t150">Формат:</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
-	$form .= '<p><div class="t150">&nbsp;</div><strong>[TITLE]</strong> - название записи';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[COUNT]</strong> - всего голосов';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[BALL]</strong> -  общий бал (деление общего рейтинга на кол-во голосов) - округлен до целого';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[REALBALL]</strong> -  общий бал (дробный)';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[A]</strong>ссылка<strong>[/A]</strong>';
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
+	
+	$form .= '<p><div class="t150">&nbsp;</div><strong>[TITLE]</strong> - ' . t('название записи', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[COUNT]</strong> - ' . t('всего голосов', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[BALL]</strong> -  ' . t('общий бал (деление общего рейтинга на кол-во голосов) - округлен до целого', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[REALBALL]</strong> -  ' . t('общий бал (дробный)', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[A]</strong>' . t('ссылка', 'plugins') . '<strong>[/A]</strong>';
 
 	return $form;
 }
@@ -140,9 +148,9 @@ function rater_widget_custom($options = array(), $num = 1)
 	// [A]ссылка[/A]
 	
 	$CI = & get_instance();
-	$CI->db->select('page_slug, page_rating/page_rating_count AS page_ball, page_rating, page_rating_count, page_title');
+	$CI->db->select('page_slug, page_rating/page_rating_count AS page_ball, page_rating, page_rating_count, page_title', false);
 	$CI->db->where('page_status', 'publish');
-	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	$CI->db->order_by('page_ball', 'desc');
 	$CI->db->order_by('page_rating', 'desc');
 	// $CI->db->order_by('page_rating_count', 'desc');
@@ -167,8 +175,8 @@ function rater_widget_custom($options = array(), $num = 1)
 			$out1 = str_replace('[BALL]', (round((real) $page['page_ball'])), $out1);
 			
 			$out1 = str_replace('[A]', $link . $page['page_slug'] 
-					. '" title="Голосов: ' . $page['page_rating_count'] 
-					. ' Общий бал: ' . (real) $page['page_ball']
+					. '" title="' . t('Голосов:', 'plugins') . ' ' . $page['page_rating_count'] 
+					. ' ' . t('Общий бал:', 'plugins') . ' ' . (real) $page['page_ball']
 					. '">'
 					, $out1);
 			$out1 = str_replace('[/A]', '</a>', $out1);

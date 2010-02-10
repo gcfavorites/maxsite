@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function feedcount_autoload($args = array())
 {
-	mso_register_widget('feedcount_widget', 'Виджет подсчета подписчиков RSS'); # регистрируем виджет
+	mso_register_widget('feedcount_widget', t('Виджет подсчета подписчиков RSS', 'plugins')); # регистрируем виджет
 	mso_hook_add( 'init', 'feedcount_init');
 }
 
@@ -49,8 +49,9 @@ function feedcount_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+			$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return feedcount_widget_custom($options, $num);
 }
@@ -67,15 +68,17 @@ function feedcount_widget_form($num = 1)
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['format']) ) 
-		$options['format'] = '<strong>Сегодня:</strong> [COUNT]<br/><strong>Вчера:</strong> [COUNTOLD]';
+		$options['format'] = '<strong>' . t('Сегодня:', 'plugins') . '</strong> [COUNT]<br/><strong>' . t('Вчера:', 'plugins') . '</strong> [COUNTOLD]';
 	
 	// вывод самой формы
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Формат:</div> '. form_textarea( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
-	$form .= '<p><div class="t150">&nbsp</div>[COUNT] - подписчиков сегодня, [COUNTOLD] - подписчиков вчера</p>';
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
+	
+	$form .= '<p><div class="t150">&nbsp</div>' . t('[COUNT] - подписчиков сегодня, [COUNTOLD] - подписчиков вчера', 'plugins') . '</p>';
 	
 	return $form;
 }
@@ -103,7 +106,7 @@ function feedcount_widget_custom($options = array(), $num = 1)
 {
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['format']) ) 
-		$options['format'] = '<strong>Сегодня:</strong> [COUNT]<br/><strong>Вчера:</strong> [COUNTOLD]';
+		$options['format'] = '<strong>' . t('Сегодня:', 'plugins') . '</strong> [COUNT]<br/><strong>' . t('Вчера:', 'plugins') . '</strong> [COUNTOLD]';
 	
 	$out = $options['format'];
 	

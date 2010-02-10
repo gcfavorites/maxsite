@@ -5,8 +5,8 @@
 	
 	# регистрируем сайдбары - имя, заголовок.
 	# если имя совпадает, то берется последний заголовок
-	mso_register_sidebar('1', 'Первый сайдбар');
-	mso_register_sidebar('2', 'Второй сайдбар');
-	mso_register_sidebar('3', 'Верхний блок');
+	mso_register_sidebar('1', t('Первый сайдбар', 'templates'));
+	mso_register_sidebar('2', t('Второй сайдбар', 'templates'));
+	mso_register_sidebar('3', t('Верхний блок', 'templates'));
 
 ?>

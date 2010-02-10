@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+	mso_cur_dir_lang('templates');
+	
 	# подготовка данных
 
 	$search = mso_segment(2);
@@ -12,7 +14,7 @@
 	// параметры для получения страниц
 	if (!$search or (strlen(mso_slug($search)) <= 3) ) // нет запроса или он короткий
 	{
-		$search = 'Поиск';
+		$search = t('Поиск');
 		$pages = false; // нет страниц
 	}
 	else
@@ -86,7 +88,7 @@ if ($pages) // есть страницы
 		// кол-во совпадений
 		$cou = substr_count($page_content, $searh_to_text) + substr_count(mb_strtolower($page_title, 'UTF8'), $searh_to_text);
 		
-		echo ' - Совпадений: ' . $cou;
+		echo ' - '. t('Совпадений'). ': ' . $cou;
 		echo '<p>' . $page_content . '</p>';
 
 		echo '</li>';
@@ -99,11 +101,11 @@ if ($pages) // есть страницы
 else 
 {
  
-	echo '<h2>404. Ничего не найдено...</h2>';
-	echo '<p>Извините, ничего не найдено, попробуйте повторить поиск.</p>';
+	echo '<h2>'. t('404. Ничего не найдено...'). '</h2>';
+	echo '<p>'. t('Извините, ничего не найдено, попробуйте повторить поиск.'). '</p>';
 
 	echo '
-	<p><br /><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" name="s" size="20" onfocus="if (this.value == \'что искать?\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \'что искать?\';}" value="что искать?" />&nbsp;<input type="submit" name="Submit" value="  Поиск  " /></form></p>';
+	<p><br /><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '" />&nbsp;<input type="submit" name="Submit" value="  '. t('Поиск'). '  " /></form></p>';
 	
 } // endif $pages
 

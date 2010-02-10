@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function ushki_autoload($args = array())
 {
-	mso_create_allow('plugin_ushki', 'Админ-доступ к Ушкам');
+	mso_create_allow('plugin_ushki', t('Админ-доступ к Ушкам', 'plugins'));
 	mso_hook_add( 'admin_init', 'ushki_admin_init'); # хук на админку
 	mso_register_widget('ushki_widget', 'Ушки'); # регистрируем виджет
 	mso_hook_add( 'content', 'ushki_content'); # хук на вывод контента
@@ -48,7 +48,7 @@ function ushki_admin_init($args = array())
 		#			можно использовать добавочный, например demo/edit = http://сайт/admin/demo/edit
 		# Третий - название ссылки	
 		
-		mso_admin_menu_add('plugins', $this_plugin_url, t('Ушки', __FILE__));
+		mso_admin_menu_add('plugins', $this_plugin_url, t('Ушки', 'plugins'));
 
 		# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 		# связанную функцию именно она будет вызываться, когда 
@@ -67,12 +67,12 @@ function ushki_admin_page($args = array())
 	global $MSO;
 	if ( !mso_check_allow('plugin_ushki') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен', 'plugins');
 		return $args;
 	}
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Настройки ушек"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Настройки ушек - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . t("Настройки ушек", "plugins"); ' );
+	mso_hook_add_dinamic( 'admin_title', ' return t("Настройки ушек", "plugins") . " - " . $args; ' );
 	
 	require($MSO->config['plugins_dir'] . 'ushki/admin.php');
 }
@@ -110,8 +110,8 @@ function ushki_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 		
-	$form = '<p><div class="t150">Заголовок (блока):</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Ушка (название):</div> '. form_input( array( 'name'=>$widget . 'ushka', 'value'=>$options['ushka'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок (блока):', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Ушка (название):', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'ushka', 'value'=>$options['ushka'] ) ) ;
 	
 	return $form;
 }

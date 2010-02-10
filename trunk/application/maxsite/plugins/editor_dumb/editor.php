@@ -5,15 +5,15 @@
 <form method="post" <?= $editor_config['action'] ?> >
 <?= $editor_config['do'] ?>
 <p class="editor_button">
-	<input type="button" value="B" title="Полужирный" onClick="addText('<b>', '</b>') " />
-	<input type="button" value="I" title="Курсив" onClick="addText('<i>', '</i>') "/>
-	<input type="button" value="U" title="Подчеркнутый" onClick="addText('<u>', '</u>') "/>
-	<input type="button" value="S" title="Зачеркнутый" onClick="addText('<s>', '</s>') "/> &nbsp;
-	<input type="button" value="A" title="Ссылка" onClick="addText('<a href=&quot;&quot;>', '</a>') "/>
-	<input type="button" value="IMG" title="Картинка" onClick="addText('<img src=&quot;&quot; alt=&quot;&quot; />', '') "/>
-	<input type="button" value="Цитата" title="Цитата" onClick="addText('<blockquote>', '</blockquote>') "/>
-	<input type="button" value="Код" title="Код или преформатированный текст" onClick="addText('<code>', '</code>') "/>
-	<input type="button" value="cut" title="Отрезать текст" onClick="addText('[cut]\n', '') "/>
+	<input type="button" value="B" title="<?= t('Полужирный', 'plugins') ?>" onClick="addText('<b>', '</b>') " />
+	<input type="button" value="I" title="<?= t('Курсив', 'plugins') ?>" onClick="addText('<i>', '</i>') "/>
+	<input type="button" value="U" title="<?= t('Подчеркнутый', 'plugins') ?>" onClick="addText('<u>', '</u>') "/>
+	<input type="button" value="S" title="<?= t('Зачеркнутый', 'plugins') ?>" onClick="addText('<s>', '</s>') "/> &nbsp;
+	<input type="button" value="A" title="<?= t('Ссылка', 'plugins') ?>" onClick="addText('<a href=&quot;&quot;>', '</a>') "/>
+	<input type="button" value="IMG" title="<?= t('Картинка', 'plugins') ?>" onClick="addText('<img src=&quot;&quot; alt=&quot;&quot; />', '') "/>
+	<input type="button" value="<?= t('Цитата', 'plugins') ?>" title="<?= t('Цитата', 'plugins') ?>" onClick="addText('<blockquote>', '</blockquote>') "/>
+	<input type="button" value="<?= t('Код', 'plugins') ?>" title="<?= t('Код или преформатированный текст', 'plugins') ?>" onClick="addText('<code>', '</code>') "/>
+	<input type="button" value="cut" title="<?= t('Отрезать текст', 'plugins') ?>" onClick="addText('[cut]\n', '') "/>
 </p>
 <textarea id="f_content" name="f_content" rows="25" cols="80" style="height: <?= $editor_config['height'] ?>px; width: 100%;" ><?= $editor_config['content'] ?></textarea>
 <?= $editor_config['posle'] ?>

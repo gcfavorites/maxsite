@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -63,7 +63,7 @@ class CI_Router {
 	 * @return	void
 	 */
 	function _set_routing()
-	{		
+	{
 		// Are query strings enabled in the config file?
 		// If so, we're done since segment based URIs are not used with query strings.
 		if ($this->config->item('enable_query_strings') === TRUE AND isset($_GET[$this->config->item('controller_trigger')]))
@@ -77,7 +77,7 @@ class CI_Router {
 			
 			return;
 		}
-		 
+		
 		// Load the routes.php file.
 		@include(APPPATH.'config/routes'.EXT);
 		$this->routes = ( ! isset($route) OR ! is_array($route)) ? array() : $route;
@@ -97,11 +97,22 @@ class CI_Router {
 			{
 				show_error("Unable to determine what should be displayed. A default route has not been specified in the routing file.");
 			}
-		
-			$this->set_class($this->default_controller);
-			$this->set_method('index');
-			$this->_set_request(array($this->default_controller, 'index'));
 			
+			if (strpos($this->default_controller, '/') !== FALSE)
+			{
+				$x = explode('/', $this->default_controller);
+
+				$this->set_class(end($x));
+				$this->set_method('index');
+				$this->_set_request($x);
+			}
+			else
+			{
+				$this->set_class($this->default_controller);
+				$this->set_method('index');
+				$this->_set_request(array($this->default_controller, 'index'));
+			}
+
 			// re-index the routed segments array so it starts with 1 rather than 0
 			$this->uri->_reindex_segments();
 			
@@ -137,7 +148,7 @@ class CI_Router {
 	 * @return	void
 	 */
 	function _set_request($segments = array())
-	{	
+	{
 		$segments = $this->_validate_request($segments);
 		
 		if (count($segments) == 0)
@@ -171,7 +182,7 @@ class CI_Router {
 		// Update our "routed" segment array to contain the segments.
 		// Note: If there is no custom routing, this array will be
 		// identical to $this->uri->segments
-		$this->uri->rsegments = $segments; 
+		$this->uri->rsegments = $segments;
 	}
 	
 	// --------------------------------------------------------------------
@@ -198,13 +209,13 @@ class CI_Router {
 			// Set the directory and remove it from the segment array
 			$this->set_directory($segments[0]);
 			$segments = array_slice($segments, 1);
-			 
+			
 			if (count($segments) > 0)
 			{
 				// Does the requested controller exist in the sub-folder?
 				if ( ! file_exists(APPPATH.'controllers/'.$this->fetch_directory().$segments[0].EXT))
 				{
-					show_404();	
+					show_404($this->fetch_directory().$segments[0]);
 				}
 			}
 			else
@@ -220,16 +231,16 @@ class CI_Router {
 				}
 			
 			}
-				
+
 			return $segments;
 		}
-	
+
 		// Can't find the requested controller...
-		show_404();	
+		show_404($segments[0]);
 	}
-		
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Parse Routes
 	 *
@@ -252,7 +263,6 @@ class CI_Router {
 
 		// Turn the segment array into a URI string
 		$uri = implode('/', $this->uri->segments);
-		$num = count($this->uri->segments);
 
 		// Is there a literal match?  If so we're done
 		if (isset($this->routes[$uri]))
@@ -260,7 +270,7 @@ class CI_Router {
 			$this->_set_request(explode('/', $this->routes[$uri]));		
 			return;
 		}
-				 
+				
 		// Loop through the route array looking for wild-cards
 		foreach ($this->routes as $key => $val)
 		{						
@@ -374,4 +384,6 @@ class CI_Router {
 
 }
 // END Router Class
-?>
+
+/* End of file Router.php */
+/* Location: ./system/libraries/Router.php */

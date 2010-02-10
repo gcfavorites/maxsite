@@ -8,14 +8,18 @@
 	
 	$mq = $CI->db->query_count;
 	
-	echo <<<EOF
-	&copy; {$site_name}, {$date}<br/>Работает на <a href="http://max-3000.com/">MaxSite CMS</a> | Время: {elapsed_time} | SQL: {$mq} | Память: {memory_usage}
-EOF;
+	echo '
+	&copy; ' . $site_name . ', ' . $date 
+	. '<br/>' 
+	. sprintf( 
+		t('Работает на <a href="http://max-3000.com/">MaxSite CMS</a> | Время: {elapsed_time} | SQL: %s | Память: {memory_usage}', 'templates')
+		, $mq);
 
 	if (is_login())
-		echo ' | <a href="' . getinfo('siteurl') . 'admin">Управление</a> | <a href="' . getinfo('siteurl') . 'logout'.'">Выйти</a>';
+		echo ' | <a href="' . getinfo('siteurl') . 'admin">' . t('Управление', 'templates') 
+				. '</a> | <a href="' . getinfo('siteurl') . 'logout'.'">' . t('Выйти', 'templates') . '</a>';
 	else
-		echo ' | <a href="' . getinfo('siteurl') . 'login">Вход</a>';
+		echo ' | <a href="' . getinfo('siteurl') . 'login">' . t('Вход', 'templates') . '</a>';
 
 ?>
 </div>

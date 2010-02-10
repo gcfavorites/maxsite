@@ -4,8 +4,8 @@ mso_cur_dir_lang('admin');
 
 ?>
 
-<h1>Шаблоны для сайта</h1>
-<p class="info">Выберите нужный шаблон. Все шаблоны хранятся в каталоге <strong>«maxsite/templates»</strong>. Название шаблона совпадает с названием его каталога.</p>
+<h1><?= t('Шаблоны для сайта') ?></h1>
+<p class="info"><?= t('Выберите нужный шаблон. Все шаблоны хранятся в каталоге <strong>«maxsite/templates»</strong>. Название шаблона совпадает с названием его каталога.') ?></p>
 
 <?php 
 	$CI = & get_instance();
@@ -23,11 +23,11 @@ mso_cur_dir_lang('admin');
 		{
 			mso_add_option('template', $f_template, 'general');
 			$MSO->config['template'] = $f_template;
-			echo '<div class="update">Обновлено!</div>';
+			echo '<div class="update">' . t('Обновлено!') . '</div>';
 		}
 		else
 		{
-			echo '<div class="error">Ошибка обновления</div>';
+			echo '<div class="error">' . t('Ошибка обновления') . '</div>';
 		}
 	}
 	
@@ -39,7 +39,7 @@ mso_cur_dir_lang('admin');
 	
 	$current_template = $MSO->config['template'];
 	
-	echo '<h3>Текущий шаблон: <em>' . $current_template . '</em></h3>';
+	echo '<h3>' . t('Текущий шаблон:') . ' <em>' . $current_template . '</em></h3>';
 	
 	if (file_exists($templates_dir . $current_template . '/screenshot.jpg'))
 	{
@@ -51,7 +51,7 @@ mso_cur_dir_lang('admin');
 		require($templates_dir . $current_template . '/info.php');
 		echo '<p><a href="' . $info['template_url'] . '">' . $info['name'] . ' ' . $info['version'] . '</a>';
 		echo '<br />' . $info['description'];
-		echo '<br />Автор: <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
+		echo '<br />' . t('Автор:') . ' <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
 		echo '</p>';
 	}
 		
@@ -83,7 +83,7 @@ mso_cur_dir_lang('admin');
 			}
 			else
 			{
-				$out .= '<div style="margin: 0 auto; width: 250px; height: 200px; background: #f0f0f0; border: 1px solid silver;">Нет изображения</div>';
+				$out .= '<div style="margin: 0 auto; width: 250px; height: 200px; background: #f0f0f0; border: 1px solid silver;">' . t('Нет изображения', 'admin') . '</div>';
 			}
 			
 			$info_f = $templates_dir . $dir . '/info.php';
@@ -92,11 +92,11 @@ mso_cur_dir_lang('admin');
 				require($info_f);
 				$out .= '<p><a href="' . $info['template_url'] . '">' . $info['name'] . ' ' . $info['version'] . '</a>';
 				$out .= '<br />' . $info['description'];
-				$out .= '<br />Автор: <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
+				$out .= '<br />' . t('Автор:') . ' <a href="' . $info['author_url'] . '">' . $info['author'] . '</a>';
 				$out .= '</p>';
 			}
 			
-			$out .= '<input type="submit" name="f_submit[' . $dir . ']" value="Выбрать этот шаблон" style="margin: 10px;" />';
+			$out .= '<input type="submit" name="f_submit[' . $dir . ']" value="' . t('Выбрать этот шаблон') . '" style="margin: 10px;" />';
 			$out .= '</div>';
 
 			echo $out;

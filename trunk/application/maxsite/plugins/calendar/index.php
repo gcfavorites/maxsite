@@ -10,7 +10,7 @@
 function calendar_autoload($args = array())
 {
 	# регистрируем виджет
-	mso_register_widget('calendar_widget', 'Календарь'); 
+	mso_register_widget('calendar_widget', t('Календарь', 'plugins')); 
 }
 
 
@@ -44,7 +44,7 @@ function calendar_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . '_header', 'value'=>$options['header'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . '_header', 'value'=>$options['header'] ) ) ;
 	
 	return $form;
 }
@@ -74,17 +74,18 @@ function calendar_widget_custom($arg = array(), $num = 1)
 	global $MSO;
 
 	# массив названий месяцев
-	if ( !isset($arg['months']) ) $arg['months'] = array('Январь', 'Февраль', 
-													'Март', 'Апрель', 'Май', 
-													'Июнь', 'Июль', 'Август', 
-													'Сентябрь', 'Октябрь', 'Ноябрь', 
-													'Декабрь');
+	if ( !isset($arg['months']) ) $arg['months'] = array(t('Январь', 'plugins'), t('Февраль', 'plugins'), 
+													t('Март', 'plugins'), t('Апрель', 'plugins'), t('Май', 'plugins'), 
+													t('Июнь', 'plugins'), t('Июль', 'plugins'), t('Август', 'plugins'), 
+													t('Сентябрь', 'plugins'), t('Октябрь', 'plugins'), t('Ноябрь', 'plugins'), 
+													t('Декабрь', 'plugins'));
 	# массив названий дней недели
-	if ( !isset($arg['days']) ) $arg['days'] = array('Пн', 'Вт', 'Ср', 'Чт', 
-													'Пт', 'Сб', 'Вс');
+	if ( !isset($arg['days']) ) $arg['days'] = array(t('Пн', 'plugins'), t('Вт', 'plugins'), t('Ср', 'plugins'), 
+													t('Чт', 'plugins'), 
+													t('Пт', 'plugins'), t('Сб', 'plugins'), t('Вс', 'plugins'));
 	
 	# оформление виджета
-	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box"><span>Календарь</span></h2>';
+	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box"><span>' . t('Календарь', 'plugins') . '</span></h2>';
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="calendar">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</div>';
 	

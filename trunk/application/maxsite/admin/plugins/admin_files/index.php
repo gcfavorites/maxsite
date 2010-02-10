@@ -9,10 +9,20 @@
 # функция автоподключения плагина
 function admin_files_autoload($args = array())
 {	
-	mso_create_allow('admin_files', 'Админ-доступ к файлам (загрузка, просмотр)');
+	mso_create_allow('admin_files',  t('Админ-доступ к файлам (загрузка, просмотр)', 'admin'));
 	mso_hook_add( 'admin_init', 'admin_files_admin_init');
+	mso_hook_add( 'admin_head', 'admin_files_admin_head');
 }
 
+# 
+function admin_files_admin_head($args = array()) 
+{
+	echo mso_load_jquery('ui/ui.draggable.packed.js');
+	echo mso_load_jquery('alerts/jquery.alerts.js');
+	echo mso_load_jquery('cornerz.js');
+	echo '	<link href="' . getinfo('common_url') . 'jquery/alerts/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />';
+	return $args;
+}
 
 # функция выполняется при указаном хуке admin_init
 function admin_files_admin_init($args = array()) 
@@ -31,7 +41,7 @@ function admin_files_admin_init($args = array())
 	# Третий - название ссылки	
 	# Четвертый - номер в меню
 	
-	mso_admin_menu_add('options', $this_plugin_url, 'Загрузки', 10);
+	mso_admin_menu_add('options', $this_plugin_url, '' . t('Загрузки', 'admin') . '', 10);
 
 	# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 	# связанную функцию именно она будет вызываться, когда 
@@ -53,8 +63,8 @@ function admin_files_admin($args = array())
 	# выносим админские функции отдельно в файл
 	global $MSO;
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Загрузки. Файлы. Галереи"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Загрузки. Файлы. Галереи - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Загрузки. Файлы. Галереи', 'admin') . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Загрузки. Файлы. Галереи', 'admin') . ' - " . $args; ' );
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_files/admin.php');
 }

@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function links_autoload($args = array())
 {
-	mso_register_widget('links_widget', 'Ссылки'); # регистрируем виджет
+	mso_register_widget('links_widget', t('Ссылки', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -26,8 +26,9 @@ function links_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return links_widget_custom($options, $num);
 }
@@ -49,12 +50,14 @@ function links_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Ссылки:</div> '. form_textarea( array( 'name'=>$widget . 'links', 'value'=>$options['links'] ) ) ;
-	$form .= '<br /><div class="t150">&nbsp;</div>Указывайте по одной ссылке в каждом абзаце в формате:
-			  <br /><div class="t150">&nbsp;</div><strong>http://ссылка/ | название | описание | noindex | _blank</strong>
-			  <br /><div class="t150">&nbsp;</div><strong>noindex</strong> - обрамить ссылку в noindex, если не нужно - указать пробел
-			  <br /><div class="t150">&nbsp;</div><strong>_blank</strong> - открыть ссылку в новом окне, если не нужно - указать пробел
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Ссылки:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'links', 'value'=>$options['links'] ) ) ;
+	
+	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Указывайте по одной ссылке в каждом абзаце в формате:', 'plugins') . '
+			  <br /><div class="t150">&nbsp;</div><strong>http://links/ | название | описание | noindex | _blank</strong>
+			  <br /><div class="t150">&nbsp;</div><strong>noindex</strong> - ' . t('обрамить ссылку в noindex, если не нужно - указать пробел', 'plugins') . '
+			  <br /><div class="t150">&nbsp;</div><strong>_blank</strong> - ' . t('открыть ссылку в новом окне, если не нужно - указать пробел', 'plugins') . '
 			  ';
 
 	return $form;

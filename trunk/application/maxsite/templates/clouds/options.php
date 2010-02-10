@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
-<h1>Настройка шаблона</h1>
-<p class="info">Выберите необходимые опции</p>
+<h1><?= t('Настройка шаблона', 'templates') ?></h1>
+<p class="info"><?= t('Выберите необходимые опции', 'templates') ?></p>
 
 <?php
 
@@ -9,7 +9,7 @@
 	require_once( getinfo('common_dir') . 'inifile.php' );
 	
 	// проверка на обновление POST
-	if (mso_check_post_ini()) echo '<div class="update">Обновлено!</div>';
+	if (mso_check_post_ini()) echo '<div class="update">' . t('Обновлено!', 'templates') . '</div>';
 	
 	// получим ini-файл
 	$all = mso_get_ini_file( getinfo('templates_dir') . 'default/options.ini'); // можно использовать дефолтный

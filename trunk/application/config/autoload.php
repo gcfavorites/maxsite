@@ -41,7 +41,6 @@
 
 $autoload['libraries'] = array('database', 'session');
 
-
 /*
 | -------------------------------------------------------------------
 |  Auto-load Helper Files
@@ -109,17 +108,6 @@ $autoload['language'] = array();
 */
 
 $autoload['model'] = array();
-
-
-/*
-| -------------------------------------------------------------------
-|  Auto-load Core Libraries
-| -------------------------------------------------------------------
-|
-| DEPRECATED:  Use $autoload['libraries'] above instead.
-|
-*/
-// $autoload['core'] = array();
 
 
 

@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -37,7 +37,7 @@
  * @param	mixed	the data to be downloaded
  * @return	void
  */	
-if (! function_exists('force_download'))
+if ( ! function_exists('force_download'))
 {
 	function force_download($filename = '', $data = '')
 	{
@@ -91,8 +91,10 @@ if (! function_exists('force_download'))
 			header("Content-Length: ".strlen($data));
 		}
 	
-		echo $data;
+		exit($data);
 	}
 }
 
-?>
+
+/* End of file download_helper.php */
+/* Location: ./system/helpers/download_helper.php */

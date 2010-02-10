@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -80,7 +80,7 @@ class CI_SHA {
 		$d =  271733878;
 		$e = -1009589776;
 
-		for ($i = 0; $i < sizeof($x); $i += 16)
+		for ($i = 0; $i < count($x); $i += 16)
 		{
 			$olda = $a;
 			$oldb = $b;
@@ -246,4 +246,6 @@ class CI_SHA {
 	}
 }
 // END CI_SHA
-?>
+
+/* End of file Sha1.php */
+/* Location: ./system/libraries/Sha1.php */

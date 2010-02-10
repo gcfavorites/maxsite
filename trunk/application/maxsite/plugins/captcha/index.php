@@ -44,7 +44,7 @@ function captcha_go($args = array())
 	# сама картинка формируется в img.php
 	# в ней мы передаем сессию, текущую страницу и время (против кэширования)
 	echo '
-			<label for="comments_captha">Введите нижние символы</label>
+			<label for="comments_captha">' . t('Введите нижние символы', 'plugins') . '</label>
 			<input type="text" name="comments_captha" value="" maxlength="4" class="comments_captha" /> <img src="' 
 			. $MSO->config['plugins_url'] . 'captcha/img.php?image='
 			. $MSO->data['session']['session_id']
@@ -52,7 +52,7 @@ function captcha_go($args = array())
 			. mso_slug(mso_current_url())
 			. '&code='
 			. time()
-			. '" title="Защита от спама: введите только нижние символы" /> <span>(обязательно)</span><br /><br />
+			. '" title="' . t('Защита от спама: введите только нижние символы', 'plugins') . '" /> <span>' . t('(обязательно)', 'plugins') . '</span><br /><br />
 		';
 }
 ?>

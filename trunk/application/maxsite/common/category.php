@@ -159,7 +159,8 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
 	
-	if ($only_page_publish)
+	# только опубликованные делаются только при условии скрытия пустых рубрик
+	if ($only_page_publish and $hide_empty)
 	{
 		$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
 		$CI->db->where('page_status', 'publish');
@@ -200,7 +201,8 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 	$CI->db->where(array('category.category_type'=>$type, 'category.category_id_parent'=>$parent_id));
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
 	
-	if ($only_page_publish)
+	# только опубликованные делаются только при условии скрытия пустых рубрик
+	if ($only_page_publish and $hide_empty)
 	{
 		$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
 		$CI->db->where('page_status', 'publish');
@@ -395,7 +397,7 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 	$CI->db->join('page', 'cat2obj.page_id = page.page_id', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->where('page_status', 'publish');
-	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	// $CI->db->where('page_type_name', 'blog');
 	if ($type_page) $CI->db->where('page_type_name', $type_page);
 	$CI->db->where('category_type', $type);

@@ -162,6 +162,7 @@
 		
 		$n = '\n';
 		$up = $uploads_url;
+		$mess = t('Предварительно нужно выделить файлы для галереи', 'admin');
 		
 		echo <<<EOF
 		<script type="text/javascript">
@@ -172,7 +173,7 @@
 					$('#gallerycode').html('');
 					
 					codegal = '';
-					$("input[@name='f_check_files[]']").each( function(i)
+					$("input[name='f_check_files[]']").each( function(i)
 					{ 
 						if (this.checked)
 						{
@@ -200,22 +201,23 @@
 					else
 					{
 						$('#gallerycode').hide();
-						alert('Предварительно нужно выделить файлы для галереи');
+						alert('{$mess}');
 					}
 				});
 			});
 		</script>
 		<br /><hr />
-		<p>Выделите нужные файлы. (У вас должен быть активирован плагин <strong>LightBox</strong>)</p>
-		<p><input type="button" id="gallerycodeclick" value="   Генерировать код галереи   ">
-		Название: <input type="text" id="gallerycodename" style="width: 200px" value="" /> (если нужно)</p>
-		<p><textarea id="gallerycode" style="display: none"></textarea>
-		
 EOF;
+		echo '
+		<p>' . t('Выделите нужные файлы. (У вас должен быть активирован плагин <strong>LightBox</strong>)', 'admin') . '</p>
+		<p><input type="button" id="gallerycodeclick" value="' . t('Генерировать код галереи', 'admin') . '">
+		' . t('Название:', 'admin') . ' <input type="text" id="gallerycodename" style="width: 200px" value="" /> ' . t('(если нужно)', 'admin') . '</p>
+		<p><textarea id="gallerycode" style="display: none"></textarea>
+		';
 	}
 	else
 	{
-		echo '<p>Нет файлов для отображения</p>';
+		echo '<p>' . t('Нет файлов для отображения', 'admin') . '</p>';
 	}
 	
 ?>

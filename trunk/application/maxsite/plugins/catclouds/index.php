@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function catclouds_autoload($args = array())
 {
-	mso_register_widget('catclouds_widget', 'Облако рубрик'); # регистрируем виджет
+	mso_register_widget('catclouds_widget', t('Облако рубрик', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -66,22 +66,27 @@ function catclouds_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
-	$form .= '<p><div class="t150">Формат:</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
 	$form .= '<br /><div class="t150">&nbsp;</div> %SIZE% %URL% %CAT% %COUNT%';
 	
-	$form .= '<p><div class="t150">Мин. размер (%):</div> '. form_input( array( 'name'=>$widget . 'min_size', 'value'=>$options['min_size'] ) ) ;
-	$form .= '<p><div class="t150">Макс. размер (%):</div> '. form_input( array( 'name'=>$widget . 'max_size', 'value'=>$options['max_size'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Мин. размер', 'plugins') . ' (%):</div> '. form_input( array( 'name'=>$widget . 'min_size', 'value'=>$options['min_size'] ) ) ;
 	
-	$form .= '<p><div class="t150">Номер рубрики:</div> '. form_input( array( 'name'=>$widget . 'cat_id', 'value'=>$options['cat_id'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Макс. размер', 'plugins') . ' (%):</div> '. form_input( array( 'name'=>$widget . 'max_size', 'value'=>$options['max_size'] ) ) ;
 	
-	$form .= '<p><div class="t150">Начало блока:</div> '. form_input( array( 'name'=>$widget . 'block_start', 'value'=>$options['block_start'] ) ) ;
-	$form .= '<p><div class="t150">Конец блока:</div> '. form_input( array( 'name'=>$widget . 'block_end', 'value'=>$options['block_end'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Номер рубрики:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'cat_id', 'value'=>$options['cat_id'] ) ) ;
 	
-	$form .= '<p><div class="t150">Сортировка:</div> '. form_dropdown($widget . 'sort', 
-								array( '0'=>'По количеству записей (обратно)', '1'=>'По количеству записей', 
-									   '2'=>'По алфавиту', '3'=>'По алфавиту (обратно)'), $options['sort'] ) ;
+	$form .= '<p><div class="t150">' . t('Начало блока:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'block_start', 'value'=>$options['block_start'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Конец блока:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'block_end', 'value'=>$options['block_end'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Сортировка:', 'plugins') . '</div> '. form_dropdown($widget . 'sort', 
+								array( '0'=>t('По количеству записей (обратно)', 'plugins'), 
+										'1'=>t('По количеству записей', 'plugins'), 
+									   '2'=>t('По алфавиту', 'plugins'), 
+									   '3'=>t('По алфавиту (обратно)', 'plugins')), 
+									   $options['sort'] ) ;
 	
 	return $form;
 }

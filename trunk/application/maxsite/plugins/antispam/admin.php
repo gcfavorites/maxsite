@@ -28,12 +28,12 @@
 	
 		mso_add_option($options_key, $options, 'plugins');
 		
-		echo '<div class="update">Обновлено!</div>';
+		echo '<div class="update">' . t('Обновлено!', 'plugins') . '</div>';
 	}
 	
 ?>
-<h1>Антиспам</h1>
-<p class="info">С помощью этого плагина вы можете активно бороться со спамерами. Обратите внимание, что комментарии авторов публикуются без модерации.
+<h1><?= t('Антиспам', 'plugins') ?></h1>
+<p class="info"><?= t('С помощью этого плагина вы можете активно бороться со спамерами. Обратите внимание, что комментарии авторов публикуются без модерации.', 'plugins') ?></p>
 
 <?php
 		
@@ -50,49 +50,49 @@
 		
 		$form = '';
 
-		$form .= '<h2>Настройки</h2>';
+		$form .= '<h2>' . t('Настройки', 'plugins') . '</h2>';
 		
 		$chk = $options['antispam_on'] ? ' checked="checked"  ' : '';
-		$form .= '<p><input name="f_antispam_on" type="checkbox" ' . $chk . '> <strong>Включить антиспам</strong>';
+		$form .= '<p><input name="f_antispam_on" type="checkbox" ' . $chk . '> <strong>' . t('Включить антиспам', 'plugins') . '</strong>';
 		
 		$chk = $options['logging'] ? ' checked="checked"  ' : '';
-		$form .= '<p><input name="f_logging" type="checkbox" ' . $chk . '> <strong>Вести лог отловленных спамов</strong>';
+		$form .= '<p><input name="f_logging" type="checkbox" ' . $chk . '> <strong>' . t('Вести лог отловленных спамов', 'plugins') . '</strong>';
 		
 		$chk = $options['moderation_links'] ? ' checked="checked"  ' : '';
-		$form .= '<p><input name="f_moderation_links" type="checkbox" ' . $chk . '> <strong>Отправлять комментарий на модерацию, если в нем встречается, хоть одна ссылка.</strong>';
+		$form .= '<p><input name="f_moderation_links" type="checkbox" ' . $chk . '> <strong>' . t('Отправлять комментарий на модерацию, если в нем встречается, хоть одна ссылка.', 'plugins') . '</strong>';
 		
-		$form .= '<p><strong>Файл для логов:</strong> ' . $MSO->config['uploads_dir'] . ' <input name="f_logging_file" type="text" value="' . $options['logging_file'] . '">';
+		$form .= '<p><strong>' . t('Файл для логов:', 'plugins') . '</strong> ' . $MSO->config['uploads_dir'] . ' <input name="f_logging_file" type="text" value="' . $options['logging_file'] . '">';
 		if (file_exists( $MSO->config['uploads_dir'] . $options['logging_file'] ))
-			$form .= ' <a href="' . $MSO->config['uploads_url'] . $options['logging_file'] . '" target="_blank">Посмотреть</a>';
+			$form .= ' <a href="' . $MSO->config['uploads_url'] . $options['logging_file'] . '" target="_blank">' . t('Посмотреть', 'plugins') . '</a>';
 		
 		
-		$form .= '<br /><br /><h2>Черный список IP</h2>';
-		$form .= '<p>Укажите IP, с которых недопустимы комментарии. Один IP в одной строчке.</p>';
+		$form .= '<br /><br /><h2>' . t('Черный список IP', 'plugins') . '</h2>';
+		$form .= '<p>' . t('Укажите IP, с которых недопустимы комментарии. Один IP в одной строчке.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_black_ip" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['black_ip']);
 		$form .= '</textarea>';
 		
-		$form .= '<br /><br /><h2>Черный список слов</h2>';
-		$form .= '<p>Укажите слова, которые нельзя использовать в комментариях. Одно слово в одной строчке.</p>';
+		$form .= '<br /><br /><h2>' . t('Черный список слов', 'plugins') . '</h2>';
+		$form .= '<p>' . t('Укажите слова, которые нельзя использовать в комментариях. Одно слово в одной строчке.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_black_words" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['black_words']);
 		$form .= '</textarea>';		
 		
-		$form .= '<br /><br /><h2>Слова для модерации</h2>';
-		$form .= '<p>Укажите слова, которые принудительно отравляют комментарий на премодерацию. Одно слово в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.</p>';
+		$form .= '<br /><br /><h2>' . t('Слова для модерации', 'plugins') . '</h2>';
+		$form .= '<p>' . t('Укажите слова, которые принудительно отравляют комментарий на премодерацию. Одно слово в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_moderation_words" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['moderation_words']);
 		$form .= '</textarea>';		
 		
-		$form .= '<br /><br /><h2>Номера комюзеров, которые всегда попадают в модерацию</h2>';
-		$form .= '<p>Укажите номера комюзеров, которые принудительно отравляют комментарий на премодерацию. Один номер в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.</p>';
+		$form .= '<br /><br /><h2>' . t('Номера комюзеров, которые всегда попадают в модерацию', 'plugins') . '</h2>';
+		$form .= '<p>' . t('Укажите номера комюзеров, которые принудительно отравляют комментарий на премодерацию. Один номер в одной строчке. Обратите внимание, что этот список проверяется только если пройдена проверка на Черные списки.', 'plugins') . '</p>';
 		$form .= '<textarea name="f_moderation_comusers" rows="7" style="width: 99%;">';
 		$form .= htmlspecialchars($options['moderation_comusers']);
 		$form .= '</textarea>';	
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<br /><input type="submit" name="f_submit" value=" Сохранить изменения " style="margin: 25px 0 5px 0;" />';
+		echo '<br /><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
 		echo '</form>';
 
 ?>

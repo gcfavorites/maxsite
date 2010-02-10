@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -33,7 +33,7 @@
  * @access	public
  * @return	bool
  */	
-if (! function_exists('valid_email'))
+if ( ! function_exists('valid_email'))
 {
 	function valid_email($address)
 	{
@@ -49,7 +49,7 @@ if (! function_exists('valid_email'))
  * @access	public
  * @return	bool
  */	
-if (! function_exists('send_email'))
+if ( ! function_exists('send_email'))
 {
 	function send_email($recipient, $subject = 'Test email', $message = 'Hello World')
 	{
@@ -57,4 +57,6 @@ if (! function_exists('send_email'))
 	}
 }
 
-?>
+
+/* End of file email_helper.php */
+/* Location: ./system/helpers/email_helper.php */

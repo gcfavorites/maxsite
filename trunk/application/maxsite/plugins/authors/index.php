@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function authors_autoload($args = array())
 {
-	mso_register_widget('authors_widget', 'Авторы'); # регистрируем виджет
+	mso_register_widget('authors_widget', t('Авторы', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -47,7 +47,7 @@ function authors_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
 	return $form;
 }

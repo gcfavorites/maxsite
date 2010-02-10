@@ -46,7 +46,7 @@ h4 {font-size: 9pt; margin: 5px 0 10px 0;}
 h5 {font-size: 8pt; margin: 5px 0 10px 0;}
 h6 {font-size: 7pt; margin: 5px 0 10px 0;}
 
-pre { margin: 10px 0; background: #E8E8E8 url(images/note.png) no-repeat 445px 5px; padding: 10px; border: 1px solid #DDDDDD; overflow: auto;}
+pre { margin: 10px 0; background: #E8E8E8 url(images/note.png) no-repeat 445px 5px; padding: 10px; border: 1px solid #DDDDDD; overflow: auto; font-size: 10pt;}
 *html pre {width: 410px;}
 *+html pre {width: 410px; }
 
@@ -60,6 +60,7 @@ blockquote p {width: 100%; margin: 0; }
 #header1 {background: #D5D5E1;}
 #MainMenu {}
 * html #MainMenu {width: 660px;}
+*+html #MainMenu {width: 660px;}
 div.header-searh {float: right; width: 240px; text-align: right; padding: 4px 4px 0 0;}
 
 #header2 {border-top: 6px solid #3C5FB3; border-bottom: 2px solid #B7BECE; height: 211px; background: #D5D5E1 url(images/h2.jpg) no-repeat;}

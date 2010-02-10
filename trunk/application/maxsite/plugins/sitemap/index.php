@@ -30,7 +30,7 @@ function sitemap_content($text = '')
 # оюработка текста на предмет в нем [sitemap]
 function sitemap404($text = '')
 {
-	return  '<h2 class="sitemap">Воспользуйтесь картой сайта</h2>' . sitemap();
+	return  '<h2 class="sitemap">' . t('Воспользуйтесь картой сайта', 'plugins') . '</h2>' . sitemap();
 }
 
 # явный вызов функции - отдается карта сайта

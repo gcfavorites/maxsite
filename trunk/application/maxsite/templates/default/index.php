@@ -4,7 +4,6 @@
 $type_dir = getinfo('templates_dir') . 'default/type/';
 //$type_dir = 'type/';
 
-
 # глобальный кэш в каталоге html - должен быть создан и права на запись (777)!
 if ( mso_get_option('global_cache', 'templates', false) ) // если разрешено в опциях шаблона
 {

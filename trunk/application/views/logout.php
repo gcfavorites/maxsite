@@ -17,7 +17,7 @@ function _mso_logout()
 	if ($comuser) 
 	{
 		$name_cookies = 'maxsite_comuser';
-		$expire  = time() - 2592000; // 30 дней = 2592000 секунд
+		$expire  = time() - 2592100; // 30 дней = 2592000 секунд
 		$value = ''; 
 		mso_add_to_cookie($name_cookies, $value, $expire, true); // в куку для всего сайта
 	}

@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -147,22 +147,33 @@ class CI_DB_mysql_forge extends CI_DB_forge {
 			$sql .= 'IF NOT EXISTS ';
 		}
 		
-		$sql .= $this->db->_escape_table($table)." (";
+		$sql .= $this->db->_escape_identifiers($table)." (";
 
 		$sql .= $this->_process_fields($fields);
 
 		if (count($primary_keys) > 0)
 		{
+			$key_name = $this->db->_protect_identifiers(implode('_', $primary_keys));
 			$primary_keys = $this->db->_protect_identifiers($primary_keys);
-			$sql .= ",\n\tPRIMARY KEY (" . implode(', ', $primary_keys) . ")";
+			$sql .= ",\n\tPRIMARY KEY ".$key_name." (" . implode(', ', $primary_keys) . ")";
 		}
 
 		if (is_array($keys) && count($keys) > 0)
 		{
-			$keys = $this->db->_protect_identifiers($keys);
 			foreach ($keys as $key)
 			{
-				$sql .= ",\n\tKEY ($key)";
+				if (is_array($key))
+				{
+					$key_name = $this->db->_protect_identifiers(implode('_', $key));
+					$key = $this->db->_protect_identifiers($key);	
+				}
+				else
+				{
+					$key_name = $this->db->_protect_identifiers($key);
+					$key = array($key_name);
+				}
+				
+				$sql .= ",\n\tKEY {$key_name} (" . implode(', ', $key) . ")";
 			}
 		}
 
@@ -177,11 +188,11 @@ class CI_DB_mysql_forge extends CI_DB_forge {
 	 * Drop Table
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	string
 	 */
 	function _drop_table($table)
 	{
-		return "DROP TABLE IF EXISTS ".$this->db->_escape_table($table);
+		return "DROP TABLE IF EXISTS ".$this->db->_escape_identifiers($table);
 	}
 
 	// --------------------------------------------------------------------
@@ -219,5 +230,25 @@ class CI_DB_mysql_forge extends CI_DB_forge {
 		return $sql;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Rename a table
+	 *
+	 * Generates a platform-specific query so that a table can be renamed
+	 *
+	 * @access	private
+	 * @param	string	the old table name
+	 * @param	string	the new table name
+	 * @return	string
+	 */
+	function _rename_table($table_name, $new_table_name)
+	{
+		$sql = 'ALTER TABLE '.$this->db->_protect_identifiers($table_name)." RENAME TO ".$this->db->_protect_identifiers($new_table_name);
+		return $sql;
+	}
+
 }
-?>
+
+/* End of file mysql_forge.php */
+/* Location: ./system/database/drivers/mysql/mysql_forge.php */

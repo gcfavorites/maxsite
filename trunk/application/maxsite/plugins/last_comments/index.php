@@ -11,7 +11,7 @@ function last_comments_autoload($args = array())
 {
 	global $MSO;
 	
-	mso_register_widget('last_comments_widget', 'Последние комментарии'); # регистрируем виджет
+	mso_register_widget('last_comments_widget', t('Последние комментарии', 'plugins')); # регистрируем виджет
 	mso_hook_add('new_comment', 'last_comments_new_comment'); # хук на новый коммент - нужно сбросить кэш комментариев
 	
 	// для того, чтобы обновлять только ключи этого виджета, а не всего кэша
@@ -71,10 +71,13 @@ function last_comments_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) );
-	$form .= '<p><div class="t150">Количество:</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) );
-	$form .= '<p><div class="t150">Количество слов:</div> '. form_input( array( 'name'=>$widget . 'words', 'value'=>$options['words'] ) );
-	$form .= '<p><div class="t150">Количество символов в одном слове:</div> '. form_input( array( 'name'=>$widget . 'maxchars', 'value'=>$options['maxchars'] ) );
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) );
+	
+	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) );
+	
+	$form .= '<p><div class="t150">' . t('Количество слов:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'words', 'value'=>$options['words'] ) );
+	
+	$form .= '<p><div class="t150">' . t('Количество символов в одном слове:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'maxchars', 'value'=>$options['maxchars'] ) );
 	
 	return $form;
 }
@@ -117,8 +120,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 	$options['maxchars'] = (int) $options['maxchars'];
 	if ($options['maxchars'] < 1) $options['maxchars'] = 20;
 	
-	$cache_key = 'last_comments_widget_' . mso_md5('last_comments_widget'. serialize($options) . $num);
-	// $k = mso_get_cache($cache_key);
+	$cache_key = 'last_comments_widget_' . $num . mso_md5(serialize($options));
 	
 	$k = mso_get_cache($cache_key, true);
 	if ($k) return $k; // да есть в кэше
@@ -164,7 +166,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 				elseif ($comments_comusers_id) // это комюзер
 				{
 					if ($comusers_nik) $out .= $comusers_nik;
-						else $out .= 'Комментатор ' . $comusers_id;
+						else $out .= t('Комментатор', 'plugins') . ' ' . $comusers_id;
 				}
 				elseif ($comments_author_name) $out .= $comments_author_name; // аноним . ' (анонимно)'
 				
@@ -191,8 +193,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 		if ($options['header']) $out = $options['header'] . $out;
 	}
 	
-	// mso_add_cache($cache_key, $out); // сразу в кэш добавим
-	mso_add_cache($cache_key . $num, $out, false, true); // сразу в кэш добавим
+	mso_add_cache($cache_key, $out, false, true); // сразу в кэш добавим
 	
 	return trim($out);
 }

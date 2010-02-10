@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function page_views_autoload($args = array())
 {
-	mso_register_widget('page_views_widget', 'Самое читаемое'); # регистрируем виджет
+	mso_register_widget('page_views_widget', t('Самое читаемое', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -26,8 +26,9 @@ function page_views_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return page_views_widget_custom($options, $num);
 }
@@ -50,14 +51,16 @@ function page_views_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Количество записей:</div> '. form_input( array( 'name'=>$widget . 'limit', 'value'=>$options['limit'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
-	$form .= '<p><div class="t150">Формат:</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
-	$form .= '<p><div class="t150">&nbsp;</div><strong>[TITLE]</strong> - название записи';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[COUNT]</strong> - просмотров в день';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[ALLCOUNT]</strong> - всего просмотров';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[A]</strong>ссылка<strong>[/A]</strong>';
+	$form .= '<p><div class="t150">' . t('Количество записей:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'limit', 'value'=>$options['limit'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
+	
+	$form .= '<p><div class="t150">&nbsp;</div><strong>[TITLE]</strong> - ' . t('название записи', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[COUNT]</strong> - ' . t('просмотров в день', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[ALLCOUNT]</strong> - ' . t('всего просмотров', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[A]</strong>' . t('ссылка', 'plugins') . '<strong>[/A]</strong>';
 	
 	return $form;
 }
@@ -112,7 +115,7 @@ function page_views_widget_custom($options = array(), $num = 1)
 	$CI->db->select('page_slug, page_title, page_id, page_view_count, page_date_publish');
 	$CI->db->where('page_status', 'publish');
 	$CI->db->where('page_view_count > ', '0');
-	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	$CI->db->order_by('page_id', 'desc');
 	
 	$query = $CI->db->get('page');

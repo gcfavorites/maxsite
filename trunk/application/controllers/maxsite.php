@@ -122,9 +122,9 @@ class Maxsite extends Controller
 			// редирект на главную страницу
 			if (isset($this->session->userdata['_add_to_cookie_redirect']))
 			{
-				
 				$r = $this->session->userdata['_add_to_cookie_redirect'];
-				if ($r === true or $r === false) // логическая переменная
+
+				if (is_bool($r) or is_numeric($r)) // === true or $r === false) // логическая переменная
 					mso_redirect(getinfo('siteurl'), true); // редирект на главную
 				else 
 					mso_redirect($r, true); // редирект по указанному адресу

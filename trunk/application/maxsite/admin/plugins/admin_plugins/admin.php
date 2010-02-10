@@ -19,7 +19,7 @@
 			
 			if ($act)
 			{
-				$out = 'Выполнено: ';
+				$out = '' . t('Выполнено:', 'admin') . ' ';
 				foreach ($post['f_check_submit'] as $f_name=>$val)
 				{
 					if ($act == 'activate') mso_plugin_activate($f_name); # активация плагина
@@ -32,16 +32,16 @@
 				// echo '<div class="update">' . $out . ' &#149;</div>';
 			}
 			else
-				echo '<div class="error">Ошибка обновления</div>';
+				echo '<div class="error">' . t('Ошибка обновления', 'admin') . '</div>';
 		}
 		else
-			echo '<div class="error">Отметьте необходимые плагины</div>';
+			echo '<div class="error">' . t('Отметьте необходимые плагины', 'admin') . '</div>';
 	}
 
 ?>
-	<h1>Плагины</h1>
-	<p class="info">Плагины расширяют стандартные возможности сайта. Здесь вы можете включить или отключить плагины. Если вы деинсталируете плагин, то это удаляет его настройки, что позволяет избежать «замусоривания» базы данных.</p>
-	<p class="info">Отметьте необходимые плагины и выберите нужное действие.</p>
+	<h1><?= t('Плагины') ?></h1>
+	<p class="info"><?= t('Плагины расширяют стандартные возможности сайта. Здесь вы можете включить или отключить плагины. Если вы деинсталируете плагин, то это удаляет его настройки, что позволяет избежать «замусоривания» базы данных.') ?></p>
+	<p class="info"><?= t('Отметьте необходимые плагины и выберите нужное действие.') ?></p>
 
 <?php
 	// для вывода будем использовать html-таблицу
@@ -56,7 +56,7 @@
 	$CI->table->set_template($tmpl); // шаблон таблицы
 	
 	// заголовки
-	$CI->table->set_heading('Статус', ' ', 'Каталог', 'Название', 'Версия', 'Автор', 'Описание');
+	$CI->table->set_heading(t('Статус', 'admin'), ' ', t('Каталог', 'admin'), t('Название', 'admin'), t('Версия', 'admin'), t('Автор', 'admin'), t('Описание', 'admin'));
 	
 	// проходимся по каталогу плагинов и выводим информацию о них
 	$CI->load->helper('directory');
@@ -104,11 +104,11 @@
 				
 				if ( in_array($dir, $MSO->active_plugins)) 
 				{
-					$status = '<span style="color: green;"><strong>вкл</strong></span>';
+					$status = '<span style="color: green;"><strong>' . t('вкл', 'admin') . '</strong></span>';
 				}
 				else 
 				{
-					$status = '<span class="gray">откл</span>';
+					$status = '<span class="gray">' . t('откл', 'admin') . '</span>';
 					$description = '<span class="gray">' . $description . '</span>';
 					$dir = '<span class="gray">' . $dir . '</span>';
 					$version = '<span class="gray">' . $version . '</span>';
@@ -126,9 +126,9 @@
 	
 	# добавим строчку для дополнительного действия
 	$dop = '<div style="margin: 10px 0;">
-				<input type="submit" name="f_activate_submit" value="&nbsp;+ &nbsp;&nbsp;Включить&nbsp;">
-				<input type="submit" name="f_deactivate_submit" value="&nbsp;- &nbsp;&nbsp;Выключить&nbsp;">
-				<input type="submit" name="f_uninstall_submit" value="&nbsp;x&nbsp;&nbsp;Деинсталировать&nbsp;">
+				<input type="submit" name="f_activate_submit" value="&nbsp;+ &nbsp;&nbsp;' . t('Включить', 'admin') . '&nbsp;">
+				<input type="submit" name="f_deactivate_submit" value="&nbsp;- &nbsp;&nbsp;' . t('Выключить', 'admin') . '&nbsp;">
+				<input type="submit" name="f_uninstall_submit" value="&nbsp;x&nbsp;&nbsp;' . t('Деинсталировать', 'admin') . '&nbsp;">
 	</div>';
 	
 	// добавляем форму, а также текущую сессию

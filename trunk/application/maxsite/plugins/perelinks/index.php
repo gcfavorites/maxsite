@@ -30,7 +30,7 @@ function perelinks_custom($content = '')
 	{
 		$CI = & get_instance();
 		$CI->db->select('page_title, page_slug');
-		$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 		$CI->db->where('page_status', 'publish');
 		$CI->db->from('page');
 		$query = $CI->db->get();

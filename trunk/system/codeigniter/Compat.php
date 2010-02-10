@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -51,11 +51,11 @@ if ( ! defined('E_STRICT'))
  * @param	string
  * @return	bool
  */
-if (! function_exists('ctype_digit'))
+if ( ! function_exists('ctype_digit'))
 {
 	function ctype_digit($str)
 	{
-		if (! is_string($str) OR $str == '')
+		if ( ! is_string($str) OR $str == '')
 		{
 			return FALSE;
 		}
@@ -76,11 +76,11 @@ if (! function_exists('ctype_digit'))
  * @param	string
  * @return	bool
  */
-if (! function_exists('ctype_alnum'))
+if ( ! function_exists('ctype_alnum'))
 {
 	function ctype_alnum($str)
 	{
-		if (! is_string($str) OR $str == '')
+		if ( ! is_string($str) OR $str == '')
 		{
 			return FALSE;
 		}
@@ -89,6 +89,5 @@ if (! function_exists('ctype_alnum'))
 	}	
 }
 
-// --------------------------------------------------------------------
-
-?>
+/* End of file Compat.php */
+/* Location: ./system/codeigniter/Compat.php */

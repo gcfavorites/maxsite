@@ -784,6 +784,10 @@ class Snoopy
 	
 		$this->status = 0;
 		
+		// +MAX
+		if ($host == 'localhost') $host = gethostbyname($host);
+		// -MAX
+		
 		if($fp = fsockopen(
 					$host,
 					$port,

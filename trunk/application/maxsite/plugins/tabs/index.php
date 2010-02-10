@@ -9,7 +9,7 @@
 function tabs_autoload($args = array())
 {
 	mso_hook_add( 'head', 'tabs_head');
-	mso_register_widget('tabs_widget', 'Табы (закладки)'); # регистрируем виджет
+	mso_register_widget('tabs_widget', t('Табы (закладки)', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -38,8 +38,9 @@ function tabs_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return tabs_widget_custom($options, $num);
 }
@@ -64,16 +65,20 @@ function tabs_widget_form($num = 1)
 	
 	$form = '';
 	
-	if (!function_exists('ushka')) $form = '<p style="color: red; text-align: center;">Для работы этого виджета следует включить плагин «Ушки»!</p>'; 
+	// if (!function_exists('ushka')) $form = '<p style="color: red; text-align: center;">' . t('Для работы этого виджета следует включить плагин «Ушки»!', 'plugins') . '</p>'; 
 	
-	$form .= '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Табы:</div> '. form_textarea( array( 'name'=>$widget . 'tabs', 'value'=>$options['tabs'] ) ) ;
-	$form .= '<br /><div class="t150">&nbsp;</div>Указывайте по одному табу в каждом абзаце в формате: <strong>заголовок | виджет номер</strong>';
-	$form .= '<br /><div class="t150">&nbsp;</div>Например: <strong>Цитаты | randomtext_widget 1</strong>';
-	$form .= '<br /><div class="t150">&nbsp;</div>Для ушки: <strong>Цитаты | ушка_цитаты</strong>';
+	$form .= '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Табы:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'tabs', 'value'=>$options['tabs'] ) ) ;
+	
+	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Указывайте по одному табу в каждом абзаце в формате: <strong>заголовок | виджет номер</strong>', 'plugins');
+	
+	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Например: <strong>Цитаты | randomtext_widget 1</strong>', 'plugins');
+	
+	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Для ушки: <strong>Цитаты | ушка_цитаты</strong>', 'plugins');
 	
 	
-	$form .= '<p><div class="t150">Использовать:</div> '. form_dropdown( $widget . 'type_func', array( 'widget'=>'Виджет (функция и номер через пробел)', 'ushka'=>'Ушка (только название)'), $options['type_func']);
+	$form .= '<p><div class="t150">' . t('Использовать:', 'plugins') . '</div> '. form_dropdown( $widget . 'type_func', array( 'widget'=>t('Виджет (функция и номер через пробел)', 'plugins'), 'ushka'=>t('Ушка (только название)', 'plugins')), $options['type_func']);
 
 	return $form;
 }

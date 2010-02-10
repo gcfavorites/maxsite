@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -39,7 +39,7 @@
  * @param	mixed
  * @return	mixed	depends on what the array contains
  */	
-if (! function_exists('element'))
+if ( ! function_exists('element'))
 {
 	function element($item, $array, $default = FALSE)
 	{
@@ -61,7 +61,7 @@ if (! function_exists('element'))
  * @param	array
  * @return	mixed	depends on what the array contains
  */	
-if (! function_exists('random_element'))
+if ( ! function_exists('random_element'))
 {
 	function random_element($array)
 	{
@@ -73,4 +73,6 @@ if (! function_exists('random_element'))
 	}	
 }
 
-?>
+
+/* End of file array_helper.php */
+/* Location: ./system/helpers/array_helper.php */

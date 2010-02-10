@@ -4,8 +4,8 @@ mso_cur_dir_lang('admin');
 
 ?>
 
-<h1>Редактирование комментария</h1>
-<p><a href="<?= $MSO->config['site_admin_url'] . 'comments' ?>">К списку комментариев</a></p>
+<h1><?= t('Редактирование комментария') ?></h1>
+<p><a href="<?= $MSO->config['site_admin_url'] . 'comments' ?>"><?= t('К списку комментариев') ?></a></p>
 
 <?php
 
@@ -38,9 +38,9 @@ mso_cur_dir_lang('admin');
 			
 			
 			if ($CI->db->update('comments', $data ) )
-				echo '<div class="update">Обновлено!</div>';
+				echo '<div class="update">' . t('Обновлено!') . '</div>';
 			else 
-				echo '<div class="error">Ошибка обновления</div>';
+				echo '<div class="error">' . t('Ошибка обновления') . '</div>';
 			
 			$CI->db->cache_delete_all();
 		}
@@ -61,15 +61,15 @@ mso_cur_dir_lang('admin');
 		{
 			$row = $query->row_array(); 
 			echo '<form action="" method="post">' . mso_form_session('f_session_id');
-			echo '<h3>Текст</h3>
+			echo '<h3>' . t('Текст', 'admin') . '</h3>
 				<p><textarea name="f_comments_content" cols="90" rows="10">' . htmlspecialchars($row['comments_content']) . '</textarea></p>';
 			
-			echo '<h3>Дата</h3>
+			echo '<h3>' . t('Дата') . '</h3>
 				<p><input name="f_comments_date" type="text" value="' . htmlspecialchars($row['comments_date']) .'"></p>';
 			
 			if ( $row['comments_author_name'] ) 
 			{
-				echo '<h3>Автор</h3>
+				echo '<h3>' . t('Автор') . '</h3>
 					<p><input name="f_comments_author_name" type="text" value="' . htmlspecialchars($row['comments_author_name']) .'"></p>';
 			}
 			
@@ -80,22 +80,22 @@ mso_cur_dir_lang('admin');
 			else
 				$checked2 = 'checked="checked"'; 
 			
-			echo '<p>
-				<input type="radio" name="f_comments_approved" value="1" ' . $checked1 . ' /> Одобрить
-				<input type="radio" name="f_comments_approved" value="0" ' . $checked2 . ' /> Запретить
-				</p>';
+			echo '<p><input type="radio" name="f_comments_approved" value="1" ' . $checked1 . ' /> ' . t('Одобрить')
+				. '<input type="radio" name="f_comments_approved" value="0" ' . $checked2 . ' /> ' . t('Запретить')
+				. '</p>';
 			
-			echo '<br /><p><input type="submit" name="f_submit" value="   Готово   "></p>';
+			echo '<br /><p><input type="submit" name="f_submit" value="' . t('Готово') . '"></p>';
 			echo '</form>';
 			
-			echo '<p><a href="' . getinfo('siteurl') . 'page/' . $row['page_slug'] . '#comment-' . $id . '">Вернуться к комментарию на сайте</a></p>';
+			echo '<p><a href="' . getinfo('siteurl') . 'page/' . $row['page_slug'] . '#comment-' . $id . '">' 
+				. t('Вернуться к комментарию на сайте') . '</a></p>';
 			
 			// pr($row);
 		}
-		else echo '<div class="error">Ошибочный комментарий</div>';
+		else echo '<div class="error">' . t('Ошибочный комментарий') . '</div>';
 	}
 	else
 	{
-		echo '<div class="error">Ошибочный запрос</div>'; // id - ошибочный
+		echo '<div class="error">' . t('Ошибочный запрос') . '</div>'; // id - ошибочный
 	}
 ?>

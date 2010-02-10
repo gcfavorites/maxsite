@@ -10,7 +10,7 @@ function template_options_autoload($args = array())
 {
 	global $MSO;
 	
-	mso_create_allow('template_options_admin', 'Доступ к настройкам шаблона');
+	mso_create_allow('template_options_admin', t('Доступ к настройкам шаблона', 'admin'));
 	
 	if (is_type('admin'))
 	{
@@ -27,7 +27,7 @@ function template_options_admin_init($args = array())
 	if ( !mso_check_allow('template_options_admin') ) return $args;
 	
 	$this_plugin_url = 'template_options'; // url и hook
-	mso_admin_menu_add('options', $this_plugin_url, 'Настройка шаблона');
+	mso_admin_menu_add('options', $this_plugin_url, t('Настройка шаблона', 'admin'));
 	mso_admin_url_hook ($this_plugin_url, 'template_options_admin_page');
 	
 	return $args;

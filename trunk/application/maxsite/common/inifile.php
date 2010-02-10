@@ -77,13 +77,13 @@ function mso_view_ini($all = false)
 	$CI->table->set_template($tmpl); // шаблон таблицы
 	
 	// заголовки
-	$CI->table->set_heading('Настройка', 'Значение');
+	$CI->table->set_heading(t('Настройка'), t('Значение'));
 	
 	$out = '';
 	
 	foreach ($all as $key=>$row)
 	{
-		if ( isset($row['options_key']) ) $options_key = stripslashes(trim($row['options_key']));
+		if ( isset($row['options_key']) ) $options_key = stripslashes( trim( $row['options_key'] ) );
 			else continue;
 		
 		if ( !isset($row['options_type']) ) $options_type = 'general';
@@ -96,7 +96,7 @@ function mso_view_ini($all = false)
 			else $values = stripslashes(htmlspecialchars(trim($row['values'])));
 			
 		if ( !isset($row['description']) ) $description = '';
-			else $description = stripslashes(trim($row['description']));
+			else $description = stripslashes( trim( t($row['description']) ) );
 		
 		if ( !isset($row['delimer']) ) $delimer = '<br />';
 			else $delimer = stripslashes($row['delimer']);
@@ -141,7 +141,11 @@ function mso_view_ini($all = false)
 			if ($value) $checked = 'checked="checked"';
 				else $checked = '';
 				
-			$f .= '<input type="checkbox" name="' . $name_f . '" ' . $checked . ' /> ' . $key . NR;
+			$f .= '<input type="checkbox" id="ch_' . mso_md5($key) . '" name="' . $name_f . '" ' . $checked . ' /> ' 
+			. '<label for="ch_' . mso_md5($key) . '">' . $key . '</label>' 
+			. NR;
+			
+			
 			$f .= '<input type="hidden" name="f_all_checkbox[' . $options_key . '_m_s_o_' . $options_type . ']" />' . NR;
 		}
 		elseif ($type == 'radio')
@@ -187,11 +191,11 @@ function mso_view_ini($all = false)
 			}
 		}
 		
-		if ($description) $f .= '<p>' .  $description . '</p>';
+		if ($description) $f .= '<p><em>' .  $description . '</em></p>';
 		if (!$options_present) 
-			$key = '<span title="' . $options_key . '" style="color: red;">* ' . $key . ' (нет в базе)</span>';
+			$key = '<span title="' . $options_key . '" style="color: red;">* ' . t($key) . ' (нет в базе)</span>';
 		else 
-			$key = '<strong title="' . $options_key . '">' . $key . '</strong>';
+			$key = '<strong title="' . $options_key . '">' . t($key) . '</strong>';
 			
 		$CI->table->add_row($key, $f);
 	}
@@ -200,7 +204,7 @@ function mso_view_ini($all = false)
 	$out .= '<form action="" method="post">' . mso_form_session('f_session_id');
 	$out .= '<input type="hidden" value="1" name="f_ini" />'; // доп. поле - индикатор, что это ini-форма
 	$out .= $CI->table->generate(); // вывод подготовленной таблицы
-	$out .= NR . '<br /><input type="submit" name="f_submit" value="        Сохранить      ">';
+	$out .= NR . '<br /><input type="submit" name="f_submit" value="' . t('Сохранить') . '">';
 	$out .= '</form>';
 	
 	return $out;

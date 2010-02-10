@@ -21,7 +21,7 @@ function faq_custom_headers_callback($matches)
 function faq_custom_text_callback($matches)
 {
 	return '<a name="' . mso_slug($matches[1]) . '"></a><h3>' . $matches[1] . '</h3>'
-			. '<div class="faq-text">' . $matches[2] . '<a href="#faq-top">К списку</a></div>';
+			. '<div class="faq-text">' . $matches[2] . '<a href="#faq-top">' . t('К списку', 'plugins') . '</a></div>';
 }
 
 function faq_custom_faqs_callback($matches)

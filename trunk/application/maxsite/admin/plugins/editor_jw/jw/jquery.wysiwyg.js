@@ -553,9 +553,9 @@
             
             // последнее сохранение автосаве
             
-            $('span.autosave-editor').html('<a target="_blank" href="' + autosaveold + '">Последнее автосохранение</a> (Ctrl+S - сохранить / фокус в визуальном редакторе)').css('margin-left', '10px')
+            $('span.autosave-editor').html('<a target="_blank" href="' + autosaveold + '">Последнее автосохранение</a> (Ctrl+S - сохранить)').css('margin-left', '10px')
             
-            // $('span.autosave-editor').html('Ctrl+S - автосохранение / фокус в визуальном редакторе').css('margin-left', '10px')
+            // $('span.autosave-editor').html('Ctrl+S - автосохранение').css('margin-left', '10px')
             
         
             );

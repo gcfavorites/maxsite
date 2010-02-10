@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function page_parent_autoload($args = array())
 {
-	mso_register_widget('page_parent_widget', 'Родительские/дочерние страницы'); # регистрируем виджет
+	mso_register_widget('page_parent_widget', t('Родительские/дочерние страницы', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -25,8 +25,9 @@ function page_parent_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return page_parent_widget_custom($options, $num);
 }
@@ -48,8 +49,9 @@ function page_parent_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Номер страницы:</div> '. form_input( array( 'name'=>$widget . 'page_id', 'value'=>$options['page_id'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Номер страницы:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'page_id', 'value'=>$options['page_id'] ) ) ;
 	
 	return $form;
 }

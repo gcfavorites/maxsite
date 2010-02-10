@@ -43,10 +43,10 @@
 		if ($CI->db->update('comments', array('comments_approved'=>$action) ) )
 		{
 			mso_flush_cache();
-			echo '<div class="update">Обновлено!</div>';
+			echo '<div class="update">' . t('Обновлено!') . '</div>';
 		}
 		else 
-			echo '<div class="error">Ошибка обновления</div>';
+			echo '<div class="error">' . t('Ошибка обновления') . '</div>';
 	}
 	
 	
@@ -68,16 +68,16 @@
 		if ( $CI->db->delete('comments') )
 		{
 			mso_flush_cache();
-			echo '<div class="update">Удалено!</div>';
+			echo '<div class="update">' . t('Удалено!') . '</div>';
 		}
 		else 
-			echo '<div class="error">Ошибка удаления</div>';
+			echo '<div class="error">' . t('Ошибка удаления') . '</div>';
 	}
 	
 
 ?>
-<h1>Комментарии</h1>
-<p class="info">Список последних 20 комментариев.</p>
+<h1><?= t('Комментарии') ?></h1>
+<p class="info"><?= t('Список последних 20 комментариев.') ?></p>
 
 <?php
 	//pr($MSO);
@@ -91,7 +91,7 @@
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
 
-	$CI->table->set_heading('ID', '&bull;', '+', 'Текст',  'Действие');
+	$CI->table->set_heading('ID', '&bull;', '+', t('Текст'),  t('Действие'));
 	
 	# подготавливаем выборку из базы
 	$CI->db->select('comments_id, comments_users_id, comments_comusers_id, comments_author_name, comments_date, comments_content, comments_approved, comments_author_ip, users.users_nik, comusers.comusers_nik, page.page_title, page.page_slug');
@@ -122,14 +122,14 @@
 			// которые окажутся не отмечены - их POST не передает
 			$id_out = '<input type="checkbox" name="f_check_comments[' . $id . ']">' . NR;
 			
-			$act = '<a href="' . $this_url . 'edit/'. $id . '">Изменить</a>';
+			$act = '<a href="' . $this_url . 'edit/'. $id . '">' . t('Изменить') . '</a>';
 			
 			$comments_date = $row['comments_date'];
 			
 			$author = '';
 			if ( $row['comments_users_id'] ) $author = '<span style="color: grey">' . $row['users_nik'] . '</span>';
-			elseif ($row['comments_comusers_id']) $author = $row['comusers_nik'] . ' (комюзер)';
-			else $author = $row['comments_author_name'] . ' (анонимно)';
+			elseif ($row['comments_comusers_id']) $author = $row['comusers_nik'] . ' (' . t('комюзер'). ')';
+			else $author = $row['comments_author_name'] . ' (' . t('анонимно') . ')';
 			
 			$page_slug = $row['page_slug'];
 			$page_title = '<a target="_blank" href="' . $view_url . $page_slug . '#comment-' . $id . '">' . htmlspecialchars( $row['page_title'] ) . '</a>';
@@ -143,7 +143,7 @@
 			if ( $row['comments_approved'] > 0 ) $comments_approved = '+';
 				else $comments_approved = '-';
 				
-			$out = '<strong><i>' . $author . '</i> написал в «' . $page_title . '»</strong> (' . $comments_date. ') ip: ' . $row['comments_author_ip'] . '<p>' . $comments_content . '</p>' . NR;
+			$out = '<strong><i>' . $author . '</i> ' . t('написал в') . ' «' . $page_title . '»</strong> (' . $comments_date. ') ip: ' . $row['comments_author_ip'] . '<p>' . $comments_content . '</p>' . NR;
 						
 			
 			$CI->table->add_row($id, $id_out, $comments_approved, $out, $act);
@@ -153,15 +153,15 @@
 
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo '
-		<p>Показать <input type="submit" name="f_all_comments" value="   Все   ">
-		<input type="submit" name="f_moderation_comments" value="   Только требующие модерации   ">
+		<p>' . t('Показать') . ' <input type="submit" name="f_all_comments" value="' . t('Все') . '">
+		<input type="submit" name="f_moderation_comments" value="' . t('Только требующие модерации') . '">
 		';
 	echo $CI->table->generate();
 	echo '
-		<br /><br />C отмеченными:
-		<input type="submit" name="f_aproved_submit" value="   Разрешить   ">
-		<input type="submit" name="f_unaproved_submit" value="   Запретить   ">
-		<input type="submit" name="f_delete_submit" onClick="if(confirm(\'Уверены?\')) {return true;} else {return false;}" value="   Удалить   ">
+		<br /><br />' . t('C отмеченными:') .
+		'<input type="submit" name="f_aproved_submit" value="' . t('Разрешить') . '">
+		<input type="submit" name="f_unaproved_submit" value="' . t('Запретить') . '">
+		<input type="submit" name="f_delete_submit" onClick="if(confirm(\'' . t('Уверены?') . '\')) {return true;} else {return false;}" value="' . t('Удалить') . '">
 		';
 	echo '</form>';
 	

@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -72,7 +72,7 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 			$sql .= 'IF NOT EXISTS ';
 		}
 		
-		$sql .= $this->db->_escape_table($table)." (";
+		$sql .= $this->db->_escape_identifiers($table)." (";
 		$current_field_count = 0;
 
 		foreach ($fields as $field=>$attributes)
@@ -134,13 +134,21 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 			$primary_keys = $this->db->_protect_identifiers($primary_keys);
 			$sql .= ",\n\tPRIMARY KEY (" . implode(', ', $primary_keys) . ")";
 		}
-
+		
 		if (is_array($keys) && count($keys) > 0)
 		{
-			$keys = $this->db->_protect_identifiers($keys);
 			foreach ($keys as $key)
 			{
-				$sql .= ",\n\tFOREIGN KEY ($key)";
+				if (is_array($key))
+				{
+					$key = $this->db->_protect_identifiers($key);	
+				}
+				else
+				{
+					$key = array($this->db->_protect_identifiers($key));
+				}
+				
+				$sql .= ",\n\tFOREIGN KEY (" . implode(', ', $key) . ")";
 			}
 		}
 
@@ -159,7 +167,7 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 	 */
 	function _drop_table($table)
 	{
-		return "DROP TABLE ".$this->db->_escape_table($table)." CASCADE";
+		return "DROP TABLE ".$this->db->_escape_identifiers($table)." CASCADE";
 	}
 
 	// --------------------------------------------------------------------
@@ -215,5 +223,26 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 		
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Rename a table
+	 *
+	 * Generates a platform-specific query so that a table can be renamed
+	 *
+	 * @access	private
+	 * @param	string	the old table name
+	 * @param	string	the new table name
+	 * @return	string
+	 */
+	function _rename_table($table_name, $new_table_name)
+	{
+		$sql = 'ALTER TABLE '.$this->db->_protect_identifiers($table_name)." RENAME TO ".$this->db->_protect_identifiers($new_table_name);
+		return $sql;
+	}
+
+
 }
-?>
+
+/* End of file postgre_forge.php */
+/* Location: ./system/database/drivers/postgre/postgre_forge.php */

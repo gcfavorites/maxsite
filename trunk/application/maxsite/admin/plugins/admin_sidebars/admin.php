@@ -12,8 +12,8 @@ mso_cur_dir_lang('admin');
 	$plugin_url = $MSO->config['site_admin_url'] . 'sidebars';
 	
 	// само меню
-	$a  = mso_admin_link_segment_build($plugin_url, '', 'Настройки сайдбаров', 'select') . ' | ';
-	$a .= mso_admin_link_segment_build($plugin_url, 'widgets', 'Настройка виджетов', 'select');
+	$a  = mso_admin_link_segment_build($plugin_url, '', t('Настройки сайдбаров'), 'select') . ' | ';
+	$a .= mso_admin_link_segment_build($plugin_url, 'widgets', t('Настройка виджетов'), 'select');
 	
 	echo $a;
 ?>

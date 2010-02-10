@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -261,7 +261,7 @@ class CI_Trackback {
 		// Was it successful?
 		$this->response = "";
 		
-		while(!feof($fp))
+		while( ! feof($fp))
 		{
 			$this->response .= fgets($fp, 128);
 		}
@@ -439,8 +439,8 @@ class CI_Trackback {
 		{
 			return $str;
 		}
-			
-		$str = preg_replace("/\s+/", ' ', preg_replace("/(\r\n|\r|\n)/", " ", $str));
+
+		$str = preg_replace("/\s+/", ' ', str_replace(array("\r\n", "\r", "\n"), ' ', $str));
 	
 		if (strlen($str) <= $n)
 		{
@@ -545,4 +545,6 @@ class CI_Trackback {
 
 }
 // END Trackback Class
-?>
+
+/* End of file Trackback.php */
+/* Location: ./system/libraries/Trackback.php */

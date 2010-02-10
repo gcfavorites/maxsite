@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -42,7 +42,7 @@
  * @param	string	the cookie prefix
  * @return	void
  */
-if (! function_exists('set_cookie'))
+if ( ! function_exists('set_cookie'))
 {
 	function set_cookie($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '')
 	{
@@ -103,12 +103,20 @@ if (! function_exists('set_cookie'))
  * @param	bool
  * @return	mixed
  */
-if (! function_exists('get_cookie'))
+if ( ! function_exists('get_cookie'))
 {
 	function get_cookie($index = '', $xss_clean = FALSE)
 	{
 		$CI =& get_instance();
-		return $CI->input->cookie($index, $xss_clean);
+		
+		$prefix = '';
+		
+		if ( ! isset($_COOKIE[$index]) && config_item('cookie_prefix') != '')
+		{
+			$prefix = config_item('cookie_prefix');
+		}
+		
+		return $CI->input->cookie($prefix.$index, $xss_clean);
 	}
 }
 
@@ -123,7 +131,7 @@ if (! function_exists('get_cookie'))
  * @param	string	the cookie prefix
  * @return	void
  */
-if (! function_exists('delete_cookie'))
+if ( ! function_exists('delete_cookie'))
 {
 	function delete_cookie($name = '', $domain = '', $path = '/', $prefix = '')
 	{
@@ -131,4 +139,6 @@ if (! function_exists('delete_cookie'))
 	}
 }
 
-?>
+
+/* End of file cookie_helper.php */
+/* Location: ./system/helpers/cookie_helper.php */

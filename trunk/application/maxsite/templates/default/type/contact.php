@@ -1,8 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+	mso_cur_dir_lang('templates');
+
 	require(getinfo('template_dir') . 'main-start.php');
 ?>
 
-<h1>Обратная связь</h1>
+<h1><?=t('Обратная связь')?></h1>
 
 <?php
 
@@ -36,7 +39,7 @@
 			if ( ($antispam1s/711 + $antispam2s/931) != $antispam3s )
 			{ // неверный код
 				$ok = false;
-				echo '<h2>Привет роботам! :-)</h2>';
+				echo '<h2>'. t('Привет роботам!'). ' :-)</h2>';
 			}
 		}
 		
@@ -46,13 +49,13 @@
 		
 			$subject = $_POST['contact_subject'];
 			
-			$text_email = 'Ваше имя: ' . $_POST['contact_name'] . "\n";
-			$text_email .= 'Email: ' . $_POST['contact_mail'] . "\n";
-			$text_email .= 'Телефон: ' . $_POST['contact_phone'] . "\n";
-			$text_email .= 'Адрес сайта: ' . $_POST['contact_url'] . "\n\n";
+			$text_email = t('Ваше имя'). ': ' . $_POST['contact_name'] . "\n";
+			$text_email .= t('Email'). ': ' . $_POST['contact_mail'] . "\n";
+			$text_email .= t('Телефон'). ': ' . $_POST['contact_phone'] . "\n";
+			$text_email .= t('Адрес сайта'). ': ' . $_POST['contact_url'] . "\n\n";
 			$message = $text_email .= $_POST['contact_message'];
 			
-			$text_email = "Вами отправлено сообщение: \n" . $text_email;
+			$text_email = t("Вами отправлено сообщение"). ": \n" . $text_email;
 			
 			$form_hide = mso_mail($email, $subject, $text_email, $_POST['contact_mail']);
 
@@ -62,7 +65,7 @@
 					if ( mso_valid_email($to_email) ) mso_mail($to_email, $subject, $text_email);
 			}
 			
-			echo '<h2>Ваше сообщение отправлено!</h2><p>' 
+			echo '<h2>'. t('Ваше сообщение отправлено!'). '</h2><p>' 
 					. str_replace("\n", '<br />', htmlspecialchars($subject. "\n" . $message)) 
 					. '</p>';
 			$form_hide = true;
@@ -70,7 +73,7 @@
 		else
 		{
 			// неверные данные 
-			echo '<h2 style="color: red;">Нужно указать корректные данные</h2>';
+			echo '<h2 style="color: red;">'. t('Нужно указать корректные данные'). '</h2>';
 		}
 	}
 	
@@ -88,47 +91,47 @@
 	
 	<table border="0" width="99%" cellspacing="10">
 		<tr>
-			<td align="right"><label for="contact_name">Ваше имя*</label></td>
+			<td align="right"><label for="contact_name"><?=t('Ваше имя')?>*</label></td>
 			<td><input name="contact_name" type="text" value="" id="contact_name" style="width: 98%;" /></td>
 		</tr>
 		<tr>
-			<td align="right"><label for="contact_mail">E-mail*</label></td>
+			<td align="right"><label for="contact_mail"><?=t('E-mail')?>*</label></td>
 			<td><input name="contact_mail" type="text" value="" id="contact_mail" style="width: 98%;" /></td>
 		</tr>
 		<tr>
-			<td align="right"><label for="contact_phone">Телефон (с кодом города)</label></td>
+			<td align="right"><label for="contact_phone"><?=t('Телефон (с кодом города)')?></label></td>
 			<td><input name="contact_phone" type="text" value="" id="contact_phone" style="width: 98%;" /></td>
 		</tr>
 		<tr>
-			<td align="right"><label for="contact_url">Адрес сайта</label></td>
+			<td align="right"><label for="contact_url"><?=t('Адрес сайта')?></label></td>
 			<td><input name="contact_url" type="text" value="" id="contact_url" style="width: 98%;" /></td>
 		</tr>
 		<tr>
-			<td align="right"><label for="contact_subject">Выберите тему письма*</label></td>
+			<td align="right"><label for="contact_subject"><?=t('Выберите тему письма')?>*</label></td>
 			<td><select id="contact_subject" name="contact_subject" style="width: 98%;">
-					<option>Пожелания по сайту</option>
-					<option>Нашел ошибку на сайте</option>
-					<option>Подскажите, пожалуйста</option>
-					<option>Я вас люблю!</option>
-					<option>Я вас ненавижу...</option>
-					<option>Я вам пишу, чего же боле....</option>
+					<option><?=t('Пожелания по сайту')?></option>
+					<option><?=t('Нашел ошибку на сайте')?></option>
+					<option><?=t('Подскажите, пожалуйста')?></option>
+					<option><?=t('Я вас люблю!')?></option>
+					<option><?=t('Я вас ненавижу...')?></option>
+					<option><?=t('Я вам пишу, чего же боле....')?></option>
 				</select></td>
 		</tr>
 		<tr>
-			<td align="right" valign="top"><label for="contact_message">Сообщение:*</label></td>
+			<td align="right" valign="top"><label for="contact_message"><?=t('Сообщение')?>:*</label></td>
 			<td><textarea name="contact_message" style="width: 98%; height: 200px;"></textarea></td>
 		</tr>
 		<tr>
-			<td align="right"><label for="contact_antispam">Защита от спама: <?= $antispam1; ?>+<?= $antispam2; ?>=</label></td>
-			<td><input name="contact_antispam" type="text" value="" id="contact_antispam" /><br />Укажите свой ответ</td>
+			<td align="right"><label for="contact_antispam"><?=t('Защита от спама')?>: <?= $antispam1; ?>+<?= $antispam2; ?>=</label></td>
+			<td><input name="contact_antispam" type="text" value="" id="contact_antispam" /><br /><?=t('Укажите свой ответ')?></td>
 		</tr>
 		<tr>
-			<td align="right">Отправить копию письма на ваш e-mail?</td>
-			<td><input name="subscribe" value="" type="checkbox" /> Да</td>
+			<td align="right"><?=t('Отправить копию письма на ваш e-mail?')?></td>
+			<td><input name="subscribe" value="" type="checkbox" /> <?=t('Да')?></td>
 		</tr>
 		<tr>
-			<td align="right"><input name="submit" type="submit" value=" Отправить " /></td>
-			<td><input name="clear" type="reset" value=" Очистить форму " /></td>
+			<td align="right"><input name="submit" type="submit" value=" <?=t('Отправить')?> " /></td>
+			<td><input name="clear" type="reset" value=" <?=t('Очистить форму')?> " /></td>
 		</tr>
 	</table>
 </form>

@@ -63,8 +63,8 @@ function admin_page_admin($args = array())
 		return $args;
 	}
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Список страниц"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Список страниц - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Список страниц', 'admin') . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Список страниц', 'admin') . ' - " . $args; ' );
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_page/admin.php');
 }
@@ -82,8 +82,8 @@ function admin_page_edit($args = array())
 		return $args;
 	}
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Редактирование страницы"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Редактирование страницы - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Редактирование страницы', 'admin') . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Редактирование страницы', 'admin') . ' - " . $args; ' );
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_page/edit.php');
 }
@@ -101,8 +101,8 @@ function admin_page_new($args = array())
 		return $args;
 	}
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Создать страницу"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Создать страницу - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Создать страницу', 'admin') . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Создать страницу', 'admin') . ' - " . $args; ' );
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_page/new.php');
 }

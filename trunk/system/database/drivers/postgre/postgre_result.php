@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -71,12 +71,6 @@ class CI_DB_postgre_result extends CI_DB_result {
 		return $field_names;
 	}
 
-	// Deprecated
-	function field_names()
-	{
-		return $this->list_fields();
-	}
-
 	// --------------------------------------------------------------------
 
 	/**
@@ -96,7 +90,7 @@ class CI_DB_postgre_result extends CI_DB_result {
 			$F->name 		= pg_field_name($this->result_id, $i);
 			$F->type 		= pg_field_type($this->result_id, $i);
 			$F->max_length	= pg_field_size($this->result_id, $i);
-			$F->primary_key = $i == 0;
+			$F->primary_key = 0;
 			$F->default		= '';
 
 			$retval[] = $F;
@@ -170,4 +164,6 @@ class CI_DB_postgre_result extends CI_DB_result {
 	
 }
 
-?>
+
+/* End of file postgre_result.php */
+/* Location: ./system/database/drivers/postgre/postgre_result.php */

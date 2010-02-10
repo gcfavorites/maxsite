@@ -38,7 +38,7 @@
 			mso_add_option('sidebars-' . mso_slug($sidebar), $option, 'sidebars'); // добавили
 		}
 		
-		echo '<div class="update">Обновлено!</div>';
+		echo '<div class="update">' . t('Обновлено!') . '</div>';
 		
 		// pr($sidebars);
 
@@ -47,10 +47,10 @@
 	}
 ?>
 
-<h1>Настройки сайдбаров</h1>
-<p class="info">Добавьте в сайдбары необходимые виджеты. Каждый виджет в одной строчке. Виджеты будут отображаться в указанном вами порядке. Если указанные виджеты не существуют, то они будут проигнорированы при выводе в сайдбаре.</p>
-<p class="info">Если вы указываете несколько виджетов, то через пробел указывайте его номер.</p>
-<p class="info">Для виджета можно указать <a href="http://max-3000.com/page/uslovija-otobrazhenija-vidzheta" target="_blank">условия отображения</a>.</p>
+<h1><?= t('Настройки сайдбаров') ?></h1>
+<p class="info"><?= t('Добавьте в сайдбары необходимые виджеты. Каждый виджет в одной строчке. Виджеты будут отображаться в указанном вами порядке. Если указанные виджеты не существуют, то они будут проигнорированы при выводе в сайдбаре.') ?></p>
+<p class="info"><?= t('Если вы указываете несколько виджетов, то через пробел указывайте его номер.') ?></p>
+<p class="info"><?= t('Для виджета можно указать <a href="http://max-3000.com/page/uslovija-otobrazhenija-vidzheta" target="_blank">условия отображения</a>.') ?></p>
 
 
 <?php
@@ -85,7 +85,7 @@
 	}
 	else 
 	{
-		$error .= '<div class="error">Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например: <br /><b>mso_register_sidebar(\'1\', \'Первый сайдбар\');</b></div>';
+		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например:') . ' <br /><b>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар') . '\');</b></div>';
 	}
 	
 	
@@ -108,7 +108,7 @@
 		</script>' . NR;
 
 
-		$form .= '<br /><br /><h2>Доступные виджеты (добавляйте только функцию/подчеркнуто)</h2><ul class="widgets-allow">';
+		$form .= '<br /><br /><h2>' . t('Доступные виджеты (добавляйте только функцию/подчеркнуто)') . '</h2><ul class="widgets-allow">';
 		foreach ($all_w as $function => $title)
 		{
 			// $form .= '<li><b>' . $function . '</b> (' . $title . ')</li>';
@@ -116,7 +116,7 @@
 			
 			foreach($all_name_sidebars as $sid=>$sid_title)
 			{
-				$form .= ' <input style="margin: 0 0px; border: 1px solid gray; font-size: .9em;" type="button" value=" ' . $sid_title . ' " title="Добавить «' . $function . '» в сайдбар «' . $sid_title 
+				$form .= ' <input style="margin: 0 0px; border: 1px solid gray; font-size: .9em;" type="button" value=" ' . $sid_title . ' " title="' . t('Добавить') . ' «' . $function . '» ' . t('в сайдбар') . ' «' . $sid_title 
 						. '»" onClick="addText(\'' . $function . '\', \'f_sidebars[' . $sid . ']\') " />' . NR;
 			}
 			$form .= ' (<em>' . $function . '</em>) </li>' . NR;
@@ -125,7 +125,7 @@
 	}
 	else 
 	{
-		$error .= '<div class="error">К сожалению у вас нет доступных виджетов. Обычно они определяются в плагинах.</div>';
+		$error .= '<div class="error">' . t('К сожалению у вас нет доступных виджетов. Обычно они определяются в плагинах.') . '</div>';
 	}
 	
 	if (!$error)
@@ -133,7 +133,7 @@
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="Сохранить изменения" style="margin: 25px 0 5px 0;" />';
+		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения') . '" style="margin: 25px 0 5px 0;" />';
 		echo '</form>';
 	}
 	else

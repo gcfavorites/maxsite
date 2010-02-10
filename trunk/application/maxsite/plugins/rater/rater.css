@@ -63,3 +63,5 @@ background-image: url(star_small.gif);
 line-height: 10px;
 height: 10px;
 }
+
+.star-rating-result {display: block; color: maroon; margin: -5px 0 15px 0;}

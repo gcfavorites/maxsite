@@ -44,7 +44,7 @@ mso_cur_dir_lang('admin');
 			$query = $CI->db->get();
 			if ($query->num_rows() == 0) // не автор
 			{
-				echo '<div class="error">Вам не разрешено редактировать чужие записи!</div>';
+				echo '<div class="error">' . t('Вам не разрешено редактировать чужие записи!', 'admin') . '</div>';
 				return;
 			}
 		}
@@ -216,14 +216,14 @@ mso_cur_dir_lang('admin');
 				{
 					$url = '<a href="' 
 							. mso_get_permalink_page($result['result'][0])
-							. '">Посмотреть запись</a> | (<a target="_blank" href="' 
-							. mso_get_permalink_page($result['result'][0]) . '">в новом окне</a>)';		
+							. '">' . t('Посмотреть запись', 'admin') . '</a> | (<a target="_blank" href="' 
+							. mso_get_permalink_page($result['result'][0]) . '">' . t('в новом окне', 'admin') . '</a>)';		
 						//	. ' | <a href="' . $MSO->config['site_admin_url'] . 'page_edit/' . $result['result'][0] . '">Изменить</a>';
 
 				}
 				else $url = '';
 
-				echo '<div class="update">Страница обновлена! ' . $url . '</div>'; // . $result['description'];
+				echo '<div class="update">' . t('Страница обновлена!', 'admin') . ' ' . $url . '</div>'; // . $result['description'];
 				
 				mso_flush_cache(); // сбросим кэш
 				
@@ -260,12 +260,12 @@ mso_cur_dir_lang('admin');
 				
 			}
 			else
-				echo '<div class="error">Ошибка обновления</div>';
+				echo '<div class="error">' . t('Ошибка обновления', 'admin') . '</div>';
 			
 		}
 		else 
 		{
-			echo ' | <a href="' . mso_get_permalink_page($id) . '">Посмотреть запись</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">в новом окне</a>)</p>';
+			echo ' | <a href="' . mso_get_permalink_page($id) . '">' . t('Посмотреть запись', 'admin') . '</a> (<a target="_blank" href="' . mso_get_permalink_page($id) . '">' . t('в новом окне', 'admin') . '</a>)</p>';
 			
 			// получаем данные записи
 			$CI->db->select('*');
@@ -297,7 +297,7 @@ mso_cur_dir_lang('admin');
 			}
 			else
 			{
-				echo '<div class="error">Ошибочная страница (нет такой страницы)</div>';
+				echo '<div class="error">' . t('Ошибочная страница (нет такой страницы)', 'admin') . '</div>';
 				return;
 			}
 		
@@ -345,7 +345,7 @@ mso_cur_dir_lang('admin');
 				'max_num' => 20,
 				'max_size' => '180',
 				'block_start' => '<p id="f_all_tags_max_num"><br />',
-				'block_end' => ' <a title="Показать все метки" href="#" onClick="shtags(1); return false;">&gt;&gt;&gt;</a></p>',
+				'block_end' => ' <a title="' . t('Показать все метки', 'admin') . '" href="#" onClick="shtags(1); return false;">&gt;&gt;&gt;</a></p>',
 				'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
 			));
 			
@@ -354,7 +354,7 @@ mso_cur_dir_lang('admin');
 				'max_num' => 9999,
 				'max_size' => '180',
 				'block_start' => '<p id="f_all_tags_all" style="display: none;"><br />',
-				'block_end' => ' <a title="Показать только самые популярные метки" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',
+				'block_end' => ' <a title="' . t('Показать только самые популярные метки', 'admin') . '" href="#" onClick="shtags(2); return false;">&lt;&lt;&lt;</a></p>',
 				'format' => '<span style="font-size: %SIZE%%"><a href="#" onClick="addTag(\'%TAG%\'); return false;">%TAG%</a><sub style="font-size: 7pt;">%COUNT%</sub></span>'
 			));
 	
@@ -377,7 +377,7 @@ mso_cur_dir_lang('admin');
 		
 		
 		// получаем все рубрики чекбоксы
-		$all_cat = mso_cat_ul('<input name="f_cat[]" type="checkbox" %CHECKED% value="%ID%"> %NAME%', true, $f_cat, array());
+		$all_cat = mso_cat_ul('<input name="f_cat[]" type="checkbox" %CHECKED% value="%ID%" title="id = %ID%"> %NAME%', true, $f_cat, array());
 
 		
 		if ($f_comment_allow) $f_comment_allow = 'checked="checked"';
@@ -422,7 +422,7 @@ mso_cur_dir_lang('admin');
 		// $date_time = date('Y-m-d H:i:s');
 		
 		$date_cur = strtotime($page_date_publish);
-		$date_time = 'Сейчас: ' . $page_date_publish;
+		$date_time = t('Сейчас:', 'admin') . ' ' . $page_date_publish;
 		
 		// $page_date_publish;
 		
@@ -463,11 +463,11 @@ mso_cur_dir_lang('admin');
 		// получаем все страницы, для того чтобы отобразить их в паренте
 		$CI->db->select('page_id, page_title');
 		$CI->db->where('page_status', 'publish');
-		$CI->db->where('page_id!=', $id);
+		$CI->db->where('page_id !=', $id);
 		$CI->db->order_by('page_date_publish', 'desc');
 		$query = $CI->db->get('page');
 		$all_pages = NR . '<select name="f_page_parent"  style="margin-top: 5px; width: 99%;" >' . NR;
-		$all_pages .= NR . '<option value="0">Нет</option>';
+		$all_pages .= NR . '<option value="0">' . t('Нет', 'admin') . '</option>';
 		if ($query->num_rows() > 0)
 		{
 			
@@ -516,6 +516,6 @@ mso_cur_dir_lang('admin');
 	}
 	else
 	{
-		echo '<div class="error">Ошибочный запрос</div>'; // id - ошибочный
+		echo '<div class="error">' . t('Ошибочный запрос', 'admin') . '</div>'; // id - ошибочный
 	}
 ?>

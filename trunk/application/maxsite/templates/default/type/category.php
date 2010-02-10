@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+mso_cur_dir_lang('templates');
+
 # подготовка данных
 
 $full_posts = mso_get_option('category_full_text', 'templates', '1'); // полные или короткие записи
@@ -26,7 +28,7 @@ echo '<h1 class="category">' . $title_page . '</h1>';
 if ($pages) // есть страницы
 { 	
 
-	echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">Подписаться на эту рубрику по RSS</a></h3>';
+	echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a></h3>';
 
 	if (!$full_posts) echo '<ul class="category">';
 	
@@ -45,11 +47,11 @@ if ($pages) // есть страницы
 			echo NR . '<div class="page_only">' . NR;
 			echo '<div class="info">';
 				mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
-				mso_page_cat_link($page_categories, ' | ', '<span>Рубрика:</span> ', '<br />');
-				mso_page_tag_link($page_tags, ' | ', '<span>Метки:</span> ', '<br />');
-				mso_page_date($page_date_publish, 'd/m/Y H:i:s', '<span>Дата:</span> ', '');
+				mso_page_cat_link($page_categories, ' | ', '<span>'. t('Рубрика'). ':</span> ', '<br />');
+				mso_page_tag_link($page_tags, ' | ', '<span>'. t('Метки'). ':</span> ', '<br />');
+				mso_page_date($page_date_publish, 'd/m/Y H:i:s', '<span>'. t('Дата'). ':</span> ', '');
 				mso_page_edit_link($page_id, 'Edit page', ' -', '-');
-				// mso_page_feed($page_slug, 'комментарии по RSS', '<br /><span>Подписаться</span> на ', '', true);
+				// mso_page_feed($page_slug, t('комментарии по RSS'), '<br /><span>'. t('Подписаться на'). '</span> ', '', true);
 			echo '</div>';
 			
 			
@@ -57,7 +59,7 @@ if ($pages) // есть страницы
 				mso_page_content($page_content);
 				mso_page_content_end();
 				echo '<div class="break"></div>';
-				mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comments-link"><span>', '</span></div>');
+				mso_page_comments_link($page_comment_allow, $page_slug, t('Обсудить'). ' (' . $page_count_comments . ')', '<div class="comments-link"><span>', '</span></div>');
 				
 			echo '</div>';
 			echo NR . '</div><!--div class="page_only"-->' . NR;
@@ -75,8 +77,8 @@ if ($pages) // есть страницы
 else 
 {
  
-	echo '<h1>404. Ничего не найдено...</h1>';
-	echo '<p>Извините, ничего не найдено</p>';
+	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
+	echo '<p>'.t('Извините, ничего не найдено').'</p>';
 	
 } // endif $pages
 

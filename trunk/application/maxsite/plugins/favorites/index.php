@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function favorites_autoload($args = array())
 {
-	mso_register_widget('favorites_widget', 'Избранное'); # регистрируем виджет
+	mso_register_widget('favorites_widget', t('Избранное', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -49,11 +49,13 @@ function favorites_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Ссылки:</div> '. form_textarea( array( 'name'=>$widget . 'favorites', 'value'=>$options['favorites'] ) ) ;
-	$form .= '<br /><div class="t150">&nbsp;</div>Указывайте по одной ссылке в каждом абзаце в формате: <strong>тип/ссылка | название</strong>
-			  <br /><div class="t150">&nbsp;</div><strong>тип/ссылка</strong> - указывается от адреса сайта, например <strong>page/about</strong>, <strong>category/news</strong>
-			  <br /><div class="t150">&nbsp;</div>Для главной страницы укажите: <strong> / | Главная</strong>
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Ссылки:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'favorites', 'value'=>$options['favorites'] ) ) ;
+	
+	$form .= '<br /><div class="t150">&nbsp;</div>' . t('Указывайте по одной ссылке в каждом абзаце в формате: <strong>тип/ссылка | название</strong>', 'plugins') . '
+			  <br /><div class="t150">&nbsp;</div>' . t('<strong>тип/ссылка</strong> - указывается от адреса сайта, например', 'plugins') . ' <strong>page/about</strong>, <strong>category/news</strong>
+			  <br /><div class="t150">&nbsp;</div>' . t('Для главной страницы укажите: <strong> / | Главная</strong>', 'plugins') . '
 			  ';
 
 	return $form;

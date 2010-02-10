@@ -10,7 +10,7 @@
 function category_autoload($args = array())
 {
 	# регистрируем виджет
-	mso_register_widget('category_widget', 'Рубрики'); 
+	mso_register_widget('category_widget', t('Рубрики', 'plugins')); 
 }
 
 # функция выполняется при деинсталяции плагина
@@ -66,27 +66,47 @@ function category_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
-	$form .= '<p><div class="t150">Формат:</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) 
-			. '<br /><div class="t150">&nbsp;</div>Например: [LINK][TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;[/LINK]&lt;br /&gt;[DESCR]';
+	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) 
+			. '<br /><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' [LINK][TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;[/LINK]&lt;br /&gt;[DESCR]';
 
-	$form .= '<p><div class="t150">Формат текущей:</div> '. form_input( array( 'name'=>$widget . 'format_current', 'value'=>$options['format_current'] ) ) 
-			. '<br /><div class="t150">&nbsp;</div> Например: &lt;span&gt;[TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;&lt;/span&gt;&lt;br /&gt;[DESCR]';
+	$form .= '<p><div class="t150">' . t('Формат текущей:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format_current', 'value'=>$options['format_current'] ) ) 
+			. '<br /><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' &lt;span&gt;[TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;&lt;/span&gt;&lt;br /&gt;[DESCR]';
 
-	$form .= '<p><div class="t150">Включить только:</div> '. form_input( array( 'name'=>$widget . 'include', 'value'=>$options['include'] ) ) 
-			. '<br /><div class="t150">&nbsp;</div> Укажите номера рубрик через запятую или пробел';
+	$form .= '<p><div class="t150">' . t('Включить только:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'include', 'value'=>$options['include'] ) ) 
+			. '<br /><div class="t150">&nbsp;</div>' . t('Укажите номера рубрик через запятую или пробел', 'plugins');
 	
-	$form .= '<p><div class="t150">Исключить:</div> '. form_input( array( 'name'=>$widget . 'exclude', 'value'=>$options['exclude'] ) )
-			. '<br /><div class="t150">&nbsp;</div> Укажите номера рубрик через запятую или пробел';
+	$form .= '<p><div class="t150">' . t('Исключить:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'exclude', 'value'=>$options['exclude'] ) )
+			. '<br /><div class="t150">&nbsp;</div>' . t('Укажите номера рубрик через запятую или пробел', 'plugins');
 
-	$form .= '<p><div class="t150">Если нет записей:</div> '. form_dropdown( $widget . 'hide_empty', array( '0'=>'Отображать рубрику', '1'=>'Скрывать рубрику'), $options['hide_empty']);
+	$form .= '<p><div class="t150">' . t('Если нет записей:', 'plugins') . '</div> '. 
+		form_dropdown( $widget . 'hide_empty', array( 
+		'0'=>t('Отображать рубрику (количество записей ведется без учета опубликованности)', 'plugins'), 
+		'1'=>t('Скрывать рубрику (количество записей ведется только по опубликованным)', 'plugins')), 
+		$options['hide_empty']);
 	
-	$form .= '<p><div class="t150">Сортировка:</div> '. form_dropdown( $widget . 'order', array( 'category_name'=>'По имени рубрики', 'category_id'=>'По ID рубрики', 'category_menu_order'=>'По выставленному menu order'), $options['order']);
+	$form .= '<p><div class="t150">' . t('Сортировка:', 'plugins') . '</div> '. 
+		form_dropdown( $widget . 'order', 
+			array( 
+				'category_name' => t('По имени рубрики', 'plugins'), 
+				'category_id' => t('По ID рубрики', 'plugins'), 
+				'category_menu_order' => t('По выставленному menu order', 'plugins')), 
+				$options['order']);
 	
-	$form .= '<p><div class="t150">Порядок:</div> '. form_dropdown( $widget . 'order_asc', array( 'ASC'=>'Прямой', 'DESC'=>'Обратный'), $options['order_asc']);
+	$form .= '<p><div class="t150">' . t('Порядок:', 'plugins') . '</div> '. 
+		form_dropdown( $widget . 'order_asc', 
+			array( 
+				'ASC'=>t('Прямой', 'plugins'), 
+				'DESC'=>t('Обратный', 'plugins')
+				), $options['order_asc']);
 	
-	$form .= '<p><div class="t150">Включать потомков:</div> '. form_dropdown( $widget . 'include_child', array( '0'=>'Всегда', '1'=>'Только если явно указана рубрика'), $options['include_child']);	
+	$form .= '<p><div class="t150">' . t('Включать потомков:', 'plugins') . '</div> '. 
+			form_dropdown( $widget . 'include_child', 
+				array( 
+				'0'=>t('Всегда', 'plugins'), 
+				'1'=>t('Только если явно указана рубрика', 'plugins')
+				), $options['include_child']);	
 	
 	return $form;
 }
@@ -140,7 +160,6 @@ function category_widget_custom($options = array(), $num = 1)
 	else 
 	{
 		$all = mso_cat_array('page', 0, $options['order'], $options['order_asc'], $options['order'], $options['order_asc'], $options['include'], $options['exclude'], $options['include_child'], $options['hide_empty'], true);
-		
 		mso_add_cache($cache_key, $all); // сразу в кэш добавим
 	}
 	

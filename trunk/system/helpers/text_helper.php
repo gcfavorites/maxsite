@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -38,7 +38,7 @@
  * @param	string	the end character. Usually an ellipsis
  * @return	string
  */	
-if (! function_exists('word_limiter'))
+if ( ! function_exists('word_limiter'))
 {
 	function word_limiter($str, $limit = 100, $end_char = '&#8230;')
 	{
@@ -72,7 +72,7 @@ if (! function_exists('word_limiter'))
  * @param	string	the end character. Usually an ellipsis
  * @return	string
  */	
-if (! function_exists('character_limiter'))
+if ( ! function_exists('character_limiter'))
 {
 	function character_limiter($str, $n = 500, $end_char = '&#8230;')
 	{
@@ -81,20 +81,22 @@ if (! function_exists('character_limiter'))
 			return $str;
 		}
 		
-		$str = preg_replace("/\s+/", ' ', preg_replace("/(\r\n|\r|\n)/", " ", $str));
+		$str = preg_replace("/\s+/", ' ', str_replace(array("\r\n", "\r", "\n"), ' ', $str));
 
 		if (strlen($str) <= $n)
 		{
 			return $str;
 		}
-									
+
 		$out = "";
 		foreach (explode(' ', trim($str)) as $val)
 		{
-			$out .= $val.' ';			
+			$out .= $val.' ';
+			
 			if (strlen($out) >= $n)
 			{
-				return trim($out).$end_char;
+				$out = trim($out);
+				return (strlen($out) == strlen($str)) ? $out : $out.$end_char;
 			}		
 		}
 	}
@@ -111,7 +113,7 @@ if (! function_exists('character_limiter'))
  * @param	string
  * @return	string
  */	
-if (! function_exists('ascii_to_entities'))
+if ( ! function_exists('ascii_to_entities'))
 {
 	function ascii_to_entities($str)
 	{
@@ -125,7 +127,17 @@ if (! function_exists('ascii_to_entities'))
 	
 		   if ($ordinal < 128)
 		   {
-			   $out .= $str[$i];
+				/*
+					If the $temp array has a value but we have moved on, then it seems only
+					fair that we output that entity and restart $temp before continuing. -Paul
+				*/
+				if (count($temp) == 1)
+				{
+					$out  .= '&#'.array_shift($temp).';';
+					$count = 1;
+				}
+
+				$out .= $str[$i];
 		   }
 		   else
 		   {
@@ -163,7 +175,7 @@ if (! function_exists('ascii_to_entities'))
  * @param	bool
  * @return	string
  */	
-if (! function_exists('entities_to_ascii'))
+if ( ! function_exists('entities_to_ascii'))
 {
 	function entities_to_ascii($str, $all = TRUE)
 	{
@@ -222,7 +234,7 @@ if (! function_exists('entities_to_ascii'))
  * @param	string	the optional replacement value
  * @return	string
  */	
-if (! function_exists('word_censor'))
+if ( ! function_exists('word_censor'))
 {
 	function word_censor($str, $censored, $replacement = '')
 	{
@@ -230,21 +242,28 @@ if (! function_exists('word_censor'))
 		{
 			return $str;
 		}
+        
+        $str = ' '.$str.' ';
 
-		$str = ' '.$str.' ';
+		// \w, \b and a few others do not match on a unicode character
+		// set for performance reasons. As a result words like über
+		// will not match on a word boundary. Instead, we'll assume that
+		// a bad word will be bookended by any of these characters.
+		$delim = '[-_\'\"`(){}<>\[\]|!?@#%&,.:;^~*+=\/ 0-9\n\r\t]';
+
 		foreach ($censored as $badword)
 		{
 			if ($replacement != '')
 			{
-				$str = preg_replace("/\b(".str_replace('\*', '\w*?', preg_quote($badword)).")\b/i", $replacement, $str);
+				$str = preg_replace("/({$delim})(".str_replace('\*', '\w*?', preg_quote($badword, '/')).")({$delim})/i", "\\1{$replacement}\\3", $str);
 			}
 			else
 			{
-				$str = preg_replace("/\b(".str_replace('\*', '\w*?', preg_quote($badword)).")\b/ie", "str_repeat('#', strlen('\\1'))", $str);
+				$str = preg_replace("/({$delim})(".str_replace('\*', '\w*?', preg_quote($badword, '/')).")({$delim})/ie", "'\\1'.str_repeat('#', strlen('\\2')).'\\3'", $str);
 			}
 		}
-	
-		return trim($str);
+
+        return trim($str);
 	}
 }
 	
@@ -259,7 +278,7 @@ if (! function_exists('word_censor'))
  * @param	string	the text string
  * @return	string
  */	
-if (! function_exists('highlight_code'))
+if ( ! function_exists('highlight_code'))
 {
 	function highlight_code($str)
 	{		
@@ -274,27 +293,26 @@ if (! function_exists('highlight_code'))
 							array('phptagopen', 'phptagclose', 'asptagopen', 'asptagclose', 'backslashtmp', 'scriptclose'), $str);
 
 		// The highlight_string function requires that the text be surrounded
-		// by PHP tags.  Since we don't know if A) the submitted text has PHP tags,
-		// or B) whether the PHP tags enclose the entire string, we will add our
-		// own PHP tags around the string along with some markers to make replacement easier later
-	
-		$str = '<?php tempstart'."\n".$str.'tempend ?>';
-	
-		// All the magic happens here, baby!
+		// by PHP tags, which we will remove later
+		$str = '<?php '.$str.' ?>'; // <?
+
+		// All the magic happens here, baby!	
 		$str = highlight_string($str, TRUE);
 
-		// Prior to PHP 5, the highlight function used icky font tags
-		// so we'll replace them with span tags.	
-		if (abs(phpversion()) < 5)
+		// Prior to PHP 5, the highligh function used icky <font> tags
+		// so we'll replace them with <span> tags.
+
+		if (abs(PHP_VERSION) < 5)
 		{
 			$str = str_replace(array('<font ', '</font>'), array('<span ', '</span>'), $str);
 			$str = preg_replace('#color="(.*?)"#', 'style="color: \\1"', $str);
 		}
-	
-		// Remove our artificially added PHP
-		$str = preg_replace("#\<code\>.+?tempstart\<br />(?:\</span\>)?#is", "<code>\n", $str);
-		$str = preg_replace("#tempend.+#is", "</span>\n</code>", $str);	
-	
+		
+		// Remove our artificially added PHP, and the syntax highlighting that came with it
+		$str = preg_replace('/<span style="color: #([A-Z0-9]+)">&lt;\?php(&nbsp;| )/i', '<span style="color: #$1">', $str);
+		$str = preg_replace('/(<span style="color: #[A-Z0-9]+">.*?)\?&gt;<\/span>\n<\/span>\n<\/code>/is', "$1</span>\n</span>\n</code>", $str);
+		$str = preg_replace('/<span style="color: #[A-Z0-9]+"\><\/span>/i', '', $str);
+			
 		// Replace our markers back to PHP tags.
 		$str = str_replace(array('phptagopen', 'phptagclose', 'asptagopen', 'asptagclose', 'backslashtmp', 'scriptclose'),
 							array('&lt;?', '?&gt;', '&lt;%', '%&gt;', '\\', '&lt;/script&gt;'), $str);
@@ -317,7 +335,7 @@ if (! function_exists('highlight_code'))
  * @param	string	the closing tag to end the phrase with
  * @return	string
  */	
-if (! function_exists('highlight_phrase'))
+if ( ! function_exists('highlight_phrase'))
 {
 	function highlight_phrase($str, $phrase, $tag_open = '<strong>', $tag_close = '</strong>')
 	{
@@ -349,7 +367,7 @@ if (! function_exists('highlight_phrase'))
  * @param	integer	the number of characters to wrap at
  * @return	string
  */	
-if (! function_exists('word_wrap'))
+if ( ! function_exists('word_wrap'))
 {
 	function word_wrap($str, $charlim = '76')
 	{
@@ -361,7 +379,10 @@ if (! function_exists('word_wrap'))
 		$str = preg_replace("| +|", " ", $str);
 	
 		// Standardize newlines
-		$str = preg_replace("/\r\n|\r/", "\n", $str);
+		if (strpos($str, "\r") !== FALSE)
+		{
+			$str = str_replace(array("\r\n", "\r"), "\n", $str);			
+		}
 	
 		// If the current word is surrounded by {unwrap} tags we'll 
 		// strip the entire chunk and replace it with a marker.
@@ -436,4 +457,6 @@ if (! function_exists('word_wrap'))
 	}
 }
 
-?>
+
+/* End of file text_helper.php */
+/* Location: ./system/helpers/text_helper.php */

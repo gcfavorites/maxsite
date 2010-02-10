@@ -1,13 +1,15 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+mso_cur_dir_lang('templates');
+
 // возможно включен плагин last_comments - тогда выводим все через него
 if ( function_exists('last_comments_widget_custom') )
 {
-	mso_head_meta('title', 'Последние комментарии - ' . getinfo('title') ); //  meta title страницы
+	mso_head_meta('title', t('Последние комментарии').' — ' . getinfo('title') ); //  meta title страницы
 	require(getinfo('template_dir') . 'main-start.php');
-	echo '<h1 class="comments">Последние коммментарии</h1>';
-	echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">Подписаться по RSS</a>';
-	echo '<br /><a href="' . getinfo('siteurl') . 'users">Список комментаторов</a></p>';
+	echo '<h1 class="comments">'. t('Последние комментарии') .'</h1>';
+	echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">'. t('Подписаться по RSS') .'</a>';
+	echo '<br /><a href="' . getinfo('siteurl') . 'users">'. t('Список комментаторов') .'</a></p>';
 	echo '<div class="comments">';
 	echo last_comments_widget_custom(array(
 									'count'=> 40,
@@ -23,14 +25,14 @@ else
 	// получаем список комментариев текущей страницы
 	$comments = mso_get_comments(false, array('limit' => mso_get_option('comments_count', 'templates', '10'), 'order'=>'desc'));
 
-	mso_head_meta('title', 'Последние комментарии - ' . getinfo('title') ); //  meta title страницы
+	mso_head_meta('title', t('Последние комментарии').' — ' . getinfo('title') ); //  meta title страницы
 
 
 	require(getinfo('template_dir') . 'main-start.php');
 
-	echo '<h1 class="comments">Последние коммментарии</h1>';
-	echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">Подписаться по RSS</a>';
-	echo '<br /><a href="' . getinfo('siteurl') . 'users">Список комментаторов</a></p>';
+	echo '<h1 class="comments">'. t('Последние коммментарии'). '</h1>';
+	echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">'. t('Подписаться по RSS'). '</a>';
+	echo '<br /><a href="' . getinfo('siteurl') . 'users">'. t('Список комментаторов'). '</a></p>';
 
 	echo '<div class="comments">';
 	if ($comments) // есть страницы

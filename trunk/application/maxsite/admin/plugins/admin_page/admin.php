@@ -18,7 +18,7 @@
 
 		if (!$page_id) // ошибка! 
 		{
-			echo '<div class="error">Ошибка удаления</div>';
+			echo '<div class="error">' . t('Ошибка удаления', 'admin') . '</div>';
 		}
 		else 
 		{
@@ -37,16 +37,16 @@
 				if ( $result['result'] ) 
 				{
 					mso_flush_cache(); // сбросим кэш
-					echo '<div class="update">Страница удалена</div>';
+					echo '<div class="update">' . t('Страница удалена', 'admin') . '</div>';
 				}
 				else
 				{
-					echo '<div class="error">Ошибка при удалении ('. $result['description'] . ')</div>';
+					echo '<div class="error">' . t('Ошибка при удалении', 'admin') . ' ('. $result['description'] . ')</div>';
 				}
 			}
 			else
 			{
-				echo '<div class="error">Ошибка при удалении ('. $result['description'] . ')</div>';
+				echo '<div class="error">' . t('Ошибка при удалении', 'admin') . ' ('. $result['description'] . ')</div>';
 			}
 			
 			/*
@@ -79,8 +79,8 @@
 	
 
 ?>
-<h1>Страницы</h1>
-<p class="info">Список всех страниц</p>
+<h1><?= t('Страницы') ?></h1>
+<p class="info"><?= t('Список всех страниц') ?></p>
 
 <?php
 
@@ -99,7 +99,7 @@
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
 
-	$CI->table->set_heading('ID', 'Заголовок', 'Дата', 'Тип','Статус', 'Автор');
+	$CI->table->set_heading('ID', t('Заголовок', 'admin'), t('Дата', 'admin'), t('Тип', 'admin'), t('Статус', 'admin'), t('Автор', 'admin'));
 	
 	
 	if ( !mso_check_allow('admin_page_edit_other') )
@@ -161,12 +161,12 @@
 			$tags = str_replace('  ', ', ', trim($tags));
 			
 			$title = '<a href="' . $this_url . $page['page_id'] . '">' . $page['page_title'] . '</a>'
-					. ' [<a href="' . $view_url . $page['page_slug'] . '" target="_blank">Просмотр</a>]';
+					. ' [<a href="' . $view_url . $page['page_slug'] . '" target="_blank">' . t('Просмотр', 'admin') . '</a>]';
 			
 			
 			
-			if ($cats) $title .= '<br />Рубрика: ' . $cats;
-			if ($tags) $title .= '<br />Метки: ' . $tags;
+			if ($cats) $title .= '<br />' . t('Рубрика:', 'admin') . ' ' . $cats;
+			if ($tags) $title .= '<br />' . t('Метки:', 'admin') . ' ' . $tags;
 			
 			$CI->table->add_row($page['page_id'], $title, $page['page_date_publish'], 
 					$page['page_type_name'], $page['page_status'], $page['users_nik']);
@@ -205,9 +205,9 @@
 	}
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
-	echo '<br /><br /><h2>Удалить страницу</h2>';
+	echo '<br /><br /><h2>' . t('Удалить страницу', 'admin') . '</h2>';
 	echo $all_pages;
-	echo ' <input type="submit" name="f_submit" value="  Удалить  " onClick="if(confirm(\'Удалить страницу?\')) {return true;} else {return false;}" >';
+	echo ' <input type="submit" name="f_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Удалить страницу?', 'admin') . '\')) {return true;} else {return false;}" >';
 	echo '</form><br />';
 	
 	

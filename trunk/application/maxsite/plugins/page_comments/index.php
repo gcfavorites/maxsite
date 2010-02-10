@@ -6,11 +6,10 @@
  */
 
 
-
 # функция автоподключения плагина
 function page_comments_autoload($args = array())
 {
-	mso_register_widget('page_comments_widget', 'Самое комментируемое'); # регистрируем виджет
+	mso_register_widget('page_comments_widget', t('Самое комментируемое', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -27,8 +26,9 @@ function page_comments_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return page_comments_widget_custom($options, $num);
 }
@@ -51,13 +51,15 @@ function page_comments_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">Количество записей:</div> '. form_input( array( 'name'=>$widget . 'limit', 'value'=>$options['limit'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
-	$form .= '<p><div class="t150">Формат:</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
-	$form .= '<p><div class="t150">&nbsp;</div><strong>[TITLE]</strong> - название записи';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[COUNT]</strong> - количество комментариев';
-	$form .= '<br><div class="t150">&nbsp;</div><strong>[A]</strong>ссылка<strong>[/A]</strong>';
+	$form .= '<p><div class="t150">' . t('Количество записей:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'limit', 'value'=>$options['limit'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
+	
+	$form .= '<p><div class="t150">&nbsp;</div><strong>[TITLE]</strong> - ' . t('название записи', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[COUNT]</strong> - ' . t('количество комментариев', 'plugins');
+	$form .= '<br><div class="t150">&nbsp;</div><strong>[A]</strong>' . t('ссылка', 'plugins') . '<strong>[/A]</strong>';
 	
 	return $form;
 }
@@ -96,9 +98,9 @@ function page_comments_widget_custom($options = array(), $num = 1)
 	
 	$CI = & get_instance();
 	
-	$CI->db->select('page_slug, page_title, COUNT(comments_id) AS page_count_comments');
+	$CI->db->select('page_slug, page_title, COUNT(comments_id) AS page_count_comments', false);
 	$CI->db->from('page');
-	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	$CI->db->where('page_status', 'publish');
 	
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');

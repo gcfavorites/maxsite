@@ -4,7 +4,7 @@ mso_cur_dir_lang('admin');
 	
 ?>
 
-<h1>Мой профиль</h1>
+<h1><?= t('Мой профиль') ?></h1>
 <p class="info"></p>
 
 <?php
@@ -70,7 +70,7 @@ mso_cur_dir_lang('admin');
 		
 		if (isset($result['result']) and $result['result']) 
 		{
-			echo '<div class="update">Обновлено!</div>'; // . $result['description'];
+			echo '<div class="update">' . t('Обновлено!', 'admin') . '</div>'; // . $result['description'];
 			mso_flush_cache(); // сбросим кэш, поскольку могла измениться группа юзера
 			if ($change_pass ) 
 			{
@@ -80,7 +80,7 @@ mso_cur_dir_lang('admin');
 			}
 		}
 		else
-			echo '<div class="error">Ошибка обновления</div>';
+			echo '<div class="error">' . t('Ошибка обновления', 'admin') . '</div>';
 		
 	}
 
@@ -126,7 +126,7 @@ mso_cur_dir_lang('admin');
 			$CI->table->set_template($tmpl); // шаблон таблицы
 			
 			// заголовки
-			$CI->table->set_heading('Название', 'Значение');
+			$CI->table->set_heading(t('Название', 'admin'), t('Значение', 'admin'));
 			
 
 
@@ -155,10 +155,10 @@ mso_cur_dir_lang('admin');
 				_mso_add_row('URL аватара', 'f_avatar_url', $row['users_avatar_url']);
 				
 				
-				$CI->table->add_row('Описание', '<textarea name="f_description" cols="90" rows="3">' . htmlspecialchars($row['users_description']) . '</textarea>');
+				$CI->table->add_row(t('Описание', 'admin'), '<textarea name="f_description" cols="90" rows="3">' . htmlspecialchars($row['users_description']) . '</textarea>');
 				
 				if ( mso_check_allow('edit_users_admin_note') )
-					$CI->table->add_row('Примечание админа', '<textarea name="f_admin_note" cols="90" rows="3">' . htmlspecialchars($row['users_admin_note']) . '</textarea>');
+					$CI->table->add_row(t('Примечание админа', 'admin'), '<textarea name="f_admin_note" cols="90" rows="3">' . htmlspecialchars($row['users_admin_note']) . '</textarea>');
 			
 				// ДР это три поля
 				$y = mso_date_convert('Y', $row['users_date_birth']);
@@ -175,9 +175,9 @@ mso_cur_dir_lang('admin');
 				foreach ($d_r as $key=>$val) $d_r[$key] = $key;			
 				
 				$CI->table->add_row('Дата рождения', 
-				'Год: ' . form_dropdown('f_date_birth_y', $y_r, $y, ' style="width: 100px;" ') . 
-				' Месяц: ' . form_dropdown('f_date_birth_m', $m_r, $m, ' style="width: 100px;" ' ) . 
-				' День: ' . form_dropdown('f_date_birth_d', $d_r, $d, ' style="width: 100px;" ' ) 
+				t('Год:', 'admin') . ' ' . form_dropdown('f_date_birth_y', $y_r, $y, ' style="width: 100px;" ') . 
+				' ' . t('Месяц:', 'admin') . ' ' . form_dropdown('f_date_birth_m', $m_r, $m, ' style="width: 100px;" ' ) . 
+				' ' . t('День:', 'admin') . ' ' . form_dropdown('f_date_birth_d', $d_r, $d, ' style="width: 100px;" ' ) 
 				);
 
 
@@ -187,7 +187,7 @@ mso_cur_dir_lang('admin');
 				// в базе смещение хранится в формате секунд
 				$tz = sprintf('%.2f', $tz / 3600); // переводим в формат 7.00
 				
-				$CI->table->add_row('Временная зона', 
+				$CI->table->add_row(t('Временная зона', 'admin'), 
 					form_dropdown('f_time_zone', array(
 					'0.00'=>'0:00 Casablanca, Dublin, Edinburgh, London, Lisbon, Monrovia', 
 					'1.00'=>'1:00 Berlin, Brussels, Copenhagen, Madrid, Paris, Rome', 
@@ -217,17 +217,17 @@ mso_cur_dir_lang('admin');
 					), $tz, ' style="width: 99%;" ' ) );
 				
 
-				$CI->table->add_row('Смайлики', 
-					form_dropdown('f_show_smiles', array('0'=>'Прятать', '1'=>'Отображать'), $row['users_show_smiles'], ' style="width: 300px;" '));
+				$CI->table->add_row(t('Смайлики', 'admin'), 
+					form_dropdown('f_show_smiles', array('0'=>t('Прятать', 'admin'), '1'=>t('Отображать', 'admin')), $row['users_show_smiles'], ' style="width: 300px;" '));
 				
 	
 				###!!! что за уведомления? для чего???
-				$CI->table->add_row('Уведомления', 
-					form_dropdown('f_notify', array('0'=>'Без уведомлений', '1'=>'Подписаться'), $row['users_notify'], ' style="width: 300px;" '));
+				$CI->table->add_row(t('Уведомления', 'admin'), 
+					form_dropdown('f_notify', array('0'=>t('Без уведомлений', 'admin'), '1'=>t('Подписаться', 'admin')), $row['users_notify'], ' style="width: 300px;" '));
 				
 				###!!! языки взять из CodeIgniter !!!
-				$CI->table->add_row('Язык', 
-					form_dropdown('f_language', array('ru'=>'Русский', 'en'=>'Английский', 'ua'=>'Украинский'), $row['users_language'], ' style="width: 300px;" '));	
+				$CI->table->add_row(t('Язык', 'admin'), 
+					form_dropdown('f_language', array('ru'=>t('Русский', 'admin'), 'en'=>t('Английский', 'admin'), 'ua'=>t('Украинский', 'admin')), $row['users_language'], ' style="width: 300px;" '));	
 				
 				
 				###!!! группу доделать !!!
@@ -242,12 +242,12 @@ mso_cur_dir_lang('admin');
 					foreach ($q->result_array() as $rw)
 						$groups[$rw['groups_id']] = $rw['groups_name'];
 				
-					$CI->table->add_row('Группа', 
+					$CI->table->add_row(t('Группа', 'admin'), 
 					form_dropdown('f_groups_id', $groups, $row['groups_id'], ' style="width: 300px;" '));			
 				}
 				
-				_mso_add_row('Новый пароль (только английские символы, длина > 6 символов)', 'f_new_password', '');
-				_mso_add_row('Подтвердите пароль', 'f_new_confirm_password', '');
+				_mso_add_row(t('Новый пароль (только английские символы, длина > 6 символов)', 'admin'), 'f_new_password', '');
+				_mso_add_row(t('Подтвердите пароль', 'admin'), 'f_new_confirm_password', '');
 
 
 				###!!! здесь же по-идее нужно смотреть и мета для данного юзера
@@ -258,13 +258,13 @@ mso_cur_dir_lang('admin');
 			
 			echo '<form action="" method="post">' . mso_form_session('f_session_id');
 			echo $CI->table->generate();
-			echo '<input type="submit" name="f_submit[' . $id . ']" value="Изменить" style="margin: 10px 0;" />';
+			echo '<input type="submit" name="f_submit[' . $id . ']" value="' . t('Изменить', 'admin') . '" style="margin: 10px 0;" />';
 			echo '</form>';
 		}
-		else echo '<div class="error">Ошибочный запрос</div>';
+		else echo '<div class="error">' . t('Ошибочный запрос', 'admin') . '</div>';
 	}
 	else
 	{
-		echo '<div class="error">Ошибочный запрос</div>';
+		echo '<div class="error">' . t('Ошибочный запрос', 'admin') . '</div>';
 	}
 ?>

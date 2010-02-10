@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function admin_ip_autoload($args = array())
 {
-	mso_create_allow('admin_ip_edit', 'Админ-доступ к редактированию разрешенных IP');
+	mso_create_allow('admin_ip_edit', t('Админ-доступ к редактированию разрешенных IP', 'plugins'));
 	mso_hook_add( 'admin_init', 'admin_ip_admin_init'); # хук на админку
 }
 
@@ -99,7 +99,7 @@ function admin_ip_admin_page($args = array())
 {
 	if ( !mso_check_allow('admin_ip_admin_page') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен', 'plugins');
 		return $args;
 	}
 	

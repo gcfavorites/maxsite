@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -71,12 +71,6 @@ class CI_DB_mysqli_result extends CI_DB_result {
 		return $field_names;
 	}
 
-	// Deprecated
-	function field_names()
-	{
-		return $this->list_fields();
-	}
-
 	// --------------------------------------------------------------------
 
 	/**
@@ -114,7 +108,7 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	 */		
 	function free_result()
 	{
-		if (is_resource($this->result_id))
+		if (is_object($this->result_id))
 		{
 			mysqli_free_result($this->result_id);
 			$this->result_id = FALSE;
@@ -170,4 +164,6 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	
 }
 
-?>
+
+/* End of file mysqli_result.php */
+/* Location: ./system/database/drivers/mysqli/mysqli_result.php */

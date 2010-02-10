@@ -10,7 +10,7 @@
 function login_form_autoload($args = array())
 {
 	# регистрируем виджет
-	mso_register_widget('login_form_widget', 'Форма логина'); 
+	mso_register_widget('login_form_widget', t('Форма логина', 'plugins')); 
 }
 
 
@@ -20,18 +20,22 @@ function login_form_widget($num = 1)
 	$out = '';
 	if (is_login())
 	{
-		$out = '<p><strong>Привет, ' . getinfo('users_nik') . '!</strong><br /> [<a href="' . getinfo('siteurl') 
-						. 'logout'.'">выйти</a>] [<a href="' . getinfo('siteurl') . 'admin">управление</a>]</p>';	
+		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' . getinfo('users_nik') 
+				. '!</strong><br /> [<a href="' . getinfo('siteurl') 
+				. 'logout'.'">' . t('выйти', 'plugins') . '</a>] [<a href="' 
+				. getinfo('siteurl') . 'admin">' . t('управление', 'plugins') . '</a>]</p>';	
 	}
 	elseif ($comuser = is_login_comuser())
 	{
-		$out = '<p><strong>Привет, ' . $comuser['comusers_nik'] . '!</strong><br /> [<a href="' . getinfo('siteurl')
-		. 'logout'.'">выйти</a>] [<a href="' . getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">своя страница</a>]</p>';
+		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' 
+				. $comuser['comusers_nik'] . '!</strong><br /> [<a href="' . getinfo('siteurl')
+				. 'logout'.'">' . t('выйти', 'plugins') . '</a>] [<a href="' 
+				. getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">' . t('своя страница', 'plugins') . '</a>]</p>';
 
 	}
 	else
 	{
-		$out = mso_login_form(array( 'login'=>'Логин (email): ', 'password'=>'Пароль: ', 'submit'=>''), getinfo('siteurl'), false);
+		$out = mso_login_form(array( 'login'=>t('Логин (email):', 'plugins') . ' ', 'password'=> t('Пароль:', 'plugins') . ' ', 'submit'=>''), getinfo('siteurl'), false);
 	}
 	
 	if ($out)
@@ -61,7 +65,7 @@ function login_form_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
 	return $form;
 }

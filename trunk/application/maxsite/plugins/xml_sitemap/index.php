@@ -71,7 +71,7 @@ function xml_sitemap_custom()
 	
 	// страницы не blog
 	$CI->db->select('page_slug, page_last_modified');
-	$CI->db->where('page_type_name!=', 'blog');
+	$CI->db->where('page_type_name !=', 'blog');
 	$CI->db->where('page_status', 'publish');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
 	$CI->db->order_by('page_last_modified', 'desc');

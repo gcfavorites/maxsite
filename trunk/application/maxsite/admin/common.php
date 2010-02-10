@@ -74,8 +74,6 @@ function mso_admin_content()
 	
 	$out = mso_hook('admin_content_do');
 	
-	//pr($MSO);
-
 	if ( count($MSO->data['uri_segment']) > 1 )
 	{
 		$url = $MSO->data['uri_segment'][2];
@@ -85,7 +83,6 @@ function mso_admin_content()
 	}
 	else
 	{
-		// if ( (count($MSO->data['uri_segment']) == 2) and ($MSO->data['uri_segment'][2] == 'admin') )
 			$out = mso_hook('admin_content_default', $out);
 	}
 
@@ -190,6 +187,5 @@ function mso_plugin_uninstall($f_name)
 	}
 	else return false;
 }
-
 
 ?>

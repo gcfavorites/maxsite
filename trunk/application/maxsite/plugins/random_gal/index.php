@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function random_gal_autoload($args = array())
 {
-	mso_register_widget('random_gal_widget', 'Галерея'); # регистрируем виджет
+	mso_register_widget('random_gal_widget', t('Галерея', 'plugins')); # регистрируем виджет
 }
 
 # функция выполняется при деинсталяции плагина
@@ -25,8 +25,9 @@ function random_gal_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return random_gal_widget_custom($options, $num);
 }
@@ -64,12 +65,17 @@ function random_gal_widget_form($num = 1)
 	}
 	
 	
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) . '</p>' ;
-	$form .= '<p><div class="t150">Галерея:</div> '. form_dropdown( $widget . 'gal', $out, $options['gal']) . '</p>';
-	$form .= '<p><div class="t150">Количество:</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) . '</p>' ;
-	$form .= '<p><div class="t150">CSS-cтиль блока:</div> '. form_input( array( 'name'=>$widget . 'style', 'value'=>$options['style'] ) ) . '</p>' ;
-	$form .= '<p><div class="t150">CSS-cтиль img:</div> '. form_input( array( 'name'=>$widget . 'style_img', 'value'=>$options['style_img'] ) ) . '</p>';
-	$form .= '<p><div class="t150">Свой HTML-блок:</div> '. form_input( array( 'name'=>$widget . 'html', 'value'=>$options['html'] ) )  . '</p>';
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) . '</p>';
+	
+	$form .= '<p><div class="t150">' . t('Галерея:', 'plugins') . '</div> '. form_dropdown( $widget . 'gal', $out, $options['gal']) . '</p>';
+	
+	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) . '</p>' ;
+	
+	$form .= '<p><div class="t150">' . t('CSS-cтиль блока:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style', 'value'=>$options['style'] ) ) . '</p>' ;
+	
+	$form .= '<p><div class="t150">' . t('CSS-cтиль img:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style_img', 'value'=>$options['style_img'] ) ) . '</p>';
+	
+	$form .= '<p><div class="t150">' . t('Свой HTML-блок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'html', 'value'=>$options['html'] ) )  . '</p>';
 	
 	
 	return $form;
@@ -100,12 +106,8 @@ function random_gal_widget_update($num = 1)
 # функции плагина
 function random_gal_widget_custom($options = array(), $num = 1)
 {
-	// кэш 
-	// $cache_key = mso_md5('random_gal_widget_custom'. implode('', $options) . $num);
-	// $k = mso_get_cache($cache_key);
-	// if ($k) return $k; // да есть в кэше
-	
 	$out = '';
+	
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['gal']) ) $options['gal'] = 'uploads/';
 	if ( !isset($options['count']) ) $options['count'] = 3;
@@ -172,7 +174,6 @@ function random_gal_widget_custom($options = array(), $num = 1)
 	
 	if ($out and $options['header']) $out = $options['header'] . $out;
 
-	//mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	return $out;	
 }
 

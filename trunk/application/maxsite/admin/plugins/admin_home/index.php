@@ -47,8 +47,8 @@ function admin_home_admin($args = array())
 	# выносим админские функции отдельно в файл
 	global $MSO;
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Информация"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Информация - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Информация', 'admin') . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Информация', 'admin') . ' - " . $args; ' );
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_home/admin.php');
 }

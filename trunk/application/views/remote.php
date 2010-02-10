@@ -505,6 +505,7 @@ function mso_remote_f_getpost($post)
 		return 'ERROR: missing arguments';
 		
 	require_once(getinfo('common_dir') . 'page.php');
+	require_once( getinfo('common_dir') . 'inifile.php' ); // функции для работы с ini-файлом
 	
 	// удалим хуки для текста - должно отдаваться как в базе
 	mso_remove_hook('content');
@@ -582,7 +583,24 @@ function mso_remote_f_getpost($post)
 
 				$out .= NR . $p_name . '=' . $p_val;
 			}
-		}	
+		}
+		
+		# нужно передать и все метаполя, которые в шаблоне и admin_page/meta.ini. 
+		# Они могут быть пустыми, поэтому их нет в page_meta
+		
+		$all = mso_get_ini_file( getinfo('admin_plugins_dir') . 'admin_page/meta.ini');
+		
+		if (file_exists(getinfo('template_dir') . 'meta.ini')) 
+		{
+			$meta_templ = mso_get_ini_file( getinfo('template_dir') . 'meta.ini' );
+			if ($meta_templ) $all = array_merge($all, $meta_templ);
+		}
+		$pm = '';
+		foreach($all as $key => $val)
+		{
+			$pm .= '!RMTMETA!' . $key . '=' . _mso_implode($val);
+		}
+		$out .= NR . 'page_meta_template=' . $pm;
 	}
 	else
 	{

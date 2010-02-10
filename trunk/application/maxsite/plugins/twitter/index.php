@@ -24,8 +24,9 @@ function twitter_widget($num = 1)
 	$widget = 'twitter_widget_' . $num; // имя для опций = виджет + номер
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 
 	return twitter_widget_custom($options, $num);
 }
@@ -38,7 +39,7 @@ function twitter_widget_form($num = 1)
 	// получаем опции 
 	$options = mso_get_option($widget, 'plugins', array());
 	
-	if ( !isset($options['header']) ) $options['header'] = 'Мой Twitter';
+	if ( !isset($options['header']) ) $options['header'] = t('Мой Twitter', 'plugins');
 	if ( !isset($options['url']) ) $options['url'] = 'http://twitter.com/statuses/user_timeline/14057433.rss';
 	if ( !isset($options['count']) ) $options['count'] = '5';
 	if ( !isset($options['max_word_description']) ) $options['max_word_description'] = '0';
@@ -50,16 +51,21 @@ function twitter_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
-	$form = '<div class="t150">Заголовок:</div><p>'. form_input( array( 'name'=>$widget . '_header', 'value'=>$options['header'] ) ) ;
-	$form .= '<div class="t150">Адрес:</div><p>'. form_input( array( 'name'=>$widget . '_url', 'value'=>$options['url'] ) ) ;
-	$form .= '<div class="t150">Количество записей:</div><p>'. form_input( array( 'name'=>$widget . '_count', 'value'=>$options['count'] ) ) ;
-	$form .= '<div class="t150">Формат вывода:</div><p>'. form_input( array( 'name'=>$widget . '_format', 'value'=>$options['format'] ) ) ;
-	$form .= '<div class="t150">&nbsp;</div><p>%TITLE% %DATE% %LINK%';
+	$form = '<div class="t150">' . t('Заголовок:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_header', 'value'=>$options['header'] ) ) ;
+	
+	$form .= '<div class="t150">' . t('Адрес:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_url', 'value'=>$options['url'] ) ) ;
+	
+	$form .= '<div class="t150">' . t('Количество записей:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_count', 'value'=>$options['count'] ) ) ;
+	
+	$form .= '<div class="t150">' . t('Формат вывода:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_format', 'value'=>$options['format'] ) ) ;
+	
+	$form .= '<div class="t150">&nbsp;</div><p>%TITLE% %DATE% %LINK%</p>';
 	
 	// %DESCRIPTION% 
 	
-	$form .= '<div class="t150">Формат даты:</div><p>'. form_input( array( 'name'=>$widget . '_format_date', 'value'=>$options['format_date'] ) ) ;
-	$form .= '<div class="t150">Количество слов:</div><p>'. form_input( array( 'name'=>$widget . '_max_word_description', 'value'=>$options['max_word_description'] ) ) ;
+	$form .= '<div class="t150">' . t('Формат даты:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_format_date', 'value'=>$options['format_date'] ) ) ;
+	
+	$form .= '<div class="t150">' . t('Количество слов:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_max_word_description', 'value'=>$options['max_word_description'] ) ) ;
 	
 	return $form;
 }

@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -39,31 +39,42 @@
  * @param	bool	whether to limit the result to the top level only
  * @return	array
  */	
-if (! function_exists('directory_map'))
+if ( ! function_exists('directory_map'))
 {
 	function directory_map($source_dir, $top_level_only = FALSE)
 	{	
 		if ($fp = @opendir($source_dir))
 		{
+			$source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;		
 			$filedata = array();
+			
 			while (FALSE !== ($file = readdir($fp)))
 			{
-				if (@is_dir($source_dir.$file) && substr($file, 0, 1) != '.' AND $top_level_only == FALSE)
+				if (strncmp($file, '.', 1) == 0)
+				{
+					continue;
+				}
+				
+				if ($top_level_only == FALSE && @is_dir($source_dir.$file))
 				{
 					$temp_array = array();
 				
-					$temp_array = directory_map($source_dir.$file."/");
+					$temp_array = directory_map($source_dir.$file.DIRECTORY_SEPARATOR);
 				
 					$filedata[$file] = $temp_array;
 				}
-				elseif (substr($file, 0, 1) != ".")
+				else
 				{
 					$filedata[] = $file;
 				}
 			}
+			
+			closedir($fp);
 			return $filedata;
 		}
 	}
 }
 
-?>
+
+/* End of file directory_helper.php */
+/* Location: ./system/helpers/directory_helper.php */

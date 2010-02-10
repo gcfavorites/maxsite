@@ -84,7 +84,7 @@ function forms_content_callback($matches)
 			// вырный email?
 			if (!$ok = mso_valid_email($post['forms_email']))
 			{
-				$out .= '<h2>Неверный email!</h2>';
+				$out .= '<h2>' . t('Неверный email!', 'plugins') . '</h2>';
 			}
 			
 			// антиспам 
@@ -97,7 +97,7 @@ function forms_content_callback($matches)
 				if ( ($antispam1s/984 + $antispam2s/765) != $antispam3s )
 				{ // неверный код
 					$ok = false;
-					$out .= '<h2>Привет роботам! :-)</h2>';
+					$out .= '<h2>' . t('Привет роботам! :-)', 'plugins') . '</h2>';
 				}
 			}
 			
@@ -110,7 +110,7 @@ function forms_content_callback($matches)
 						if (!isset($post['forms_fields'][$key]) or !$post['forms_fields'][$key]) 
 						{
 							$ok = false;
-							$out .= '<h2>Заполните все необходимые поля!</h2>';
+							$out .= '<h2>' . t('Заполните все необходимые поля!', 'plugins') . '</h2>';
 						}
 					}
 					if (!$ok) break;
@@ -143,10 +143,10 @@ function forms_content_callback($matches)
 				$form_hide = mso_mail($email, $subject, $message, $post['forms_email']);
 				
 				if ( isset($post['forms_subscribe']) ) 
-					mso_mail($post['forms_email'], 'Вами отправлено сообщение: ' . $subject, $message);
+					mso_mail($post['forms_email'], t('Вами отправлено сообщение:', 'plugins') . ' ' . $subject, $message);
 				
 				
-				$out .= '<h2>Ваше сообщение отправлено!</h2><p>' 
+				$out .= '<h2>' . t('Ваше сообщение отправлено!', 'plugins') . '</h2><p>' 
 						. str_replace("\n", '<br />', htmlspecialchars($subject. "\n" . $message)) 
 						. '</p>';
 				
@@ -184,8 +184,9 @@ function forms_show_form($f = array())
 	$out .= '<input type="hidden" name="forms_antispam2" value="' . $antispam2 * 765 . '" />';
 	
 	// обязательные поля
-	$out .= '<div><span>Ваше имя*</span><input name="forms_name" type="text" value="" /></div><div class="break"></div>';
-	$out .= '<div><span>Ваш email*</span><input name="forms_email" type="text" value="" /></div><div class="break"></div>';
+	$out .= '<div><span>' . t('Ваше имя*', 'plugins') . '</span><input name="forms_name" type="text" value="" /></div><div class="break"></div>';
+	
+	$out .= '<div><span>' . t('Ваш email*', 'plugins') . '</span><input name="forms_email" type="text" value="" /></div><div class="break"></div>';
 	
 	
 	// тут указанные поля в $f
@@ -234,13 +235,13 @@ function forms_show_form($f = array())
 	}
 	
 	// обязательные поля антиспама и отправка и ресет
-	$out .= '<div><span>Защита от спама: ' . $antispam1 . ' + ' . $antispam2 . '=</span>';
+	$out .= '<div><span>' . t('Защита от спама:', 'plugins') . ' ' . $antispam1 . ' + ' . $antispam2 . '=</span>';
 	$out .= '<input name="forms_antispam" type="text" value="" /></div><div class="break"></div>';
 
-	$out .= '<div><span>&nbsp;</span><input name="forms_subscribe" value="" type="checkbox"  class="forms_checkbox" />&nbsp;Отправить копию письма на ваш e-mail</div><div class="break"></div>';
+	$out .= '<div><span>&nbsp;</span><input name="forms_subscribe" value="" type="checkbox"  class="forms_checkbox" />&nbsp;' . t('Отправить копию письма на ваш e-mail', 'plugins') . '</div><div class="break"></div>';
 	
-	$out .= '<div><span>&nbsp;</span><input name="forms_submit" type="submit" class="forms_submit" value="Отправить" />';
-	$out .= '<input name="forms_clear" type="reset" class="forms_reset" value="Очистить форму" /></div>';
+	$out .= '<div><span>&nbsp;</span><input name="forms_submit" type="submit" class="forms_submit" value="' . t('Отправить', 'plugins') . '" />';
+	$out .= '<input name="forms_clear" type="reset" class="forms_reset" value="' . t('Очистить форму', 'plugins') . '" /></div>';
 	
 	$out .= '</form></div>' . NR;
 	

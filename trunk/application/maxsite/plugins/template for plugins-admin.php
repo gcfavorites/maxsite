@@ -11,7 +11,7 @@
 # функция автоподключения плагина
 function %%%_autoload($args = array())
 {
-	mso_create_allow('%%%_edit', 'Админ-доступ к %%%');
+	mso_create_allow('%%%_edit', t('Админ-доступ к %%%', __FILE__));
 	mso_hook_add( 'admin_init', '%%%_admin_init'); # хук на админку
 }
 
@@ -68,12 +68,12 @@ function %%%_admin_page($args = array())
 	global $MSO;
 	if ( !mso_check_allow('%%%_admin_page') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен', 'plugins');
 		return $args;
 	}
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "%%%"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "%%% - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('%%%', __FILE__) . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('%%%', __FILE__) . ' - " . $args; ' );
 	
 	require($MSO->config['plugins_dir'] . '%%%/admin.php');
 }

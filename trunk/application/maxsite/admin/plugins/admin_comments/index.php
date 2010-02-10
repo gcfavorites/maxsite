@@ -30,7 +30,7 @@ function admin_comments_admin_init($args = array())
 		# Третий - название ссылки	
 		# четвертый номер по порядку
 		
-		mso_admin_menu_add('page', $this_plugin_url, 'Комментарии', 3);
+		mso_admin_menu_add('page', $this_plugin_url, t('Комментарии', 'admin'), 3);
 
 		# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 		# связанную функцию именно она будет вызываться, когда 
@@ -57,14 +57,14 @@ function admin_comments_admin($args = array())
 	
 	if ($seg == '') 
 	{
-		mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Комментарии"; ' );
-		mso_hook_add_dinamic( 'admin_title', ' return "Комментарии - " . $args; ' );
+		mso_hook_add_dinamic( 'mso_admin_header', ' return $args . t("Комментарии", "admin"); ' );
+		mso_hook_add_dinamic( 'admin_title', ' return t("Комментарии", "admin") . " - " . $args; ' );
 		require($MSO->config['admin_plugins_dir'] . 'admin_comments/admin.php');
 	}
 	elseif ($seg == 'edit')
 	{
-		mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Редактирование комментария"; ' );
-		mso_hook_add_dinamic( 'admin_title', ' return "Редактирование комментария - " . $args; ' );
+		mso_hook_add_dinamic( 'mso_admin_header', ' return $args . t("Редактирование комментария", "admin"); ' );
+		mso_hook_add_dinamic( 'admin_title', ' return t("Редактирование комментария", "admin") . " - " . $args; ' );
 		require($MSO->config['admin_plugins_dir'] . 'admin_comments/edit.php');
 	} 
 }

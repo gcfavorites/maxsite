@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
@@ -8,11 +8,10 @@
 | URL to your CodeIgniter root. Typically this will be your base URL,
 | WITH a trailing slash:
 |
-|	http://www.your-site.com/
+|	http://example.com/
 |
 */
-// $config['base_url']	= "http://localhost/codeigniter/";
-
+# $config['base_url']	= "http://example.com/";
 $config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
 $config['base_url'] .= "://" . $_SERVER['HTTP_HOST'];
 $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']);
@@ -115,9 +114,9 @@ $config['subclass_prefix'] = 'MY_';
 | Allowed URL Characters
 |--------------------------------------------------------------------------
 |
-| This lets you specify which characters are permitted within your URLs.
-| When someone tries to submit a URL with disallowed characters they will
-| get a warning message.
+| This lets you specify with a regular expression which characters are permitted
+| within your URLs.  When someone tries to submit a URL with disallowed
+| characters they will get a warning message.
 |
 | As a security measure you are STRONGLY encouraged to restrict URLs to
 | as few characters as possible.  By default only these are allowed: a-z 0-9~%.:_-
@@ -136,16 +135,16 @@ $config['permitted_uri_chars'] = '';
 |--------------------------------------------------------------------------
 |
 | By default CodeIgniter uses search-engine friendly segment based URLs:
-| www.your-site.com/who/what/where/
+| example.com/who/what/where/
 |
 | You can optionally enable standard query string based URLs:
-| www.your-site.com?who=me&what=something&where=here
+| example.com?who=me&what=something&where=here
 |
 | Options are: TRUE or FALSE (boolean)
 |
 | The other items let you set the query string "words" that will
 | invoke your controllers and its functions:
-| www.your-site.com/index.php?c=controller&m=function
+| example.com/index.php?c=controller&m=function
 |
 | Please note that some of the helpers won't work as expected when
 | this feature is enabled, since CodeIgniter is designed primarily to
@@ -153,9 +152,9 @@ $config['permitted_uri_chars'] = '';
 |
 */
 $config['enable_query_strings'] = FALSE;
-$config['directory_trigger'] = 'd';
-$config['controller_trigger'] = 'c';
-$config['function_trigger'] = 'm';
+$config['controller_trigger'] 	= 'c';
+$config['function_trigger'] 	= 'm';
+$config['directory_trigger'] 	= 'd'; // experimental not currently in use
 
 /*
 |--------------------------------------------------------------------------
@@ -242,7 +241,7 @@ $config['sess_use_database']	= FALSE;
 $config['sess_table_name']		= 'ci_sessions';
 $config['sess_match_ip']		= FALSE;
 $config['sess_match_useragent']	= TRUE;
-$config['sess_time_to_update'] 		= 7200; // 300;
+$config['sess_time_to_update'] 	= 7200;
 
 /*
 |--------------------------------------------------------------------------
@@ -315,5 +314,19 @@ $config['time_reference'] = 'local';
 $config['rewrite_short_tags'] = FALSE;
 
 
+/*
+|--------------------------------------------------------------------------
+| Reverse Proxy IPs
+|--------------------------------------------------------------------------
+|
+| If your server is behind a reverse proxy, you must whitelist the proxy IP
+| addresses from which CodeIgniter should trust the HTTP_X_FORWARDED_FOR
+| header in order to properly identify the visitor's IP address.
+| Comma-delimited, e.g. '10.0.1.200,10.0.1.201'
+|
+*/
+$config['proxy_ips'] = '';
+
+
 /* End of file config.php */
-/* Location: ./application/config/config.php */
+/* Location: ./system/application/config/config.php */

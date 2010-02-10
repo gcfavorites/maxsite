@@ -3,6 +3,7 @@
 /**
  * MaxSite CMS
  * (c) http://maxsite.org/
+ * Добавлена авторизация Юзера по емаилу (Ramir)
  */
 
 function _mso_login()
@@ -37,7 +38,6 @@ function _mso_login()
 		
 		$CI = & get_instance();
 		
-		
 		// если это комюзер, то логин = email 
 		// проверяем валидность email и если он верный, то ставим куку на этого комюзера 
 		// и редиректимся на главную (куку ставить только на главную!)
@@ -45,25 +45,73 @@ function _mso_login()
 		
 		if (mso_valid_email($flogin_user))
 		{
-			// это комюзер
+			// если в логине мыло, то проверяем сначала в таблице авторов
+			$CI->db->from('users'); # таблица users
+			$CI->db->select('*'); # все поля
+			$CI->db->limit(1); # одно значение
 			
-			$CI->db->select('comusers_id, comusers_password, comusers_email, comusers_nik, comusers_url, comusers_avatar_url');
-			$CI->db->where('comusers_email', $flogin_user);
-			$CI->db->where('comusers_password', $flogin_password);
-			$query = $CI->db->get('comusers');
-			if ($query->num_rows()) // есть такой комюзер
+			$CI->db->where('users_email', $flogin_user); // where 'users_login' = $flogin_user
+			$CI->db->where('users_password', $flogin_password);  // where 'users_password' = $flogin_password
+			
+			$query = $CI->db->get();
+			
+			if ($query->num_rows() > 0) # есть такой юзер
 			{
-				$comuser_info = $query->row_array(1); // вся инфа о комюзере
-				$name_cookies = 'maxsite_comuser';
-				$expire  = time() + 60 * 60 * 24 * 30; // 30 дней = 2592000 секунд
-				$value = serialize($comuser_info); 
-				mso_add_to_cookie($name_cookies, $value, $expire, true); // в куку для всего сайта
-				exit();
-			}
-			else // неверные данные
-			{
-				mso_redirect('loginform/error');
-				exit;
+				$userdata = $query->result_array();
+				
+				# добавляем юзера к сессии
+				$CI->session->set_userdata('userlogged', '1');
+				
+				$data = array(
+					'users_id' => $userdata[0]['users_id'],
+					'users_nik' => $userdata[0]['users_nik'],
+					'users_login' => $userdata[0]['users_login'],
+					'users_password' => $userdata[0]['users_password'],
+					'users_groups_id' => $userdata[0]['users_groups_id'],
+					'users_last_visit' => $userdata[0]['users_last_visit'],
+					'users_show_smiles' => $userdata[0]['users_show_smiles'],
+					'users_time_zone' => $userdata[0]['users_time_zone'],
+					'users_language' => $userdata[0]['users_language'],
+					// 'users_levels_id' => $userdata[0]['users_levels_id'],
+					// 'users_avatar_url' => $userdata[0]['users_avatar_url'],
+					// 'users_skins' => $userdata[0]['users_skins']
+				);
+				
+				$CI->session->set_userdata($data);
+				
+				// сразу же обновим поле последнего входа
+				$CI->db->where('users_id', $userdata[0]['users_id']);
+				$CI->db->update('users', array('users_last_visit'=>date('Y-m-d H:i:s')));
+				
+				mso_redirect($flogin_redirect, true);
+			} 
+			else 
+			{ 
+				// это не автор, значит это комюзер
+				$CI->db->select('comusers_id, comusers_password, comusers_email, comusers_nik, comusers_url, comusers_avatar_url, comusers_last_visit');
+				$CI->db->where('comusers_email', $flogin_user);
+				$CI->db->where('comusers_password', $flogin_password);
+				$query = $CI->db->get('comusers');
+				
+				if ($query->num_rows()) // есть такой комюзер
+				{
+					$comuser_info = $query->row_array(1); // вся инфа о комюзере
+					
+					// сразу же обновим поле последнего входа
+					$CI->db->where('comusers_id', $comuser_info['comusers_id']);
+					$CI->db->update('comusers', array('comusers_last_visit'=>date('Y-m-d H:i:s')));
+					
+					$name_cookies = 'maxsite_comuser';
+					$expire  = time() + 60 * 60 * 24 * 30; // 30 дней = 2592000 секунд
+					$value = serialize($comuser_info); 
+					mso_add_to_cookie($name_cookies, $value, $expire, true); // в куку для всего сайта
+					exit();
+				}
+				else // неверные данные
+				{
+					mso_redirect('loginform/error');
+					exit;
+				}
 			}
 		}
 		else 
@@ -92,16 +140,21 @@ function _mso_login()
 					'users_login' => $userdata[0]['users_login'],
 					'users_password' => $userdata[0]['users_password'],
 					'users_groups_id' => $userdata[0]['users_groups_id'],
-					// 'users_levels_id' => $userdata[0]['users_levels_id'],
-					// 'users_last_visit' => $userdata[0]['users_last_visit'],
-					// 'users_avatar_url' => $userdata[0]['users_avatar_url'],
+					'users_last_visit' => $userdata[0]['users_last_visit'],
 					'users_show_smiles' => $userdata[0]['users_show_smiles'],
 					'users_time_zone' => $userdata[0]['users_time_zone'],
 					'users_language' => $userdata[0]['users_language'],
+					// 'users_avatar_url' => $userdata[0]['users_avatar_url'],
+					// 'users_levels_id' => $userdata[0]['users_levels_id'],
 					// 'users_skins' => $userdata[0]['users_skins']
 				);
 				
 				$CI->session->set_userdata($data);
+				
+				// сразу же обновим поле последнего входа
+				$CI->db->where('users_id', $userdata[0]['users_id']);
+				$CI->db->update('users', array('users_last_visit'=>date('Y-m-d H:i:s')));
+				
 				mso_redirect($flogin_redirect, true);
 			}
 			else mso_redirect('loginform/error');

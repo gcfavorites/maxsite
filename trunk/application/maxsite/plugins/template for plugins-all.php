@@ -11,9 +11,9 @@
 # функция автоподключения плагина
 function %%%_autoload($args = array())
 {
-	mso_create_allow('%%%_edit', 'Админ-доступ к редактированию %%%');
+	mso_create_allow('%%%_edit', t('Админ-доступ к редактированию %%%', __FILE__));
 	mso_hook_add( 'admin_init', '%%%_admin_init'); # хук на админку
-	mso_register_widget('%%%_widget', 'Виджет'); # регистрируем виджет
+	mso_register_widget('%%%_widget', t('%%%', __FILE__)); # регистрируем виджет
 }
 
 # функция выполняется при активации (вкл) плагина
@@ -62,12 +62,12 @@ function %%%_admin_page($args = array())
 	# выносим админские функции отдельно в файл
 	if ( !mso_check_allow('plugin_%%%') ) 
 	{
-		echo 'Доступ запрещен';
+		echo t('Доступ запрещен', 'plugins');
 		return $args;
 	}
 	# выносим админские функции отдельно в файл
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "%%%"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "%%% - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('%%%', __FILE__) . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('%%%', __FILE__) . ' - " . $args; ' );
 	require($MSO->config['plugins_dir'] . '%%%/admin.php');
 }
 
@@ -79,8 +79,9 @@ function %%%_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
-	if ( isset($options['header']) and $options['header'] ) $options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
-		else $options['header'] = '';
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
 	
 	return %%%_widget_custom($options, $num);
 }
@@ -101,7 +102,8 @@ function %%%_widget_form($num = 1)
 	$CI = & get_instance();
 	$CI->load->helper('form');
 		
-	$form = '<p><div class="t150">Заголовок:</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. 
+			form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
 	return $form;
 }

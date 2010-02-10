@@ -7,19 +7,14 @@
 	<div id="header1">
 		
 		<div class="header-searh">
-			<form name="f_search" action="" method="get" onsubmit="location.href='<?= getinfo('siteurl') ?>search/' + encodeURIComponent(this.s.value).replace(/%20/g, '+'); return false;">	<input type="text" name="s" id="s" size="20" onfocus="if (this.value == 'что искать?') {this.value = '';}" onblur="if (this.value == '') {this.value = 'что искать?';}" value="что искать?" />&nbsp;<input type="submit" id="searchsubmit" name="Submit" value="  Поиск  " /></form>
+			<form name="f_search" action="" method="get" onsubmit="location.href='<?= getinfo('siteurl') ?>search/' + encodeURIComponent(this.s.value).replace(/%20/g, '+'); return false;">	<input type="text" name="s" id="s" size="20" onfocus="if (this.value == '<?= t('что искать?', 'templates') ?>') {this.value = '';}" onblur="if (this.value == '') {this.value = '<?= t('что искать?', 'templates') ?>';}" value="<?= t('что искать?', 'templates') ?>" />&nbsp;<input type="submit" id="searchsubmit" name="Submit" value="  <?= t('Поиск', 'templates') ?>  " /></form>
 		</div><!-- div class= -->
 		
 		<div id="MainMenu">
 			<div id="tab">
 				<ul>
 					<?php
-						$def_menu = '/ | Главная
-									about | О сайте
-									comments | Комментарии
-									contact | Контакты 
-									sitemap | Архив 
-									feed | RSS';
+						$def_menu = t('/ | Главная_NR_about | О сайте_NR_comments | Комментарии_NR_contact | Контакты_NR_sitemap | Архив_NR_feed | RSS', 'templates');
 						if ( $menu = mso_get_option('top_menu', 'templates', $def_menu) ) 
 							echo mso_menu_build($menu, 'selected', true);
 					?>

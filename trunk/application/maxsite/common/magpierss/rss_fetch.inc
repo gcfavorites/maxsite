@@ -158,8 +158,8 @@ function fetch_rss ($url) {
                 $request_headers['If-Last-Modified'] = @$rss->last_modified;
             }
         }
-        
         $resp = _fetch_remote_file( $url, $request_headers );
+
         
         if (isset($resp) and $resp) {
           if ($resp->status == '304' ) {
@@ -273,7 +273,6 @@ function _fetch_remote_file ($url, $headers = "" ) {
     if (is_array($headers) ) {
         $client->rawheaders = $headers;
     }
-    
     @$client->fetch($url);
     return $client;
 

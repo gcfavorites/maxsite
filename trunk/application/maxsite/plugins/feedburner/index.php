@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function feedburner_autoload($args = array())
 {
-	mso_create_allow('feedburner_edit', 'Админ-доступ к feedburner');
+	mso_create_allow('feedburner_edit', t('Админ-доступ к feedburner', 'plugins'));
 	mso_hook_add( 'admin_init', 'feedburner_admin_init'); # хук на админку
 	mso_hook_add( 'init', 'feedburner_init'); # хук на init
 }
@@ -79,13 +79,13 @@ function feedburner_init($args = array())
 	{
 		if (mso_segment(1) == 'feed') // только для главной страницы
 		{
-			header("Location: http://feeds.feedburner.com/" . trim($options['key']));
+			header("Location: http://feeds2.feedburner.com/" . trim($options['key']));
 			header("HTTP/1.1 302 Temporary Redirect");
 			exit;
 		}
 	}
 	
-	return $args;	
+	return $args;
 }
 
 
