@@ -24,6 +24,12 @@ BBCODE
 [image]http://site/uploads/image1.jpg[/image]
 
 
++ класс для изображения (в скобках)
+[image(left)=http://site/uploads/image1-mini.jpg Картинка1]http://site/uploads/image1.jpg[/image]
+[image(right)=http://site/uploads/image1-mini.jpg]http://site/uploads/image1.jpg[/image]
+[image(myCSSclass)]http://site/uploads/image1.jpg[/image]
+
+
 - галерея
 [gallery]
 	[gal=http://site/uploads/image1-mini.jpg Картинка1]http://site/uploads/image1.jpg[/gal]

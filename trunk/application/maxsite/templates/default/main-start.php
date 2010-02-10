@@ -21,9 +21,7 @@
 									sitemap | Архив 
 									feed | RSS';
 						if ( $menu = mso_get_option('top_menu', 'templates', $def_menu) ) 
-							echo mso_menu_build($menu, 'selected');
-						
-						if (is_login())	echo '<li><a href="' . getinfo('siteurl') . 'admin"><span>Admin</span></a></li>';
+							echo mso_menu_build($menu, 'selected', true);
 					?>
 				</ul>
 			</div><!-- div id="tab" -->

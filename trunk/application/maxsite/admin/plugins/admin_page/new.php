@@ -177,8 +177,12 @@
 			
 		}
 		else
-			echo '<div class="error">Ошибка обновления</div>';
-		
+		{
+			if (isset($result['description']) and $result['description'] == 'Existing page') 
+				echo '<div class="error">Такая страница уже существует</div>';
+			else
+				echo '<div class="error">Ошибка создания страницы</div>';
+		}
 	}
 	else 
 	{

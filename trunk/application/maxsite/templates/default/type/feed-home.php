@@ -12,8 +12,15 @@ require_once( getinfo('common_dir') . 'category.php' ); 		// функции ру
 
 $this->load->helper('xml');
 
+$time_zone = getinfo('time_zone');
+if ($time_zone < 10 and $time_zone > 0) $time_zone = '+0' . $time_zone;
+elseif ($time_zone > -10 and $time_zone < 0) { $time_zone = '0' . $time_zone; $time_zone = str_replace('0-', '-0', $time_zone); }
+else $time_zone = '+00.00';
+$time_zone = str_replace('.', '', $time_zone);
+
+
 $encoding = 'utf-8';
-$time_zone = str_replace('.', '', getinfo('time_zone')); // '+0300';
+// $time_zone = str_replace('.', '', getinfo('time_zone')); // '+0300';
 
 $limit = mso_get_option('limit_post_rss', 'templates', 7); 
 
@@ -30,9 +37,10 @@ $pages = mso_get_pages($par, $pagination);
 
 if ($pages) 
 {
-	$pubdate = date('D, d M Y H:i:s '. $time_zone, strtotime($pages[0]['page_date_publish']));
-
-	header("Content-Type: application/rss+xml");
+	$pubdate = date('D, d M Y H:i:s ' . $time_zone, strtotime($pages[0]['page_date_publish']));
+	
+	header('Content-type: text/html; charset=utf-8');
+	header('Content-Type: application/rss+xml');
 	echo '<' . '?xml version="1.0" encoding="utf-8"?' . '>';
 ?>
 
@@ -44,23 +52,17 @@ if ($pages)
 		<pubDate><?= $pubdate ?></pubDate>
 		<language><?= $language ?></language>
 		<generator><?= $generator ?></generator>
-		<rights>Copyright <?= gmdate("Y", time()) ?></rights>
-		
+		<copyright>Copyright <?= gmdate("Y", time()) ?>, <?= getinfo('siteurl') ?></copyright>
 		<?php foreach($pages as $page) : extract($page); ?>
-
 		<item>
 			<title><![CDATA[<?= xml_convert(strip_tags($page_title)) ?>]]></title>
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></guid>
-			<pubdate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($page_date_publish)) ?></pubdate>
+			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($page_date_publish)) ?></pubDate>
 			<?= mso_page_cat_link($page_categories, ", ", '<category><![CDATA[', ']]></category>' . "\n", false, 'category', false) ?>
-			<author><?= $users_nik ?></author>
-			<creator><?= $users_nik ?></creator>
 			<description><![CDATA[<?= mso_page_content($page_content) . mso_page_comments_link($page_comment_allow, $page_slug, ' Обсудить', '', '', false) ?>]]></description>
 		</item>
-		
 		<?php endforeach; ?>
-		
 	</channel>
 </rss>
 <?php 

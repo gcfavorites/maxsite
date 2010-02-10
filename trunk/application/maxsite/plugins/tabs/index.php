@@ -162,11 +162,12 @@ function tabs_widget_custom($options = array(), $num = 1)
 		
 	if ($out) $out .=  <<<EOF
 	<script> 
-		$(document).ready(function(){
-				$("#tabs-widget-{$num} > ul").tabs({ fx: { height: 'toggle', opacity: 'toggle', duration: 'fast' } });
-			});
+		$("#tabs-widget-{$num} > ul").tabs({ fx: { height: 'toggle', opacity: 'toggle', duration: 'fast' } });
 	</script> 
 EOF;
+// $(document).ready(function(){
+// );
+	
 				// $("#tabs-widget-{$num} > ul").tabs();
 
 	return $out;	

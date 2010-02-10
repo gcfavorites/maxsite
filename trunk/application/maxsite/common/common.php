@@ -463,7 +463,7 @@ function getinfo($info = '')
 				break;
 			
 		case 'time_zone' :
-				$out = (float) mso_get_option('time_zone', 'general');
+				$out = (string) mso_get_option('time_zone', 'general');
 				break;
 				
 		case 'plugins_url' :
@@ -1529,6 +1529,62 @@ function balanceTags($text)
 }
 
 
+# функция преобразует неанглийские буквы в англйские
+# также удаляются все служебные символы
+function mso_slug($slug)
+{
+	$slug = mso_hook('slug_do', $slug);
+	
+	if (!mso_hook_present('slug'))
+	{
+		// таблица замены
+		$repl = array(
+		"А"=>"a", "Б"=>"b",  "В"=>"v",  "Г"=>"g",   "Д"=>"d",
+		"Е"=>"e", "Ё"=>"jo", "Ж"=>"zh",
+		"З"=>"z", "И"=>"i",  "Й"=>"j",  "К"=>"k",   "Л"=>"l",
+		"М"=>"m", "Н"=>"n",  "О"=>"o",  "П"=>"p",   "Р"=>"r",
+		"С"=>"s", "Т"=>"t",  "У"=>"u",  "Ф"=>"f",   "Х"=>"h",
+		"Ц"=>"c", "Ч"=>"ch", "Ш"=>"sh", "Щ"=>"shh", "Ъ"=>"",
+		"Ы"=>"y", "Ь"=>"",   "Э"=>"e",  "Ю"=>"ju", "Я"=>"ja",
+		
+		"а"=>"a", "б"=>"b",  "в"=>"v",  "г"=>"g",   "д"=>"d",
+		"е"=>"e", "ё"=>"jo", "ж"=>"zh",
+		"з"=>"z", "и"=>"i",  "й"=>"j",  "к"=>"k",   "л"=>"l",
+		"м"=>"m", "н"=>"n",  "о"=>"o",  "п"=>"p",   "р"=>"r",
+		"с"=>"s", "т"=>"t",  "у"=>"u",  "ф"=>"f",   "х"=>"h",
+		"ц"=>"c", "ч"=>"ch", "ш"=>"sh", "щ"=>"shh", "ъ"=>"",
+		"ы"=>"y", "ь"=>"",   "э"=>"e",  "ю"=>"ju",  "я"=>"ja",
+		
+		"Є"=>"ye", "І"=>"i", "Ѓ"=>"g", "і"=>"i", "є"=>"ye", "ѓ"=>"g",
+		
+		"«"=>"", "»"=>"", "—"=>"-", "`"=>"", " "=>"-",
+		"["=>"", "]"=>"", "{"=>"", "}"=>"", "<"=>"", ">"=>"",
+		
+		"?"=>"", ","=>"", "*"=>"", "%"=>"", "$"=>"",
+		
+		"@"=>"", "!"=>"", ";"=>"", ":"=>"", "^"=>"", "\""=>"",
+		"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
+		"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>"", "”"=>"", "“"=>""
+		);
+		
+		$slug = strtolower(strtr(trim($slug), $repl));
+		
+		# разрешим расширение .html
+		$slug = str_replace('.htm', '@HTM@', $slug);
+		$slug = str_replace('.', '', $slug);
+		$slug = str_replace('@HTM@', '.htm', $slug);
+		
+		$slug = str_replace('---', '-', $slug);
+		$slug = str_replace('--', '-', $slug);
+		
+		$slug = str_replace('-', ' ', $slug);
+		$slug = str_replace(' ', '-', trim($slug));
+	}
+	else $slug = mso_hook('slug', $slug);
+
+	return $slug;
+}
+
 # редирект на страницу сайта. путь указывать относительно сайта
 # если $absolute = true - переход по указаному пути
 function mso_redirect($url, $absolute = false)
@@ -1698,7 +1754,7 @@ function mso_xmlrpc_this($data = array())
 */
 
 # проверка комбинации логина-пароля
-# если указан act - то сразу смотрим разрешение на действие - пока act не работает!
+# если указан act - то сразу смотрим разрешение на действие
 function mso_check_user_password($login = false, $password = false, $act = false)
 {
 	if (!$login or !$password) return false;
@@ -1709,21 +1765,16 @@ function mso_check_user_password($login = false, $password = false, $act = false
 	$CI->db->where(array('users_login'=>$login, 'users_password'=>$password) );  // where 'users_password' = $password
 	$CI->db->limit(1); # одно значение
 	
-	
 	$query = $CI->db->get('users');
 	if ($query->num_rows() > 0) # есть такой юзер
 	{
 		if ($act) 
 		{
-			// $act = mso_slug($act); // защищаем имя действия
-		
-			// !!!!!!!!!!!!!!!!!!
-			// пока заглушка
 			// нужно проверить по users_groups_id разрешение для этого юзера для этого действия
-			
-			return true;
+			$r = $query->result_array();
+			return mso_check_allow($act, $r[0]['users_id']);
 		}
-		else return true;
+		else return true; // если act не указан, значит можно
 	}
 	else return false;
 }
@@ -1780,68 +1831,10 @@ function mso_xmlrpc_send($method = 'Hello', $request = array('Test'), $debug = f
 }
 */
 
-# функция преобразует неанглийские буквы в англйские
-# также удаляются все служебные символы
-function mso_slug($slug)
-{
-	$slug = mso_hook('slug_do', $slug);
-	
-	if (!mso_hook_present('slug'))
-	{
-		// таблица замены
-		$repl = array(
-		"А"=>"a", "Б"=>"b",  "В"=>"v",  "Г"=>"g",   "Д"=>"d",
-		"Е"=>"e", "Ё"=>"jo", "Ж"=>"zh",
-		"З"=>"z", "И"=>"i",  "Й"=>"j",  "К"=>"k",   "Л"=>"l",
-		"М"=>"m", "Н"=>"n",  "О"=>"o",  "П"=>"p",   "Р"=>"r",
-		"С"=>"s", "Т"=>"t",  "У"=>"u",  "Ф"=>"f",   "Х"=>"h",
-		"Ц"=>"c", "Ч"=>"ch", "Ш"=>"sh", "Щ"=>"shh", "Ъ"=>"",
-		"Ы"=>"y", "Ь"=>"",   "Э"=>"e",  "Ю"=>"ju", "Я"=>"ja",
-		
-		"а"=>"a", "б"=>"b",  "в"=>"v",  "г"=>"g",   "д"=>"d",
-		"е"=>"e", "ё"=>"jo", "ж"=>"zh",
-		"з"=>"z", "и"=>"i",  "й"=>"j",  "к"=>"k",   "л"=>"l",
-		"м"=>"m", "н"=>"n",  "о"=>"o",  "п"=>"p",   "р"=>"r",
-		"с"=>"s", "т"=>"t",  "у"=>"u",  "ф"=>"f",   "х"=>"h",
-		"ц"=>"c", "ч"=>"ch", "ш"=>"sh", "щ"=>"shh", "ъ"=>"",
-		"ы"=>"y", "ь"=>"",   "э"=>"e",  "ю"=>"ju",  "я"=>"ja",
-		
-		"Є"=>"ye", "І"=>"i", "Ѓ"=>"g", "і"=>"i", "є"=>"ye", "ѓ"=>"g",
-		
-		"«"=>"", "»"=>"", "—"=>"-", "`"=>"", " "=>"-",
-		"["=>"", "]"=>"", "{"=>"", "}"=>"", "<"=>"", ">"=>"",
-		
-		"?"=>"", ","=>"", "*"=>"", "%"=>"", "$"=>"",
-		
-		"@"=>"", "!"=>"", ";"=>"", ":"=>"", "^"=>"", "\""=>"",
-		"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
-		"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>"", "”"=>"", "“"=>""
-		);
-		
-		$slug = strtolower(strtr(trim($slug), $repl));
-		
-		# разрешим расширение .html
-		$slug = str_replace('.htm', '@HTM@', $slug);
-		$slug = str_replace('.', '', $slug);
-		$slug = str_replace('@HTM@', '.htm', $slug);
-		
-		$slug = str_replace('---', '-', $slug);
-		$slug = str_replace('--', '-', $slug);
-		
-		$slug = str_replace('-', ' ', $slug);
-		$slug = str_replace(' ', '-', trim($slug));
-	}
-	else $slug = mso_hook('slug', $slug);
-
-	return $slug;
-}
-
 # содание разрешения для действия
 function mso_create_allow($act = '', $desc = '')
 {
 	global $MSO;
-	
-	// $act = mso_slug($act); // защищаем имя действия
 	
 	// считываем опцию 
 	$d = mso_get_option('groups_allow', 'general');
@@ -1869,8 +1862,6 @@ function mso_remove_allow($act = '')
 {
 	global $MSO;
 	
-	// $act = mso_slug($act); // защищаем имя действия
-
 	$d = mso_get_option('groups_allow', 'general');
 
 	if ( isset($d[$act]) )
@@ -1887,12 +1878,7 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 {
 	global $MSO;
 	
-	// $act = mso_slug($act); // защищаем имя действия
-	
 	if (!$act) return false;
-	
-	// незалогиненным сразу выход
-	// if (! $MSO->data['session']['userlogged']) return false;
 	
 	if ( $user_id == false ) // если юзер не указан
 	{
@@ -1944,7 +1930,6 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 		$rules = $k;
 	}
 	
-	
 	/* 
 	$rules = Array ( 
 		[edit_users_group] => 1 
@@ -1964,7 +1949,7 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 
 
 # получаем название указанного сегменту текущей страницы 
-# http://localhost/codeigniter/admin/users/edit/1
+# http://localhost/admin/users/edit/1
 # mso_segment(3) -> edit
 # номер считается от home-сайта
 function mso_segment($segment = 2)
@@ -2143,7 +2128,7 @@ function mso_str_word($text, $counttext = 10, $sep = ' ')
 }
 
 # подсчет кол-ва слов в тексте
-# можно предварительно удалить все тэги и ипреобразовать CR в $delim
+# можно предварительно удалить все тэги и преобразовать CR в $delim
 function mso_wordcount($str = '', $delim = ' ', $strip_tags = true, $cr_to_delim = true) 
 { 
 	if ($strip_tags) $str = strip_tags($str);
@@ -2166,8 +2151,9 @@ function mso_current_paged($next = 'next')
 	{
 		if (isset($uri[$n+1])) $n = (int) $uri[$n+1];
 			else $n = 1;
+			
 		if ($n > 0) $current_paged = $n;
-		else $current_paged = 1;
+			else $current_paged = 1;
 	}
 	else $current_paged = 1;
 	
@@ -2179,17 +2165,16 @@ function mso_current_paged($next = 'next')
 function mso_register_sidebar($sidebar = '1', $title = 'Cайдбар', $options = array() )
 {
 	global $MSO;
-	
-	//$sidebar = mso_slug($sidebar);
-	
-	$MSO->sidebars[$sidebar] = array('title' => $title, 'options' => $options);
+		
+	$MSO->sidebars[$sidebar] = array('title' => t($title), 'options' => $options);
 }
 
 # регистрируем виджет
 function mso_register_widget($widget = false, $title = 'Виджет')
 {
 	global $MSO;
-	if ($widget) $MSO->widgets[$widget] = $title;
+	
+	if ($widget) $MSO->widgets[$widget] = t($title);
 }
 
 
@@ -2200,9 +2185,6 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 	
 	static $num_widget = array(); // номер виджета по порядку в одном сайдбаре
 	
-	//$sidebar = mso_slug($sidebar);
-	
-	// $widgets = mso_get_option('sidebars-' . mso_slug($sidebar), 'sidebars', array());
 	$widgets = mso_get_option('sidebars-' . $sidebar, 'sidebars', array());
 	
 	$out = '';
@@ -2383,9 +2365,16 @@ function mso_load_jquery($plugin = '')
 # каждый пункт делается так:  http://ссылка|название
 # на выходе так:
 # <li class="selected"><a href="url"><span>ссылка</span></a></li>
-function mso_menu_build($menu = '', $select_css = 'selected')
+function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = false)
 {
 	global $MSO;
+	
+	# добавить ссылку на admin
+	if ($add_link_admin and is_login()) $menu .= NR . 'admin|Admin';
+	
+	$menu = str_replace("\n\n\n", "\n", $menu); 
+	$menu = str_replace("\n\n", "\n", $menu); 
+	
 	# в массив
 	$menu = explode("\n", trim($menu)); 
 	
@@ -2395,6 +2384,7 @@ function mso_menu_build($menu = '', $select_css = 'selected')
 	
 	$out = '';
 	# обходим в цикле
+	$i = 1;
 	foreach ($menu as $elem) 
 	{
 		# разобъем строчку по адрес | название
@@ -2413,10 +2403,23 @@ function mso_menu_build($menu = '', $select_css = 'selected')
 			}
 			
 			# если текущий адрес совпал, значит мы на этой странице
-			if ($url == $current_url) $class = ' class="' . $select_css . '"';
+			if ($url == $current_url) $class = $select_css;
 				else $class = '';
+				
+			# для первого элемента добавляем класс first
+			if ($i == 1) $class .= ' first';
 			
-			$out .= '<li' . $class . '><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+			# для последнего элемента добавляем класс last
+			if ($i == count($menu)) $class .= ' last';
+			
+			$class = trim($class);
+			
+			if ($class)
+				$out .= '<li class="' . $class . '"><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+			else
+				$out .= '<li><a href="' . $url . '"><span>' . $name . '</span></a></li>' . NR;
+			
+			$i++;
 		}
 	}
 	return $out;

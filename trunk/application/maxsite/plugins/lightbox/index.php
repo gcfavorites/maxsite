@@ -80,6 +80,16 @@ function lightbox_content($text = '')
 		
 		'~\[image=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$1" alt="" /></a>',
 		
+		# [image(left)=http://localhost/uploads/mini/2008-07-11-19-50-56.jpg Картинка]http://localhost/uploads/2008-07-11-19-50-56.jpg[/image]
+		'~\[image\((.[^\s]*?)\)=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$4" class="lightbox" title="$3"><img src="$2" alt="$3" class="$1" /></a>',
+		
+		# [image(left)=http://localhost/uploads/mini/2008-07-11-19-50-56.jpg]http://localhost/uploads/2008-07-11-19-50-56.jpg[/image]
+		'~\[image\((.[^ ]*?)\)=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox"><img src="$2" alt="" class="$1" /></a>',
+		
+		# [image(right)]http://localhost/uploads/2008-07-11-19-50-56.jpg[/image]
+		'~\[image\((.[^ ]*?)\)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$2" alt="" class="$1" /></a>',
+
+		
 	
 	
 		'~\[galname\](.*?)\[\/galname\]~si' => '<div>$1</div>',

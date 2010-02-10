@@ -255,6 +255,28 @@
             },
 
             separator06 : { separator : true },
+            
+            forecolor1 : { visible : true, className : 'red', command : 'forecolor', arguments : ['red'], title : 'Красный' },
+            forecolor2 : { visible : true, className : 'green', command : 'forecolor', arguments : ['green'], title : 'Зеленый' },
+            forecolor3 : { visible : true, className : 'blue', command : 'forecolor', arguments : ['blue'], title : 'Синий' },
+            forecolor4 : {
+                visible : true,
+                exec    : function()
+                {
+
+                        var szColor = prompt('COLOR', '#');
+
+                        if ( szColor && szColor.length > 0 )
+                            this.editorDoc.execCommand('forecolor', false, szColor);
+                },
+
+                className : 'selectcolor',
+                title : 'Выберите цвет'
+            },
+            
+
+            
+            separator06 : { separator : true },
 
             h1mozilla : { visible : true && $.browser.mozilla, className : 'h1', command : 'heading', arguments : ['h1'], tags : ['h1'] },
             h2mozilla : { visible : true && $.browser.mozilla, className : 'h2', command : 'heading', arguments : ['h2'], tags : ['h2'] },
@@ -687,12 +709,13 @@
         },       
         // max -
 
-        appendMenu : function( cmd, args, className, fn )
+        appendMenu : function( cmd, args, className, fn, title )
         {
             var self = this;
             var args = args || [];
+            var title = title || className || cmd;
 
-            $('<li></li>').append(
+            $('<li title="' + title + '"></li>').append(
                 $('<a><!-- --></a>').addClass(className || cmd)
             ).mousedown(function() {
                 if ( fn ) fn.apply(self); else self.editorDoc.execCommand(cmd, false, args);
@@ -720,7 +743,7 @@
                 {
                     this.appendMenu(
                         control.command || name, control.arguments || [],
-                        control.className || control.command || name || 'empty', control.exec
+                        control.className || control.command || name || 'empty', control.exec, control.title
                     );
                 }
             }

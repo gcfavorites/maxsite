@@ -11,7 +11,12 @@ require_once( getinfo('common_dir') . 'comments.php' ); // функции ком
 $this->load->helper('xml');
 
 $encoding = 'utf-8';
-$time_zone = str_replace('.', '', getinfo('time_zone'));
+
+$time_zone = getinfo('time_zone');
+if ($time_zone < 10 and $time_zone > 0) $time_zone = '+0' . $time_zone;
+elseif ($time_zone > -10 and $time_zone < 0) { $time_zone = '0' . $time_zone; $time_zone = str_replace('0-', '-0', $time_zone); }
+else $time_zone = '+00.00';
+$time_zone = str_replace('.', '', $time_zone);
 
 
 $description = mso_head_meta('description');
@@ -27,7 +32,8 @@ if ($pages)
 
 	$pubdate = date('D, d M Y H:i:s '. $time_zone, strtotime($pages[0]['page_date_publish']));
 
-	header("Content-Type: application/rss+xml");
+	header('Content-type: text/html; charset=utf-8');
+	header('Content-Type: application/rss+xml');
 	echo '<' . '?xml version="1.0" encoding="utf-8"?' . '>';
 	
 	# получаем комментарии к странице
@@ -48,22 +54,17 @@ if ($pages)
 		<pubDate><?= $pubdate ?></pubDate>
 		<language><?= $language ?></language>
 		<generator><?= $generator ?></generator>
-		<rights>Copyright <?= gmdate("Y", time()) ?></rights>
-		
+		<copyright>Copyright <?= gmdate("Y", time()) ?>, <?= getinfo('siteurl') ?></copyright>
 		<?php foreach ($comments as $comment) : extract($comment); ?>
-
 		<item>
 			<title><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?> к "<?= xml_convert(strip_tags($page_title)) ?>"</title>
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></guid>
-			<pubdate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($comments_date)) ?></pubdate>
-			<author><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?></author>
-			<creator><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?></creator>
+			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($comments_date)) ?></pubDate>
+			<author>none@none.com (<?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?>)</author>
 			<description><![CDATA[<?= $comments_content  ?>]]></description>
 		</item>
-		
 		<?php endforeach; ?>
-		
 	</channel>
 </rss>
 <?php 

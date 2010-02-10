@@ -399,8 +399,8 @@
 	
 	// проходимся по каталогу аплоада и выводим их списком
 	
-	$uploads_dir = $MSO->config['uploads_dir'] . $current_dir;
-	$uploads_url = $MSO->config['uploads_url'] . $current_dir;
+	$uploads_dir = getinfo('uploads_dir') . $current_dir;
+	$uploads_url = getinfo('uploads_url') . $current_dir;
 	
 	// все файлы в массиве $dirs
 	$dirs = directory_map($uploads_dir, true); // только в текущем каталоге

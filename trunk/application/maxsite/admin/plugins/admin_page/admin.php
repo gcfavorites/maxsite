@@ -3,7 +3,6 @@
 	$CI = & get_instance();
 	
 	require_once( getinfo('common_dir') . 'page.php' ); 			// функции страниц 
-	// require_once( getinfo('common_dir') . 'category.php' ); 		// функции рубрик
 	
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_page_delete')) )
 	{
@@ -12,17 +11,42 @@
 		// pr($post);
 		
 		$page_id = (int) $post['f_page_delete'];
-		// проверим, чтобы это было число
-		$page_id1 = (int) $page_id;
-		if ( (string) $page_id != (string) $page_id1 ) $page_id = false; // ошибочный id
-		
+		if (!is_numeric($page_id)) $page_id = false; // не число
+			else $page_id = (int) $page_id;
+
 		if (!$page_id) // ошибка! 
 		{
-			echo '<div class="error">Ошибка обновления</div>';
+			echo '<div class="error">Ошибка удаления</div>';
 		}
 		else 
 		{
-			// проверим id, чтобы вообще такая страница была
+			$data = array(
+				'user_login' => $MSO->data['session']['users_login'],
+				'password' => $MSO->data['session']['users_password'],
+				'page_id' => $page_id,
+			);
+			
+			require_once( getinfo('common_dir') . 'functions-edit.php' ); // функции редактирования
+			
+			$result = mso_delete_page($data);
+			
+			if (isset($result['result']) and $result['result'])
+			{
+				if ( $result['result'] ) 
+				{
+					echo '<div class="update">Страница удалена</div>';
+				}
+				else
+				{
+					echo '<div class="error">Ошибка при удалении ('. $result['description'] . ')</div>';
+				}
+			}
+			else
+			{
+				echo '<div class="error">Ошибка при удалении ('. $result['description'] . ')</div>';
+			}
+			
+			/*
 			$CI->db->select('page_id');
 			$CI->db->where(array('page_id'=>$page_id));
 			$query = $CI->db->get('page');
@@ -46,6 +70,7 @@
 				
 				echo '<div class="update">Страница удалена</div>';
 			}
+			*/
 		}
 	}
 	

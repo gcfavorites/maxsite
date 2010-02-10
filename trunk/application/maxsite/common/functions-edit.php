@@ -9,7 +9,7 @@
 ##### ------------------------------------------------------------------------------
 ##### Рубрики
 ##### ------------------------------------------------------------------------------
-
+		
 	# редактирование рубрики
 	function mso_edit_category($data)
 	{
@@ -402,22 +402,36 @@
 		
 		if ($ok)
 		{
-			$users_password = mso_md5($users_password);
-			
-			$ins_data = array (
-				'users_login' => $users_login,
-				'users_nik' => $users_login,
-				'users_email' => $users_email,
-				'users_groups_id' => $users_groups_id,
-				'users_password' => $users_password
-				);
+			# может такой логин уже занят?
+			$CI->db->select('users_id');
+			$CI->db->where('users_login', $users_login);
+			$query = $CI->db->get('users');
+			if ($query->num_rows()) // что-то есть
+			{
+				$response = array(
+							'result' => 0,
+							'description' => 'Login already exists'
+						);
+			}
+			else
+			{
+				$users_password = mso_md5($users_password);
+				
+				$ins_data = array (
+					'users_login' => $users_login,
+					'users_nik' => $users_login,
+					'users_email' => $users_email,
+					'users_groups_id' => $users_groups_id,
+					'users_password' => $users_password
+					);
 
-			$res = ($CI->db->insert('users', $ins_data)) ? '1' : '0';
+				$res = ($CI->db->insert('users', $ins_data)) ? '1' : '0';
 
-			$response = array(
-							'result' => $res,
-							'description' => 'Inserting new user'
-							);
+				$response = array(
+								'result' => $res,
+								'description' => 'Inserting new user'
+								);
+			}
 		}
 		else // ошибочные данные
 		{
@@ -465,7 +479,6 @@
 		
 		$page_title = $data['page_title'];
 		$page_content = $data['page_content'];
-		
 		// короткая ссылка
 		$page_slug = isset($data['page_slug']) ? mso_slug($data['page_slug']) : false;
 		if (!$page_slug)
@@ -524,6 +537,10 @@
 		if ( ($page_status != 'publish') and ($page_status != 'draft') and ($page_status != 'private') )
 				$page_status = 'publish';
 		
+		// если стоит разрешение admin_page_publish, то статус не меняем
+		// иначе ставим только draft
+		if ( !mso_check_allow('admin_page_publish', $user_data['users_id']) ) $page_status = 'draft';
+
 
 		$page_comment_allow = isset($data['page_comment_allow']) ? (int) $data['page_comment_allow'] : '1';
 		$page_ping_allow = isset($data['page_ping_allow']) ? (int) $data['page_ping_allow'] : '1';
@@ -590,6 +607,8 @@
 				$CI->db->insert('cat2obj', $ins_data);
 			}
 			
+			
+				
 			// $page_tags = метка
 			// метки - это мета данные
 			// вначале получим существующие метки
@@ -619,6 +638,7 @@
 			}
 			
 			// опции - мета
+			require_once( getinfo('common_dir') . 'meta.php' );
 			$page_meta_options = isset($data['page_meta_options']) ? $data['page_meta_options'] : '';
 			
 			
@@ -634,9 +654,9 @@
 					$meta_temp = explode('##VALUE##', $val);
 					$meta_key = trim($meta_temp[0]);
 					$meta_value = trim($meta_temp[1]);
-					
-					$CI->db->insert('meta', array('meta_key'=>$meta_key, 'meta_value'=>$meta_value, 
-												  'meta_table' => 'page', 'meta_id_obj' => $id) );
+					mso_add_meta($meta_key, $id, 'page', $meta_value);
+					//$CI->db->insert('meta', array('meta_key'=>$meta_key, 'meta_value'=>$meta_value, 
+					//							  'meta_table' => 'page', 'meta_id_obj' => $id) );
 				}
 			}
 			
@@ -755,7 +775,10 @@
 		$page_status = isset($data['page_status']) ? $data['page_status'] : 'publish';
 		if ( ($page_status != 'publish') and ($page_status != 'draft') and ($page_status != 'private') )
 				$page_status = 'publish';
-		
+				
+		// если стоит разрешение admin_page_publish, то статус не меняем
+		// иначе ставим только draft
+		if ( !mso_check_allow('admin_page_publish', $user_data['users_id']) ) $page_status = 'draft';
 
 		$page_comment_allow = isset($data['page_comment_allow']) ? (int) $data['page_comment_allow'] : '1';
 		$page_ping_allow = isset($data['page_ping_allow']) ? (int) $data['page_ping_allow'] : '1';
@@ -858,6 +881,7 @@
 		
 			
 			// опции - мета
+			require_once( getinfo('common_dir') . 'meta.php' );
 			$page_meta_options = isset($data['page_meta_options']) ? $data['page_meta_options'] : '';
 			
 			// title##VALUE##титул##METAFIELD##description##VALUE##описание##METAFIELD##keywords##VALUE##ключи##METAFIELD##
@@ -865,20 +889,20 @@
 			$page_meta_options = explode('##METAFIELD##', $page_meta_options);
 			
 			// вначале удалим все мета этой записи
-			$where_in = array(); // здесь meta_key
-			foreach ($page_meta_options as $key=>$val)
-			{
-				if (trim($val))
-				{
-					$meta_temp = explode('##VALUE##', $val);
-					$where_in[] = trim($meta_temp[0]);
-				}
-			}	
+			//$where_in = array(); // здесь meta_key
+			//foreach ($page_meta_options as $key=>$val)
+			//{
+			//	if (trim($val))
+			//	{
+			//		$meta_temp = explode('##VALUE##', $val);
+			//		$where_in[] = trim($meta_temp[0]);
+			//	}
+			//}	
 				
 			// вначале грохнем старые, потом добавим новые
-			$CI->db->where( array('meta_id_obj' => $id, 'meta_table' => 'page') );
-			$CI->db->where_in('meta_key', $where_in );
-			$CI->db->delete('meta');
+			//$CI->db->where( array('meta_id_obj' => $id, 'meta_table' => 'page') );
+			//$CI->db->where_in('meta_key', $where_in );
+			//$CI->db->delete('meta');
 			
 			// теперь тоже самое, только добавляем через insert
 			foreach ($page_meta_options as $key=>$val)
@@ -889,8 +913,10 @@
 					$meta_key = trim($meta_temp[0]);
 					$meta_value = trim($meta_temp[1]);
 					
-					$CI->db->insert('meta', array('meta_key'=>$meta_key, 'meta_value'=>$meta_value, 
-												  'meta_table' => 'page', 'meta_id_obj' => $id) );
+					mso_add_meta($meta_key, $id, 'page', $meta_value);
+					
+					//$CI->db->insert('meta', array('meta_key'=>$meta_key, 'meta_value'=>$meta_value, 
+					//							  'meta_table' => 'page', 'meta_id_obj' => $id) );
 				}
 			}
 			
@@ -914,5 +940,59 @@
 		return $response;
 	}
 
+	# удалить страница
+	function mso_delete_page($data)
+	{
+		global $MSO;
+		
+		$CI = & get_instance();
+		
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+			
+		# проверка доступа этому пользователю с этим паролем и этим разрешением
+		if ( !mso_check_user_password($user_login, $password, 'admin_page_delete') )
+				return array( 'result' => 0, 'description' => 'Login/password incorrect or banned action');
+		
+		if (!isset($data['page_id'])) 
+				return array( 'result' => 0, 'description' => 'Page ID not found');
+				
+		$page_id = (int) $data['page_id'];
+		
+		if (!$page_id) // ошибка! 
+		{
+			return array( 'result' => 0, 'description' => 'Page ID incorrect');
+		}
+		else 
+		{
+			// проверим id, чтобы вообще такая страница была
+			$CI->db->select('page_id');
+			$CI->db->where(array('page_id'=>$page_id));
+			$query = $CI->db->get('page');
+			if ($query->num_rows() == 0) // нет такого
+			{
+				return array( 'result' => 0, 'description' => 'Page not found');
+			}
+			else 
+			{	// теперь можно удалять
+				// при удалении страницы нужно сразу удалить её, рубрики и мета
+				// потом будут еще и комментарии
+				
+				$CI->db->where( array('page_id'=>$page_id) );
+				$CI->db->delete('cat2obj');
+				
+				$CI->db->where( array ('meta_id_obj' => $page_id, 'meta_table' => 'page') );
+				$CI->db->delete('meta');
+				
+				$CI->db->where( array('page_id'=>$page_id) ); 
+				$CI->db->delete('page');
+				
+				return array( 'result' => 1, 'description' => 'Page deleted');
+			}
+		}
+	}
 
 ?>

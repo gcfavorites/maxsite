@@ -11,7 +11,12 @@ require_once( getinfo('common_dir') . 'comments.php' ); // функции ком
 $this->load->helper('xml');
 
 $encoding = 'utf-8';
-$time_zone = str_replace('.', '', getinfo('time_zone'));
+
+$time_zone = getinfo('time_zone');
+if ($time_zone < 10 and $time_zone > 0) $time_zone = '+0' . $time_zone;
+elseif ($time_zone > -10 and $time_zone < 0) { $time_zone = '0' . $time_zone; $time_zone = str_replace('0-', '-0', $time_zone); }
+else $time_zone = '+00.00';
+$time_zone = str_replace('.', '', $time_zone);
 
 
 $feed_name = mso_head_meta('title') . ' (Последние комментарии)';
@@ -25,7 +30,8 @@ $comments = mso_get_comments(false, array('limit'=>'20', 'order'=>'desc'));
 if ($comments) 
 {
 	$pubdate = date('D, d M Y H:i:s '. $time_zone, strtotime($comments[0]['comments_date']));
-	header("Content-Type: application/rss+xml");
+	header('Content-type: text/html; charset=utf-8');
+	header('Content-Type: application/rss+xml');
 	echo '<' . '?xml version="1.0" encoding="utf-8"?' . '>';
 ?>
 
@@ -37,22 +43,16 @@ if ($comments)
 		<pubDate><?= $pubdate ?></pubDate>
 		<language><?= $language ?></language>
 		<generator><?= $generator ?></generator>
-		<rights>Copyright <?= gmdate("Y", time()) ?></rights>
-		
+		<copyright>Copyright <?= gmdate("Y", time()) ?>, <?= getinfo('siteurl') ?></copyright>
 		<?php foreach ($comments as $comment) : extract($comment); ?>
-
 		<item>
 			<title><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?> к "<?= xml_convert(strip_tags($page_title)) ?>"</title>
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></guid>
-			<pubdate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($comments_date)) ?></pubdate>
-			<author><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?></author>
-			<creator><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?></creator>
+			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($comments_date)) ?></pubDate>
 			<description><![CDATA[<?= $comments_content  ?>]]></description>
 		</item>
-		
 		<?php endforeach; ?>
-		
 	</channel>
 </rss>
 <?php 

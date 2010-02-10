@@ -33,10 +33,10 @@
 		if (isset($result['result']) and $result['result']) 
 		{
 			mso_flush_cache(); // сбросим кэш
-			echo '<div class="update">Обновлено!</div>';
+			echo '<div class="update">' . t('Обновлено!', 'admin') . '</div>';
 		}
 		else
-			echo '<div class="error">Ошибка обновления</div>';
+			echo '<div class="error">' . t('Ошибка обновления', 'admin') . '</div>';
 	}
 	
 	# добавление новой рубрики
@@ -65,7 +65,7 @@
 		if (isset($result['result']) and $result['result']) 
 		{
 			mso_flush_cache(); // сбросим кэш
-			echo '<div class="update">Добавлено!</div>';
+			echo '<div class="update">' . t('Добавлено!', 'admin') . '</div>';
 		}
 		else
 			echo '<div class="error">Ошибка добавления! ' . $result['description'] . ' </div>';
@@ -97,8 +97,8 @@
 
 	
 ?>
-	<h1>Рубрики</h1>
-	<p class="info">Настройка рубрик</p>
+	<h1><?= t('Рубрики', 'admin') ?></h1>
+	<p class="info"><?= t('Настройка рубрик', 'admin') ?></p>
 
 <?php
 	

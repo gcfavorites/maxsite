@@ -98,22 +98,31 @@ function mso_add_meta($meta_key = '', $meta_id_obj = '', $meta_table = '', $meta
         'meta_desc' => $meta_desc,
         'meta_menu_order' => $meta_menu_order,
         'meta_slug' => $meta_slug
-    );    
+    );
+    
+    //pr($data);
 
     $CI = &get_instance();
     
     # Ищем ID записи по meta_key и meta_id_obj
     $CI->db->select('meta_id');
-    $query = $CI->db->get_where('meta', array('meta_key' => $meta_key, 'meta_id_obj' => $meta_id_obj, 'meta_table' => $meta_table ));
-    
-    if( !$query->num_rows() )
+    $CI->db->where(array('meta_key' => $meta_key, 'meta_id_obj' => $meta_id_obj, 'meta_table' => $meta_table ));
+    $query = $CI->db->get('meta');
+
+    if ( $query->num_rows() == 0 )
     {
 		# такой записи нет, ее нужно вставить
-        return $CI->db->insert('meta', $data);
+		if ( $meta_value > '') 
+		{
+			//pr('insert ' . $meta_value);
+			return $CI->db->insert('meta', $data);
+		}
+		//else pr('no insert');
     }
     else
     {
 		# такая запись есть, ее нужно обновить
+		//pr('update');
         $row = $query->row();
         return $CI->db->update('meta', $data, 'meta_id = ' . $row->meta_id);
     }

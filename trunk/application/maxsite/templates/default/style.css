@@ -237,6 +237,10 @@ img.text-right {float: right; margin: 5px 0 5px 10px;}
 img.text-center {margin: 0 auto; display: block;}
 img.border {border: 1px solid #3D61B6; }
 
+img.left {float: left; margin: 5px 10px 5px 0px;}
+img.right {float: right; margin: 5px 0 5px 10px;}
+img.center {margin: 0 auto; display: block;}
+
 img.smiley {vertical-align: middle;}
 
 /*  PRE to OL */

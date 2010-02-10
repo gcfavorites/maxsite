@@ -60,7 +60,7 @@
 		{
 			mso_checkreferer();
 			
-			// pr($_POST);
+			//pr($_POST);
 			
 			// pr($post['f_content'], true);
 			// $f_content = mso_text_to_html($post['f_content']);

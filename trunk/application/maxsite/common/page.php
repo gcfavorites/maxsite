@@ -91,7 +91,7 @@ function mso_get_pages($r = array(), &$pag)
 	# мы оформляем его в $CI, а здесь только выполняем $CI->db->get();
 	
 	// если указана кастомная функция, то выполняем r1
-	if ( $r['custom_func'] and function_exists($r['custom_func']) ) $r['custom_func']();
+	if ( $r['custom_func'] and function_exists($r['custom_func']) ) $r['custom_func']($r, $pag);
 	elseif ($r['custom_type']) // указан какой-то свой тип данных - аналог is_type
 	{
 		$custom_type = $r['custom_type'];
@@ -376,11 +376,11 @@ function _mso_sql_build_home($r, &$pag)
 	
 	if ($r['content'])
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	}
 	else
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	}
 		
 	$CI->db->from('page');
@@ -448,7 +448,7 @@ function _mso_sql_build_page($r, &$pag)
 	// if ( (string) $slug != (string) $id ) $id = false; // slug не число
 	
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor, users_description');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor, users_description, users_login');
 	$CI->db->from('page');
 	
 	// if ($page_status) $CI->db->where('page_status', $page_status);
@@ -572,9 +572,9 @@ function _mso_sql_build_category($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 		
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
@@ -690,9 +690,9 @@ function _mso_sql_build_tag($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	
 	
 	$CI->db->from('page');
@@ -821,7 +821,7 @@ function _mso_sql_build_archive($r, &$pag)
 		$pag = false;
 	
 	// теперь сами страницы
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 	
@@ -918,7 +918,7 @@ function _mso_sql_build_search($r, &$pag)
 	
 	// теперь сами страницы
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	
 		
 	$CI->db->from('page');
@@ -1021,9 +1021,9 @@ function _mso_sql_build_author($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
 		
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);

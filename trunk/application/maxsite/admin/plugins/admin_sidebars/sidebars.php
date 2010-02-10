@@ -59,10 +59,11 @@
 	$error = '';
 	$all_name_sidebars = array(); // все сайдбары
 	
+	$form = '';
+	
 	if ($MSO->sidebars)
 	{ // есть сайдбары
 	
-		$form = '';
 		foreach ($MSO->sidebars as $name => $sidebar)
 		{
 			// у сайддара уже может быть определены виджеты - считываем их из опций

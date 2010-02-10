@@ -622,4 +622,23 @@ function mso_get_cat_from_slug($slug = '', $full = false)
 	return false;
 }
 
+# Получаем url рубрики по ID
+# если id массив, то берется только первый элемент
+function mso_get_cat_url_from_id($id = 0)
+{
+	$all_cats = mso_cat_array_single();
+	
+	if (is_array($id) and count($id)>0) $id = $id[0];
+	
+	foreach ($all_cats as $val)
+	{
+		if ($val['category_id'] == $id)
+		{
+			return getinfo('siteurl') . 'category/' . $val['category_slug'];
+		}
+	}
+	
+	return '';
+}
+
 ?>

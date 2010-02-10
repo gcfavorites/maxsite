@@ -14,5 +14,16 @@ $lang['Добро пожаловать в MaxSite CMS!'] = 'Welcome to MaxSite C
 $lang['Информация'] = 'Informations';
 $lang['Переход к сайту'] = 'Goto my site';
 
+$lang['Обновлено!'] = 'Updated!';
+$lang['Ошибка обновления'] = 'Error updating';
+
+$lang['Рубрики'] = 'Category';
+$lang['Настройка рубрик'] = 'Edit category';
+
+//$lang['Админ-доступ к «Плагинам»'] = '';
+//$lang['Доступ запрещен'] = '';
+//$lang[''] = '';
+//$lang[''] = '';
+
 
 ?>

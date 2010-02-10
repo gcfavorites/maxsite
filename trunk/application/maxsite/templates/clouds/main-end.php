@@ -19,6 +19,10 @@
 	<?php require(getinfo('template_dir') . 'footer.php'); ?>
 
 </div><!-- div id="container" -->
+<?php mso_hook('body_end') ?>
 
+<?php
+	if (function_exists('ushka')) echo ushka('google_analytics');
+?>
 </body>
 </html>

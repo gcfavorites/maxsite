@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function ushki_autoload($args = array())
 {
-	mso_create_allow('ushki_edit', 'Админ-доступ к Ушкам');
+	mso_create_allow('plugin_ushki', 'Админ-доступ к Ушкам');
 	mso_hook_add( 'admin_init', 'ushki_admin_init'); # хук на админку
 	mso_register_widget('ushki_widget', 'Ушки'); # регистрируем виджет
 	mso_hook_add( 'content', 'ushki_content'); # хук на вывод контента
@@ -20,10 +20,17 @@ function ushki_activate($args = array())
 	return $args;
 }
 
+function ushki_deactivate($args = array())
+{	
+	mso_remove_allow('ushki_edit'); // старое ошибочное разрешение
+	return $args;
+}
 
 # функция выполняется при деинсталяции плагина
 function ushki_uninstall($args = array())
 {	
+	mso_remove_allow('plugin_ushki');
+	mso_remove_allow('ushki_edit'); // старое ошибочное разрешение
 	mso_delete_option_mask('ushki_widget_', 'plugins'); // удалим созданные опции
 	return $args;
 }

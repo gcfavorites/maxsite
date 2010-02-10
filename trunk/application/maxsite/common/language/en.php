@@ -6,6 +6,8 @@
  */
 
 $lang['Доступ запрещен'] = 'Access denied';
+$lang['Сайдбар'] = 'Sidebar';
+$lang['Вджет'] = 'Widget';
 
 
 

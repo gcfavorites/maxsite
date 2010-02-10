@@ -18,7 +18,7 @@
 	
 	# до 
 	$do = <<<EOF
-	<table style="border-col1lapse: collapse; width: 99%; border: none; line-height: 1.4em;">
+	<table style="width: 99%; border: none; line-height: 1.4em;">
 	<tr>
 		<td style="vertical-align: top; padding: 0 10px 0 0;">
 		<input type="text" value="{$f_header}" name="f_header" class="f_header" />
