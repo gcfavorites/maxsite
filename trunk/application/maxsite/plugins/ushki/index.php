@@ -111,7 +111,24 @@ function ushki_widget_form($num = 1)
 	$CI->load->helper('form');
 		
 	$form = '<p><div class="t150">' . t('Заголовок (блока):', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
-	$form .= '<p><div class="t150">' . t('Ушка (название):', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'ushka', 'value'=>$options['ushka'] ) ) ;
+	
+	//$form .= '<p><div class="t150">' . t('Ушка (название):', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'ushka', 'value'=>$options['ushka'] ) ) ;
+	
+	
+	# получим список всех ушек
+	$ushki = mso_get_float_option('ushki', 'ushki', array());
+	
+	$ushki_list = array(); // преобразуем к form_dropdown
+	foreach ($ushki as $val)
+	{
+		$ushki_list[$val['name']] = $val['name'];
+	}
+		
+	$form .= '<p><div class="t150">' . t('Ушка (название):', 'plugins') . '</div> '. 
+		form_dropdown( $widget . 'ushka', 
+		$ushki_list, 
+		$options['ushka']);
+	
 	
 	return $form;
 }
@@ -174,38 +191,38 @@ function ushki_content($content = '')
 }
 
 # получение ушки
-function ushka($name = '', $delim = '<br />', $not_exists = '')
+function ushka($name_ushka = '', $delim_ushka = '<br />', $not_exists_ushka = '')
 {
 	
-	if (! trim($name) ) return '';
+	if (! trim($name_ushka) ) return '';
 	
-	$all = ushki_get_all(); // получили все ушки
+	$all_ushka = ushki_get_all(); // получили все ушки
 	
-	$out = '';
+	$out_ushka = '';
 	
 	// найдем нужные нам. Их может быть несколько
-	foreach($all as $us)
+	foreach($all_ushka as $us_ushka)
 	{
-		if ($us['name'] == $name) // наша
+		if ($us_ushka['name'] == $name_ushka) // наша
 		{
-			$text = $us['text'];
+			$text_ushka = $us_ushka['text'];
 			
-			if  ($us['type'] == 'php') // нужно текст выполнить как php
+			if  ($us_ushka['type'] == 'php') // нужно текст выполнить как php
 			{
 				ob_start();
-				eval( '?>' . stripslashes( $text ) . '<?php ');
-				$text = ob_get_contents();
+				eval( '?>' . stripslashes( $text_ushka ) . '<?php ');
+				$text_ushka = ob_get_contents();
 				ob_end_clean();
 			}
 			
-			if ($out != '') $out = $out . $delim . $text;
-				else $out .= $text;
+			if ($out_ushka != '') $out_ushka = $out_ushka . $delim_ushka . $text_ushka;
+				else $out_ushka .= $text_ushka;
 		}
 	}
 	
-	if ($out == '') $out = $not_exists; // если такой ушки не обнаружилось
+	if ($out_ushka == '') $out_ushka = $not_exists_ushka; // если такой ушки не обнаружилось
 	
-	return $out;
+	return $out_ushka;
 }
 
 

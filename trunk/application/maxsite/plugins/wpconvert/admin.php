@@ -475,7 +475,7 @@
 	
 	
 	echo '<br /><form action="" method="post">' . mso_form_session('f_session_id');
-	echo '<input type="checkbox" name="f_yes" nochecked /> ' . t('Я понял и согласен взять на себя всю ответственность за использование данного конвертера! Дамп также сделал и умею с ним работать', 'plugins') . '<br />';
+	echo '<label><input type="checkbox" name="f_yes" nochecked /> ' . t('Я понял и согласен взять на себя всю ответственность за использование данного конвертера! Дамп также сделал и умею с ним работать', 'plugins') . '</label><br />';
 	
 	echo '<br />' . t('Выберите файл:', 'plugins') . ' <select style="width: 300px" name="f_xml_file">' . $option_files . '</select>';
 	

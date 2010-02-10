@@ -1,0 +1,21 @@
+* {padding: 0; margin: 0;}
+html, body {margin: 0; padding: 0;}
+body {font: 9pt/1.3em Verdana;}
+
+#container {width: 900px; margin: 0 auto;}
+
+#header1 {background: #DDD; height: 100px;}
+#header2 {background: #EEE; height: 50px;}
+
+#sub-container {float: left;}
+#wrapper {float: left; width: 100%;}
+
+/* LEFT */
+#content {margin: 0 0 0 300px;}
+#sidebars {float: left; width: 300px; margin-left: -100%;}
+
+
+/* RIGHT 
+#content {margin: 0 300px 0 0;}
+#sidebars {float: left; width: 300px; margin-left: -300px;}
+*/

@@ -19,32 +19,37 @@ mso_head_meta('title', &$pages, '%category_name%|%title%', ' » '); //  meta tit
 mso_head_meta('description', &$pages, '%category_name%'); // meta description страницы
 mso_head_meta('keywords', &$pages, '%category_name%'); // meta keywords страницы
 
+if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
 
-echo '<h1 class="category">' . $title_page . '</h1>';
+echo NR . '<div class="type type_category">' . NR;
+
+if ($f = mso_page_foreach('category-do')) require($f); // подключаем кастомный вывод
+	else echo '<h1 class="category">' . $title_page . '</h1>';
 
 if ($pages) // есть страницы
 { 	
 	
 	if ( mso_get_option('category_show_rss_text', 'templates', 1) )
 	{
-		echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a></h3>';
+		if ($f = mso_page_foreach('category-show-rss-text')) 
+			require($f); // подключаем кастомный вывод
+		else 
+			echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_current_url() . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a></h3>';
 	}
 	
 	if (!$full_posts) echo '<ul class="category">';
 	
 	foreach ($pages as $page) : // выводим в цикле
 		
-		if (function_exists('mso_page_foreach'))
+		if ($f = mso_page_foreach('category')) 
 		{
-			if ($f = mso_page_foreach('category')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
+
 		
 		extract($page);
 	
@@ -87,12 +92,12 @@ if ($pages) // есть страницы
 }
 else 
 {
- 
-	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
-	echo '<p>'.t('Извините, ничего не найдено').'</p>';
-	
+ 	echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+	echo '<p>' . t('Извините, ничего не найдено') . '</p>';
+	echo mso_hook('page_404');
 } // endif $pages
 
+echo NR . '</div><!-- class="type type_category" -->' . NR;
 
 # конечная часть шаблона
 require(getinfo('template_dir') . 'main-end.php');

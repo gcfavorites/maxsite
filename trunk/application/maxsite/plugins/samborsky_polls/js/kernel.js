@@ -1,21 +1,14 @@
-function sp_polls_vote(q_id){
+
+	/**********
+	 * Отправляем запрос к php
+	 * @param {Object} polls
+	 * @param {Object} loader
+	 * @param {Object} data
+	 * @param {Object} ajax_path
+	 */
+
+	function sp_polls_send_query(polls,loader,data,ajax_path){
 	
-	var data = 'q_id=' + q_id; 
-	
-	// Получаем результаты голосования
-	$('.sp_question_' + q_id).each(function(i){
-		
-		if( true == $(this).attr('checked') ){
-			
-			data += '&a_id[]=' + $(this).val();
-		}
-	});
-	
-	// Отправляем POST запрос
-	var ajax_path = $('#sp_ajax_path_' + q_id).val();
-	
-	if( ajax_path.length ){
-		
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
@@ -23,13 +16,8 @@ function sp_polls_vote(q_id){
 			data: data,
 			beforeSend:
 				function(){
-			        $('#sp_polls_loader_' + q_id).show();
-					$('#sp_polls_' + q_id).hide();
-				},
-			complete: 
-				function(){
-					$('#sp_polls_loader_' + q_id).hide();
-					$('#sp_polls_' + q_id).show();
+			        loader.show();
+					polls.hide();
 				},
 			success:
 				function(json,textStatus){
@@ -39,18 +27,64 @@ function sp_polls_vote(q_id){
 						alert(json.error_description);
 					}
 					else{
-						$('#sp_polls_' + q_id).html( json.resp );
-						$('#sp_polls_loader_' + q_id).hide();
-						$('#sp_polls_' + q_id).show();
+						loader.hide();
+						polls.show();
+						polls.html( json.resp );
 					}
 				},
 			error:
 				function(){
-					$('#sp_polls_' + q_id).show();
-					$('#sp_polls_loader_' + q_id).hide();
-					
+					loader.hide();
+					polls.show();
 					alert('Ошибка браузера.');
-				},
+				}
 		});
-	}	
-}
+	}
+
+
+	/***********
+	 * Выводим результаты голосования
+	 * @param {Object} q_id
+	 */
+
+	function sp_polls_results(q_id){
+		
+		var data = 'type=results&q_id=' + q_id;
+		var polls = $('#sp_polls_' + q_id);
+		var loader = $('#sp_polls_loader_' + q_id);
+		
+		// Отправляем POST запрос
+		var ajax_path = $('#sp_ajax_path_' + q_id).val();
+		
+		if( ajax_path.length ){
+			sp_polls_send_query(polls,loader,data,ajax_path);
+		}		
+	}
+	
+	/*********
+	 * Учитываем голос
+	 * @param {Object} q_id
+	 */
+	
+	function sp_polls_vote(q_id){
+		
+		var data = 'type=vote&q_id=' + q_id; 
+		var polls = $('#sp_polls_' + q_id);
+		var loader = $('#sp_polls_loader_' + q_id);
+		
+		// Получаем результаты голосования
+		$('.sp_question_' + q_id).each(function(i){
+			
+			if( true == $(this).attr('checked') ){
+				
+				data += '&a_id[]=' + $(this).val();
+			}
+		});
+		
+		// Отправляем POST запрос
+		var ajax_path = $('#sp_ajax_path_' + q_id).val();
+		
+		if( ajax_path.length ){
+			sp_polls_send_query(polls,loader,data,ajax_path);
+		}	
+	}

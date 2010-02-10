@@ -38,3 +38,5 @@
 	<div id="sub-container">
 		<div id="wrapper">
 			<div id="content">
+				<div class="content-top"></div>
+				<div class="content-all">

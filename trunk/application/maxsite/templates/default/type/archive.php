@@ -9,25 +9,27 @@ $par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'),
 
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
+if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 // теперь сам вывод
 
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
 
+echo NR . '<div class="type type_archive">' . NR;
+
 if ($pages) // есть страницы
 { 	
-	echo '<h1 class="archive">' . t('Архивы') . '</h1>';
+	
+	if ($f = mso_page_foreach('archive-do')) require($f); // подключаем кастомный вывод
+	else echo '<h1 class="archive">' . t('Архивы') . '</h1>';
 	
 	foreach ($pages as $page) : // выводим в цикле
 		
-		if (function_exists('mso_page_foreach'))
+		if ($f = mso_page_foreach('archive')) 
 		{
-			if ($f = mso_page_foreach('archive')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
 		
 		extract($page);
@@ -59,12 +61,13 @@ if ($pages) // есть страницы
 }
 else 
 {
- 
-	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
-	echo '<p>'.t('Извините, ничего не найдено').'</p>';
+ 	echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+	echo '<p>' . t('Извините, ничего не найдено') . '</p>';
+	echo mso_hook('page_404');
 	
 } // endif $pages
 
+echo NR . '</div><!-- class="type type_archive" -->' . NR;
 
 # конечная часть шаблона
 require(getinfo('template_dir') . 'main-end.php');

@@ -72,7 +72,11 @@ function category_widget_form($num = 1)
 			. '<br /><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' [LINK][TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;[/LINK]&lt;br /&gt;[DESCR]';
 
 	$form .= '<p><div class="t150">' . t('Формат текущей:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format_current', 'value'=>$options['format_current'] ) ) 
-			. '<br /><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' &lt;span&gt;[TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;&lt;/span&gt;&lt;br /&gt;[DESCR]';
+			. '<br /><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' &lt;span&gt;[TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;&lt;/span&gt;&lt;br /&gt;[DESCR]'
+			. '<br /><div class="t150">&nbsp;</div>' . t('Все варианты:', 'plugins') . ' [SLUG], [ID_PARENT], [ID], [MENU_ORDER], [TITLE], [COUNT], [DESCR], [LINK][/LINK]'
+			
+			
+			;
 
 	$form .= '<p><div class="t150">' . t('Включить только:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'include', 'value'=>$options['include'] ) ) 
 			. '<br /><div class="t150">&nbsp;</div>' . t('Укажите номера рубрик через запятую или пробел', 'plugins');
@@ -167,7 +171,7 @@ function category_widget_custom($options = array(), $num = 1)
 	
 	// $type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $ex = false, $in = false, $in_child = false $hide_empty = false
 	
-	$out = mso_create_list($all, array('childs'=>'childs', 'format'=>$options['format'], 'format_current'=>$options['format_current'], 'class_ul'=>'is_link', 'title'=>'category_name', 'link'=>'category_slug', 'current_id'=>false, 'prefix'=>'category/', 'count'=>'pages_count') );
+	$out = mso_create_list($all, array('childs'=>'childs', 'format'=>$options['format'], 'format_current'=>$options['format_current'], 'class_ul'=>'is_link', 'title'=>'category_name', 'link'=>'category_slug', 'current_id'=>false, 'prefix'=>'category/', 'count'=>'pages_count', 'slug'=>'category_slug', 'id'=>'category_id', 'menu_order'=>'category_menu_order', 'id_parent'=>'category_id_parent' ) );
 	
 	if ($out and $options['header']) $out = $options['header'] . $out;
 	

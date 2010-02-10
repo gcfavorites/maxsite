@@ -134,9 +134,13 @@ mso_cur_dir_lang('admin');
 	$CI->load->library('table');
 	
 	$tmpl = array (
-				'table_open'		  => '<table class="page" border="0" width="99%">',
+				'table_open'		  => '<table class="page tablesorter"" border="0" width="99%" id="pagetable">',
 				'row_alt_start'		  => '<tr class="alt">',
 				'cell_alt_start'	  => '<td class="alt">',
+				'heading_row_start' 	=> NR . '<thead><tr>',
+				'heading_row_end' 		=> '</tr></thead>' . NR,
+				'heading_cell_start'	=> '<th style="cursor: pointer;">',
+				'heading_cell_end'		=> '</th>',
 		  );
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
@@ -154,7 +158,9 @@ mso_cur_dir_lang('admin');
 		
 
 		// формируем первую строчку таблицы
-		$r = array(t('Действие', 'admin'));
+		$r = array(t('Действие', 'admin'), t('Код', 'admin'));
+		
+		
 		foreach ($us as $row) $r[] = $row['groups_name'];
 		
 		$data_table[] = $r; // добавим первую строчку
@@ -163,7 +169,9 @@ mso_cur_dir_lang('admin');
 		foreach ($all as $key => $val)
 		{
 			$r = array(); // действие 
-			$r[] = '<strong>' . $val . '</strong> (' . $key . ')';
+			// $r[] = '<strong>' . $val . '</strong> (' . $key . ')';
+			$r[] = '<strong>' . $val . '</strong>';
+			$r[] = $key;
 			
 			foreach ($us as $row)
 			{	
@@ -196,6 +204,18 @@ mso_cur_dir_lang('admin');
 		
 		$dop = '<div style="margin: 10px 0;"><p><input type="submit" name="f_submit" value="' . t('Изменить разрешения', 'admin') . '"></div>';
 		
+		
+		echo mso_load_jquery('jquery.tablesorter.js');
+		echo '
+		<script type="text/javascript">
+		$(function() {
+			$("table.tablesorter th").animate({opacity: 0.7});
+			$("table.tablesorter th").hover(function(){ $(this).animate({opacity: 1}); }, function(){ $(this).animate({opacity: 0.7}); });
+			$("#pagetable").tablesorter();
+		});	
+		</script>
+		';
+	
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $CI->table->generate($data_table); // вывод подготовленной таблицы
@@ -211,7 +231,7 @@ mso_cur_dir_lang('admin');
 			
 			//$name = urldecode($name);
 			$id = $row['groups_id'];
-			$delete .= '<p><input type="checkbox" name="f_delete_check[' . $id . ']" /> ' . $name . '</p>';
+			$delete .= '<p><label><input type="checkbox" name="f_delete_check[' . $id . ']" /> ' . $name . '</label></p>';
 		}
 		
 		if ($delete) 

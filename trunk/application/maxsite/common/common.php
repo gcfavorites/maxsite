@@ -71,12 +71,10 @@ function _sql()
 
 
 #  правильность email
-function mso_valid_email($em = '')
+function mso_valid_email($address = '')
 {
-	if ( eregi("^[a-z0-9\._+-]+@+[a-z0-9\._-]+\.+[a-z]{2,4}$", $em) )
-		return true;
-	else
-		return false;
+	# из helpers/email_helper.php
+	return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
 }
 
 
@@ -398,10 +396,15 @@ function getinfo($info = '')
 
 		case 'stylesheet_url' :
 				$out = $MSO->config['templates_url']
-						. $MSO->config['template']  # название из
+						. $MSO->config['template']
 						. '/';
 				break;
-
+		case 'template_url': // аналог stylesheet_url
+				$out = $MSO->config['templates_url']
+						. $MSO->config['template']
+						. '/';
+				break;
+				
 		case 'template' :
 				$out = $MSO->config['template'];
 				break;
@@ -525,7 +528,11 @@ function getinfo($info = '')
 		case 'uri_get' :
 				$out = $MSO->data['uri_get'];
 				break;
-
+				
+		case 'admin_dir' :
+				$out = $MSO->config['admin_dir'];
+				break;
+				
 	endswitch;
 
 	return $out;
@@ -1285,6 +1292,8 @@ function mso_clean_html_posle($matches)
 # переделка из WordPress wpautop() + мои правки
 function mso_auto_tag($pee, $pre_special_chars = false)
 {
+	if ( mso_hook_present('content_auto_tag_custom') ) return $pee = mso_hook('content_auto_tag_custom', $pee);
+	
 	$pee = $pee . "\n";
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
 
@@ -1305,9 +1314,21 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 
 	$pee = str_replace('<hr style="width: 100%; height: 2px;">', "<hr>", $pee); // +
 
-	if ( strpos($pee, '[volkman]') !== false and strpos(trim($pee), '[volkman]') == 0 ) // отдавать как есть
+	if ( // отдавать как есть - это такая фишка :-)
+		( strpos($pee, '[volkman]') !== false and strpos(trim($pee), '[volkman]') == 0 ) 
+		or ( strpos($pee, '[wave]') !== false and strpos(trim($pee), '[wave]') == 0 ) 
+		or ( strpos($pee, '[arsenal]') !== false and strpos(trim($pee), '[arsenal]') == 0 ) 
+		or ( strpos($pee, '[cuprum]') !== false and strpos(trim($pee), '[cuprum]') == 0 ) 
+		or ( strpos($pee, '[librarian]') !== false and strpos(trim($pee), '[librarian]') == 0 ) 
+		or ( strpos($pee, '[maxsite]') !== false and strpos(trim($pee), '[maxsite]') == 0 ) 
+	)
 	{
 		$pee = str_replace('[volkman]', '', $pee);
+		$pee = str_replace('[wave]', '', $pee);
+		$pee = str_replace('[arsenal]', '', $pee);
+		$pee = str_replace('[cuprum]', '', $pee);
+		$pee = str_replace('[librarian]', '', $pee);
+		
 		$pee = mso_clean_html( array('1'=>$pee) );
 		$pee = str_replace('[mso_br_n]', "\n", $pee);
 		return $pee;
@@ -1360,7 +1381,9 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 
 	$pee = str_replace('[mso_n]', "\n", $pee);
 	$pee = str_replace('[mso_br_n]', "\n", $pee);
-
+	
+	$pee = mso_hook('content_auto_tag_my', $pee);
+	
 	return $pee;
 }
 
@@ -1378,6 +1401,8 @@ function mso_balance_tags_ul_callback($matches)
 # моя функция авторасстановки тэгов
 function mso_balance_tags($text)
 {
+	if ( mso_hook_present('content_balance_tags_custom') ) return $text = mso_hook('content_balance_tags_custom', $text);
+	
 	//return $text;
 	// те тэги, которые нужно закрывать автоматом до конца строки
 	$blocks_for_close = 'p|li';
@@ -1426,7 +1451,9 @@ function mso_balance_tags($text)
 	$text = str_replace('[/html_base64] </p>', '[/html_base64]', $text);
 
 	$text = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $text );
-
+	
+	$text = mso_hook('content_balance_tags_my', $text);
+	
 	return $text;
 }
 
@@ -1987,7 +2014,7 @@ function mso_explode($s = '', $int = true, $probel = true )
 #  обрезаем строку на кол-во слов
 function mso_str_word($text, $counttext = 10, $sep = ' ')
 {
-	$words = split($sep, $text);
+	$words = explode($sep, $text);
 	if ( count($words) > $counttext )
 		$text = join($sep, array_slice($words, 0, $counttext));
 	return $text;
@@ -2747,36 +2774,233 @@ function mso_parse_url_get($s = '')
 	else return array();
 }
 
+
 # кастомный вывод цикла
 # $f - идентификатор цикла
+# $f - варианты см. в templates/default/type_foreach/
 function mso_page_foreach($f = false)
 {
-	/*
-		$f - варианты:
-			archive
-			author
-			category
-			comments
-			home-cat-block-last-page
-			home-cat-block
-			home-top
-			home
-			page-comments
-			page
-			search
-			tag
-			users-all
-	*/
+	# при первом обращении занесем сюда все файлы из шаблонного type_foreach
+	# чтобы потом результат считывать из масива, а не по file_exists
+	static $files = false; 
 	
 	if ($f)
 	{
-		$fn = getinfo('template_dir') . 'type_foreach/' . $f . '.php';
-		if (file_exists($fn)) return $fn;
+		if ($files === false)
+		{
+			$CI = & get_instance();
+			$CI->load->helper('directory');
+			$files = directory_map(getinfo('template_dir') . 'type_foreach/', true); // только в type_foreach
+			if (!$files) $files = array();
+		}
+		
+		if (in_array($f . '.php', $files)) return getinfo('template_dir') . 'type_foreach/' . $f . '.php';
 			else return false;
+		
+		
+		# старый вариант
+		# $fn = getinfo('template_dir') . 'type_foreach/' . $f . '.php';
+		# if (file_exists($fn)) return $fn;
+		#	else return false;
 	}
 	
 	return false;
 }
 
+
+# функция залогирования
+# перенесена из application\views\login.php
+function _mso_login()
+{
+	global $MSO;
+	
+	if ($_POST 	and isset($_POST['flogin_submit']) 
+				and isset($_POST['flogin_redirect'])
+				and isset($_POST['flogin_user'])
+				and isset($_POST['flogin_password'])
+				and isset($_POST['flogin_session_id'])
+		)
+	{
+		$flogin_session_id = $_POST['flogin_session_id'];
+		
+		# защита сесии
+		if ($MSO->data['session']['session_id'] != $flogin_session_id) mso_redirect('loginform/error');
+		
+		
+		$flogin_redirect = urldecode($_POST['flogin_redirect']);
+		
+		
+		if ($flogin_redirect == 'home') $flogin_redirect = getinfo('siteurl');
+		
+		$flogin_user = $_POST['flogin_user'];
+		$flogin_password = $_POST['flogin_password'];
+		
+		# проверяем на strip - запрещенные символы
+		if ( ! mso_strip($flogin_user, true) or ! mso_strip($flogin_password, true) ) mso_redirect('loginform/error');
+		
+		$flogin_password = mso_md5($flogin_password);
+		
+		$CI = & get_instance();
+		
+		// если это комюзер, то логин = email 
+		// проверяем валидность email и если он верный, то ставим куку на этого комюзера 
+		// и редиректимся на главную (куку ставить только на главную!)
+		// если же это обычный юзер-автор, то проверяем логин и пароль по базе
+		
+		if (mso_valid_email($flogin_user))
+		{
+			// если в логине мыло, то проверяем сначала в таблице авторов
+			$CI->db->from('users'); # таблица users
+			$CI->db->select('*'); # все поля
+			$CI->db->limit(1); # одно значение
+			
+			$CI->db->where('users_email', $flogin_user); // where 'users_login' = $flogin_user
+			$CI->db->where('users_password', $flogin_password);  // where 'users_password' = $flogin_password
+			
+			$query = $CI->db->get();
+			
+			if ($query->num_rows() > 0) # есть такой юзер
+			{
+				$userdata = $query->result_array();
+				
+				# добавляем юзера к сессии
+				$CI->session->set_userdata('userlogged', '1');
+				
+				$data = array(
+					'users_id' => $userdata[0]['users_id'],
+					'users_nik' => $userdata[0]['users_nik'],
+					'users_login' => $userdata[0]['users_login'],
+					'users_password' => $userdata[0]['users_password'],
+					'users_groups_id' => $userdata[0]['users_groups_id'],
+					'users_last_visit' => $userdata[0]['users_last_visit'],
+					'users_show_smiles' => $userdata[0]['users_show_smiles'],
+					'users_time_zone' => $userdata[0]['users_time_zone'],
+					'users_language' => $userdata[0]['users_language'],
+					// 'users_levels_id' => $userdata[0]['users_levels_id'],
+					// 'users_avatar_url' => $userdata[0]['users_avatar_url'],
+					// 'users_skins' => $userdata[0]['users_skins']
+				);
+				
+				$CI->session->set_userdata($data);
+				
+				// сразу же обновим поле последнего входа
+				$CI->db->where('users_id', $userdata[0]['users_id']);
+				$CI->db->update('users', array('users_last_visit'=>date('Y-m-d H:i:s')));
+				
+				mso_redirect($flogin_redirect, true);
+			} 
+			else 
+			{ 
+				// это не автор, значит это комюзер
+				$CI->db->select('comusers_id, comusers_password, comusers_email, comusers_nik, comusers_url, comusers_avatar_url, comusers_last_visit');
+				$CI->db->where('comusers_email', $flogin_user);
+				$CI->db->where('comusers_password', $flogin_password);
+				$query = $CI->db->get('comusers');
+				
+				if ($query->num_rows()) // есть такой комюзер
+				{
+					$comuser_info = $query->row_array(1); // вся инфа о комюзере
+					
+					// сразу же обновим поле последнего входа
+					$CI->db->where('comusers_id', $comuser_info['comusers_id']);
+					$CI->db->update('comusers', array('comusers_last_visit'=>date('Y-m-d H:i:s')));
+					
+					$expire  = time() + 60 * 60 * 24 * 30; // 30 дней = 2592000 секунд
+					
+					$name_cookies = 'maxsite_comuser';
+					$value = serialize($comuser_info); 
+					
+					mso_add_to_cookie($name_cookies, $value, $expire, $flogin_redirect); // в куку для всего сайта
+					
+					exit();
+				}
+				else // неверные данные
+				{
+					mso_redirect('loginform/error');
+					exit;
+				}
+			}
+		}
+		else 
+		{
+			// это обчный автор
+			
+			$CI->db->from('users'); # таблица users
+			$CI->db->select('*'); # все поля
+			$CI->db->limit(1); # одно значение
+			
+			$CI->db->where('users_login', $flogin_user); // where 'users_login' = $flogin_user
+			$CI->db->where('users_password', $flogin_password);  // where 'users_password' = $flogin_password
+			
+			$query = $CI->db->get();
+			
+			if ($query->num_rows() > 0) # есть такой юзер
+			{
+				$userdata = $query->result_array();
+				
+				# добавляем юзера к сессии
+				$CI->session->set_userdata('userlogged', '1');
+				
+				$data = array(
+					'users_id' => $userdata[0]['users_id'],
+					'users_nik' => $userdata[0]['users_nik'],
+					'users_login' => $userdata[0]['users_login'],
+					'users_password' => $userdata[0]['users_password'],
+					'users_groups_id' => $userdata[0]['users_groups_id'],
+					'users_last_visit' => $userdata[0]['users_last_visit'],
+					'users_show_smiles' => $userdata[0]['users_show_smiles'],
+					'users_time_zone' => $userdata[0]['users_time_zone'],
+					'users_language' => $userdata[0]['users_language'],
+					// 'users_avatar_url' => $userdata[0]['users_avatar_url'],
+					// 'users_levels_id' => $userdata[0]['users_levels_id'],
+					// 'users_skins' => $userdata[0]['users_skins']
+				);
+				
+				$CI->session->set_userdata($data);
+				
+				// сразу же обновим поле последнего входа
+				$CI->db->where('users_id', $userdata[0]['users_id']);
+				$CI->db->update('users', array('users_last_visit'=>date('Y-m-d H:i:s')));
+				
+				mso_redirect($flogin_redirect, true);
+			}
+			else mso_redirect('loginform/error');
+		} // автор
+	}
+	else 
+	{
+		
+		$MSO->data['type'] = 'loginform';
+		$template_file = $MSO->config['templates_dir'] . $MSO->config['template'] . '/index.php';
+		
+		if ( file_exists($template_file) ) require($template_file);
+			else show_error('Ошибка - отсутствует файл шаблона index.php');
+	};
+}
+
+
+# функция разлогирования
+# перенесена из application\views\logout.php
+function _mso_logout()
+{
+	$ci = & get_instance();
+	$ci->session->sess_destroy();
+	$url = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
+	
+	// сразу же удаляем куку комюзера
+	$comuser = mso_get_cookie('maxsite_comuser', false);
+	
+	if ($comuser) 
+	{
+		$name_cookies = 'maxsite_comuser';
+		$expire  = time() - 2592100; // 30 дней = 2592000 секунд
+		$value = ''; 
+		
+		
+		// mso_add_to_cookie('mso_edit_form_comuser', '', $expire); 
+		mso_add_to_cookie($name_cookies, $value, $expire, getinfo('siteurl') . mso_current_url()); // в куку для всего сайта
+	}
+	else mso_redirect($url, true);
+}
 
 ?>

@@ -36,7 +36,7 @@
 			{
 				if ( $result['result'] ) 
 				{
-					mso_flush_cache(); // сбросим кэш
+					# mso_flush_cache(); // сбросим кэш перенес в mso_delete_page
 					echo '<div class="update">' . t('Страница удалена', 'admin') . '</div>';
 				}
 				else
@@ -124,6 +124,7 @@
 	
 	$CI->db->select('category_id, category_name');
 	$CI->db->order_by('category_name');
+	$CI->db->where('category_type', 'page');
 	
 	$query = $CI->db->get('category');
 
@@ -134,16 +135,26 @@
 		
 		if (mso_segment(3) == 'category') $cat_segment_id = (int) mso_segment(4);
 		
-		echo '<p><strong>Фильтр по рубрикам:</strong> <a href="' . getinfo('site_admin_url') . 'page/">Без фильтра</a> ';
+		echo '<p><strong>'
+				. t('Фильтр по рубрикам', 'admin') 
+				. ':</strong> <a href="' . getinfo('site_admin_url') . 'page/">'
+				. t('Без фильтра', 'admin') . '</a> ';
+		
+		require_once( getinfo('common_dir') . 'category.php' ); // функции рубрик
+		$all_cats = mso_cat_array_single('page', 'category_id', 'ASC', ''); // все рубрики для вывода кол-ва записей
+		# pr($all_cats);
+
 		foreach ($query->result_array() as $nav) 
 		{
 			if ($cat_segment_id != $nav['category_id']) 
 			{
-				echo '| <a href="' . getinfo('site_admin_url'). 'page/category/' . $nav['category_id'] .'">'. $nav['category_name'] . '</a> ';
+				echo '| <a href="' . getinfo('site_admin_url'). 'page/category/' . $nav['category_id'] .'">'
+					. $nav['category_name'] 
+					. ' ('.  count($all_cats[$nav['category_id']]['pages']) . ')</a> ';
 			} 
 			else 
 			{
-				echo '| <a href="' . getinfo('site_admin_url') . 'page/category/' . $nav['category_id'] . '"><strong>' . $nav['category_name'] . '</strong></a> ';
+				echo '| <a href="' . getinfo('site_admin_url') . 'page/category/' . $nav['category_id'] . '"><strong>' . $nav['category_name'] . ' ('.  count($all_cats[$nav['category_id']]['pages']) . ')</strong></a> ';
 			}
 		}
 		echo '</p>';
@@ -163,7 +174,11 @@
 			$type_segment_id = (int) mso_segment(4); 
 			$type_segment_name = '';
 		}
-		echo '<p><strong>Фильтр по типам:</strong> <a href="' . getinfo('site_admin_url') . 'page/">Без фильтра</a> ';
+		echo '<p><strong>'
+				. t('Фильтр по типам', 'admin')
+				. ':</strong> <a href="' . getinfo('site_admin_url') . 'page/">'
+				. t('Без фильтра', 'admin') . '</a> ';
+		
 		foreach ($query->result_array() as $nav) 
 		{
 			if ($type_segment_id != $nav['page_type_id']) 

@@ -35,6 +35,25 @@ function %%%_uninstall($args = array())
 	return $args;
 }
 
+# функция отрабатывающая миниопции плагина (function плагин_mso_options)
+# если не нужна, удалите целиком
+function %%%_mso_options() 
+{
+	# ключ, тип, ключи массива
+	mso_admin_plugin_options('plugin_%%%', 'plugins', 
+		array(
+			'option1' => array(
+							'type' => 'text', 
+							'name' => 'Название', 
+							'description' => 'Описание', 
+							'default' => ''
+						),
+			),
+		'Настройки плагина %%%', // титул
+		'Укажите необходимые опции.'   // инфо
+	);
+}
+
 # функции плагина
 function %%%_custom($arg = array())
 {

@@ -41,6 +41,7 @@ $lang['Номер рубрики. В этой рубрике [COUNT] стран�
 $lang['Пор.'] = 'Order';
 $lang['Порядок'] = 'Order';
 $lang['Род.'] = 'Parent';
+$lang['Родитель'] = 'Parent';
 $lang['Рубрики'] = 'Category';
 $lang['Ссылка'] = 'Link';
 $lang['Удалить рубрику?'] = 'Delete cat?';
@@ -71,6 +72,10 @@ $lang['Текст'] = 'Text';
 $lang['Только требующие модерации'] = 'Only requiring moderation';
 $lang['Уверены?'] = 'Sure?';
 $lang['Удалить'] = 'Delete';
+$lang['Комментаторы'] = 'Commentators';
+$lang['Актив.'] = 'Active';
+$lang['Кол.'] = 'Count';
+$lang['Последний вход'] = 'Last visit';
 
 
 # admin_files
@@ -112,8 +117,19 @@ $lang['Создание миниатюры:'] = 'Thumbnail creation:';
 $lang['Создать каталог в uploads?'] = 'Create catalogue in uploads?';
 $lang['Такой каталог уже есть!'] = 'This catalogue exist!';
 $lang['Текущий каталог:'] = 'Current dir:';
+$lang['Создать'] = 'Create';
 $lang['Удалить'] = 'Delete';
 $lang['Уменьшение изображения:'] = 'Reduction of the picture:';
+$lang['Водяной знак:'] = 'Watermark';
+$lang['файл водяного знака не найден! Загрузите его в каталог uploads/'] = 'Watermark file not found! Upload it to directory uploads/';
+$lang['Для изображений установить водяной знак'] = 'Set watermark for image';
+$lang['Примечание: водяной знак должен быть файлом <strong>watermark.png</strong> и находиться в каталоге'] = 'Note: watermark should be file <strong>watermark.png</strong> and be present in directory';
+$lang['Водяной знак устанавливается:'] = 'Set watermark';
+$lang['По центру'] = 'In center';
+$lang['В левом верхнем углу'] = 'In left top';
+$lang['В правом верхнем углу'] = 'In right top';
+$lang['В левом нижнем углу'] = 'In left bottom';
+$lang['В правом нижнем углу'] = 'In right bottom';
 
 
 # admin_home
@@ -219,6 +235,9 @@ $lang['Удалить страницу'] = 'Delete page';
 $lang['Удалить'] = 'Delete';
 $lang['Файлы'] = 'Files';
 $lang['Черновик'] = 'Draft';
+$lang['Список'] = 'List';
+$lang['Фильтр по рубрикам'] = 'Category filter';
+$lang['Фильтр по типам'] = 'Type filter';
 
 
 # admin_plugins
@@ -343,5 +362,7 @@ $lang['Язык'] = 'Language';
 $lang['Доступ к настройкам шаблона'] = 'Access to template settings';
 $lang['Настройка шаблона'] = 'Template options';
 
+
+# admin_plugin_options
 
 ?>

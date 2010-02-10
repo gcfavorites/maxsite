@@ -27,7 +27,7 @@ function samborsky_polls_head($args = array()){
 	mso_load_jquery();
 	
 	$path = getinfo('plugins_url') . 'samborsky_polls/';
-	echo '<script type="text/javascript" src="',$path,'js/kernel.js"></script>',NR;
+	echo '<script type="text/javascript" src="',$path,'js/kernel.min.js"></script>',NR;
 	echo '<link rel="stylesheet" href="',$path,'css/style.css" type="text/css" media="screen">',NR;
 }
 

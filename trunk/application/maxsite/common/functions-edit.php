@@ -690,6 +690,8 @@
 							'result' => $res,
 							'description' => 'Inserting new page'
 							);
+							
+			mso_flush_cache(); // сбросим кэш
 		}
 		else
 		{
@@ -699,7 +701,11 @@
 						);
 		}
 
-		if ($response['result']) mso_hook('new_page');
+		if ($response['result']) 
+		{
+			mso_hook('new_page', $response['result']);
+			mso_hook('new_page_' . $page_status);
+		}
 
 		return $response;
 	}
@@ -957,6 +963,8 @@
 							'result' => $res,
 							'description' => 'Updating page'
 							);
+							
+			mso_flush_cache(); // сбросим кэш
 		}
 		else
 		{
@@ -966,7 +974,11 @@
 						);
 		}
 
-		if ($response['result']) mso_hook('edit_page');
+		if ($response['result']) 
+		{	
+			mso_hook('edit_page', $response['result']);
+			mso_hook('edit_page_' . $page_status);
+		}
 
 		return $response;
 	}
@@ -1020,6 +1032,8 @@
 
 				$CI->db->where( array('page_id'=>$page_id) );
 				$CI->db->delete('page');
+				
+				mso_flush_cache(); // сбросим кэш
 
 				return array( 'result' => 1, 'description' => 'Page deleted');
 			}

@@ -79,11 +79,12 @@ function sitemap($arg = array())
 			
 			$out .= '<li>' . mso_date_convert('d', $page['page_date_publish']) . ': <a href="' . getinfo('siteurl') 
 					. 'page/' . $slug . '" title="' . $page['page_title'] . '">' 
-					. $page['page_title'] . '</a>'
-					
-					. ' ('
-					. mso_page_cat_link($page['page_categories'], ' &rarr; ', '', '', false)
-					. ')'
+					. $page['page_title'] . '</a>';
+			
+			if ($page['page_categories'])
+				$out .=  ' ('
+						. mso_page_cat_link($page['page_categories'], ' &rarr; ', '', '', false)
+						. ')';
 					# синонимы ссылок
 					/*
 					. ' ('
@@ -93,7 +94,7 @@ function sitemap($arg = array())
 					*/
 					# /синонимы ссылок
 					
-					. '</li>' . NR;
+			$out .=  '</li>' . NR;
 					
 			$date1 = $date;
 		}

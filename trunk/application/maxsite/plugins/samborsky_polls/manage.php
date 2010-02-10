@@ -266,6 +266,7 @@
 		<legend><strong>Защита от накрутки</strong></legend>
 		
 		<select name="q_protection">
+			<option value="2"<? if( isset($question) && 2 == $question->data->q_protection ) echo 'selected="TRUE"' ?>>Только для зарегистрированых (users)</option>
 			<option value="1"<? if( isset($question) && 1 == $question->data->q_protection ) echo 'selected="TRUE"' ?>>Защита по Coookie</option>
 			<option value="0"<? if( isset($question) && 0 == $question->data->q_protection ) echo 'selected="TRUE"' ?>>Без защиты, один пользователь может голосовать много раз</option>
 		</select>

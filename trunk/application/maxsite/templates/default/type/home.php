@@ -59,11 +59,14 @@ $par = array(
 // if ( !mso_get_option('home_full_text', 'templates', '1') ) $par['pagination'] = false;
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
+if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 // теперь сам вывод
 
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
+
+echo NR . '<div class="type type_home">' . NR;
 
 // если есть верхняя страница, то выводим
 if ($page_top) // есть страницы
@@ -72,13 +75,10 @@ if ($page_top) // есть страницы
 	
 	foreach ($page_top as $page)  // выводим в цикле
 	{
-		if (function_exists('mso_page_foreach'))
+		if ($f = mso_page_foreach('home-top')) 
 		{
-			if ($f = mso_page_foreach('home-top')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
 		
 		extract($page);
@@ -103,19 +103,15 @@ if ($pages) // есть страницы
 	if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="category">';
 		
 	foreach ($pages as $page) : // выводим в цикле
-		
-		if (function_exists('mso_page_foreach'))
+
+		if ($f = mso_page_foreach('home')) 
 		{
-			if ($f = mso_page_foreach('home')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
 		
 		extract($page);
 		// pr($page);
-		
 		
 		// выводим полные тексты или списком
 		if ( mso_get_option('home_full_text', 'templates', '1') )
@@ -175,12 +171,13 @@ if ($pages) // есть страницы
 }
 else 
 {
- 
-	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
+ 	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
 	echo '<p>'.t('Извините, ничего не найдено').'</p>';
+	echo mso_hook('page_404');
 	
 } // endif $pages
 
+echo NR . '</div><!-- class="type type_home" -->' . NR;
 
 # конечная часть шаблона
 require(getinfo('template_dir') . 'main-end.php');

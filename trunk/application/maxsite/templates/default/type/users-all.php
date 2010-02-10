@@ -8,25 +8,26 @@ $comusers = mso_get_comusers_all(); // получим всех комюзеро�
 
 mso_head_meta('title', getinfo('title') . ' - ' . t('Комментаторы') . '' ); // meta title страницы
 
+if (!$comusers and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
+
 // теперь сам вывод
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
 
+echo NR . '<div class="type type_users_all">' . NR;
 
 if ($comusers)
 {
-	echo '<h1>'. t('Комментаторы'). '</h1><ul class="users-all">';
+	if ($f = mso_page_foreach('users-all-do')) require($f); // подключаем кастомный вывод
+	else echo '<h1>'. t('Комментаторы'). '</h1><ul class="users-all">';
 
 	// pr($comusers);
 	foreach ($comusers as $comuser)
 	{
-		if (function_exists('mso_page_foreach'))
+		if ($f = mso_page_foreach('users-all')) 
 		{
-			if ($f = mso_page_foreach('users-all')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
 		
 		if (!$comuser['comusers_nik']) $comuser['comusers_nik'] = t('Комментатор'). ' ' . $comuser['comusers_id'];
@@ -38,7 +39,10 @@ else
 {
 	echo '<h1>'. t('404. Ничего не найдено...'). '</h1>';
 	echo '<p>'. t('Извините, на сайте пока нет зарегистрированных комментаторов.'). '</p>';
+	echo mso_hook('page_404');
 }
+
+echo NR . '</div><!-- class="type type_users_all" -->' . NR;
 
 # конечная часть шаблона
 require(getinfo('template_dir') . 'main-end.php');

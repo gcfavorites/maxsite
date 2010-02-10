@@ -6,8 +6,10 @@
 	mso_remove_hook( 'body_end', 'demo_body_end');
 
 	require(getinfo('template_dir') . 'main-start.php');
+	
+	echo NR . '<div class="type type_loginform">' . NR;
+	
 	echo '&nbsp';
-//	require(getinfo('template_dir') . 'main-end.php');
 	
 	echo '<div class="loginform">';
 	
@@ -17,7 +19,7 @@
 		$redirect_url = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getinfo('siteurl');
 
 		if (mso_segment(2) == 'error')
-			echo '<p><strong style="color: red;">'. t('Неверный логин/пароль'). '</strong></p>';
+			echo '<p><strong style="color: red;" class="loginform">'. t('Неверный логин/пароль'). '</strong></p>';
 		
 		echo '<p><strong>'. t('Введите свой логин и пароль'). '</strong></p><br />';
 		
@@ -38,6 +40,8 @@
 
 	echo '</div>';
 	
+	echo NR . '</div><!-- class="type type_loginform" -->' . NR;
+
 	require(getinfo('template_dir') . 'main-end.php');
 
 ?>

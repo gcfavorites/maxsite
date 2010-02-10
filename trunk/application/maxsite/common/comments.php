@@ -151,16 +151,24 @@ function mso_get_comments($page_id = 0, $r = array())
 			$comments_content = str_replace('</p>', '&lt;/p&gt;', $comments_content);
 			$comments_content = str_replace('<P>', '&lt;P&gt;', $comments_content);
 			$comments_content = str_replace('</P>', '&lt;/P&gt;', $comments_content);
-
-			$comments_content = mso_auto_tag($comments_content, true);
-
-			$comments_content = mso_hook('content_auto_tag', $comments_content);
-			$comments_content = mso_hook('content_balance_tags', $comments_content);
-			$comments_content = mso_balance_tags($comments_content);
+			
+			if (mso_hook_present('comments_content_custom'))
+			{
+				$comments_content = mso_hook('comments_content_custom', $comments_content);
+			}
+			else
+			{
+				$comments_content = mso_auto_tag($comments_content, true);
+				$comments_content = mso_hook('content_auto_tag', $comments_content);
+				$comments_content = mso_hook('content_balance_tags', $comments_content);
+				$comments_content = mso_balance_tags($comments_content);
+			}
 
 			if ($commentator==1) $comments_content = strip_tags($comments_content, $r['tags_comusers']);
 			elseif ($commentator==2) $comments_content = strip_tags($comments_content, $r['tags_users']);
 			else $comments_content = strip_tags($comments_content, $r['tags']);
+			
+			$comments_content = mso_hook('comments_content_out', $comments_content);
 
 			$comments[$key]['comments_content'] = $comments_content;
 			$comments[$key]['comments_url'] = $comment['comments_url'];
@@ -690,8 +698,6 @@ function mso_comuser_set_count_comment($id = 0, $count = -1)
 }
 
 
-
-
 # обработка POST из формы комюзера
 function mso_comuser_edit($args = array())
 {
@@ -700,6 +706,7 @@ function mso_comuser_edit($args = array())
 	if ( !isset($args['css_ok']) )		$args['css_ok'] = 'comment-ok';
 	if ( !isset($args['css_error']) )	$args['css_error'] = 'comment-error';
 
+	
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comusers_activate_key')) ) // это активация
 	{
 		# защита рефера
@@ -762,11 +769,23 @@ function mso_comuser_edit($args = array())
 		}
 		else // вообще нет такого комюзера
 			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '</div>';
-	} // активация
+	}
+	elseif ( $post = mso_check_post(array('flogin_session_id', 'flogin_submit', 'flogin_user', 'flogin_password',
+					'flogin_redirect')) )
+	{
+		// логинимся через стандартную _mso_login()
+		_mso_login();
+		return;
+	}
+	
+	// это форма?
 	elseif ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comusers_email', 'f_comusers_password',
 					'f_comusers_nik', 'f_comusers_url', 'f_comusers_icq', 'f_comusers_msn', 'f_comusers_jaber',
 					'f_comusers_date_birth',  'f_comusers_description', 'f_comusers_avatar_url')) ) // это обновление формы
 	{
+		if (!is_login_comuser())
+			return '<div class="' . $args['css_error']. '">'. t('Ошибочные данные пользователя'). '</div>';
+			
 		# защита рефера
 		mso_checkreferer();
 
@@ -782,7 +801,7 @@ function mso_comuser_edit($args = array())
 
 		if (!$f_comusers_email or !$f_comusers_password)
 			return '<div class="' . $args['css_error']. '">'. t('Необходимо указать email и пароль'). '</div>';
-
+		
 		// проверим есть ли такой комюзер
 		$CI = & get_instance();
 
@@ -794,20 +813,15 @@ function mso_comuser_edit($args = array())
 		
 		$CI->db->where(array('comusers_id'=>$id,
 							'comusers_email'=>$f_comusers_email,
-							'comusers_password'=>mso_md5($f_comusers_password) ));
+							'comusers_password'=>$f_comusers_password 
+							));
 		$CI->db->limit(1);
-		
-		$sql = $CI->db->_compile_select();
-		//pr($f_comusers_password);
-		// _pr($sql);
-
 		$query = $CI->db->get();
 
 		if ($query->num_rows() > 0)
-		{
+		{   
 			// все ок - логин пароль верные
 			$comuser = $query->result_array(); // данные комюзера
-			// pr($comuser);
 
 			$f_comusers_avatar_url = mso_strip($post['f_comusers_avatar_url'], false,
 				array('\\', '|', '?', '%', '*', '`'));
@@ -815,6 +829,9 @@ function mso_comuser_edit($args = array())
 			$allowed_ext = array('gif', 'jpg', 'jpeg', 'png'); // разрешенные типы
 			$ext = strtolower(str_replace('.', '', strrchr($f_comusers_avatar_url, '.'))); // расширение файла
 			if ( !in_array($ext, $allowed_ext) ) $f_comusers_avatar_url = ''; // запрещенный тип файла
+			
+			if (!isset($post['f_comusers_notify'])) $post['f_comusers_notify'] = 0;
+			
 
 			$upd_date = array (
 				'comusers_nik' =>	strip_tags($post['f_comusers_nik']),
@@ -825,12 +842,18 @@ function mso_comuser_edit($args = array())
 				'comusers_date_birth' =>	strip_tags($post['f_comusers_date_birth']),
 				'comusers_description' =>	strip_tags($post['f_comusers_description']),
 				'comusers_avatar_url' =>	$f_comusers_avatar_url,
+				'comusers_notify' => $post['f_comusers_notify'],
+				
 				);
+				
+			# pr($upd_date );
+
 			$CI->db->where('comusers_id', $id);
 			$res = ($CI->db->update('comusers', $upd_date )) ? '1' : '0';
 
 			$CI->db->cache_delete_all();
-
+			// mso_flush_cache(); // сбросим кэш
+			
 			if ($res)
 				return '<div class="' . $args['css_ok']. '">'. t('Обновление выполнено!'). '</div>';
 			else

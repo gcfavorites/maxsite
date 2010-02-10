@@ -3,9 +3,9 @@
 $info = array(
 	'name' => 'samborsky_polls',
 	'description' => 'Голосования от Евгения Самборского',
-	'version' => '1.2',
+	'version' => '1.31',
 	'author' => 'Евгений Самборский',
-	'plugin_url' => 'http://www.samborsky.com/',
+	'plugin_url' => 'http://www.samborsky.com/samborsky_polls/',
 	'author_url' => 'http://www.samborsky.com/',
 	'group' => 'template'
 );

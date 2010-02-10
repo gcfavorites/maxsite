@@ -6,59 +6,87 @@
 		'resp' => ''
 	);
 	
-	header('Content-Type: application/json; charset=utf-8');
+	if( isset($_POST['q_id']) && is_numeric($_POST['q_id']) && $_POST['type'] ){
 
-	if( isset($_POST['q_id']) && is_numeric($_POST['q_id']) && isset($_POST['a_id']) ){
+		// Учесть голос		
+		if( 'vote' == $_POST['type'] ){
 		
-		$question = new sp_question($_POST['q_id']);
-		
-		// Получим данные о голосовании
-		if( $question->get() ){
+			$question = new sp_question($_POST['q_id']);
 			
-			// Проверим, можно ли голосовать
-			if( $question->check_allow() ){
+			// Получим данные о голосовании
+			if( $question->get() ){
 				
-				// Ставим кукис
-				if( 1 == $question->data->q_protection ){
-					set_cookie(array(
-						'name' => 'sp_' . $question->id,
-						'value' => TRUE,
-						// На месяц
-						'expire' => 3600*24*30
-					));
-				}
-				
-				// Учитываем голоса
-				foreach( $_POST['a_id'] as $a_id ){
-					$answer = new sp_answer($a_id);
-					$answer->inc();
-				}
-				
-				// Запишем логи
-				sp_write_logs();
-				
-				$question->update(array(
-					// +1 проголосовавший 
-					'q_totalvoters' => $question->data->q_totalvoters + 1,
-					// + добавляем голоса 
-					'q_totalvotes' => $question->data->q_totalvotes + count($_POST['a_id'])
-				));
-				
-				if( $question->get() ){
-					$return['error_code'] = 0;
-					$return['error_description'] = '';
-					$return['resp'] = $question->results();
+				// Проверим, можно ли голосовать
+				if( $question->check_allow() ){
+					
+					if( isset($_POST['a_id']) ){
+					
+						// Ставим кукис
+						if( 1 == $question->data->q_protection ){
+							set_cookie(array(
+								'name' => 'sp_' . $question->id,
+								'value' => TRUE,
+								// На 3 месяца
+								'expire' => 3600*24*30*3
+							));
+						}
+						
+						// Учитываем голоса
+						foreach( $_POST['a_id'] as $a_id ){
+							$answer = new sp_answer($a_id);
+							$answer->inc();
+						}
+						
+						// Запишем логи
+						sp_write_logs();
+						
+						$question->update(array(
+							// +1 проголосовавший 
+							'q_totalvoters' => $question->data->q_totalvoters + 1,
+							// + добавляем голоса 
+							'q_totalvotes' => $question->data->q_totalvotes + count($_POST['a_id'])
+						));
+						
+						if( $question->get() ){
+							$return['error_code'] = 0;
+							$return['error_description'] = '';
+							$return['resp'] = $question->results();
+						}
+						else{
+							$return['error_description'] = 'Проблема с загрузкой результатов голосования';
+						}
+					}
+					else{
+						$return['error_description'] = 'Не указан вариант ответа';
+					}
 				}
 				else{
-					$return['error_description'] = 'Проблема с загрузкой результатов голосования';
+					$return['error_description'] = $question->last_error;
 				}
 			}
 			else{
-				$return['error_description'] = 'Вы уже голосовали';
+				$return['error_description'] = 'Голосования не существует';
+			}
+		}
+		
+		// Показать результаты
+		else if( 'results' == $_POST['type'] ){
+			
+			$question = new sp_question($_POST['q_id']);
+			
+			// Получим данные о голосовании
+			if( $question->get() ){
+				
+				$return['error_code'] = 0;
+				$return['error_description'] = '';
+				$return['resp'] = $question->results();
+			}
+			else{
+				$return['error_description'] = 'Голосования не существует';
 			}
 		}
 		else{
-			$return['error_description'] = 'Голосования не существует';
+			$return['error_description'] = 'Не известный метод';
 		}
 	}
 	

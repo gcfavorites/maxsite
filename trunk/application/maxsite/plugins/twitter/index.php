@@ -41,10 +41,11 @@ function twitter_widget_form($num = 1)
 	
 	if ( !isset($options['header']) ) $options['header'] = t('Мой Twitter', 'plugins');
 	if ( !isset($options['url']) ) $options['url'] = 'http://twitter.com/statuses/user_timeline/14057433.rss';
-	if ( !isset($options['count']) ) $options['count'] = '5';
+	if ( !isset($options['count']) ) $options['count'] = '7';
 	if ( !isset($options['max_word_description']) ) $options['max_word_description'] = '0';
 	if ( !isset($options['format']) ) $options['format'] = '<p><a href="%LINK%">%DATE%</a><br />%TITLE%</p>';
 	if ( !isset($options['format_date']) ) $options['format_date'] = 'd/m/Y H:i:s';
+	if ( !isset($options['footer']) ) $options['footer'] = '';
 
 	
 	// вывод самой формы
@@ -66,6 +67,8 @@ function twitter_widget_form($num = 1)
 	$form .= '<div class="t150">' . t('Формат даты:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_format_date', 'value'=>$options['format_date'] ) ) ;
 	
 	$form .= '<div class="t150">' . t('Количество слов:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_max_word_description', 'value'=>$options['max_word_description'] ) ) ;
+	
+	$form .= '<div class="t150">' . t('Текст в конце блока:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_footer', 'value'=>$options['footer'] ) ) ;
 	
 	return $form;
 }
@@ -89,6 +92,7 @@ function twitter_widget_update($num = 1)
 	
 	$newoptions['format'] = mso_widget_get_post($widget . '_format');
 	$newoptions['format_date'] = mso_widget_get_post($widget . '_format_date');
+	$newoptions['footer'] = mso_widget_get_post($widget . '_footer');
 	
 	if ( $options != $newoptions ) mso_add_option($widget, $newoptions, 'plugins');
 }
@@ -108,12 +112,14 @@ function twitter_widget_custom($arg, $num)
 	if ( !isset($arg['header']) ) $arg['header'] = '<h2 class="box"><span>Мой Twitter</span></h2>';
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="twitter">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</div>';
+	
+	if ( !isset($arg['footer']) ) $arg['footer'] = '';
 
 	$rss = @twitter_go($arg['url'], $arg['count'], $arg['format'], $arg['format_date'], $arg['max_word_description']);
 	if ($rss) 
 	{	
-		$rss = str_replace('maxsite:', '<strong>MaxSite:</strong>', $rss);
-		return $arg['header'] . $arg['block_start'] . $rss . $arg['block_end'];
+		//$rss = str_replace('maxsite:', '<strong>MaxSite:</strong>', $rss);
+		return $arg['header'] . $arg['block_start'] . $rss . $arg['footer'] . $arg['block_end'];
 	}
 }
 
@@ -129,22 +135,32 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 	$k = mso_get_cache($cache_key, true);
 	if ($k) return $k; // да есть в кэше
 	
-	if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 3600); // время кэширования MAGPIE
+	if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 600); // время кэширования MAGPIE
 	require_once($MSO->config['common_dir'] . 'magpierss/rss_fetch.inc');
 
 	$rss = fetch_rss($url);
 	$rss = array_slice($rss->items, 0, $count);
-	
+
 	$out = '';
 	foreach ( $rss as $item ) 
 	{ 
 		$out .= $format;
+		
+		// выделим ник: 
+		$item['title'] = preg_replace('|(\S+): (.*)|si', '<strong>\\1:</strong> \\2', $item['title']);
+		
+		// подсветим ссылки
+		$item['title'] = preg_replace('|(http:\/\/)(\S+)|si', '<a href="http://\\2" target="_blank">\\2</a>', $item['title']);
+		
 		$out = str_replace('%TITLE%', $item['title'], $out); // [title] = [description] = [summary]
 		
 		if ($max_word_description)
 		{
 			$item['description'] = mso_str_word($item['description'], $max_word_description) . '...';
 		}
+		
+		$item['description'] = preg_replace('|(\S+): (.*)|si', '<strong>\\1:</strong> \\2', $item['description']);
+		$item['description'] = preg_replace('|(http:\/\/)(\S+)|si', '<a href="http://\\2" target="_blank">\\2</a>', $item['description']);
 		
 		$out = str_replace('%DESCRIPTION%', $item['description'], $out); // [title] = [description] = [summary]
 		$out = str_replace('%DATE%', date($format_date, (int) $item['date_timestamp']), $out); // [pubdate]

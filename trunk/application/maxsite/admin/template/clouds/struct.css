@@ -1,0 +1,99 @@
+#sidebars, #sidebars div.r1,  #sidebars div.r2, #sidebar-top, #sidebar-top div.wrap, #sidebar1, #sidebar1 div.wrap, #sidebar2, #sidebar2 div.wrap {padding: 0; margin: 0;}
+
+
+/* first */
+* { padding: 0; margin: 0; }
+html, body {margin: 0; padding: 0;}
+body {font: 62.5%/1em Verdana; background: url(images/bg.jpg) repeat-x;}
+
+
+/* default styles */
+
+p { margin: 3px 0px 7px 0px;}
+ul, ol {margin-left: 15px;}
+
+a { color: blue; text-decoration: none;}
+a:hover { color: red; text-decoration: underline; }
+a:active { color: orange; }
+
+a img { border: none; text-decoration: none;} /* ie fix*/
+a img, a:visited img, a:hover img, a img:hover, img+a, img+a:hover { border: none; text-decoration: none;}
+
+h1 {font-size: 14pt; line-height: 1.2em; margin: 0; font-weight: normal;}
+h2 {font-size: 11pt; margin: 5px 0 10px 0; font-weig1ht: normal;}
+h3 {font-size: 10pt; margin: 5px 0 10px 0;}
+h4 {font-size: 9pt; margin: 5px 0 10px 0;}
+h5 {font-size: 8pt; margin: 5px 0 10px 0;}
+h6 {font-size: 7pt; margin: 5px 0 10px 0;}
+
+
+/* structure */
+
+#container {width: 90%; margin: 0 auto; font-size: 9pt; line-height: 1.3em; }
+
+#headers {}
+#headers-wrap {}
+
+#header1 {background: #4080E2 url(images/header.jpg) no-repeat top right; height: 226px;}
+#header1 div.r1 {}
+#header1 div.r2 {}
+#header1 h1 {padding: 25px 0 0 30px; font-size: 16pt;}
+#header1 h1 a {color: white;}
+#header1 h1 a:hover {}
+#header1 h2 {padding: 0 0 0 30px; margin: 0; color: white; font-size: 10pt;}
+
+#header2 {}
+#header2 div.r1 {}
+#header2 div.r2 {}
+#header2 h1 {}
+#header2 h1 a {}
+#header2 h1 a:hover {}
+#header2 h2 {}
+
+#header3 {}
+#header3 div.r1 {}
+#header3 div.r2 {}
+#header3 h1 {}
+#header3 h1 a {}
+#header3 h1 a:hover {}
+#header3 h2 {}
+
+#sub-container {float: left; width: 100%; padding: 0; border-left: 1px #4F86D8 solid; border-right: 1px #4F86D8 solid; background: white;}
+#wrapper {float: left; width: 100%; padding: 0; background: white url(images/bg-wrapper.gif) repeat-y right; }
+
+#content {margin: 10px 300px 10px 20px; }
+
+#content div.content-top {}
+#content div.content-bottom {}
+
+#sidebars {float: left; width: 270px; margin-left: -271px; padding-top: 10px; border-left: 1px solid #D6E3F6; background: #EFF4FA;}
+#sidebars div.r1 {}
+#sidebars div.r2 {}
+
+#sidebar-top {margin-right: 10px;}
+#sidebar-top div.wrap {}
+
+#sidebar1 {margin-right: 10px;}
+#sidebar1 div.wrap {}
+
+#sidebar2 {margin-right: 10px;}
+#sidebar2 div.wrap {}
+
+#footer {clear: both; text-align: center; background: #3D7FE0; padding: 10px 0; color: white; font-size: 8pt;}
+#footer a {color: white;}
+
+#footer-out {clear: both; text-align: center;}
+
+
+*html #wrapper {overflow: hidden;}
+*+html #wrapper {overflow: hidden;}
+*html #content {overflow: hidden;}
+*+html #content {overflow: hidden;}
+*html #sidebar1 {overflow: hidden;}
+*+html #sidebar1 {overflow: hidden;}
+*html #sidebar2 {overflow: hidden;}
+*+html #sidebar2 {overflow: hidden;}
+*html #sidebar-top {overflow: hidden;}
+*+html #sidebar-top {overflow: hidden;}
+*html #sidebars {overflow: hidden;}
+*+html #sidebars {overflow: hidden;}

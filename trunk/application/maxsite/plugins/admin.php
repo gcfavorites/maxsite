@@ -5,7 +5,6 @@
  * (c) http://max-3000.com/
  */
 
-	global $MSO;
 	$CI = & get_instance();
 	
 	$options_key = '';

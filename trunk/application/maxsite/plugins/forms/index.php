@@ -3,6 +3,7 @@
 /**
  * MaxSite CMS
  * (c) http://max-3000.com/
+ * Дополнения: Н. Громов (http://nicothin.ru/)
  */
 
 # функция автоподключения плагина
@@ -138,6 +139,13 @@ function forms_content_callback($matches)
 					$message .= $f[$key]['description'] . ': ' . $val . "\n";
 				}
 				
+				if ($_SERVER['REMOTE_ADDR'] and $_SERVER['HTTP_REFERER'] and $_SERVER['HTTP_USER_AGENT']) 
+				{
+					$message .= "\n" . 'IP-адрес: ' . $_SERVER['REMOTE_ADDR'] . "\n";
+					$message .= 'Отправлено со страницы: ' . $_SERVER['HTTP_REFERER'] . "\n";
+					$message .= 'Браузер: ' . $_SERVER['HTTP_USER_AGENT'] . "\n";
+				}
+				
 				// pr($message);
 				
 				$form_hide = mso_mail($email, $subject, $message, $post['forms_email']);
@@ -184,9 +192,9 @@ function forms_show_form($f = array())
 	$out .= '<input type="hidden" name="forms_antispam2" value="' . $antispam2 * 765 . '" />';
 	
 	// обязательные поля
-	$out .= '<div><span>' . t('Ваше имя*', 'plugins') . '</span><input name="forms_name" type="text" value="" /></div><div class="break"></div>';
+	$out .= '<div><label><span>' . t('Ваше имя*', 'plugins') . '</span><input name="forms_name" type="text" value="" /></label></div><div class="break"></div>';
 	
-	$out .= '<div><span>' . t('Ваш email*', 'plugins') . '</span><input name="forms_email" type="text" value="" /></div><div class="break"></div>';
+	$out .= '<div><label><span>' . t('Ваш email*', 'plugins') . '</span><input name="forms_email" type="text" value="" /></label></div><div class="break"></div>';
 	
 	
 	// тут указанные поля в $f
@@ -204,14 +212,14 @@ function forms_show_form($f = array())
 		
 		if ($val['type'] == 'text')
 		{
-			$out .= '<div><span>' . $description . $require . '</span><input name="forms_fields[' . $key . ']" type="text" value="" /></div><div class="break"></div>';
+			$out .= '<div><label><span>' . $description . $require . '</span><input name="forms_fields[' . $key . ']" type="text" value="" /></label></div><div class="break"></div>';
 		}
 		elseif ($val['type'] == 'select')
 		{
 			if (!isset($val['default'])) continue;
 			if (!isset($val['values'])) continue;
 			
-			$out .= '<div><span>' . $description . $require . '</span><select name="forms_fields[' . $key . ']" />';
+			$out .= '<div><label><span>' . $description . $require . '</span><select name="forms_fields[' . $key . ']" />';
 			
 			$default = trim($val['default']);
 			$values = explode('#', $val['values']);
@@ -224,21 +232,21 @@ function forms_show_form($f = array())
 				$out .= '<option' . $checked . '>' . $value . '</option>';
 			}
 			
-			$out .= '</select></div><div class="break"></div>';
+			$out .= '</select></label></div><div class="break"></div>';
 	
 		}
 		elseif ($val['type'] == 'textarea')
 		{
-			$out .= '<div><span>' . $description . $require . '</span><textarea name="forms_fields[' . $key . ']"></textarea></div><div class="break"></div>';
+			$out .= '<div><label><span>' . $description . $require . '</span><textarea name="forms_fields[' . $key . ']"></textarea></label></div><div class="break"></div>';
 		
 		}
 	}
 	
 	// обязательные поля антиспама и отправка и ресет
-	$out .= '<div><span>' . t('Защита от спама:', 'plugins') . ' ' . $antispam1 . ' + ' . $antispam2 . '=</span>';
-	$out .= '<input name="forms_antispam" type="text" value="" /></div><div class="break"></div>';
+	$out .= '<div><label><span>' . t('Защита от спама:', 'plugins') . ' ' . $antispam1 . ' + ' . $antispam2 . '=</span>';
+	$out .= '<input name="forms_antispam" type="text" value="" /></label></div><div class="break"></div>';
 
-	$out .= '<div><span>&nbsp;</span><input name="forms_subscribe" value="" type="checkbox"  class="forms_checkbox" />&nbsp;' . t('Отправить копию письма на ваш e-mail', 'plugins') . '</div><div class="break"></div>';
+	$out .= '<div><span>&nbsp;</span><label><input name="forms_subscribe" value="" type="checkbox"  class="forms_checkbox" />&nbsp;' . t('Отправить копию письма на ваш e-mail', 'plugins') . '</label></div><div class="break"></div>';
 	
 	$out .= '<div><span>&nbsp;</span><input name="forms_submit" type="submit" class="forms_submit" value="' . t('Отправить', 'plugins') . '" />';
 	$out .= '<input name="forms_clear" type="reset" class="forms_reset" value="' . t('Очистить форму', 'plugins') . '" /></div>';

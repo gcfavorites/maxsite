@@ -44,6 +44,7 @@ div.forms textarea {width: 320px; height: 100px;}
 div.forms input.forms_checkbox {width: auto;}
 div.forms input.forms_submit {width: auto;}
 div.forms input.forms_reset {width: auto;}
+div.forms label {cursor: pointer;}
 div.forms-post h2 {color: red; font-size: 18pt; margin: 20px 0;}
 
 

@@ -126,3 +126,12 @@ div.t150, div.t200, div.t250 {width: 150px; text-align: right; float: left; marg
 div.t200 {width: 200px;}
 div.t250 {width: 200px;}
 
+div.admin_plugin_options {border: 1px gray solid; background: #E0E0E0; padding: 5px; margin: 0 0 15px 0; line-height: 1.5em;}
+div.admin_plugin_options strong {}
+div.admin_plugin_options input {width: 100%;}
+div.admin_plugin_options input.checkbox { width: auto;}
+div.admin_plugin_options textarea { width: 100%;}
+div.admin_plugin_options select { width: 100%;}
+
+label {cursor: pointer;}
+input[type='checkbox'] {cursor: pointer;}

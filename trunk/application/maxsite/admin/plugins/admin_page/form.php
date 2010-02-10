@@ -89,14 +89,14 @@
 
 			<div class="block_page">
 				<h3>' . t('Обсуждение', 'admin') . '</h3>
-				<p><input name="f_comment_allow" type="checkbox" ' . $f_comment_allow . ' /> ' . t('Разрешить комментирование', 'admin') . '</p>
-				<p><input name="f_feed_allow" type="checkbox" ' . $f_feed_allow . ' /> ' . t('Публикация в RSS', 'admin') . '</p>
+				<p><label><input name="f_comment_allow" type="checkbox" ' . $f_comment_allow . ' /> ' . t('Разрешить комментирование', 'admin') . '</label></p>
+				<p><label><input name="f_feed_allow" type="checkbox" ' . $f_feed_allow . ' /> ' . t('Публикация в RSS', 'admin') . '</label></p>
 				<!--p><input name="f_ping_allow" type="checkbox" ' . $f_ping_allow . ' /> ' . t('Разрешить пинг', 'admin') . '</p-->
 			</div>
 
 			<div class="block_page">
 				<h3>' . t('Дата публикации', 'admin') . '</h3>
-				<p><input name="f_date_change" type="checkbox" ' . $f_date_change . ' /> Изменить дату публикации</p>
+				<p><label><input name="f_date_change" type="checkbox" ' . $f_date_change . ' /> Изменить дату публикации</label></p>
 				<p>' . $date_y . ' - ' . $date_m . ' - ' . $date_d . '</p>
 				<p>' . $time_h . ' : ' . $time_m . ' : ' . $time_s . '</p>
 				<p><em>' . $date_time . '</em></p>

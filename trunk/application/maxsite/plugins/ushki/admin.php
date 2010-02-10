@@ -105,7 +105,7 @@
 			
 			$form .= '<p><input name="f_ushka['.$id.'][name]" type="text" value="'. $us['name'] . '"  style="width: 400px;">
 				<select style="width: 150px;" name="f_ushka[' . $id . '][type]"><option value="html"' . $sel_html . '/>TEXT/HTML</option><option value="php"' . $sel_php . ' />PHP</option></select>
-				<input name="f_ushka[' . $id . '][delete]" type="checkbox"> ' . t('Удалить', 'plugins') . '
+				<label><input name="f_ushka[' . $id . '][delete]" type="checkbox"> ' . t('Удалить', 'plugins') . '</label>
 			</p>';
 			
 			$form .= '<p><textarea name="f_ushka[' . $id . '][text]" style="width: 99%; height: 220px;">' . htmlspecialchars($us['text']) . '</textarea>';

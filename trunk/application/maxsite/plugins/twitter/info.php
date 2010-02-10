@@ -2,7 +2,7 @@
 
 $info = array(
 	'name' => 'Twitter',
-	'description' => 'Вывод на страницах блога ленты вашего twitter\'а или RSS-лент',
+	'description' => t('Вывод на страницах блога ленты вашего twitter\'а или RSS-лент', 'plugins'),
 	'version' => '1.0',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',

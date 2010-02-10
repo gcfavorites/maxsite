@@ -3,9 +3,9 @@
 $info = array(
 	'name' => 'Picasa',
 	'description' => 'Виджет «Веб-альбомы Picasa»',
-	'version' => '1.1',
+	'version' => '1.2',
 	'author' => 'DRiVER',
-	'plugin_url' => 'http://DRiVERlab.ru/',
+	'plugin_url' => 'http://DRiVERlab.ru/page/17',
 	'author_url' => 'http://DRiVERlab.ru/',
 	'group' => 'template'
 );

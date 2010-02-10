@@ -92,7 +92,15 @@ function mso_get_pages($r = array(), &$pag)
 
 	// можно указать номер автора - получим только его записи
 	if ( !isset($r['page_id_autor']) )		$r['page_id_autor'] = false;
-
+	
+	// получать ли информацию о рубриках
+	// если false, то возвращает пустые массивы page_categories и page_categories_detail
+	if ( !isset($r['get_page_categories']) )	$r['get_page_categories'] = true;
+	
+	// получать ли информацию о метках и мета страницы
+	// объединены, потому что это один sql-запрос
+	// если false, то возвращает пустые массивы page_tags и page_meta
+	if ( !isset($r['get_page_meta_tags']) )	$r['get_page_meta_tags'] = true;	
 
 	$CI = & get_instance();
 
@@ -255,60 +263,66 @@ function mso_get_pages($r = array(), &$pag)
 			$pages[$key]['page_meta'] = array();
 		}
 
-		// теперь одним запросом получим все рубрики каждой записи
-
-		$CI->db->select('page_id, category.category_id, category.category_name, category.category_slug');
-		$CI->db->where_in('page_id', $all_page_id);
-		$CI->db->order_by('category.' . $r['cat_order'], $r['cat_order_asc']); // сортировка рубрик
-		$CI->db->from('cat2obj');
-		$CI->db->join('category', 'cat2obj.category_id = category.category_id');
-
-		$query = $CI->db->get();
-		$cat = $query->result_array();
-
-		// переместим все в массив page_id[] = category_id
-		$page_cat = array();
-		$page_cat_detail = array();
-		foreach ($cat as $key=>$val)
+		if ($r['get_page_categories'])
 		{
-			$page_cat[$val['page_id']][] = $val['category_id'];
-			$page_cat_detail[$val['page_id']][$val['category_id']] = array('category_name'=>$val['category_name'], 'category_slug' => $val['category_slug']);
+			// теперь одним запросом получим все рубрики каждой записи
+
+			$CI->db->select('page_id, category.category_id, category.category_name, category.category_slug');
+			$CI->db->where_in('page_id', $all_page_id);
+			$CI->db->order_by('category.' . $r['cat_order'], $r['cat_order_asc']); // сортировка рубрик
+			$CI->db->from('cat2obj');
+			$CI->db->join('category', 'cat2obj.category_id = category.category_id');
+
+			$query = $CI->db->get();
+			$cat = $query->result_array();
+
+			// переместим все в массив page_id[] = category_id
+			$page_cat = array();
+			$page_cat_detail = array();
+			foreach ($cat as $key=>$val)
+			{
+				$page_cat[$val['page_id']][] = $val['category_id'];
+				$page_cat_detail[$val['page_id']][$val['category_id']] = array('category_name'=>$val['category_name'], 'category_slug' => $val['category_slug']);
+			}
 		}
-
-		// по этому же принципу получаем все метки
-		$CI->db->select('meta_id_obj, meta_key, meta_value');
-		$CI->db->where( array (	'meta_table' => 'page' ) );
-		$CI->db->where_in('meta_id_obj', $all_page_id);
-		$CI->db->order_by('meta_value');
-		$query = $CI->db->get('meta');
-		$meta = $query->result_array();
-
-		// переместим все в массив page_id[] = category_id
-		$page_meta = array();
-		foreach ($meta as $key=>$val)
+		
+		if ($r['get_page_meta_tags'])
 		{
-			$page_meta[$val['meta_id_obj']][$val['meta_key']][] = $val['meta_value'];
+			// по этому же принципу получаем все метки
+			$CI->db->select('meta_id_obj, meta_key, meta_value');
+			$CI->db->where( array (	'meta_table' => 'page' ) );
+			$CI->db->where_in('meta_id_obj', $all_page_id);
+			$CI->db->order_by('meta_value');
+			$query = $CI->db->get('meta');
+			$meta = $query->result_array();
+
+			// переместим все в массив page_id[] = category_id
+			$page_meta = array();
+			foreach ($meta as $key=>$val)
+			{
+				$page_meta[$val['meta_id_obj']][$val['meta_key']][] = $val['meta_value'];
+			}
 		}
 
 		// добавим в массив pages полученную информацию по меткам и рубрикам
 		foreach ($pages as $key=>$val)
 		{
 			// рубрики
-			if ( isset($page_cat[$val['page_id']]) and $page_cat[$val['page_id']] )
+			if ( $r['get_page_categories'] and isset($page_cat[$val['page_id']]) and $page_cat[$val['page_id']] )
 			{
 				$pages[$key]['page_categories'] = $page_cat[$val['page_id']];
 				$pages[$key]['page_categories_detail'] = $page_cat_detail[$val['page_id']];
 			}
 
 			// метки отдельно как page_tags
-			if ( isset($page_meta[ $val['page_id'] ]['tags'] ) and $page_meta[$val['page_id']]['tags'] )
+			if ($r['get_page_meta_tags'] and isset($page_meta[ $val['page_id'] ]['tags'] ) and $page_meta[$val['page_id']]['tags'] )
 				$pages[$key]['page_tags'] = $page_meta[$val['page_id']]['tags'];
 
 			// остальные мета отдельно в page_meta
-			if ( isset($page_meta[$val['page_id']]) and $page_meta[$val['page_id']] )
+			if ( $r['get_page_meta_tags'] and isset($page_meta[$val['page_id']]) and $page_meta[$val['page_id']] )
 				$pages[$key]['page_meta'] = $page_meta[$val['page_id']];
-
 		}
+		
 	}
 	else
 		$pages = array();
@@ -1186,7 +1200,7 @@ function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', 
 			$out .=  '<a href="'
 					. $MSO->config['site_url']
 					. $type . '/'
-					. $tag
+					. urlencode($tag)
 					. '" rel="tag">'
 					. $tag
 					. '</a>   ';
@@ -1353,6 +1367,7 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 			'page_slug' => '', // короткая ссылка страницы
 			'title' => t('Обсудить'), // титул, если есть ссылка
 			'title_no_link' => t('Посмотреть комментарии'), // титул если ссылки нет
+			'title_no_comments' => t('Обсудить'), // титул если еще нет комментариев
 			'do' => '', // текст ДО
 			'posle' => '', // текст ПОСЛЕ
 			'echo' => true, // выводить?
@@ -1375,10 +1390,17 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 			}
 		}
 		else
-			$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
-						. $r['page_slug'] . '#comments">' . t($r['title']) . '</a>' . $r['posle'];
-
-
+		{
+			
+			if ( !$r['page_count_comments'] ) // если нет комментариев, то выводим строчку title_no_link
+				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
+						. $r['page_slug'] . '#comments">' . t($r['title_no_comments']) . '</a>' . $r['posle'];
+			else
+				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
+						. $r['page_slug'] . '#comments">' . t($r['title']) . '</a>' . $r['posle'];			
+		}
+		
+		
 		if ($r['echo']) echo $out;
 			else return $out;
 	}
@@ -1409,7 +1431,7 @@ function  mso_page_author_link($users_nik = '', $page_id_autor = '', $do = '', $
 				. $page_id_autor
 				. '">'
 				. $users_nik
-				. '</a>   ';
+				. '</a>';
 	else
 		$out .= $users_nik;
 

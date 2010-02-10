@@ -104,6 +104,9 @@ function sape_init($args = array())
 		{
 			if ( !isset($SAPE_CONTENT) ) $SAPE_CONTENT = new SAPE_context(array('charset' => 'UTF-8'));
 			mso_hook_add( 'content_content', 'sape_content'); # хук на конечный текст для вывода
+			
+			if (isset($options['context_comment']) and $options['context_comment'])
+				mso_hook_add( 'comments_content_out', 'sape_content'); # хук на конечный текст для вывода в комментариях
 		}
 		else
 		{

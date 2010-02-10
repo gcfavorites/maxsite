@@ -48,9 +48,13 @@
 	$CI->load->library('table');
 	
 	$tmpl = array (
-					'table_open'		  => '<table class="page" border="0" width="99%">',
+					'table_open'		  => '<table class="page tablesorter" border="0" width="99%" id="pagetable">',
 					'row_alt_start'		  => '<tr class="alt">',
 					'cell_alt_start'	  => '<td class="alt">',
+					'heading_row_start'    => NR . '<thead><tr>',
+					'heading_row_end'       => '</tr></thead>' . NR,
+					'heading_cell_start'   => '<th style="cursor: pointer;">',
+					'heading_cell_end'      => '</th>',
 			  );
 
 	$CI->table->set_template($tmpl); // шаблон таблицы
@@ -65,7 +69,7 @@
 	
 	// все каталоги в массиве $dirs
 	$dirs = directory_map($plugins_dir, true);
-	
+	sort($dirs);
 	# пересортируем элементы масива так чтобы активные плагины из 
 	# $MSO->active_plugins оказались вверху
 	$dirs = array_unique(array_merge($MSO->active_plugins, $dirs));
@@ -100,14 +104,27 @@
 				if ($author_url) $author = '<a href="' . $author_url . '">' . $author . '</a>';
 				if ($plugin_url) $name = '<a href="' . $plugin_url . '">' . $name . '</a>';
 				
-				$act = '<input type="checkbox" name="f_check_submit[' . $dir . ']">';
+				$act = '<input type="checkbox" name="f_check_submit[' . $dir . ']" id="f_check_submit_' . $dir . '">';
+				
+				
 				
 				if ( in_array($dir, $MSO->active_plugins)) 
 				{
-					$status = '<span style="color: green;"><strong>' . t('вкл', 'admin') . '</strong></span>';
+					// $status = '<span style="color: green;"><strong>' . t('вкл', 'admin') . '</strong></span>';
+					
+					if (function_exists($dir . '_mso_options'))
+						// есть опции
+						$status = '<span style="text-decoration: underline;" title="' . t('Настройки плагина', 'admin') . '"><strong><a href="' . getinfo('site_admin_url') . 'plugin_options/' . $dir . '">' . t('вкл', 'admin') . '</a></strong></span>';
+					else 
+						$status = '<span style="color: green;"><strong>' . t('вкл', 'admin') . '</strong></span>';
+					
+					$dir = '<label for="f_check_submit_' . $dir . '">' . $dir . '</label>';
 				}
 				else 
 				{
+					
+					$dir = '<label for="f_check_submit_' . $dir . '">' . $dir . '</label>';
+					
 					$status = '<span class="gray">' . t('откл', 'admin') . '</span>';
 					$description = '<span class="gray">' . $description . '</span>';
 					$dir = '<span class="gray">' . $dir . '</span>';
@@ -119,7 +136,7 @@
 				
 				
 				
-				$CI->table->add_row($status, $act, $dir, $name, $version, $author, $description);
+				$CI->table->add_row($status, $act, $dir , $name, $version, $author, $description);
 			}
 		}
 	}
@@ -131,6 +148,17 @@
 				<input type="submit" name="f_uninstall_submit" value="&nbsp;x&nbsp;&nbsp;' . t('Деинсталировать', 'admin') . '&nbsp;">
 	</div>';
 	
+	
+	echo mso_load_jquery('jquery.tablesorter.js');
+	echo '
+	<script type="text/javascript">
+	$(function() {
+	  $("table.tablesorter th").animate({opacity: 0.7});
+	  $("table.tablesorter th").hover(function(){ $(this).animate({opacity: 1}); }, function(){ $(this).animate({opacity: 0.7}); });
+	  $("#pagetable").tablesorter();
+	});   
+	</script>
+	';
 	// добавляем форму, а также текущую сессию
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo $CI->table->generate(); // вывод подготовленной таблицы

@@ -1,11 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 $info = array(
-	'name' => 'Перелинковка страниц',
-	'description' => 'Плагин для внутренней прелинковки страниц путем анализа наиболее часто встречающихся слов.',
-	'version' => '1.0',
-	'author' => 'Максим',
-	'plugin_url' => 'http://max-3000.com/',
+	'name' => t('Перелинковка страниц', __FILE__),
+	'description' => t('Плагин для внутренней прелинковки страниц путем анализа наиболее часто встречающихся слов.', __FILE__),
+	'version' => '1.3',
+	'author' => 'Maxim, Wave',
+	'plugin_url' => 'http://wave.fantregata.com/page/work-for-maxsite',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );

@@ -59,6 +59,24 @@ function mso_check_post_ini()
 	return false;
 }
 
+# проверяем вхождение PHP_START функция PHP_END
+# если есть, то вычлиняем имя функции и выполняем её - полученный разультат 
+# вставляем вместо этой конструкции
+# обрабатываются только values, description и default
+function _mso_ini_check_php($value)
+{
+	$value = preg_replace_callback('!(PHP_START)(.*?)(PHP_END)!is', '_mso_ini_check_php_callback', $value);
+	return $value;
+}
+
+function _mso_ini_check_php_callback($matches)
+{
+	$f = trim($matches[2]);
+	if (function_exists($f)) $r = $f();
+		else $r = '';	
+	return $r;
+}
+
 # вывод ini-полей в виде таблицы
 function mso_view_ini($all = false) 
 {
@@ -93,16 +111,16 @@ function mso_view_ini($all = false)
 			else $type = stripslashes(trim($row['type']));
 		
 		if ( !isset($row['values']) ) $value = '';
-			else $values = stripslashes(htmlspecialchars(trim($row['values'])));
+			else $values = _mso_ini_check_php(stripslashes(htmlspecialchars(trim($row['values']))));
 			
 		if ( !isset($row['description']) ) $description = '';
-			else $description = stripslashes( trim( t($row['description']) ) );
+			else $description = _mso_ini_check_php(stripslashes( trim( t($row['description']))));
 		
 		if ( !isset($row['delimer']) ) $delimer = '<br />';
 			else $delimer = stripslashes($row['delimer']);
 			
 		if ( !isset($row['default']) ) $default = '';
-			else $default = stripslashes(htmlspecialchars(trim($row['default'])));
+			else $default = _mso_ini_check_php(stripslashes(htmlspecialchars(trim($row['default']))));
 		
 		$options_present = true; // признак, что опция есть в базе
 		
@@ -141,10 +159,9 @@ function mso_view_ini($all = false)
 			if ($value) $checked = 'checked="checked"';
 				else $checked = '';
 				
-			$f .= '<input type="checkbox" id="ch_' . mso_md5($key) . '" name="' . $name_f . '" ' . $checked . ' /> ' 
-			. '<label for="ch_' . mso_md5($key) . '">' . $key . '</label>' 
+			$f .= '<label><input type="checkbox" name="' . $name_f . '" ' . $checked . ' /> ' 
+			. $key . '</label>' 
 			. NR;
-			
 			
 			$f .= '<input type="hidden" name="f_all_checkbox[' . $options_key . '_m_s_o_' . $options_type . ']" />' . NR;
 		}

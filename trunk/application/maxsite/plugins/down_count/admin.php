@@ -51,7 +51,7 @@
 		
 		
 		$chk = $options['referer'] ? ' checked="checked"  ' : '';
-		$form .= '<p><input name="f_referer" type="checkbox" ' . $chk . '> <strong>' . t('Запретить переходы с чужих сайтов', 'plugins') . '</strong></p>';
+		$form .= '<p><label><input name="f_referer" type="checkbox" ' . $chk . '> <strong>' . t('Запретить переходы с чужих сайтов', 'plugins') . '</strong></label></p>';
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;

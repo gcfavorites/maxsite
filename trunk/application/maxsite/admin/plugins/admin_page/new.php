@@ -10,11 +10,19 @@
 	{
 		mso_checkreferer();
 		
-		// $f_content = mso_text_to_html($post['f_content']);
-		$f_content = trim($post['f_content']);
+		$f_content = $post['f_content'];
 		
-		$f_content = str_replace(chr(10), "<br />", $f_content);
-		$f_content = str_replace(chr(13), "", $f_content);
+		if ( mso_hook_present('content_replace_chr10_br') ) 
+		{
+			// если нужно задать свое начально форматирование, задайте хук content_replace_chr10_br
+			$f_content = mso_hook('content_replace_chr10_br', $f_content);
+		} 
+		else
+		{
+			$f_content = trim($f_content);
+			$f_content = str_replace(chr(10), "<br />", $f_content);
+			$f_content = str_replace(chr(13), "", $f_content);
+		}
 			
 		// глюк FireFox исправлем замену абсолютного пути src на абсолютный
 		// $f_content = str_replace('src="../../application/', 'src="' . $MSO->config['application_url'], $f_content);
@@ -161,7 +169,7 @@
 
 			echo '<div class="update">' . t('Страница добавлена!', 'admin') . ' ' . $url . '</div>'; // . $result['description'];
 			
-			mso_flush_cache(); // сбросим кэш
+			# mso_flush_cache(); // сбросим кэш - перенес в mso_new_page
 			
 			if ($url and isset($post['f_return'])) // редирект на edit?
 			{
@@ -287,9 +295,9 @@
 		if ($f_page_type == $row['page_type_id']) $che = 'checked="checked"';
 			else $che = '';
 			
-		$all_post_types .= '<p><input name="f_page_type[]" type="radio" ' . $che 
+		$all_post_types .= '<p><label><input name="f_page_type[]" type="radio" ' . $che 
 								. ' value="' . $row['page_type_id'] . '"> ' 
-								. $row['page_type_name'] . '</p>';
+								. $row['page_type_name'] . '</label></p>';
 	}
 	
 	
@@ -297,7 +305,7 @@
 	require_once( $MSO->config['common_dir'] . 'category.php' );
 	// $all_cat = mso_cat('<input name="f_cat[]" type="checkbox" %CHECKED% value="%ID%"> %NAME%', $f_cat);
 	
-	$all_cat = mso_cat_ul('<input name="f_cat[]" type="checkbox" %CHECKED% value="%ID%" title="id = %ID%"> %NAME%', true, $f_cat, array());
+	$all_cat = mso_cat_ul('<label><input name="f_cat[]" type="checkbox" %CHECKED% value="%ID%" title="id = %ID%"> %NAME%</label>', true, $f_cat, array());
 
 	
 	if ($f_comment_allow) $f_comment_allow = 'checked="checked"';

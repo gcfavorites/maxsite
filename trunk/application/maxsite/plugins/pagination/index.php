@@ -36,7 +36,7 @@ function pagination_go($r = array())
 	# текущая пагинация вычисляется по адресу url
 	# должно быть /next/6 - номер страницы
 	
-	$current_paged = mso_current_paged();
+	$current_paged = mso_current_paged($r['next_url']);
 	
 	if ($current_paged > $r['maxcount']) $current_paged = $r['maxcount'];
 	
@@ -50,7 +50,9 @@ function pagination_go($r = array())
 	
 	foreach ($a_cur_url as $val)
 	{
-		if ($val == 'next') break; // next - дальше не нужно
+		#if ($val == 'next') break; // next - дальше не нужно
+		
+		if ($val == $r['next_url']) break; // next - дальше не нужно
 		else
 		{
 			if ($val != $type) $cur_url .= '/@@' . $val;
@@ -154,14 +156,14 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	else 
 	{
 		if  ($prev_link_page == 1)
-			$first_link =  '<a href="' . $home_url . '">%FIRST%</a>' . $sep 
-						. '<a href="' . $home_url . '">%PREV%</a>' . $sep2;
+			$first_link =  '<a class="pagination-first" href="' . $home_url . '">%FIRST%</a>' . $sep 
+						. '<a class="pagination-prev" href="' . $home_url . '">%PREV%</a>' . $sep2;
 		else
-			$first_link =  '<a href="' . $home_url . '">%FIRST%</a>' . $sep 
-						. '<a href="' . $base_url . $page_u . $prev_link_page.'/">%PREV%</a>' . $sep2;
+			$first_link =  '<a  class="pagination-first" href="' . $home_url . '">%FIRST%</a>' . $sep 
+						. '<a  class="pagination-prev" href="' . $base_url . $page_u . $prev_link_page.'/">%PREV%</a>' . $sep2;
 		
 		if($page_number > 3)
-			$first_dots = ' <a href="' . $base_url . $page_u . '1">1</a> ... ';
+			$first_dots = ' <a  class="pagination-start" href="' . $base_url . $page_u . '1">1</a> ... ';
 		else 
 			$first_dots = '';
 	}
@@ -173,11 +175,11 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	} 
 	else 
 	{
-		$last_link =  $sep2 . '<a href="' . $base_url . $page_u . $next_link_page 
-					. '">%NEXT%</a>' . $sep . '<a href="' . $base_url . $page_u . $total_pages . '">%LAST%</a>';
+		$last_link =  $sep2 . '<a  class="pagination-next" href="' . $base_url . $page_u . $next_link_page 
+					. '">%NEXT%</a>' . $sep . '<a  class="pagination-last" href="' . $base_url . $page_u . $total_pages . '">%LAST%</a>';
 		
 		if ( $last_mid_link < $total_pages  )
-			$last_dots = ' ... <a href="' . $base_url . $page_u . $total_pages . '">' . $total_pages . '</a> ';
+			$last_dots = ' ... <a  class="pagination-end" href="' . $base_url . $page_u . $total_pages . '">' . $total_pages . '</a> ';
 		else 
 			$last_dots = '';
 	}

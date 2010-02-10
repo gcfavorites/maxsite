@@ -80,9 +80,9 @@ mso_cur_dir_lang('admin');
 			else
 				$checked2 = 'checked="checked"'; 
 			
-			echo '<p><input type="radio" name="f_comments_approved" value="1" ' . $checked1 . ' /> ' . t('Одобрить')
-				. '<input type="radio" name="f_comments_approved" value="0" ' . $checked2 . ' /> ' . t('Запретить')
-				. '</p>';
+			echo '<p><label><input type="radio" name="f_comments_approved" value="1" ' . $checked1 . ' /> ' . t('Одобрить')
+				. '</label> <label><input type="radio" name="f_comments_approved" value="0" ' . $checked2 . ' /> ' . t('Запретить')
+				. '</label></p>';
 			
 			echo '<br /><p><input type="submit" name="f_submit" value="' . t('Готово') . '"></p>';
 			echo '</form>';

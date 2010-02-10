@@ -1,0 +1,7 @@
+#MainMenu {font-size: 9pt; margin: 0; background: #3D7FE0; height: 30px;}
+#tab ul {}
+#tab li {display: inline;}
+#tab a {display: block; float: left; line-height: 30px; height: 30px; margin-right: 1px; background: #3D7FE0; padding: 0 10px; text-decoration: none; text-align: center; font-weight: bold; color: white; }
+#tab li.first a {}
+#tab li.selected a {}
+#tab a:hover {background: #266ACF; color: white; }

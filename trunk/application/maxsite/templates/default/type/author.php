@@ -19,11 +19,15 @@ mso_head_meta('title', &$pages, '%users_nik%|%title%', ' » '); //  meta title �
 mso_head_meta('description', &$pages, '%users_nik%'); // meta description страницы
 mso_head_meta('keywords', &$pages, '%users_nik%'); // meta keywords страницы
 
+if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
 
-echo '<h1 class="category">' . $title_page . '</h1>';
+echo NR . '<div class="type type_author">' . NR;
+
+if ($f = mso_page_foreach('author-do')) require($f); // подключаем кастомный вывод
+	else echo '<h1 class="category">' . $title_page . '</h1>';
 
 if ($pages) // есть страницы
 { 	
@@ -32,14 +36,12 @@ if ($pages) // есть страницы
 	
 	foreach ($pages as $page) : // выводим в цикле
 		
-		if (function_exists('mso_page_foreach'))
+		if ($f = mso_page_foreach('author')) 
 		{
-			if ($f = mso_page_foreach('author')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
+
 		
 		extract($page);
 		
@@ -82,12 +84,13 @@ if ($pages) // есть страницы
 }
 else 
 {
- 
-	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
+ 	echo '<h1>'.t('404. Ничего не найдено...').'</h1>';
 	echo '<p>'.t('Извините, ничего не найдено').'</p>';
+	echo mso_hook('page_404');
 	
 } // endif $pages
 
+echo NR . '</div><!-- class="type type_author" -->' . NR;
 
 # конечная часть шаблона
 require(getinfo('template_dir') . 'main-end.php');

@@ -36,6 +36,7 @@
 		
 		$options['start'] = isset($post['f_start']) ? 1 : 0;
 		$options['context'] = isset($post['f_context']) ? 1 : 0;
+		$options['context_comment'] = isset($post['f_context_comment']) ? 1 : 0;
 		$options['test'] = isset($post['f_test']) ? 1 : 0;
 		$options['anticheck'] = isset($post['f_anticheck']) ? 1 : 0;
 
@@ -83,7 +84,7 @@
 
 <p><strong>Примечание</strong>. Если вы размещаете код через виджеты, то при включенной проверке в виджете появится текст «Код sape.ru установлен верно!»</p>
 
-<p>После проверки кода, вы можете войти в свой аккаунт на sape.ru и добавить саой сайт. В течение некоторого времени, робот <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a> его проиндексирует.</p>
+<p>После проверки кода, вы можете войти в свой аккаунт на sape.ru и добавить свой сайт. В течение некоторого времени, робот <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a> его проиндексирует.</p>
 
 <p><strong>Обратите внимание! Помощь по установке кода <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a>, любые подсказки и разъяснения пр этому поводу я оказываю только в двух случаях: 1) Вы зарегистрировались по моей ссылке и являетесь моим рефералом; 2) На платной основе - 30WMZ.</strong></p>
 <br />
@@ -92,11 +93,13 @@
 		$options = mso_get_option($options_key, 'plugins', array());
 		if ( !isset($options['kod']) ) $options['kod'] = ''; 
 		if ( !isset($options['context']) ) $options['context'] = true; 
+		if ( !isset($options['context_comment']) ) $options['context_comment'] = true; 
 		if ( !isset($options['test']) ) $options['test'] = false; 
 		if ( !isset($options['start']) ) $options['start'] = true; 
 		if ( !isset($options['anticheck']) ) $options['anticheck'] = false; 
 		
 		$checked_context = $options['context'] ? ' checked="checked" ' : '';
+		$checked_context_comment = $options['context_comment'] ? ' checked="checked" ' : '';
 		$checked_test = $options['test'] ? ' checked="checked" ' : '';
 		$checked_start = $options['start'] ? ' checked="checked" ' : '';
 		$checked_anticheck = $options['anticheck'] ? ' checked="checked" ' : '';
@@ -104,10 +107,11 @@
 		$form = '';
 		$form .= '<p><strong>Ваш номер/код в <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a>:</strong> ' . ' <input name="f_kod" type="text" style="width: 300px;" value="' . $options['kod'] . '"></p>';
 		
-		$form .= '<p><input name="f_start" type="checkbox"' . $checked_start . '> Включить плагин</p>';
-		$form .= '<p><input name="f_context" type="checkbox"' . $checked_context . '> Использовать контекстные ссылки</p>';
-		$form .= '<p><input name="f_test" type="checkbox"' . $checked_test . '> Режим проверки установленного кода</p>';
-		$form .= '<p><input name="f_anticheck" type="checkbox"' . $checked_anticheck . '> Включить антиобнаружитель продажных ссылок</p>';
+		$form .= '<p><label><input name="f_start" type="checkbox"' . $checked_start . '> Включить плагин</label></p>';
+		$form .= '<p><label><input name="f_context" type="checkbox"' . $checked_context . '> Использовать контекстные ссылки</label></p>';
+		$form .= '<p><label><input name="f_context_comment" type="checkbox"' . $checked_context_comment . '> Использовать контекстные ссылки в комментариях</label></p>';
+		$form .= '<p><label><input name="f_test" type="checkbox"' . $checked_test . '> Режим проверки установленного кода</label></p>';
+		$form .= '<p><label><input name="f_anticheck" type="checkbox"' . $checked_anticheck . '> Включить антиобнаружитель продажных ссылок</label></p>';
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;

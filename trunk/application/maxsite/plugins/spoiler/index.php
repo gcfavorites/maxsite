@@ -1,8 +1,8 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 /**
- * MaxSite CMS
- * spoiler plugin
+ * For MaxSite CMS
+ * Spoiler Plugin
  * Author: (c) Sam
  * Plugin URL: http://6log.ru/spoiler 
  */
@@ -12,39 +12,6 @@ function spoiler_autoload($args = array())
 {
 	mso_hook_add( 'head', 'spoiler_head');
 	mso_hook_add( 'content', 'spoiler_custom'); # хук на вывод контента
-	mso_hook_add( 'admin_init', 'spoiler_admin_init'); # хук на админку
-	mso_create_allow( 'spoiler', t('Админ-доступ к редактированию spoiler', __FILE__) );
-}
-
-
-# функция выполняется при указаном хуке admin_init
-function spoiler_admin_init($args = array())
-{
-	if( mso_check_allow('spoiler') )
-	{
-		$this_plugin_url = 'plugin_spoiler'; // url и hook
-		mso_admin_menu_add('plugins', $this_plugin_url, 'Spoiler');
-		mso_admin_url_hook ($this_plugin_url, 'spoiler_admin_page');
-	}
-	return $args;
-}
-
-
-# функция вызываемая при хуке, указанном в mso_admin_url_hook
-function spoiler_admin_page($args = array())
-{
-	global $MSO;
-	if ( !mso_check_allow('spoiler') ) 
-	{
-		echo t('Доступ запрещен', __FILE__);
-		return $args;
-	}
-	
-	# выносим админские функции отдельно в файл
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Настройка spoiler', __FILE__) . ' "; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Настройка spoiler', __FILE__) . ' - " . $args; ' );
-
-	require($MSO->config['plugins_dir'] . 'spoiler/admin.php');
 }
 
 
@@ -62,13 +29,15 @@ function spoiler_uninstall($args = array())
 # функции плагина
 function spoiler_custom($text)
 {
+	//mso_cur_dir_lang(__FILE__);
+	
 	// константа
 	$options_key = 'plugin_spoiler';
 
 	/* Настройки*/
 	$options = mso_get_option($options_key, 'plugins', array());
-	if ( !isset($options['hide']) ) $options['hide'] = t('Скрыть', __FILE__);
-	if ( !isset($options['show']) ) $options['show'] = t('Показать...', __FILE__);
+	if ( !isset($options['hide']) ) $options['hide'] = t('Скрыть',__FILE__);
+	if ( !isset($options['show']) ) $options['show'] = t('Показать...',__FILE__);
 
 	$showtext = $options['show'];
     $hidetext = $options['hide'];
@@ -117,8 +86,8 @@ function spoiler_custom($text)
 			}
 			  
 			$html .= '<a class="spoiler_link_show" href="javascript:void(0)" onclick="SpoilerToggle(document.getElementById(\''.
-			$id.'\'), this, \''.$showtext.'\', \''.$hidetext.'\')">'.$showtext.'</a>' . PHP_EOL;
-			$html .= '<div class="spoiler_div" id="'.$id.'" style="display:none">' . $matches[3][$i].'</div>'.PHP_EOL;
+			$id.'\'), this, \''.$showtext.'\', \''.$hidetext.'\')">'.$showtext.'</a>'.PHP_EOL;
+			$html .= '<div class="spoiler_div" id="'.$id.'" style="display:none">'.$matches[3][$i].'</div>'.PHP_EOL;
 
 			//$text = str_replace($matches[0][$i], $html, $text);
 			$text = preg_replace($pattern, $html, $text,1);
@@ -136,11 +105,11 @@ function spoiler_head($args = array())
 	$options_key = 'plugin_spoiler';
 	$options = mso_get_option($options_key, 'plugins', array());
 	
-	if ( !isset($options['style']) ) $options['style'] = ''; 
+	if ( !isset($options['style'])  ) {$options['style'] = ''; }
 	if ($options['style'] != '')
 	{
-		echo '<link rel="stylesheet" href="' . getinfo('plugins_url') . 'spoiler/'.$options['style'].
-		'.css" type="text/css" media="screen">';
+		echo '<link rel="stylesheet" href="' . getinfo('plugins_url') . 'spoiler/style/'.$options['style'].
+		'" type="text/css" media="screen">';
 	}	
 	//echo <<<EOF
 	echo '	
@@ -163,4 +132,37 @@ function spoiler_head($args = array())
 	</script>';
 	//EOF;
 }
+
+# функция отрабатывающая миниопции плагина (function плагин_mso_options)
+function spoiler_mso_options() 
+{
+	mso_cur_dir_lang(__FILE__);
+	
+    # ключ, тип, ключи массива
+    mso_admin_plugin_options('plugin_spoiler', 'plugins', 
+        array(
+            'hide' => array(
+                            'type' => 'text', 
+                            'name' => t('Спрятать:'), 
+                            'description' => t('Можно настроить какой текст появится в раскрытом виде'), 
+                            'default' => t('Скрыть')
+                        ),
+            'show' => array(
+                            'type' => 'text', 
+                            'name' => t('Показать:'), 
+                            'description' => t('Можно настроить какой текст появится в скрытом виде'), 
+                            'default' => t('Показать...')
+                        ), 
+            'style' => array(
+                            'type' => 'text', 
+                            'name' => t('Выберите файл стилей:'), 
+                            'description' => t('Указывать только имя файла с расширением(Например: spoiler.css). Оставьте поле пустым, если не хотите использовать стили.<br />Стили лежат в следеющей папке: (.../plugins/spoiler/style/...)'),
+                            'default' => ' '
+                        ),
+            ),
+		t('Настройки плагина Spoiler'), // титул
+		t('<p>С помощью этого плагина вы можете скрывать текст под спойлер.<br />Для использования плагина обрамите нужный текст в код [spoiler]ваш текст[/spoiler]</p><p class="info">Также возможны такие варианты: <br />[spoiler=показать]ваш текст[/spoiler], [spoiler=показать/спрятать]ваш текст[/spoiler], [spoiler=/спрятать]ваш текст[/spoiler]</p>')  // инфа
+    );
+}
+
 ?>

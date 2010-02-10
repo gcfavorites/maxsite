@@ -53,13 +53,13 @@
 		$form .= '<h2>' . t('Настройки', 'plugins') . '</h2>';
 		
 		$chk = $options['antispam_on'] ? ' checked="checked"  ' : '';
-		$form .= '<p><input name="f_antispam_on" type="checkbox" ' . $chk . '> <strong>' . t('Включить антиспам', 'plugins') . '</strong>';
+		$form .= '<p><label><input name="f_antispam_on" type="checkbox" ' . $chk . '> <strong>' . t('Включить антиспам', 'plugins') . '</strong></label>';
 		
 		$chk = $options['logging'] ? ' checked="checked"  ' : '';
-		$form .= '<p><input name="f_logging" type="checkbox" ' . $chk . '> <strong>' . t('Вести лог отловленных спамов', 'plugins') . '</strong>';
+		$form .= '<p><label><input name="f_logging" type="checkbox" ' . $chk . '> <strong>' . t('Вести лог отловленных спамов', 'plugins') . '</strong></label>';
 		
 		$chk = $options['moderation_links'] ? ' checked="checked"  ' : '';
-		$form .= '<p><input name="f_moderation_links" type="checkbox" ' . $chk . '> <strong>' . t('Отправлять комментарий на модерацию, если в нем встречается, хоть одна ссылка.', 'plugins') . '</strong>';
+		$form .= '<p><label><input name="f_moderation_links" type="checkbox" ' . $chk . '> <strong>' . t('Отправлять комментарий на модерацию, если в нем встречается, хоть одна ссылка.', 'plugins') . '</strong></label>';
 		
 		$form .= '<p><strong>' . t('Файл для логов:', 'plugins') . '</strong> ' . $MSO->config['uploads_dir'] . ' <input name="f_logging_file" type="text" value="' . $options['logging_file'] . '">';
 		if (file_exists( $MSO->config['uploads_dir'] . $options['logging_file'] ))

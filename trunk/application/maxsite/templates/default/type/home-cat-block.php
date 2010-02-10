@@ -7,6 +7,8 @@ mso_cur_dir_lang('templates');
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
 
+echo NR . '<div class="type type_home_cat_block">' . NR;
+
 // возможно указана страница для отображения вверху перед всеми страницами
 if (mso_get_option('home_page_id_top', 'templates', '0'))
 {
@@ -28,15 +30,12 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 		
 		foreach ($page_top as $page)  // выводим в цикле
 		{
-			if (function_exists('mso_page_foreach'))
+			if ($f = mso_page_foreach('home-top')) 
 			{
-				if ($f = mso_page_foreach('home-top')) 
-				{
-					require($f); // подключаем кастомный вывод
-					continue; // следующая итерация
-				}
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
 			}
-		
+
 			extract($page);
 			mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 		
@@ -69,17 +68,16 @@ if (mso_get_option('home_last_page', 'templates', '0'))
 		
 		foreach ($page_last as $page)  // выводим в цикле
 		{
-			if (function_exists('mso_page_foreach'))
+			if ($f = mso_page_foreach('home-cat-block-last-page')) 
 			{
-				if ($f = mso_page_foreach('home-cat-block-last-page')) 
-				{
-					require($f); // подключаем кастомный вывод
-					continue; // следующая итерация
-				}
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
 			}
 		
 			extract($page);
+
 			mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
+
 			echo '<div class="page_content">';
 				echo '<div class="info">';
 					mso_page_date($page_date_publish, 
@@ -146,13 +144,11 @@ else
 		foreach($home_cat_block as $cat_id)
 		{
 			// выводим кастомный вывод на этот цикл, чтобы иметь возможность менять его целиком
-			if (function_exists('mso_page_foreach'))
+
+			if ($f = mso_page_foreach('home-cat-block')) 
 			{
-				if ($f = mso_page_foreach('home-cat-block')) 
-				{
-					require($f); // подключаем кастомный вывод
-					continue; // следующая итерация
-				}
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
 			}
 		
 			$par['cat_id'] = $cat_id;
@@ -232,6 +228,8 @@ else
 	mso_add_cache($key_home_cache, ob_get_flush());
 	
 } // if $k
+
+echo NR . '</div><!-- class="type type_home_cat_block" -->' . NR;
 
 # конечная часть шаблона
 require(getinfo('template_dir') . 'main-end.php');

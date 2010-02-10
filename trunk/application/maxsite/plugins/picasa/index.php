@@ -34,7 +34,7 @@ function picasa_widget_form($num = 1)
 	$options = mso_get_option($widget, 'plugins', array());
 	
 	if ( !isset($options['header']) ) $options['header'] = t('Мой веб-альбом Picasa', 'plugins');
-	if ( !isset($options['url']) ) $options['url'] = 'URL-адрес';
+	if ( !isset($options['url']) ) $options['url'] = 'Логин пользователя';
 	if ( !isset($options['show_type']) ) $options['show_type'] = 1;
 	if ( !isset($options['albums_count']) ) $options['albums_count'] = 10;
 		else $options['albums_count'] = (int) $options['albums_count'];
@@ -47,8 +47,8 @@ function picasa_widget_form($num = 1)
 	
 	$form = '<div class="t150">' . t('Заголовок:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
-	$form .= '<div class="t150">' . t('URL-адрес галереи:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . 'url', 'value'=>$options['url'] ) ) ;
-	$form .= '<div class="t150">&nbsp;</div><p>http://picasaweb.google.com/<b>URL-адрес</b></p>';
+	$form .= '<div class="t150">' . t('Логин пользователя:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . 'url', 'value'=>$options['url'] ) ) ;
+	$form .= '<div class="t150">&nbsp;</div><p>http://picasaweb.google.com/<b>логин</b></p>';
 	
 	$form .= '<div class="t150">' . t('Показывать:', 'plugins') . '</div>'. form_dropdown($widget . 'show_type', 
 								array( '1'=>t('Только названия альбомов', 'plugins'),
@@ -143,7 +143,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			$title = $item['title'];
 			$title = str_replace("'","",$title);
 			$title = str_replace('"',"",$title);
-			$result .= "<p><a href='".$item['link']."' target='_blank'>".$title."</a></p>";	
+			$result .= "<p><noindex><a href='".$item['link']."' target='_blank' rel='nofollow'>".$title."</a></noindex></p>";	
 		}
 	};
 	if ($show_type == 2) {
@@ -157,7 +157,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			preg_match('/.*src="(.*?)".*/',$item['description'],$img_src);
 			$path = $img_src[1];
 			$path = str_replace("s160-","s".$img_size."-",$path);
-			$result .= "<a href='".$item['link']."' target='_blank'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' width='".$img_size."' height='".$img_size."' /></a>";	
+			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' width='".$img_size."' height='".$img_size."' /></a></noindex>";	
 		}
 	};
 	if ($show_type == 3) {
@@ -171,10 +171,10 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			preg_match('/.*src="(.*?)".*/',$item['description'],$img_src);
 			$path = $img_src[1];
 			$path = str_replace("s288","s".$img_size,$path);
-			$result .= "<a href='".$item['link']."' target='_blank'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' /></a>";	
+			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' /></a></noindex>";	
 		}
 	};
-	mso_add_cache($cache_key, $result, 60, true);
+	mso_add_cache($cache_key, $result, 300, true);
 	return $result;
 }
 ?>

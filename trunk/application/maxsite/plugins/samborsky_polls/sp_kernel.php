@@ -4,6 +4,7 @@
 		
 		var $id = 0; 
 		var $data = array();
+		var $last_error = '';
 		
 		function __construct($id = 0){
 			$this->id = $id;
@@ -18,34 +19,28 @@
 		 * @return 
 		 */
 		
-		public function get_active_code(){
+		function get_active_code(){
 			
 			$CI = &get_instance();
 			
 			// Получаем активное голосование
-			$CI->db->select('*');
-			$CI->db->limit(1);
+			$CI->db->select('*')->limit(1)->order_by('q_id','random');
 			
 			if( !$this->id ){
 				
-				$CI->db->order_by('q_id','random');
-				
 				// Где голосование активно, и входит в временные рамки
 				$CI->db->where(array(
-					'q_active' => true, 
-					'q_expiry >' => gmmktime(0,0,0,date('m'),date('d'),date('Y')),
-					'q_timestamp <' => gmmktime(0,0,0,date('m'),date('d'),date('Y')) 
+					'q_active' => true 
 				));
-				
-				// Либо голосование вечное
-				$CI->db->or_where('q_expiry = ', 0);
 			}
 			else{
+				
+				// С указанным ID
 				$CI->db->where('q_id',$this->id);
 			}
 			
 			$questions = $CI->db->get('sp_questions');			
-			if( $questions->num_rows() ){
+			if( $questions->num_rows() > 0 ){
 				
 				$this->data = $questions->row();
 				$this->id = $this->data->q_id;
@@ -63,7 +58,7 @@
 			return '';
 		}
 		
-		public function results(){
+		function results(){
 			
 			if( !$this->id ) return '';
 			
@@ -94,14 +89,16 @@
 			$total = number_format($this->data->q_totalvoters,0,' ',' ');
 
 			$CI->table->add_row("<strong>Всего проголосовало:</strong>&nbsp;{$total}&nbsp;чел");
-			$CI->table->add_row('<div align="center"><a href="'.mso_get_option('sp_archive_url').'">Архивы голосований</a></div>');
+			
+			if( mso_get_option('show_archives_link') )
+				$CI->table->add_row('<div align="center"><a href="'.mso_get_option('sp_archive_url').'">Архивы голосований</a></div>');
 		
 			$out = $CI->table->generate();
 			
 			return $out;
 		}
 		
-		public function form(){
+		function form(){
 			
 			$CI = &get_instance();
 			$CI->load->library('table');
@@ -126,12 +123,15 @@
 			// Куда отправлять POST
 			$ajax_path = getinfo('ajax') . base64_encode('plugins/samborsky_polls/ajax.php');
 			
+			$results_link = mso_get_option('show_results_link') ? '&nbsp;&nbsp;<a href="javascript: void(0);" onclick="javascript:sp_polls_results('.$this->id.');" class="sp_polls_ajax_link">Результаты</a>' : '';
+			
 			$CI->table->add_row(
 				'<input type="hidden" id="sp_ajax_path_'.$this->id.'" value="'.$ajax_path.'" />',
-				'<input type="button" value="Проголосовать" onclick="javascript:sp_polls_vote('.$this->id.');" />'
+				'<input type="button" value="Проголосовать" onclick="javascript:sp_polls_vote('.$this->id.');" />' . $results_link
 			);
 			
-			$CI->table->add_row('&nbsp;','<a href="'.mso_get_option('sp_archive_url').'">Архивы голосований</a>');
+			if( mso_get_option('show_archives_link') )
+				$CI->table->add_row('&nbsp;','<a href="'.mso_get_option('sp_archive_url').'">Архивы голосований</a>');
 
 			// Генерируем таблицу и форму загрузки			
 			$out = $CI->table->generate() . 
@@ -143,7 +143,7 @@
 			return $out;
 		}
 		
-		public function get(){
+		function get(){
 			
 			if( !$this->id ) return false;
 			
@@ -163,7 +163,7 @@
 			return false;
 		}
 		
-		public function insert($data = array()){
+		function insert($data = array()){
 			
 			if( !empty($data) ){
 				$this->data = $data;
@@ -183,7 +183,7 @@
 			return false;
 		}
 		
-		public function update($data = array()){
+		function update($data = array()){
 			
 			if( !$this->id ) return false;
 			
@@ -196,7 +196,8 @@
 			return $CI->db->update('sp_questions',$this->data);
 		}
 		
-		public function check_allow(){
+		function check_allow(){
+			global $MSO;
 			
 			if( empty($this->data) ){
 				return false;
@@ -211,13 +212,47 @@
 			if( 1 == $this->data->q_protection ){
 				$cookie = get_cookie('sp_' . $this->id);
 				
-				return FALSE == $cookie;
+				if( !$cookie ){
+					return TRUE;
+				}
+				else{
+					$this->last_error = 'Вы уже голосовали';
+				}
 			}
+			
+			// Если стоит защита по Cookie;
+			if( 2 == $this->data->q_protection ){
+				
+				if( is_login() ){
+					
+					// Проверим голосовал ли чел
+					$CI = &get_instance();
+					$CI->db->select('l_id')->limit(1)->where(array(
+						'l_qid' => $this->id,
+						'l_userid' => $MSO->data['session']['users_id']
+					));
+					
+					$query = $CI->db->get('sp_logs');
+			
+					if( $query->num_rows() ){
+						
+						$this->last_error = 'Вы уже голосовали';	
+						return FALSE;
+					}
+					
+					return TRUE;
+				}
+				else{
+					$this->last_error = 'Голосовать могут только зарегистрированые пользователи. Пройдите регистрацию.';
+				}
+			}
+
+			// Если голосовать можно только зарегистрированным (тем кто в mso_users, не путать с комюзерами)
 			
 			return false;
 		}
 		
-		public function close(){
+		function close(){
 			
 			if( !$this->id ) return false;
 			
@@ -247,7 +282,7 @@
 		 * Получает массив вариантов ответов
 		 * @return 
 		 */
-		public function get($a_id = 0){
+		function get($a_id = 0){
 			
 			$this->data = array();
 			if( $a_id ) $this->a_id = $a_id;
@@ -273,7 +308,7 @@
 		 * @return 
 		 * @param object $data
 		 */
-		public function update($data = array(),$a_id = 0){
+		function update($data = array(),$a_id = 0){
 			
 			if( !empty($data) ){
 				$this->data = $data;
@@ -291,7 +326,7 @@
 		 * @return 
 		 * @param object $data[optional]
 		 */
-		public function insert($data = array()){
+		function insert($data = array()){
 			
 			if( !empty($data) ){
 				$this->data = $data;
@@ -318,7 +353,7 @@
 		 * @param object $a_id[optional]
 		 */
 		
-		public function inc($a_id = 0){
+		function inc($a_id = 0){
 			
 			if( $a_id ) $this->a_id = $a_id;
 			
@@ -335,7 +370,7 @@
 		 * @param object $q_id
 		 */
 		
-		public function get_array($q_id){
+		function get_array($q_id){
 			
 			if( !$q_id ) return array();
 			
@@ -359,13 +394,13 @@
 	
 	class sp_archive{
 		
-		private function single($id){
+		function single($id){
 			
 			$question = new sp_question($id);
 			return $question->get_active_code();			
 		}
 		
-		private function archive(){
+		function archive(){
 			
 			$CI = &get_instance();			
 			$CI->db->select('*');
@@ -400,7 +435,7 @@
 			return '';
 		}
 
-		public function get(){
+		function get(){
 			
 			$seg = mso_segment(2);
 			

@@ -23,11 +23,15 @@
 		$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 	}
 	
+if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
 
-echo '<h1 class="category">' . mb_strtoupper($search, 'UTF8') . '</h1>';
+echo NR . '<div class="type type_search">' . NR;
+
+if ($f = mso_page_foreach('search-do')) require($f); // подключаем кастомный вывод
+	else echo '<h1 class="category">' . mb_strtoupper($search, 'UTF8') . '</h1>';
 
 if ($pages) // есть страницы
 { 	
@@ -37,14 +41,13 @@ if ($pages) // есть страницы
 	echo '<ul class="category">';
 	foreach ($pages as $page) : // выводим в цикле
 		
-		if (function_exists('mso_page_foreach'))
+
+		if ($f = mso_page_foreach('search')) 
 		{
-			if ($f = mso_page_foreach('search')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
+
 		
 		extract($page);
 		
@@ -92,7 +95,7 @@ if ($pages) // есть страницы
 		$page_content = implode(' ', $arr); 
 		
 		// подсветим найденные
-		$page_content = str_replace($searh_to_text, '<span style="color: red; background: yellow;">' . $searh_to_text . '</span>', $page_content);
+		$page_content = str_replace($searh_to_text, '<span style="color: red; background: yellow;" class="search">' . $searh_to_text . '</span>', $page_content);
 		
 		// кол-во совпадений
 		$cou = substr_count($page_content, $searh_to_text) + substr_count(mb_strtolower($page_title, 'UTF8'), $searh_to_text);
@@ -117,8 +120,11 @@ else
 	echo '
 	<p><br /><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '" />&nbsp;<input type="submit" name="Submit" value="  '. t('Поиск'). '  " /></form></p>';
 	
+	echo mso_hook('page_404');
+	
 } // endif $pages
 
+echo NR . '</div><!-- class="type type_search" -->' . NR;
 
 # конечная часть шаблона
 require(getinfo('template_dir') . 'main-end.php');

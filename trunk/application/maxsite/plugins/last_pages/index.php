@@ -131,7 +131,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="last-pages"><ul class="is_link">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</ul></div>';
 	
-	
+/*	
 	$cache_key = 'last_pages_widget'. serialize($arg) . $num;
 	$k = mso_get_cache($cache_key);
 	if ($k) // да есть в кэше
@@ -140,7 +140,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 		$k = str_replace( '<a href="' . $current_url . '">', '<a href="' . $current_url . '" class="current_url">', $k);
 		return $k; 
 	}
-	
+*/	
 	$arg['exclude_cat'] = mso_explode($arg['exclude_cat']); // рубрики из строки в массив
 	$arg['include_cat'] = mso_explode($arg['include_cat']); // рубрики из строки в массив
 	
@@ -180,6 +180,8 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	{	
 		$pages = $query->result_array();
 		
+		$all_cat = mso_cat_array_single(); // все рубрики
+		
 		$out = '';
 		foreach ($pages as $key=>$page)
 		{
@@ -208,11 +210,26 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 			}
 			
 			$out = str_replace('%TEXT_CUT%', mso_balance_tags( mso_auto_tag( $page_content ) ), $out);
+			
+			if ( is_type_slug('page', mso_slug($page['page_slug'])) )
+				$out = str_replace( '<li>', '<li class="current_url_page">', $out);
+			
+			if (isset($arg['include_cat'][0]) and
+				is_page_cat($arg['include_cat'][0]) )
+					$out = str_replace( '<li>', '<li class="current_url_cat">', $out);
+					
+			if (
+				isset($arg['include_cat'][0]) and
+				is_type_slug('category', $all_cat[$arg['include_cat'][0]]['category_slug']) and
+				in_array($page['page_id'], $all_cat[$arg['include_cat'][0]]['pages']) 
+				)
+					$out = str_replace( '<li>', '<li class="current_url_allcat">', $out);
+
 		}
+			
+		$out = $arg['header'] . $arg['block_start'] . NR . $out . $arg['block_end'];
 		
-		$out = $arg['header'] . $arg['block_start'] . $out . $arg['block_end'];
-		
-		mso_add_cache($cache_key, $out); // сразу в кэш добавим
+//		mso_add_cache($cache_key, $out); // сразу в кэш добавим
 		
 		// отметим текущую рубрику. Поскольку у нас к кэше должен быть весь список и не делать кэш для каждого url
 		// то мы просто перед отдачей заменяем текущий url на url с li.current_url 

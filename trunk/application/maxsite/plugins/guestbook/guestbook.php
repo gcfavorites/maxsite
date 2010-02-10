@@ -9,7 +9,11 @@ mso_hook_add('head', 'guestbook_css');
 
 function guestbook_css($a = array())
 {
-	echo '<link rel="stylesheet" href="' . getinfo('plugins_url') . 'guestbook/guestbook.css" type="text/css" media="screen">' . NR;
+	if (file_exists(getinfo('template_dir') . 'guestbook.css')) $css = getinfo('stylesheet_url') . 'guestbook.css';
+		else $css = getinfo('plugins_url') . 'guestbook/guestbook.css';
+		
+	echo '<link rel="stylesheet" href="' . $css . '" type="text/css" media="screen">' . NR;
+	
 	return $a;
 }
 

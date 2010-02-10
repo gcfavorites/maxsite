@@ -33,7 +33,7 @@ function xml_sitemap_activate($args = array())
 
 
 # функция плагина
-function xml_sitemap_custom()
+function xml_sitemap_custom($args = array())
 {
 	// создание sitemap.xml
 	
@@ -73,6 +73,7 @@ function xml_sitemap_custom()
 	$CI->db->select('page_slug, page_last_modified');
 	$CI->db->where('page_type_name !=', 'blog');
 	$CI->db->where('page_status', 'publish');
+	$CI->db->where('page_date_publish <', mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s')));
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
 	$CI->db->order_by('page_last_modified', 'desc');
 	$query = $CI->db->get('page');
@@ -96,6 +97,7 @@ function xml_sitemap_custom()
 	$CI->db->select('page_slug, page_last_modified');
 	$CI->db->where('page_type_name', 'blog');
 	$CI->db->where('page_status', 'publish');
+	$CI->db->where('page_date_publish <', mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s')));
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
 	$CI->db->order_by('page_last_modified', 'desc');
 	$query = $CI->db->get('page');
@@ -183,6 +185,8 @@ function xml_sitemap_custom()
 	
 	$fn = realpath(dirname(FCPATH)) . '/sitemap.xml';
 	write_file($fn, $out);
+	
+	return $args; // для обеспечения цепочки хуков
 }
 
 ?>

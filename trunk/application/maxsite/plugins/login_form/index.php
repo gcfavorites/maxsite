@@ -35,7 +35,7 @@ function login_form_widget($num = 1)
 	}
 	else
 	{
-		$out = mso_login_form(array( 'login'=>t('Логин (email):', 'plugins') . ' ', 'password'=> t('Пароль:', 'plugins') . ' ', 'submit'=>''), getinfo('siteurl'), false);
+		$out = mso_login_form(array( 'login'=>t('Логин (email):', 'plugins') . ' ', 'password'=> t('Пароль:', 'plugins') . ' ', 'submit'=>''), getinfo('siteurl') . mso_current_url(), false);
 	}
 	
 	if ($out)

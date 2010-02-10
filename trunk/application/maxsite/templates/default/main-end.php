@@ -1,5 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');?>
-				
+				</div><!--div class="content-all"-->
+				<div class="content-bottom"></div>
 			</div><!-- div id="content" -->
 		</div><!-- div id="wrapper" -->
 		

@@ -128,7 +128,7 @@
 			
 			$author = '';
 			if ( $row['comments_users_id'] ) $author = '<span style="color: grey">' . $row['users_nik'] . '</span>';
-			elseif ($row['comments_comusers_id']) $author = $row['comusers_nik'] . ' (' . t('комюзер'). ')';
+			elseif ($row['comments_comusers_id']) $author = $row['comusers_nik'] . ' (' . t('комюзер') . ' ' . $row['comments_comusers_id'] . ')';
 			else $author = $row['comments_author_name'] . ' (' . t('анонимно') . ')';
 			
 			$page_slug = $row['page_slug'];
@@ -155,7 +155,7 @@
 	echo '
 		<p>' . t('Показать') . ' <input type="submit" name="f_all_comments" value="' . t('Все') . '">
 		<input type="submit" name="f_moderation_comments" value="' . t('Только требующие модерации') . '">
-		';
+		</p>';
 	echo $CI->table->generate();
 	echo '
 		<br /><br />' . t('C отмеченными:') .

@@ -60,3 +60,8 @@
 .samborspy_polls_archive td, .samborspy_polls_archive th{
 	padding: 0 5px 10px 5px;
 }
+
+.sp_polls_ajax_link{
+	text-decoration: none;
+	border-bottom: 1px dashed;
+}

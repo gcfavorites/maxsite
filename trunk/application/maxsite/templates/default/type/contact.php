@@ -3,6 +3,7 @@
 	mso_cur_dir_lang('templates');
 
 	require(getinfo('template_dir') . 'main-start.php');
+	echo NR . '<div class="type type_contact">' . NR;
 ?>
 
 <h1><?=t('Обратная связь')?></h1>
@@ -136,6 +137,10 @@
 	</table>
 </form>
 
-<?php endif; //if ( !$form_hide )  ?>
+<?php endif; //if ( !$form_hide )  
 
-<?php require(getinfo('template_dir') . 'main-end.php'); ?>
+echo NR . '</div><!-- class="type type_contact" -->' . NR;
+
+require(getinfo('template_dir') . 'main-end.php'); 
+
+?>

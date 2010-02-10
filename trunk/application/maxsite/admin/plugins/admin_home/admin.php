@@ -80,4 +80,7 @@ mso_cur_dir_lang('admin');
 
 		echo '</form>';
 	}
+	
+	mso_hook('admin_home');
+	
 ?>

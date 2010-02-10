@@ -53,4 +53,32 @@ function admin_options_admin($args = array())
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_options/admin.php');
 }
+
+### функции для опций
+
+# хост
+function admin_options_admin_email_server()
+{
+	return $_SERVER['HTTP_HOST'];
+}
+
+# список админшаблонов - каталогов в admin_dir/template
+function admin_options_admin_template()
+{
+	$CI = & get_instance();
+	$CI->load->helper('directory');
+	$dirs = directory_map(getinfo('admin_dir') . 'template', true); // только в admin_dir
+	
+	$out = '';
+	
+	foreach($dirs as $dir)
+	{
+		if (is_dir(getinfo('admin_dir') . 'template/' . $dir)) 
+		{
+			$out .= $out ? ' # ' . $dir : $dir;
+		}
+	}
+
+	return $out;
+}
 ?>

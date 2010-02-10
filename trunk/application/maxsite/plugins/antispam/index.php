@@ -100,7 +100,7 @@ function antispam_check_spam($arg = array())
 	if ( !isset($options['moderation_words']) ) $options['moderation_words'] = ''; // список слов модерации
 	
 	
-	$black_ip = split("\n", trim($options['black_ip']));
+	$black_ip = explode("\n", trim($options['black_ip']));
 	
 	if (in_array($arg['comments_author_ip'], $black_ip)) 
 	{
@@ -113,7 +113,7 @@ function antispam_check_spam($arg = array())
 		return array('check_spam'=>true, 'message'=>t('Для вашего IP комментирование запрещено!', 'plugins'));
 	}
 	
-	$black_words = split("\n", trim($options['black_words']));
+	$black_words = explode("\n", trim($options['black_words']));
 	
 	foreach ($black_words as $word)
 	{
@@ -138,7 +138,7 @@ function antispam_check_spam($arg = array())
 	}
 
 
-	$moderation_words = split("\n", trim($options['moderation_words']));
+	$moderation_words = explode("\n", trim($options['moderation_words']));
 	
 	foreach ($moderation_words as $word)
 	{
@@ -167,7 +167,7 @@ function antispam_check_spam_comusers($arg = array())
 	if ( !isset($options['antispam_on']) ) return $arg['comments_com_approved']; // включен ли антиспам
 	if ( !isset($options['moderation_comusers']) ) return $arg['comments_com_approved']; // нет списка
 
-	$nums = split("\n", trim($options['moderation_comusers'])); // список комюзеров
+	$nums = explode("\n", trim($options['moderation_comusers'])); // список комюзеров
 	
 	foreach ($nums as $num)
 	{

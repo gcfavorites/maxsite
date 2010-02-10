@@ -47,10 +47,10 @@ function tagclouds3d_widget_form($num = 1)
 	if ( !isset($options['block_start']) ) $options['block_start'] = '<div class="tagclouds">';
 	if ( !isset($options['block_end']) ) $options['block_end'] = '</div>';
 	
-	if ( !isset($options['min_size']) ) $options['min_size'] = 90;
+	if ( !isset($options['min_size']) ) $options['min_size'] = 25;
 		else $options['min_size'] = (int) $options['min_size'];
 		
-	if ( !isset($options['max_size']) ) $options['max_size'] = 230;
+	if ( !isset($options['max_size']) ) $options['max_size'] = 30;
 		else $options['max_size'] = (int) $options['max_size'];
 		
 	if ( !isset($options['max_num']) ) $options['max_num'] = 50;
@@ -224,24 +224,46 @@ function tagclouds3d_widget_custom($options = array(), $num = 1)
     elseif ($sort == 3) krsort($tagcloud); // обратно по алфавиту
     else arsort($tagcloud); // по умолчанию
     
-    $url = getinfo('siteurl') . 'tag/';
-    $out = '';
-    $i = 0;
-    
+    $url 			= getinfo('siteurl') . 'tag/';
+    $out 			= '';
+	$links  		= '';
+	$links_noscript = '';
+    $i 				= 0;
+    $format 		= '<a href=\'%URL%\' style=\'font-size:%SIZE%px;\'>%TAG%<\/a>';
+	$no_script  	= '<a href="%URL%" style="font-size:%SIZE%px;">%TAG%</a>';
     /* ============ */
     
-	global $MSO;	
-	$CI = & get_instance();
+	foreach ($tagcloud as $tag => $count) 
+    {
+		if ($min_count) 
+			if ($count < $min_count) continue;
+
+		$font_size = round( (($count - $min)/($max - $min)) * ($max_size - $min_size) + $min_size );
+		
+        $tag_url = urlencode( $tag );
+        	
+		$f = str_replace(array('%SIZE%', '%URL%', '%TAG%', '%COUNT%'), 
+							array($font_size, $url . $tag_url, $tag, $count), $format );
+		
+		$af = str_replace(  array( '%SIZE%', '%URL%', '%TAG%' ), 
+							array( $font_size, $url . $tag_url, $tag ), $no_script );
+		
+		$links.= $f . ' ';
+		$links_noscript.= $af . ' ';
+		$i++;
+		if ( $max_num != 0 and $i == $max_num ) break;
+    }
 	
-    $out .= '<script type="text/javascript" src="' . $MSO->config['plugins_url'] . 'tagclouds3d/swfobject.js"></script>';
+    $out .= '<script type="text/javascript" src="' . getinfo('plugins_url') . 'tagclouds3d/swfobject.js"></script>
 	
-    $out .= '
-			<div id="tag3dcontent">
-			
-				<script type="text/javascript">
+			<div id="tag3dcontent">';
+	
+		$out .= $links_noscript;
+	
+	$out .= '<script type="text/javascript">
 				//<![CDATA[
 						var rnumber = Math.floor(Math.random()*9999999);
-						var widget_so = new SWFObject("' . $MSO->config['plugins_url'] . 'tagclouds3d/tagcloud.swf?r="+rnumber, "tagcloudflash", "'.$width.'", "'.$height.'", "9", "#'.$bgcolor.'");
+						var widget_so = new SWFObject("' . getinfo('plugins_url') . 'tagclouds3d/tagcloud.swf?r="+rnumber, "tagcloudflash", "'.$width.'", "'.$height.'", "9", "#'.$bgcolor.'");
 						widget_so.addParam("wmode", "transparent")
 						widget_so.addParam("allowScriptAccess", "always");
 						widget_so.addVariable("tcolor", "0x'.$text_color.'");
@@ -251,31 +273,7 @@ function tagclouds3d_widget_custom($options = array(), $num = 1)
 						widget_so.addVariable("distr", "true");
 						widget_so.addVariable("mode", "tags");
 						widget_so.addVariable("tagcloud", "<span>';
-    
-    $format = '<a href=\'%URL%\' style=\'font-size:%SIZE%px;\'>%TAG%<\/a>';
-    /* ============ */
-    foreach ($tagcloud as $tag => $count) 
-    {
-		if ($min_count) 
-			if ($count < $min_count) continue;
-
-		$font_size = round( (($count - $min)/($max - $min)) * ($max_size - $min_size) + $min_size );
-		
-        $tag_url = urlencode( $tag );
-        	
-		$af = str_replace(array('%SIZE%', '%URL%', '%TAG%', '%COUNT%'), 
-							array($font_size, $url . $tag_url, $tag, $count), $format );
-		
-		// альтернативный синтаксис с []
-		$af = str_replace(array('[SIZE]', '[URL]', '[TAG]', '[COUNT]'), 
-							array($font_size, $url . $tag_url, $tag, $count), $af);
-
-		$out .= $af . ' ';
-		$i++;
-		if ( $max_num != 0 and $i == $max_num ) break;
-    }
-	
-	$out.='<\/span>");
+	$out.=$links . '<\/span>");
 				widget_so.write("tag3dcontent");
 				//]]>	
 				</script>

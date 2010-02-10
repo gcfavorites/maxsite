@@ -32,25 +32,29 @@ if (isset($MSO->data['session']['comments']) and $MSO->data['session']['comments
 if (is_login()) $edit_link = getinfo('siteurl') . 'admin/comments/edit/';
 	else $edit_link = '';
 
+echo NR . '<div class="type type_page_comments">' . NR;
+
 if ($comments) // есть страницы
 { 	
-	echo '<div class="comments">';
-	echo '<h3 class="comments">'. t('Комментариев'). ': ' . count($comments) . '</h3>';
-	
+
+	if ($f = mso_page_foreach('page-comments-do')) require($f); // подключаем кастомный вывод
+	else 
+	{
+		echo '<div class="comments">';
+		echo '<h3 class="comments">' . t('Комментариев') . ': ' . count($comments) . '</h3>';
+	}
 	// pr($comments);
 	
 	echo '<ol>';
 	
 	foreach ($comments as $comment)  // выводим в цикле
 	{
-		if (function_exists('mso_page_foreach'))
+		if ($f = mso_page_foreach('page-comments')) 
 		{
-			if ($f = mso_page_foreach('page-comments')) 
-			{
-				require($f); // подключаем кастомный вывод
-				continue; // следующая итерация
-			}
+			require($f); // подключаем кастомный вывод
+			continue; // следующая итерация
 		}
+
 		extract($comment);
 		
 		// pr($comment);
@@ -87,7 +91,7 @@ if ($comments) // есть страницы
 		}
 		
 		if ($avatar_url) 
-			$avatar_url = '<noindex><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;"/></noindex>';
+			$avatar_url = '<noindex><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar" /></noindex>';
 		
 		echo '</span><br />' . $avatar_url;
 		echo mso_comments_content($comments_content);
@@ -103,24 +107,22 @@ if ($comments) // есть страницы
 
 if ($page_comment_allow)
 {
-	echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
+
+	if ($f = mso_page_foreach('page-comment-form-do')) require($f); // подключаем кастомный вывод
+	else echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
 	
-	if (function_exists('mso_page_foreach'))
+	if ($f = mso_page_foreach('page-comment-form')) 
 	{
-		if ($f = mso_page_foreach('page-comment-form')) 
-		{
-			require($f); // подключаем кастомный вывод
-		}
-		else require( 'page-comment-form.php' ); // форма комментариев из дефолта
+		require($f); // подключаем кастомный вывод
 	}
 	else require( 'page-comment-form.php' ); // форма комментариев из дефолта
-	
-	# require( 'page-comment-form.php' ); // форма комментариев
+
 }
 else
 {
 	// echo '<div class="no-comments"><h3 class="comments">'. t('Комментарии запрещены'). '</h3></div>';
 }
 
+echo NR . '</div><!-- class="type type_page_comments" -->' . NR;
 
 ?>

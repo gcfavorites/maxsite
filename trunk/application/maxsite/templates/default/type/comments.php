@@ -7,14 +7,21 @@ if ( function_exists('last_comments_widget_custom') )
 {
 	mso_head_meta('title', t('Последние комментарии').' — ' . getinfo('title') ); //  meta title страницы
 	require(getinfo('template_dir') . 'main-start.php');
-	echo '<h1 class="comments">'. t('Последние комментарии') .'</h1>';
-	echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">'. t('Подписаться по RSS') .'</a>';
-	echo '<br /><a href="' . getinfo('siteurl') . 'users">'. t('Список комментаторов') .'</a></p>';
-	echo '<div class="comments">';
-	echo last_comments_widget_custom(array(
-									'count'=> 40,
-									), '999');
-	echo '</div>';
+	echo NR . '<div class="type type_comments">' . NR;
+	
+	if ($f = mso_page_foreach('comments-do-last-comments-widget')) require($f); // подключаем кастомный вывод
+	else
+	{
+		echo '<h1 class="comments">'. t('Последние комментарии') .'</h1>';
+		echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">'. t('Подписаться по RSS') .'</a>';
+		echo '<br /><a href="' . getinfo('siteurl') . 'users">'. t('Список комментаторов') .'</a></p>';
+		
+		echo '<div class="comments">';
+		echo last_comments_widget_custom(array(
+										'count'=> 40,
+										), '999');
+		echo '</div>';
+	}
 }
 else 
 { 
@@ -27,31 +34,33 @@ else
 
 	mso_head_meta('title', t('Последние комментарии').' — ' . getinfo('title') ); //  meta title страницы
 
-
 	require(getinfo('template_dir') . 'main-start.php');
+	
+	echo NR . '<div class="type type_comments">' . NR;
 
-	echo '<h1 class="comments">'. t('Последние коммментарии'). '</h1>';
-	echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">'. t('Подписаться по RSS'). '</a>';
-	echo '<br /><a href="' . getinfo('siteurl') . 'users">'. t('Список комментаторов'). '</a></p>';
-
+	if ($f = mso_page_foreach('comments-do')) require($f); // подключаем кастомный вывод
+	else 
+	{
+		echo '<h1 class="comments">'. t('Последние комментарии'). '</h1>';
+		echo '<p class="info"><a href="' . getinfo('siteurl') . 'comments/feed">'. t('Подписаться по RSS'). '</a>';
+		echo '<br /><a href="' . getinfo('siteurl') . 'users">'. t('Список комментаторов'). '</a></p>';
+	}
+	
 	echo '<div class="comments">';
+	
 	if ($comments) // есть страницы
 	{ 	
 		echo '<ul>';
 		
 		foreach ($comments as $comment)  // выводим в цикле
 		{
-			if (function_exists('mso_page_foreach'))
+			if ($f = mso_page_foreach('comments')) 
 			{
-				if ($f = mso_page_foreach('comments')) 
-				{
-					require($f); // подключаем кастомный вывод
-					continue; // следующая итерация
-				}
+				require($f); // подключаем кастомный вывод
+				continue; // следующая итерация
 			}
-		
-			extract($comment);
 
+			extract($comment);
 
 			echo '<li><span><a href="' . getinfo('siteurl') . 'page/' . mso_slug($page_slug) . '#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $page_title . '</a>';
 			echo ' | ' . $comments_url;
@@ -67,6 +76,8 @@ else
 
 	echo '</div>';
 }
+
+echo NR . '</div><!-- class="type type_comments" -->' . NR;
 
 require(getinfo('template_dir') . 'main-end.php'); 
 

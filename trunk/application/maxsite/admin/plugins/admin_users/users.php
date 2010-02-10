@@ -46,10 +46,14 @@
 	$CI->load->library('table');
 	
 	$tmpl = array (
-				'table_open'		  => '<table class="page" border="0" width="99%">',
-				'row_alt_start'		  => '<tr class="alt">',
-				'cell_alt_start'	  => '<td class="alt">',
-		  );
+					'table_open'          => '<table class="page tablesorter" border="0" width="99%" id="pagetable">',
+					'row_alt_start'          => '<tr class="alt">',
+					'cell_alt_start'      => '<td class="alt">',
+					'heading_row_start'     => NR . '<thead><tr>',
+					'heading_row_end'         => '</tr></thead>' . NR,
+					'heading_cell_start'    => '<th style="cursor: pointer;">',
+					'heading_cell_end'        => '</th>',
+				);
 		  
 	$CI->table->set_template($tmpl); // шаблон таблицы
 
@@ -80,6 +84,17 @@
 		
 		$CI->table->add_row($id, $login, $nik, $email, $url, $groups_name, $act);
 	}
+
+	echo mso_load_jquery('jquery.tablesorter.js');
+	echo '
+	<script type="text/javascript">
+	$(function() {
+		$("table.tablesorter th").animate({opacity: 0.7});
+		$("table.tablesorter th").hover(function(){ $(this).animate({opacity: 1}); }, function(){ $(this).animate({opacity: 0.7}); });
+		$("#pagetable").tablesorter();
+	});    
+	</script>
+	';
 
 	// добавляем форму, а также текущую сессию
 	echo $CI->table->generate(); // вывод подготовленной таблицы

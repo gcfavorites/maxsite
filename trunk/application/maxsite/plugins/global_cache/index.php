@@ -58,10 +58,10 @@ function global_cache_start($arg = array())
 	if ( $k = mso_get_cache(global_cache_key(), true) ) 
 	{
 		// да есть в кэше
-		#$CI = & get_instance();	
-		#$mq = $CI->db->query_count; // колво sql-запросов
-		#$k = str_replace('<!--global_cache_footer-->', ' | Cache (' . $mq . ')', $k);
-		$k = str_replace('<!--global_cache_footer-->', ' | Cache', $k);
+		$CI = & get_instance();	
+		$mq = $CI->db->query_count; // колво sql-запросов
+		$k = str_replace('<!--global_cache_footer-->', ' | Cache (' . $mq . ')', $k);
+		//$k = str_replace('<!--global_cache_footer-->', ' | Cache', $k);
 		echo $k; 
 		return true;
 	}
