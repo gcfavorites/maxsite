@@ -9,14 +9,14 @@
 # какие функции отсутствуют определяется в этом файле
 require('mbstring.php');
 
-
-
 define("NR", "\n");
 
+
 #  функция для отладки
-function pr($var, $html = false) 
+function pr($var, $html = false, $echo = true) 
 {
-	echo '<pre>';
+	if (!$echo) ob_start();
+		else echo '<pre>';
 	if (is_bool($var))
 	{
 		if ($var) echo 'TRUE';
@@ -40,8 +40,15 @@ function pr($var, $html = false)
 		}
 			else print_r ($var);
 	}
-	echo '</pre>';
+	if (!$echo)
+	{
+		$out = ob_get_contents();
+		ob_end_clean();
+		return $out;
+	}
+	else echo '</pre>';
 }
+
 
 #  правильность email 
 function mso_valid_email($em = '') 
@@ -54,16 +61,20 @@ function mso_valid_email($em = '')
 
 
 # проверем рефер на xss-атаку
+# работает только если есть POST
 function mso_checkreferer() 
 {	
-	$p = parse_url($_SERVER['HTTP_REFERER']);
-	
-	if (isset($p['host'])) $p = $p['host'];
-		else $p = '';
-	
-	if ( $p != $_SERVER['HTTP_HOST'] )
+	if ($_POST)
 	{
-		if ($_POST) die('<b><font color="red">Achtung! XSS attack!</font></b>');
+		if (!isset($_SERVER['HTTP_REFERER'])) die('<b><font color="red">Achtung! XSS attack! No REFERER!</font></b>');
+		
+		$p = parse_url($_SERVER['HTTP_REFERER']);
+		
+		if (isset($p['host'])) $p = $p['host'];
+			else $p = '';
+			
+		if ( $p != $_SERVER['HTTP_HOST'] )
+			die('<b><font color="red">Achtung! XSS attack!</font></b>');
 	}
 }
 
@@ -114,7 +125,7 @@ function mso_strip($s = '', $logical = false, $arr_strip = array('\\', '|', '/',
 # функция инициализации
 function mso_initalizing()
 {
-	global $MSO;
+	global $MSO, $mso_install;
 	$CI = & get_instance();
 	
 	# считываем файл конфигурации
@@ -136,7 +147,8 @@ function mso_initalizing()
 	}
 	
 	# стоит ли флаг, что уже произведена инсталяция?
-	if ($mso_install == false)
+	
+	if (!isset($mso_install) or $mso_install == false)
 	{
 		if ( !$CI->db->table_exists('options')) return false; # еще не установлен сайт
 	}
@@ -169,9 +181,6 @@ function mso_initalizing()
 		require_once($functions_file);
 	}
 	
-	// pr($MSO);
-	// pr($CI->session->userdata);
-	
 	# проверяем залогинненость юзера
 	if (!isset($CI->session->userdata['userlogged']) or !$CI->session->userdata['userlogged'] )
 	{	
@@ -201,7 +210,6 @@ function mso_initalizing()
 			// есть что-то
 			$row = $query->row();
 			// сразу выставим группу
-			// $CI->session->userdata['users_groups_id'] = 
 			$MSO->data['session']['users_groups_id'] = $row->users_groups_id;
 			
 			# сразу обновляем время последней активности сессии
@@ -218,7 +226,7 @@ function mso_initalizing()
 		$comuser = unserialize($comuser);
 		/*
 		[comusers_id] => 1 
-		[comusers_password] => 0370d342365873265874365786237852 
+		[comusers_password] => 037035235237852 
 		[comusers_email] => max-3000@list.ru 
 		[comusers_nik] => Максим 
 		[comusers_url] => http://maxsite.org/ 
@@ -246,8 +254,8 @@ function mso_initalizing()
 	# дефолтные хуки
 	mso_hook_add('content_auto_tag', 'mso_auto_tag'); // авторасстановка тэгов
 	mso_hook_add('content_balance_tags', 'mso_balance_tags'); // автозакрытие тэгов - их баланс
-	
 }
+
 
 # проверка залогиннености юзера
 function is_login()
@@ -255,6 +263,7 @@ function is_login()
 	global $MSO;
 	return ($MSO->data['session']['userlogged'] == 1) ? true : false;
 }
+
 
 # проверка залогиннености комюзера
 # если есть, то возвращает массив данных
@@ -265,6 +274,7 @@ function is_login_comuser()
 	if (isset($MSO->data['session']['comuser']) and ($comuser = $MSO->data['session']['comuser']) ) return $comuser;
 		else return false;
 }
+
 
 # загружаем включенные плагины
 function mso_autoload_plugins()
@@ -278,11 +288,11 @@ function mso_autoload_plugins()
 	if (!$d) 
 	{
 		$d = $MSO->active_plugins;
-		// mso_add_option ('active_plugins', $d, 'general');
 	}
 
 	foreach ($d as $load) mso_plugin_load($load);
 }
+
 
 # проверка типа страницы, который определился в контролере
 function is_type($type)
@@ -290,6 +300,7 @@ function is_type($type)
 	global $MSO;
 	return ( $MSO->data['type'] == $type ) ? true : false;
 }
+
 
 # возвращает true или false при проверке $MSO->data['uri_segment'], то есть по сегментам URL
 # где например [1] => page  [2] => about
@@ -311,6 +322,7 @@ function is_type_slug($type = '', $slug = '')
 	
 	return ($rt == $type and $rs == $slug);
 }
+
 
 # проверяем рубрику у страницы
 # если это page и есть указанная рубрика, то возвращаем true
@@ -485,6 +497,14 @@ function getinfo($info = '')
 		case 'session' :
 				$out = $MSO->data['session'];
 				break;
+				
+		case 'remote_key' :
+				$out = $MSO->config['remote_key'];
+				break;
+				
+		case 'uri_get' :
+				$out = $MSO->data['uri_get'];
+				break;
 		
 	endswitch;
 	
@@ -595,7 +615,6 @@ function mso_admin_plugin_load($plugin = '')
 {
 	global $MSO;
 	
-	// $fn_plugin = $MSO->config['admin_plugins_dir'] . $plugin . '/' . $plugin . '.php';
 	$fn_plugin = $MSO->config['admin_plugins_dir'] . $plugin . '/index.php';
 	
 	if ( !file_exists( $fn_plugin ) ) return false;
@@ -630,7 +649,7 @@ function mso_admin_url_hook($hook, $func, $priory = 0)
 {
 	// нельзя указывать хуки на зарезервированные адреса: ???
 	$hook = strtolower($hook);
-	$no_hook = array('', 'pa1ge', 'c1at', 'pl1ugins', 'opti1ons', 'new1_page', 'ed1it_page', 'n1ew_cat', 'ed1it_cat');
+	$no_hook = array('');
 	
 	if ( !in_array($hook, $no_hook))
 		mso_hook_add ('admin_url_' . $hook, $func, $priory = 0);
@@ -673,17 +692,28 @@ function mso_hook_present($hook = '')
 
 
 # удаляет из хука функцию
+# если функция не указана, то удаляются все функции из хука
 function mso_remove_hook($hook = '', $func = '')
 {
 	global $MSO;
+	
 	if ($hook == '') return false;
-	if ($func == '') return false;
 	
 	$arr = array_keys($MSO->hooks);
-	if ( !in_array($hook, $arr) ) return false;
+	if ( !in_array($hook, $arr) ) return false; // хука нет
 	
-	unset($MSO->hooks[$hook][$func]);
+	if ($func == '') // удалить весь хук
+	{
+		unset($MSO->hooks[$hook]);
+	}
+	else 
+	{
+		if ( !in_array($hook, $arr) ) return false; // нет такой функции
+		unset($MSO->hooks[$hook][$func]);
+	}
+	return true;
 }
+
 
 # динамическое создание функции на хук
 # тело функции дожно работать как нормальный php
@@ -725,6 +755,7 @@ function mso_refresh_options()
 				key1 = value2
 				)
 	*/ 
+	$CI->db->cache_delete_all();
 	
 	$query = $CI->db->get('options');
 
@@ -777,6 +808,7 @@ function mso_add_option($key, $value, $type = 'general')
 	return true;
 }
 
+
 # удаление в таблице опций options ключа с типом
 function mso_delete_option($key, $type = 'general')
 {
@@ -789,6 +821,7 @@ function mso_delete_option($key, $type = 'general')
 
 	return true;
 }
+
 
 # удаление в таблице опций options ключа-маски с типом
 # маска считается от начала, например mask*
@@ -954,6 +987,7 @@ function mso_add_cache($key, $output, $time = false, $custom_fn = false)
 	@chmod($cache_path, 0777);
 }
 
+
 # удаление файла в кэше файлов, начинающихся с указаной строки
 function mso_flush_cache_mask($mask = '')
 {
@@ -983,6 +1017,7 @@ function mso_flush_cache_mask($mask = '')
 		}
 	}
 }
+
 
 # сбросить кэш - если указать true, то удалится кэш из вложенных каталогов
 # если указан $dir, то удаляется только в этом каталоге
@@ -1030,6 +1065,9 @@ function mso_flush_cache($full = false, $dir = false)
 			flock($fp, LOCK_UN);
 			fclose($fp);
 		}
+		
+		// если используется родное CodeIgniter sql-кэширование, то нужно очистить и его
+		$CI->db->cache_delete_all();
 	}
 }
 
@@ -1129,6 +1167,7 @@ function mso_html_to_text($content)
 	return $content;
 }
 
+
 # подчистка PRE + mso_auto_tag
 function mso_clean_pre_special_chars($matches) 
 {
@@ -1159,6 +1198,7 @@ function mso_clean_pre_special_chars($matches)
 	return $text;
 }
 
+
 # подчистка PRE + mso_auto_tag
 function mso_clean_pre($matches) 
 {
@@ -1177,7 +1217,6 @@ function mso_clean_pre($matches)
 }
 
 
-
 # преобразуем введенный html в тексте между [html] ... [/html] и для [volkman]
 # к обычному html
 function mso_clean_html($matches) 
@@ -1187,9 +1226,9 @@ function mso_clean_html($matches)
 	
 	$matches[1] = trim( str_replace($arr1, $arr2, $matches[1]) );
 	
-	// pr($matches[1], true);
 	return $matches[1];
 }
+
 
 # предподготовка html в тексте между [html] ... [/html]
 # конвертируем все символы в реальный html
@@ -1198,13 +1237,14 @@ function mso_clean_html($matches)
 # кодирование нужно для того, чтобы корректно пропустить весь остальной текст
 function mso_clean_html_do($matches) 
 {
-	$arr1 = array('&amp;', '&lt;', '&gt;', '<br />');
-	$arr2 = array('&',     '<',    '>',    "\n");
+	$arr1 = array('&amp;', '&lt;', '&gt;', '<br />', '&nbsp;');
+	$arr2 = array('&',     '<',    '>',    "\n",     ' ');
 	
 	$m = trim( str_replace($arr1, $arr2, $matches[1]) );
 	$m = '[html_base64]' . base64_encode($m) . '[/html_base64]';
 	return $m;
 }
+
 
 # декодирование из mso_balance_tags см. mso_clean_html_do
 function mso_clean_html_posle($matches) 
@@ -1212,11 +1252,11 @@ function mso_clean_html_posle($matches)
 	return base64_decode($matches[1]);
 }
 
+
 # авторасстановка тэгов
 # переделка из WordPress wpautop() + мои правки
 function mso_auto_tag($pee, $pre_special_chars = false) 
 {
-
 	$pee = $pee . "\n";
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
 	
@@ -1226,12 +1266,10 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace('<p>[/html]</p>', '[/html]', $pee);
 	$pee = preg_replace_callback('!\[html\](.*?)\[\/html\]!is', 'mso_clean_html_do', $pee );	
 	
-	
 	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|hr|embed|h1|h2|h3|h4|h5|h6|br)';
 	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
 	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
 	
-
 	$pee = str_replace("\n", "<br />", $pee);
 	$pee = str_replace('<br>', '<br />', $pee);
 	
@@ -1247,9 +1285,6 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 		return $pee;
 	}
 	
-	// $pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
-	// $pee = str_replace('<br />', "\n\n", $pee);
-	
 	$pee = "\n<p>" . $pee;
 	$pee = preg_replace('|<br />\s*<br />|', "<p>", $pee); // +
 	$pee = str_replace('<p><p>', "<p>", $pee);
@@ -1257,20 +1292,9 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace("<p><p ", "<p ", $pee);
 	$pee = str_replace("<br />", "<p>", $pee);
 	
-	// return $pee;
-	
-
-	//$pee = str_replace("\n\n\n\n\n", "[mso_n]", $pee);
-	//$pee = str_replace("\n\n\n\n", "[mso_n]", $pee);
-	//$pee = str_replace("\n\n\n", "[mso_n]", $pee);
-	//$pee = str_replace("\n\n", "[mso_n]", $pee);
-	//$pee = str_replace('[mso_n]', "\n\n", $pee);
-	
-	//$pee = preg_replace('/\n?(.+?)(?:\n\s*\n|\z)/s', "<p>$1</p>\n", $pee); 
 	$pee = preg_replace('|<p>\s*?</p>|', '', $pee);
 
 	$pee = preg_replace('!<p>([^<]+)\s*?(</(?:div|address|form)[^>]*>)!', "<p>$1</p>$2", $pee);
-	//$pee = preg_replace( '|<p>|', "$1<p>", $pee );
 	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee); 
 	
 	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*!', "\n$1", $pee); 
@@ -1278,13 +1302,10 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n", $pee);
 	$pee = preg_replace('!\s*(</' . $allblocks . '>)!', "$1", $pee);
 	
-	// $pee = str_replace("<ul>", "\n<ul>", $pee);
-	
+
 	$pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee);
 	$pee = preg_replace("|</li>\s*<li>|", "</li>\n<li>", $pee);
 	$pee = preg_replace("|</li>\s*</ul>|", "</li>\n</ul>", $pee);
-
-	// $pee = preg_replace("|</div>\s*</p>|", "</div>\n", $pee);
 
 	$pee = preg_replace('|<p><blockquote([^>]*)></p>|i', "<blockquote$1>", $pee);
 	$pee = str_replace('<p></blockquote></p>', '</blockquote>', $pee);
@@ -1292,21 +1313,11 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1>", $pee);
 	$pee = str_replace('</blockquote></p>', '</blockquote>', $pee);
 	
-
-	// $pee = str_replace('</div></p>', '</p></div>', $pee);
-
-	// $pee = preg_replace('|<hr([^>]*)>|i', "\n\n<hr$1>\n\n", $pee);
-	//$pee = preg_replace("|<p>\s*<hr|", "<hr", $pee);
-	
-
-	//$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
-	//$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
 	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
 	
 	$pee = str_replace('<p>[cut]</p>', '[cut]', $pee);
 	$pee = str_replace('<p>[page]</p>', '[page]', $pee);
 	
-	// $pee = str_replace('<p></p>', '', $pee);
 	
 	if ($pre_special_chars)
 	{
@@ -1319,16 +1330,12 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 		else $pee = str_replace("\n\n", "\n", $pee);
 	}
 	
-	# если html в [html_base64] код [/html_base64]
-//	$pee = str_replace('<p>[html_base64]', '[html_base64]', $pee);
-//	$pee = str_replace('[/html_base64]</p>', '[/html_base64]', $pee);
-//	$pee = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $pee );
-	
 	$pee = str_replace('[mso_n]', "\n", $pee);
 	$pee = str_replace('[mso_br_n]', "\n", $pee);
 	
 	return $pee;
 }
+
 
 # вычищаем списки UL
 function mso_balance_tags_ul_callback($matches)
@@ -1338,6 +1345,7 @@ function mso_balance_tags_ul_callback($matches)
 	
 	return $matches[1] . $text . $matches[3];
 }
+
 
 # моя функция авторасстановки тэгов
 function mso_balance_tags($text) 
@@ -1363,173 +1371,39 @@ function mso_balance_tags($text)
 	$text = str_replace('<p></div></p>', '</div>', $text);
 	
 	$text = str_replace('<p></ul></p>', '</ul>', $text);
+	$text = str_replace('<p></table></p>', '</table>', $text);
+	$text = str_replace('<p></tr></p>', '</tr>', $text);
+	$text = str_replace('<p></td></p>', '</td>', $text);
+	$text = str_replace('</td></p>', '</p></td>', $text);
+	$text = str_replace('<p></div></tr></p>', '</tr></div>', $text);
+	
+	$text = str_replace('<p></tr></tbody></table></p>', '</tr></tbody></table>', $text);
+	
 	$text = preg_replace('!<pre(.*?)</p>!si', '<pre$1', $text);
 	$text = preg_replace('~<p><!--(.*?)--></p>~si', '<!--$1-->', $text);
 	$text = preg_replace('~<p><a name=\"(.*?)\"></a></p>~si', '<a name="$1"></a>', $text);
 	
 	$text = preg_replace_callback('!(<ul>)(.*?)(</ul>)!si', 'mso_balance_tags_ul_callback', $text);
 	
+	$text = str_replace('<p></li></p>', '</li>', $text);
+	
+	$text = str_replace('<p> </p>', '<p>&nbsp;</p>', $text);
+	
+	$text = str_replace("\n\n\n\n", "\n", $text);
+	$text = str_replace("\n\n\n", "\n", $text);
 	$text = str_replace("\n\n", "\n", $text);
 	
 	$text = str_replace('<p>[html_base64]', '[html_base64]', $text);
 	$text = str_replace('[/html_base64]</p>', '[/html_base64]', $text);
+	$text = str_replace('[/html_base64] </p>', '[/html_base64]', $text);
+	
 	$text = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $text );
 	
 	return $text;
 }
 
-# функция взятая из b2
-function mso_balance_tags_b2( $text, $force = true ) 
-{
-	// return $text;
-	
-	if ( !$force ) return $text;
-	
-	$text1 = @balanceTags($text);
-	if ($text1) return $text1;
-	
-	return $text;
-}
 
-/*
- force_balance_tags
-
- Balances Tags of string using a modified stack.
-
- @param text      Text to be balanced
- @param force     Forces balancing, ignoring the value of the option
- @return          Returns balanced text
- @author          Leonard Lin (leonard@acm.org)
- @version         v1.1
- @date            November 4, 2001
- @license         GPL v2.0
- @notes
- @changelog
- ---  Modified by Scott Reilly (coffee2code) 02 Aug 2004
-	1.2  ***TODO*** Make better - change loop condition to $text
-	1.1  Fixed handling of append/stack pop order of end text
-	     Added Cleaning Hooks
-	1.0  First Version
-*/
-
-function balanceTags($text)
-{
-	$tagstack = array(); $stacksize = 0; $tagqueue = ''; $newtext = '';
-	$single_tags = array('br', 'hr', 'img', 'input'); // Known single-entity/self-closing tags
-	$nestable_tags = array('blockquote', 'div', 'span'); // Tags that can be immediately nested within themselves
-
-	# WP bug fix for comments - in case you REALLY meant to type '< !--'
-	$text = str_replace('< !--', '<    !--', $text);
-	# WP bug fix for LOVE <3 (and other situations with '<' before a number)
-	$text = preg_replace('#<([0-9]{1})#', '&lt;$1', $text);
-
-	while (preg_match("/<(\/?\w*)\s*([^>]*)>/si", $text, $regex)) 
-	{
-		$newtext .= $tagqueue;
-
-		$i = strpos($text, $regex[0]);
-		$l = strlen($regex[0]);
-
-		// clear the shifter
-		$tagqueue = '';
-		
-		// Pop or Push
-		if ($regex[1][0] == "/")  // End Tag
-		{
-			$tag = strtolower(substr($regex[1],1));
-			// if too many closing tags
-			if($stacksize <= 0) 
-			{
-				$tag = '';
-				//or close to be safe $tag = '/' . $tag;
-			}
-			// if stacktop value = tag close value then pop
-			else if ($tagstack[$stacksize - 1] == $tag) { // found closing tag
-				$tag = '</' . $tag . '>'; // Close Tag
-				// Pop
-				array_pop ($tagstack);
-				$stacksize--;
-			} else { // closing tag not at top, search for it
-				for ($j=$stacksize-1;$j>=0;$j--) {
-					if ($tagstack[$j] == $tag) {
-					// add tag to tagqueue
-						for ($k=$stacksize-1;$k>=$j;$k--){
-							$tagqueue .= '</' . array_pop ($tagstack) . '>';
-							$stacksize--;
-						}
-						break;
-					}
-				}
-				$tag = '';
-			}
-		} 
-		else 
-		{ // Begin Tag
-			$tag = strtolower($regex[1]);
-
-			// Tag Cleaning
-
-			// If self-closing or '', don't do anything.
-			if((substr($regex[2],-1) == '/') || ($tag == '')) 
-			{
-			}
-			// ElseIf it's a known single-entity tag but it doesn't close itself, do so
-			elseif ( in_array($tag, $single_tags) ) {
-				$regex[2] .= '/';
-			} else {	// Push the tag onto the stack
-				// If the top of the stack is the same as the tag we want to push, close previous tag
-				if (($stacksize > 0) && !in_array($tag, $nestable_tags) && ($tagstack[$stacksize - 1] == $tag)) {
-					$tagqueue = '</' . array_pop ($tagstack) . '>';
-					$stacksize--;
-				}
-				$stacksize = array_push ($tagstack, $tag);
-			}
-
-			// Attributes
-			$attributes = $regex[2];
-			if($attributes) {
-				$attributes = ' '.$attributes;
-			}
-			$tag = '<'.$tag.$attributes.'>';
-			//If already queuing a close tag, then put this tag on, too
-			if ($tagqueue) {
-				$tagqueue .= $tag;
-				$tag = '';
-			}
-		}
-		$newtext .= substr($text,0,$i) . $tag;
-		$text = substr($text,$i+$l);
-	}
-
-	// Clear Tag Queue
-	$newtext .= $tagqueue;
-
-	// Add Remaining text
-	$newtext .= $text;
-
-	// Empty Stack
-	while($x = array_pop($tagstack)) {
-		$newtext .= '</' . $x . '>'; // Add remaining tags to close
-	}
-
-	// WP fix for the bug with HTML comments
-	$newtext = str_replace("< !--","<!--",$newtext);
-	$newtext = str_replace("<    !--","< !--",$newtext);
-	
-	# мои исправления
-	$newtext = str_replace('< \/a>', '<\/a>',$newtext);
-	$newtext = str_replace('<p></p>', '',$newtext);
-	$newtext = str_replace("\n</p>", "</p>\n",$newtext);
-	
-	$newtext = preg_replace("|</div>\s*</p>|", "</div>\n", $newtext);
-	$newtext = str_replace('<p><hr />', '<hr />', $newtext);
-	$newtext = str_replace('<hr /></p>', '<hr />', $newtext);
-
-	return $newtext;
-}
-
-
-# функция преобразует неанглийские буквы в англйские
+# функция преобразует русские и украинские буквы в английские
 # также удаляются все служебные символы
 function mso_slug($slug)
 {
@@ -1555,7 +1429,9 @@ function mso_slug($slug)
 		"ц"=>"c", "ч"=>"ch", "ш"=>"sh", "щ"=>"shh", "ъ"=>"",
 		"ы"=>"y", "ь"=>"",   "э"=>"e",  "ю"=>"ju",  "я"=>"ja",
 		
-		"Є"=>"ye", "І"=>"i", "Ѓ"=>"g", "і"=>"i", "є"=>"ye", "ѓ"=>"g",
+		# украина
+		"Є" => "ye", "є" => "ye", "І" => "i", "і" => "i",
+		"Ї" => "yi", "ї" => "yi", "Ґ" => "g", "ґ" => "g",
 		
 		"«"=>"", "»"=>"", "—"=>"-", "`"=>"", " "=>"-",
 		"["=>"", "]"=>"", "{"=>"", "}"=>"", "<"=>"", ">"=>"",
@@ -1585,6 +1461,7 @@ function mso_slug($slug)
 	return $slug;
 }
 
+
 # редирект на страницу сайта. путь указывать относительно сайта
 # если $absolute = true - переход по указаному пути
 function mso_redirect($url, $absolute = false)
@@ -1608,6 +1485,7 @@ function mso_redirect($url, $absolute = false)
 	}
 	exit();
 }
+
 
 # получение текущего url относительно сайта
 # ведущий и конечные слэши удаляем
@@ -1712,6 +1590,7 @@ function mso_array_get_key($ar, $num_key = 0, $no = false)
 		else return $no;
 }
 
+
 # получение из массива ключ значения
 # array('2'=>'Изменить');
 # mso_array_get_key_value($ar, 'Изменить' ) возвратит 2
@@ -1726,32 +1605,6 @@ function mso_array_get_key_value($ar, $value = false, $no = false)
 	}
 }
 
-/*
-# вспомогательная функция для xmlrpc
-# возвращает массив парметров, где первые три 
-# $blog_id = (int) $parameters[0];
-# $user_login = $parameters[1];
-# $password = $parameters[2];
-function mso_xmlrpc_this($data = array())
-{
-	global $MSO;
-	
-	$blog_id = 1;
-	
-	if (is_login())
-	{
-		$user_login = $MSO->data['session']['users_login'];
-		$password = $MSO->data['session']['users_password'];
-	}
-	else
-	{
-		$user_login = '';
-		$password = '';
-	}
-	
-	return array($blog_id, $user_login, $password, array($data, 'struct') );
-}
-*/
 
 # проверка комбинации логина-пароля
 # если указан act - то сразу смотрим разрешение на действие
@@ -1779,6 +1632,7 @@ function mso_check_user_password($login = false, $password = false, $act = false
 	else return false;
 }
 
+
 # получаем данные юзера по его логину/паролю
 function mso_get_user_data($login = false, $password = false)
 {
@@ -1796,40 +1650,10 @@ function mso_get_user_data($login = false, $password = false)
 	{
 		$r = $query->result_array();
 		return $r[0];
-		 
 	}
 	else return false;
 }
 
-/*
-# функция отправки xmlrpc к себе же
-# при debug выводятся сообщения об ошибке
-function mso_xmlrpc_send($method = 'Hello', $request = array('Test'), $debug = false)
-{	
-	$CI = & get_instance();
-	$CI->load->helper('url');
-	$server_url = site_url('xmlrpc_server');
-	$CI->load->library('xmlrpc');
-	$CI->xmlrpc->server($server_url, 80);
-	$CI->xmlrpc->timeout(30);
-	$CI->xmlrpc->method($method);
-	
-	//$CI->xmlrpc->set_debug(TRUE);
-	
-	$CI->xmlrpc->request($request);
-		
-	if ( ! $CI->xmlrpc->send_request())
-	{
-		if ($debug) return $CI->xmlrpc->display_error();
-			else return false; //$CI->xmlrpc->result;
-	}
-	else
-	{
-		//if ($debug) 
-		return $CI->xmlrpc->display_response();
-	}
-}
-*/
 
 # содание разрешения для действия
 function mso_create_allow($act = '', $desc = '')
@@ -1857,6 +1681,7 @@ function mso_create_allow($act = '', $desc = '')
 	}
 }
 
+
 # удалить действие/функцию
 function mso_remove_allow($act = '')
 {
@@ -1871,6 +1696,7 @@ function mso_remove_allow($act = '')
 		mso_add_option ('groups_allow', $d, 'general');
 	}
 }
+
 
 # проверка доступа для юзера для указанного действия/функции
 # если $cache = true то данные можно брать из кэша, иначе всегда из SQL
@@ -1947,7 +1773,6 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 }
 
 
-
 # получаем название указанного сегменту текущей страницы 
 # http://localhost/admin/users/edit/1
 # mso_segment(3) -> edit
@@ -1961,6 +1786,7 @@ function mso_segment($segment = 2)
 	
 	return urldecode($seg);
 }
+
 
 # функция преобразования MySql-даты (ГГГГ-ММ-ДД ЧЧ:ММ:СС) в указанный формат date
 # идея - http://dimoning.ru/archives/31
@@ -2021,6 +1847,7 @@ function mso_date_convert($format = 'Y-m-d H:i:s', $data, $timezone = true, $day
 	return $out;
 }
 
+
 # переобразование даты в формат MySql
 function mso_date_convert_to_mysql($year = 1970, $mon = 1, $day = 1, $hour = 0, $min = 0, $sec = 0)
 {
@@ -2047,6 +1874,7 @@ function mso_date_convert_to_mysql($year = 1970, $mon = 1, $day = 1, $hour = 0, 
 	return $res;
 }
 
+
 # получить пермалинк страницы по её id
 # через запрос БД
 function mso_get_permalink_page($id = 0, $prefix = 'page/')
@@ -2071,12 +1899,12 @@ function mso_get_permalink_page($id = 0, $prefix = 'page/')
 	else return '';
 }
 
+
 # получить пермалинк рубрики по указанному слагу
 function mso_get_permalink_cat_slug($slug = '', $prefix = 'category/')
 {
-	global $MSO;
 	if (!$slug) return '';
-	return  $MSO->config['site_url'] . $prefix . $slug;
+	return  getinfo('siteurl') . $prefix . $slug;
 }
 
 
@@ -2127,6 +1955,7 @@ function mso_str_word($text, $counttext = 10, $sep = ' ')
 	return $text;
 }
 
+
 # подсчет кол-ва слов в тексте
 # можно предварительно удалить все тэги и преобразовать CR в $delim
 function mso_wordcount($str = '', $delim = ' ', $strip_tags = true, $cr_to_delim = true) 
@@ -2138,6 +1967,7 @@ function mso_wordcount($str = '', $delim = ' ', $strip_tags = true, $cr_to_delim
 		
 	return count( explode($delim, $str) );
 }
+
 
 # получить текущую страницу пагинации
 # next - признак сегмент после которого указывается номер страницы
@@ -2168,6 +1998,7 @@ function mso_register_sidebar($sidebar = '1', $title = 'Cайдбар', $options
 		
 	$MSO->sidebars[$sidebar] = array('title' => t($title), 'options' => $options);
 }
+
 
 # регистрируем виджет
 function mso_register_widget($widget = false, $title = 'Виджет')
@@ -2223,7 +2054,6 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 			{
 				if ($temp = $widget($num)) // выполняем виджет если он пустой, то пропускаем вывод
 				{
-					
 					if (isset($num_widget[$sidebar]['numw'])) //уже есть номер виджета
 					{
 						$numw = ++$num_widget[$sidebar]['numw'];
@@ -2252,6 +2082,7 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 		echo $out;
 	}
 }
+
 
 # вспомогательная функция, которая принимает глобальный _POST
 # и поле $option. Использовать в _update виджетов
@@ -2291,11 +2122,12 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false)
 	return $res;
 }
 
+
 # для юникода отдельный wordwrap
 # часть кода отсюда: http://us2.php.net/manual/ru/function.wordwrap.php#78846
 # переделал и исправил ошибки я
 # ширина, разделитель
-function mso_wordwrap($str, $wid = 60, $tag = ' ')
+function mso_wordwrap($str, $wid = 80, $tag = ' ')
 {
 		$pos = 0;
 		$tok = array();
@@ -2345,6 +2177,7 @@ function mso_wordwrap($str, $wid = 60, $tag = ' ')
 		return implode($tag, $ret);
 }
 
+
 # возвращает script с jquery или +url
 function mso_load_jquery($plugin = '')
 {
@@ -2359,6 +2192,7 @@ function mso_load_jquery($plugin = '')
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery.pack.js"></script>' . NR;
 	}
 }
+
 
 # формируем li-элементы для меню
 # элементы представляют собой текст, где каждая строчка один пункт
@@ -2425,6 +2259,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 	return $out;
 }
 
+
 # добавляем куку ко всему сайту с помощью сессии и редиректа на главную или другую указанную страницу (после главной)
 function mso_add_to_cookie($name_cookies, $value, $expire, $redirect = false)
 {
@@ -2445,6 +2280,7 @@ function mso_add_to_cookie($name_cookies, $value, $expire, $redirect = false)
 	}
 }
 
+
 # получаем куку. Если нет вообще или нет в $allow_vals, то возвращает $def_value
 function mso_get_cookie($name_cookies, $def_value = '', $allow_vals = false)
 {
@@ -2460,6 +2296,7 @@ function mso_get_cookie($name_cookies, $def_value = '', $allow_vals = false)
 	}
 	else return $value;
 }
+
 
 # функция построения из массивов списка UL
 # вход - массив из с [childs]=>array(...)
@@ -2606,6 +2443,16 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 	return $out;
 }
 
+
+# устанавливаем $MSO->current_lang_dir в которой хранится 
+# текущий каталог языка. Это второй параметр функции t()
+function mso_cur_dir_lang($dir = false)
+{
+	global $MSO;
+	return $MSO->current_lang_dir = $dir;
+}
+
+
 # функция трансляции (языковой перевод)
 # первый параметр - переводимое слово - учитывается регистр полностью
 # второй параметр - переводимый файл либо __FILE__
@@ -2615,8 +2462,7 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 # 	для админ - admin
 #	для общего - common (используется по-умолчанию)
 # файл перевода должен находится в каталоге $file/language/язык.php
-
-function t($w = '', $file = 'common')
+function t($w = '', $file = false)
 {
 	global $MSO;
 	
@@ -2628,8 +2474,16 @@ function t($w = '', $file = 'common')
 	
 	static $langs = array(); // общий массив перевода
 	
+	if (!$file) // не указан каталог
+	{
+		if ($MSO->current_lang_dir) // есть в $MSO_CURRENT_LANG_DIR
+			$file = $MSO->current_lang_dir; 
+		else
+			$file = 'common'; // берем дефолтный - common
+	}
+
 	// путь относительно application/maxsite/
-	if ($file != 'common')// если не указан каталог, то берем из common
+	if ($file != 'common')
 	{
 		// заменим windows \ на /
 		$file = str_replace('\\', '/', $file); 
@@ -2671,10 +2525,12 @@ function t($w = '', $file = 'common')
 	// pr($langs);
 	
 	// если есть такой перевод, заменяем его
-	if (isset($langs[$file][$w])) $w = $langs[$file][$w];
+	// если перевод пустое слово, то не меняем
+	if (isset($langs[$file][$w]) and $langs[$file][$w]) $w = $langs[$file][$w];
 	
 	return $w;
 }
+
 
 # получение информации об авторе по его номеру из url http://localhost/author/1
 # или явно указанному номеру
@@ -2702,6 +2558,86 @@ function mso_get_author_info($id = 0)
 	mso_add_cache($key_cache, $out);
 	
 	return $out;
+}
+
+
+# получение текущих сегментов url в массив
+# в отличие от CodeIgniter - происходит анализ get и отсекание до «?»
+# если «?» нет, то возвращает стандартное $this->uri->segment_array();
+function mso_segment_array()
+{
+	$CI = & get_instance();
+	
+	if ( isset($_SERVER['REQUEST_URI']) and $_SERVER['REQUEST_URI'] )
+	{
+		// http://localhost/page/privet?get=dsfsdklfjkldsjflsdf
+		$url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https://" : "http://";
+		$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$url = str_replace($CI->config->config['base_url'], '', $url); // page/privet?get=dsfsdklfjkldsjflsdf
+		
+		if ( strpos($url, '?') !== FALSE ) // есть «?»
+		{
+			$url = explode('?', $url); // разделим в массив
+			$url = $url[0]; // сегменты - это только первая часть
+			$url = explode('/', $url); // разделим в массив по /
+			
+			// нужно изменить нумерацию - начало с 1
+			$out = array();
+			$i = 1;
+			foreach($url as $val)
+			{
+				if ($val)
+				{
+					$out[$i] = $val;
+					$i++;
+				}
+			}
+			
+			return $out;
+		}
+		else return $CI->uri->segment_array();
+	}
+	else return $CI->uri->segment_array();
+}
+
+
+# получение get-строки из текущего адреса
+function mso_url_get()
+{
+	$CI = & get_instance();
+	if ( isset($_SERVER['REQUEST_URI']) and $_SERVER['REQUEST_URI'] and (strpos($_SERVER['REQUEST_URI'], '?') !== FALSE) )
+	{
+		$url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https://" : "http://";
+		$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$url = str_replace($CI->config->config['base_url'], "", $url);
+		$url = explode('?', $url);
+		return $url[1];
+	}
+	else return '';
+}
+
+
+# функция преобразования get-строки в массив
+# разделитель элементов массива & или &amp; 
+# значение через стандартную parse_str
+function mso_parse_url_get($s = '')
+{
+	if ($s) 
+	{
+		$s = str_replace('&amp;', '&', $s);
+		$s = explode('&', $s);
+		$uri_get_array = array();
+		foreach ($s as $val)
+		{
+			parse_str($val, $arr);
+			foreach ($arr as $key1 => $val1)
+			{
+				$uri_get_array[$key1] = $val1;
+			}
+		}
+		return $uri_get_array;
+	}
+	else return array();
 }
 
 ?>

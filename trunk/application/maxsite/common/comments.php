@@ -19,6 +19,7 @@ function mso_get_comments($page_id = 0, $r = array())
 	if ( !isset($r['tags_users']) )	$r['tags_users'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
 	if ( !isset($r['tags_comusers']) )	$r['tags_comusers'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
 	if ( !isset($r['anonim_comments']) )	$r['anonim_comments'] = array();
+	if ( !isset($r['anonim_title']) )	$r['anonim_title'] = ' (анонимно)'; // дописка к имени для анонимов
 	
 
 	$CI = & get_instance();
@@ -110,7 +111,7 @@ function mso_get_comments($page_id = 0, $r = array())
 					else $comment['comments_url'] = $comment['users_nik'];
 				$commentator = 2;
 			}
-			else $comment['comments_url'] = $comment['comments_author_name'] . ' (анонимно)'; // просто аноним
+			else $comment['comments_url'] = $comment['comments_author_name'] . $r['anonim_title']; // просто аноним
 			
 			
 			$comments_content = $comment['comments_content'];
@@ -344,6 +345,7 @@ function mso_get_new_comment($args = array())
 			{
 				mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
 				// mso_flush_cache();
+				$CI->db->cache_delete_all();
 				mso_hook('new_comment');
 				mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 			}
@@ -466,6 +468,7 @@ function mso_get_new_comment($args = array())
 							}
 							mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
 							// mso_flush_cache();
+							$CI->db->cache_delete_all();
 							mso_hook('new_comment');
 							mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 						}
@@ -519,6 +522,7 @@ function mso_get_new_comment($args = array())
 						}
 						mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
 						// mso_flush_cache();
+						$CI->db->cache_delete_all();
 						mso_hook('new_comment');
 						mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 					}

@@ -4,6 +4,9 @@
  * MaxSite CMS
  * (c) http://maxsite.org/
  */
+
+mso_cur_dir_lang('admin');
+
 ?>
 
 <h1>Основные настройки</h1>

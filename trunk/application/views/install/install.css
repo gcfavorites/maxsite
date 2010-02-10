@@ -7,12 +7,15 @@ p {margin: 15px 0px 7px 0px; }
 ul, ol {margin-left: 30px; }
 li {margin-bottom: 10px;}
 
+p.ok {color: green;}
+p.error {color: red;}
+
 a { color: #3182C0; text-decoration: none;}
 a:hover { color: #3182C0; text-decoration: underline; }
 a:active { color: #FF0000; }
 
 /* H */
-h1 {font-size: 1.7em; line-height: 1.2em; color: #404040; background: #D5D5E1; padding: 5px;}
+h1 {font-size: 1.7em; line-height: 1.2em; color: #404040; background: #D5D5E1; padding: 5px; font-weight: normal;}
 h2 {font-size: 1.3em; color: #404040; margin: 20px 0; font-weight: normal;}
 h3 {font-size: 1.2em;}
 h2.error {color: red;}
@@ -26,3 +29,6 @@ pre {color: green; text-align: left; font-size: 12px; margin: 10px 0;}
 #container {width: 500px; margin: 30px auto; font-size: 12pt; line-height: 1.4em; padding: 10px; border: 2px silver solid; text-align: center;}
 
 #mysubmit {padding: 10px; font-weight: bold;}
+
+div.proverka {padding: 10px; margin: 10px 0; border: 3px double #E8E8E8; font-size: 8pt; font-family: Verdana; line-height: 1.2em;}
+div.proverka p {margin: 5px 0; line-height: 1.3em;}

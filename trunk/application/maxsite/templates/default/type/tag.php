@@ -38,6 +38,7 @@ if ($pages) // есть страницы
 		
 		echo '<div class="page_content">';
 			mso_page_content($page_content);
+			mso_page_content_end();
 			mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comment">', '</div>');
 			
 		echo '</div>';

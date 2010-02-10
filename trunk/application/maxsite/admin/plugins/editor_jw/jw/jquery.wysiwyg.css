@@ -67,3 +67,5 @@ div.wysiwyg ul.panel li a.red { background: red; }
 div.wysiwyg ul.panel li a.blue { background: blue; }
 div.wysiwyg ul.panel li a.green { background: green; }
 div.wysiwyg ul.panel li a.selectcolor { background: silver;}
+
+input.wymupdate {width: 140px;}

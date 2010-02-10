@@ -7,6 +7,8 @@
 	
 	global $MSO;
 	
+	$CI = & get_instance();	
+	
 	$step = $MSO->data['step'];
 	
 	$username = '';
@@ -72,7 +74,6 @@
 	
 	<h1>Добро пожаловать в программу установки <span>MaxSite CMS</span></h1>
 	<?=$error?>
-	<h2>Укажите начальные данные</h2>
 	<?php 
 		
 		$this->load->helper('form');
@@ -111,10 +112,100 @@
 								'size'=>'50',
 								'style'=>'width:80%') );						
 							
-		echo '<p>' . form_checkbox('demoposts', '1', $demoposts) . ' Установить демонстрационные данные';
+		echo '<p>' . form_checkbox('demoposts', '1', $demoposts) . ' Установить демонстрационные данные</p>';
 		
-		echo '<br /><br />';
-		echo form_submit('mysubmit', 'Установить!', 'id="mysubmit"');
+		// echo '<br />';
+		
+		// сразу выполним проверку на все права файла 
+		// 
+		$show_button = true;
+		echo '<div class="proverka">';
+			
+			if (file_exists( $MSO->config['base_dir'] . 'mso_config.php' )) 
+			{
+				# echo '<p class="ok">Файл mso_config.php - OK!</p>';
+			}
+			else
+			{
+				echo '<p class="error">Файл <em>' . $MSO->config['base_dir'] . 'mso_config.php' . '</em> - не найден!</p>';
+				$show_button = false;
+			}	
+			
+			
+			$path = $CI->config->item('cache_path');
+			$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
+			if ( !is_dir($cache_path) or !is_writable($cache_path))
+			{
+				echo '<p class="error">Каталог <em>' . $cache_path . '</em> - не найден или нет разрешения на запись (777)!</p>';
+				$show_button = false;
+			}
+			else
+			{
+				# echo '<p class="ok">Каталог кэша - OK!</p>';
+			}
+			
+			$path = getinfo('uploads_dir');
+			if ( !is_dir($path) or !is_writable($path))
+			{
+				echo '<p class="error">Каталог <em>' . $path . '</em> - не найден или нет разрешения на запись (777)!</p>';
+				$show_button = false;
+			}
+			else
+			{
+				# echo '<p class="ok">Каталог «uploads» - OK!</p>';
+			}
+			// в uploads _mso_float
+			if ( !is_dir($path . '_mso_float') or !is_writable($path . '_mso_float'))
+			{
+				echo '<p class="error">Каталог <em>' . $path . '_mso_float' . '</em> - не найден или нет разрешения на запись (777)!</p>';
+				$show_button = false;
+			}
+			else
+			{
+				# echo '<p class="ok">Каталог «uploads/_mso_float» - OK!</p>';
+			}
+			// в uploads _mso_i
+			if ( !is_dir($path . '_mso_i') or !is_writable($path . '_mso_i'))
+			{
+				echo '<p class="error">Каталог <em>' . $path . '_mso_i' . '</em> - не найден или нет разрешения на запись (777)!</p>';
+				$show_button = false;
+			}
+			else
+			{
+				# echo '<p class="ok">Каталог «uploads/_mso_i» - OK!</p>';
+			}			
+			
+
+			$path = realpath(dirname(FCPATH)) . '/.htaccess';
+			if ( !file_exists($path))
+			{
+				echo '<p class="error">Файл <em>' . $path . '</em> - не найден!</p>';
+				$show_button = false;
+			}
+			else
+			{
+				# echo '<p class="ok">Файл «.htaccess» - OK!</p>';
+			}
+			
+			$path = realpath(dirname(FCPATH)) . '/sitemap.xml';
+			if ( !file_exists($path) or !is_writable($path))
+			{
+				echo '<p class="error">Файл <em>' . $path . '</em> - не найден или нет разрешения на запись!</p>';
+				$show_button = false;
+			}
+			else
+			{
+				# echo '<p class="ok">Файл «sitemap.xml» - OK!</p>';
+			}			
+						
+		
+			if ($show_button) echo '<p class="ok">Проверка выполнена</p>';
+			
+		echo '</div>';
+		
+		if ($show_button) echo form_submit('mysubmit', 'Установить!', 'id="mysubmit"');
+			else echo '<p style="color: red;"><strong>Исправьте замечания и обновите эту страницу (F5)</strong></p>';
+		
 		echo form_close();
 
 	?>
@@ -129,15 +220,17 @@
 	$text .= 'Пароль: ' . $userpassword . NR . NR . NR;
 	$text .= 'Сайт поддержки: http://max-3000.com/';
 	
-	// поскольку это инсталяция, то отправитель - тот же email
-	@mso_mail($useremail, 'Новый сайт на MaxSite CMS', $text, $useremail); 
 ?>
 
 	<h1>Поздравляем! Всё готово!</h1>
 	<h2>Ваша информация:</h2>
 	<?= $res ?>
-	<p><a href="<?= getinfo('siteurl') ?>">Переход к сайту</a>
-
+	<p><a href="<?= getinfo('siteurl') ?>">Переход к сайту</a></p>
+	<p>Не забудьте открыть файл «application/maxsite/mso_config.php»	и измените на <em>$mso_install = true;</em></p>
+	<?php 
+		// поскольку это инсталяция, то отправитель - тот же email
+		@mso_mail($useremail, 'Новый сайт на MaxSite CMS', $text, $useremail); 
+	?>
 <?php endif; // конец второго шага ?>
 </div><!-- div id="container" -->
 </body>

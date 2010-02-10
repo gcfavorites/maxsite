@@ -465,6 +465,7 @@
             }
 
             this.editorDoc.open();
+            
             this.editorDoc.write(
                 this.options.html
                     .replace(/INITIAL_CONTENT/, this.initialContent)
@@ -472,7 +473,8 @@
             );
             this.editorDoc.close();
             this.editorDoc.contentEditable = 'true';
-
+            
+            
             if ( $.browser.msie )
             {
                 /**
@@ -551,9 +553,9 @@
             
             // последнее сохранение автосаве
             
-            $('span.autosave-editor').html('<a target="_blank" href="' + autosaveold + '">Последнее автосохранение</a> (Ctrl+S - сохранить / фокус в визуальном редакторе)').css('margin-left', '20px')
+            $('span.autosave-editor').html('<a target="_blank" href="' + autosaveold + '">Последнее автосохранение</a> (Ctrl+S - сохранить / фокус в визуальном редакторе)').css('margin-left', '10px')
             
-            // $('span.autosave-editor').html('Ctrl+S - автосохранение / фокус в визуальном редакторе').css('margin-left', '20px')
+            // $('span.autosave-editor').html('Ctrl+S - автосохранение / фокус в визуальном редакторе').css('margin-left', '10px')
             
         
             );
@@ -595,6 +597,13 @@
 			kkk = kkk.replace(/<P>&nbsp;<\/P>/g , '<br>'); // ie + opera
 			kkk = kkk.replace(/\n</g , '<'); // ie
 
+			kkk = kkk.replace(/<td>/g , '<br><td>');
+			kkk = kkk.replace(/<tr>/g , '<br><tr>');
+			kkk = kkk.replace(/<\/tr>/g , '<br><\/tr>');
+			
+			kkk = kkk.replace(/<br><br><br><br>/g , '<br>');
+			kkk = kkk.replace(/<br><br><br>/g , '<br>');
+			
 			kkk = kkk.replace(/<\/h1><br>/g , '</h1>\n');
 			kkk = kkk.replace(/<\/h2><br>/g , '</h2>\n');
 			kkk = kkk.replace(/<\/h3><br>/g , '</h3>\n');
@@ -602,8 +611,15 @@
 			kkk = kkk.replace(/<\/h5><br>/g , '</h5>\n');
 			kkk = kkk.replace(/<\/h6><br>/g , '</h6>\n');
 			
+			//kkk = kkk.replace(/<\/table><br>/g , '</table>\n');
+			//kkk = kkk.replace(/<\/tr><br>/g , '</tr>\n');
+			//kkk = kkk.replace(/<\/td><br>/g , '</td>\n');
+			//kkk = kkk.replace(/<\/tbody><br>/g , '</tbody>\n');
+			
+			
 			kkk = kkk.replace(/<br>/g , '\n');
 			kkk = kkk.replace(/<BR>/g , '\n');
+			
 					
 			/*
 			kkk = kkk.replace(/&lt;pre&gt;/g , '<pre>');
@@ -639,6 +655,10 @@
 			kkk = newContent;
 		
 			kkk = kkk.replace(/\n/g , '<br>');
+			
+			kkk = kkk.replace(/<br><td>/g , '<td>');
+			kkk = kkk.replace(/<br><tr>/g , '<tr>');
+			kkk = kkk.replace(/<br><\/tr>/g , '<\/tr>');
 			
 			/*
 			kkk = kkk.replace('<pre><br>' , '<pre>');

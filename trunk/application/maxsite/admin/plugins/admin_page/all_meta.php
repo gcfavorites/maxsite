@@ -97,6 +97,7 @@
 		
 		if ($type == 'textfield')
 		{
+			$value = str_replace('_QUOT_', '&quot;', $value);
 			$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '" />' . NR;
 		}
 		elseif ($type == 'textarea')

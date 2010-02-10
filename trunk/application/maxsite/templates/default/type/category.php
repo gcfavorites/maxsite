@@ -7,7 +7,7 @@ $full_posts = mso_get_option('category_full_text', 'templates', '1'); // пол�
 // параметры для получения страниц
 $par = array( 'limit' => mso_get_option('limit_post', 'templates', '15'), 
 			'cut' => mso_get_option('more', 'templates', 'Читать полностью »'),
-			'cat_order'=>'category_name', 'cat_order_asc'=>'asc', 'type'=> false, 'content'=> $full_posts ); 
+			'cat_order'=>'category_id_parent', 'cat_order_asc'=>'asc', 'type'=> false, 'content'=> $full_posts ); 
 
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
@@ -55,6 +55,7 @@ if ($pages) // есть страницы
 			
 			echo '<div class="page_content">';
 				mso_page_content($page_content);
+				mso_page_content_end();
 				echo '<div class="break"></div>';
 				mso_page_comments_link($page_comment_allow, $page_slug, 'Обсудить (' . $page_count_comments . ')', '<div class="comments-link"><span>', '</span></div>');
 				

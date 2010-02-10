@@ -4,7 +4,9 @@
  * MaxSite CMS
  * (c) http://maxsite.org/
  */
-
+	
+	mso_cur_dir_lang('admin');
+	
 	# Форма - работает совместно с edit и new
 	
 	
@@ -29,7 +31,17 @@ EOF;
 	$posle = <<<EOF
 
 			<div style="margin: 10px 0;">
-				<input type="submit" name="{$name_submit}" value="           Готово           " class="wymupdate" /><span class="autosave-editor"></span>
+				<p><input name="f_status[]" type="radio" {$f_status_publish} value="publish" id="f_status_publish">
+						<label for="f_status_publish">Опубликовать</label> 
+					<input name="f_status[]" type="radio" {$f_status_draft} value="draft" id="f_status_draft"> 
+						<label for="f_status_draft">Черновик</label> 
+					<input name="f_status[]" type="radio" {$f_status_private} value="private" id="f_status_private"> 
+						<label for="f_status_private">Личное</label>
+						
+				</p>
+									
+				{$f_return}
+				<input type="submit" name="{$name_submit}" value="Готово" class="wymupdate" /> <span class="autosave-editor"></span>
 			</div>
 			
 			<div style="margin: 20px 0;">
@@ -70,7 +82,7 @@ EOF;
 				<h3>Обсуждение</h3>
 				<p><input name="f_comment_allow" type="checkbox" {$f_comment_allow} /> Разрешить комментирование</p>
 				<p><input name="f_feed_allow" type="checkbox" {$f_feed_allow} /> Публикация в RSS</p>
-				<p><input name="f_ping_allow" type="checkbox" {$f_ping_allow} /> Разрешить пинг</p>
+				<!--p><input name="f_ping_allow" type="checkbox" {$f_ping_allow} /> Разрешить пинг</p-->
 			</div>
 
 			<div class="block_page">
@@ -87,19 +99,17 @@ EOF;
 			</div>			
 			
 			<div class="block_page">
-				<h3>Статус записи</h3> 
-				<p><input name="f_status[]" type="radio" {$f_status_publish} value="publish"> Опубликовать</p>
-				<p><input name="f_status[]" type="radio" {$f_status_draft} value="draft"> Черновик</p>
-				<p><input name="f_status[]" type="radio" {$f_status_private} value="private"> Личное (только для себя)</p>
-			</div>
-			
-			<div class="block_page">
 				<h3>Пароль для чтения</h3>
 				<p><input type="text" value="{$f_password}" name="f_password" style="width: 99%;" /></p>
 			</div>
 			
 			<div class="block_page">
-				<h3>Родительская страница (id)</h3>
+				<h3>Порядок</h3>
+				<p><input type="text" value="{$page_menu_order}" name="f_menu_order" style="width: 99%;" /></p>
+			</div>
+				
+			<div class="block_page">
+				<h3>Родительская страница</h3>
 				<p>{$all_pages}</p>
 			</div>
 			

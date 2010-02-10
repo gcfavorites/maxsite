@@ -69,5 +69,5 @@ if ($pages)
 
 } // if ($pages) 
 
-mso_add_cache($cache_key, ob_get_flush(), 3600); // сразу и в кэш добавим - время 10 минут 60 сек * 10 минут *
+mso_add_cache($cache_key, ob_get_flush()); // сразу и в кэш добавим - время 10 минут 60 сек * 10 минут *
 ?>

@@ -37,6 +37,7 @@
 		$options['start'] = isset($post['f_start']) ? 1 : 0;
 		$options['context'] = isset($post['f_context']) ? 1 : 0;
 		$options['test'] = isset($post['f_test']) ? 1 : 0;
+		$options['anticheck'] = isset($post['f_anticheck']) ? 1 : 0;
 
 		mso_add_option($options_key, $options, 'plugins');
 		echo '<div class="update">Настройки обновлены!</div>';
@@ -93,10 +94,12 @@
 		if ( !isset($options['context']) ) $options['context'] = true; 
 		if ( !isset($options['test']) ) $options['test'] = false; 
 		if ( !isset($options['start']) ) $options['start'] = true; 
+		if ( !isset($options['anticheck']) ) $options['anticheck'] = false; 
 		
 		$checked_context = $options['context'] ? ' checked="checked" ' : '';
 		$checked_test = $options['test'] ? ' checked="checked" ' : '';
 		$checked_start = $options['start'] ? ' checked="checked" ' : '';
+		$checked_anticheck = $options['anticheck'] ? ' checked="checked" ' : '';
 		
 		$form = '';
 		$form .= '<p><strong>Ваш номер/код в <a href="http://www.sape.ru/r.aa92aef9c6.php" target="_blank">sape.ru</a>:</strong> ' . ' <input name="f_kod" type="text" style="width: 300px;" value="' . $options['kod'] . '"></p>';
@@ -104,6 +107,7 @@
 		$form .= '<p><input name="f_start" type="checkbox"' . $checked_start . '> Включить плагин</p>';
 		$form .= '<p><input name="f_context" type="checkbox"' . $checked_context . '> Использовать контекстные ссылки</p>';
 		$form .= '<p><input name="f_test" type="checkbox"' . $checked_test . '> Режим проверки установленного кода</p>';
+		$form .= '<p><input name="f_anticheck" type="checkbox"' . $checked_anticheck . '> Включить антиобнаружитель продажных ссылок</p>';
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;

@@ -136,7 +136,7 @@ if (! function_exists('delete_files'))
 				}
 				else
 				{
-					unlink($path.'/'.$filename);
+					@unlink($path.'/'.$filename);
 				}
 			}
 		}

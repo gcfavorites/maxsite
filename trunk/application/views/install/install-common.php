@@ -14,7 +14,6 @@ function _mso_install_sqlfile($sql_file)
 	return explode('###', $sql);
 }
 
-
 function mso_install_newsite($arg = array())
 {
 	

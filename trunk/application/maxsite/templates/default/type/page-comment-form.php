@@ -18,7 +18,7 @@
 				<input type="radio" name="comments_reg" id="comments_reg_1" value="noreg"  checked="checked" class="no-margin"" /> <span class="black">Не регистрировать/аноним</span> <br />
 				
 				<label for="comments_author">Ваше имя</label>
-				<input type="text" name="comments_author" class="text" onfocus="document.getElementById('comments_reg_1').checked = 'checked';" />
+				<input type="text" name="comments_author" id="comments_author" class="text" onfocus="document.getElementById('comments_reg_1').checked = 'checked';" />
 				<p style="margin: 10px 0 0 0;"><span>Используйте нормальные имена. Ваш комментарий будет опубликован после проверки.</span></p>
 			</div>		
 			
@@ -29,7 +29,7 @@
 				<input type="text" name="comments_email" value="" class="text" onfocus="document.getElementById('comments_reg_2').checked = 'checked';" /><br />
 
 				<label for="comments_password">Пароль</label>
-				<input type="password" name="comments_password" value="" class="text" onfocus="document.getElementById('comments_reg_2').checked = 'checked';" /><br />
+				<input type="password" name="comments_password" id="comments_password" value="" class="text" onfocus="document.getElementById('comments_reg_2').checked = 'checked';" /><br />
 			</div>
 			<?php  } else { // comusers?>
 				
@@ -57,7 +57,7 @@
 			
 			<label for="comments_content">Ваш комментарий</label>
 			<?php mso_hook('comments_content_start')  ?>
-			<textarea name="comments_content" id="comments_content" rows="10"></textarea>
+			<textarea name="comments_content" id="comments_content" rows="10" cols="60"></textarea>
 
 			<?php mso_hook('comments_content_end')  ?>
 			

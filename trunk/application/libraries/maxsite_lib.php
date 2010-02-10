@@ -7,7 +7,7 @@
 
 class Maxsite_lib 
 {
-	var $version = '0.28';
+	var $version = '0.29';
 	var $config = array();
 	var $data = array();
 	var $hooks = array();
@@ -18,6 +18,7 @@ class Maxsite_lib
 	var $description = '';
 	var $keywords = '';
 	var $language = false;
+	var $current_lang_dir = false;
 	
 	
 	function Maxsite_lib() 
@@ -48,6 +49,7 @@ class Maxsite_lib
 		$this->config['template'] = 'default';
 		
 		$this->config['secret_key'] = $this->config['site_url'];
+		$this->config['remote_key'] = '0'; // ключ удаленного постинга
 		
 		$this->config['cache_dir'] = $CI->config->config['cache_path'];
 		if (!$this->config['cache_dir'])

@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+mso_cur_dir_lang('admin');
+
+?>
 
 <h1>Редактирование страницы</h1>
 <p><a href="<?= $MSO->config['site_admin_url'] . 'page' ?>">Вернуться к списку страниц</a>	
@@ -85,6 +89,9 @@
 			if ( isset($post['f_tags']) and $post['f_tags'] ) $f_tags = $post['f_tags'] ;
 				else $f_tags = '';
 			
+			if ( isset($post['f_menu_order'])) $page_menu_order = (int) $post['f_menu_order'] ;
+				else $page_menu_order = '';			
+			
 			// pr(mso_explode($f_tags, false, false));	
 			
 			if ( isset($post['f_slug']) and $post['f_slug'] ) $f_slug = $post['f_slug'] ;
@@ -117,7 +124,7 @@
 			if ( isset($post['f_page_parent']) and $post['f_page_parent'] ) $f_page_parent = (int) $post['f_page_parent'];
 				else $f_page_parent = '';
 			
-					$f_date_change = isset($post['f_date_change']) ? '1' : '0'; // сменить дату?
+			$f_date_change = isset($post['f_date_change']) ? '1' : '0'; // сменить дату?
 		
 			if ( // проверяем есть ли дата
 				$f_date_change and
@@ -127,12 +134,12 @@
 				isset($post['f_time_h']) and
 				isset($post['f_time_m']) and
 				isset($post['f_time_s']) and
-				$post['f_date_y'] and
-				$post['f_date_m'] and
-				$post['f_date_d'] and
-				$post['f_time_h'] and
-				$post['f_time_m'] and
-				$post['f_time_s'] )
+				$post['f_date_y'] > -1 and $post['f_date_y'] < 3000 and
+				$post['f_date_m'] > -1 and $post['f_date_m'] < 13 and
+				$post['f_date_d'] > -1 and $post['f_date_d'] < 32 and
+				$post['f_time_h'] > -1 and $post['f_time_h'] < 25 and
+				$post['f_time_m'] > -1 and $post['f_time_m'] < 61 and
+				$post['f_time_s'] > -1 and $post['f_time_s'] < 61)
 			{
 				$page_date_publish_y = (int) $post['f_date_y'];
 				$page_date_publish_m = (int) $post['f_date_m'];
@@ -185,10 +192,11 @@
 				'page_tags' => $f_tags,
 				'page_meta_options' => $f_options,
 				'page_date_publish' => $page_date_publish,
+				'page_menu_order' => $page_menu_order,
 
 				);
 				
-			// pr($data);
+			//pr($data);
 			// pr($post);
 			//pr($f_tags);
 			//pr(mso_explode($f_tags, false, false));
@@ -241,6 +249,7 @@
 						$f_page_parent = $row['page_id_parent'];
 						$f_user_id = $row['page_id_autor'];
 						$page_date_publish = $row['page_date_publish'];
+						$page_menu_order = $row['page_menu_order'];
 					}
 					$f_cat = mso_get_cat_page($id); // рубрики в виде массива
 					$f_tags = implode(', ', mso_get_tags_page($id)); // метки страницы в виде массива			
@@ -280,6 +289,7 @@
 					$f_page_parent = $row['page_id_parent'];
 					$f_user_id = $row['page_id_autor'];
 					$page_date_publish = $row['page_date_publish'];
+					$page_menu_order = $row['page_menu_order'];
 				}
 				
 				$f_cat = mso_get_cat_page($id); // рубрики в виде массива
@@ -476,6 +486,7 @@
 		# из неё получается $all_meta = '<p>Нет</p>';
 		require($MSO->config['admin_plugins_dir'] . 'admin_page/all_meta.php');
 		
+		$f_return = '';
 	
 		# форма вынесена в отдельный файл, поскольку она одна и таже для new и edit
 		# из неё получается $do и $posle

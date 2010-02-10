@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
-
+	
+	mso_cur_dir_lang('admin');
+	
 	$CI = & get_instance();
 	
 	require_once( getinfo('common_dir') . 'page.php' ); 			// функции страниц 
@@ -34,6 +36,7 @@
 			{
 				if ( $result['result'] ) 
 				{
+					mso_flush_cache(); // сбросим кэш
 					echo '<div class="update">Страница удалена</div>';
 				}
 				else
@@ -135,6 +138,8 @@
 			// pr($page);
 			// $act = '<a href="' . $this_url . $page['page_id'] . '">Изменить</a>';
 			
+			if (!$page['page_title']) $page['page_title'] = 'no-title';
+			
 			$all_pages[$page['page_id']] = $page['page_id'] . ' - ' . $page['page_title'] 
 				. ' - ' . $page['page_date_publish'] . ' - ' . $page['page_status'];
 			
@@ -154,7 +159,6 @@
 				$tags .= '<a href="' . $view_url_tag . $val . '">' . $val . '</a>  ';
 			}			
 			$tags = str_replace('  ', ', ', trim($tags));
-			
 			
 			$title = '<a href="' . $this_url . $page['page_id'] . '">' . $page['page_title'] . '</a>'
 					. ' [<a href="' . $view_url . $page['page_slug'] . '" target="_blank">Просмотр</a>]';

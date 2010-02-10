@@ -76,6 +76,7 @@ if ($page_top) // есть страницы
 	
 		echo '<div class="page_content">';
 			mso_page_content($page_content);
+			mso_page_content_end();
 			echo '<div class="break"></div>';
 		echo '</div>';
 	}
@@ -121,6 +122,7 @@ if ($pages) // есть страницы
 			echo '<div class="page_content type_home">';
 			
 				mso_page_content($page_content);
+				mso_page_content_end();
 				echo '<div class="break"></div>';
 				
 				mso_page_comments_link( array( 

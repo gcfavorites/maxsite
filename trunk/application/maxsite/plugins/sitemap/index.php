@@ -51,6 +51,8 @@ function sitemap($arg = array())
 			// 'type'=> false, 
 			'custom_type'=> 'home', 
 			'content'=> false,
+			'cat_order'=>'category_id_parent', 
+			'cat_order_asc'=>'asc',
 			//'order_asc'=> 'desc',
 			); 
 	$pages = mso_get_pages($par, $pagination); // получим все
@@ -79,6 +81,9 @@ function sitemap($arg = array())
 					. 'page/' . $slug . '" title="' . $page['page_title'] . '">' 
 					. $page['page_title'] . '</a>'
 					
+					. ' ('
+					. mso_page_cat_link($page['page_categories'], ' &rarr; ', '', '', false)
+					. ')'
 					# синонимы ссылок
 					/*
 					. ' ('

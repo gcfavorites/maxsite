@@ -4,7 +4,7 @@
 [form]
     [email=mylo@sait.com]
     [redirect=http://site.com/]
-    [subject=Мой форма]
+    [subject=Моя форма]
 
     [field]
         require = 1   

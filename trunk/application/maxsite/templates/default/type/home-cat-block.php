@@ -31,6 +31,7 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 		
 			echo '<div class="page_content">';
 				mso_page_content($page_content);
+				mso_page_content_end();
 				echo '<div class="break"></div>';
 			echo '</div>';
 		}
@@ -71,6 +72,7 @@ if (mso_get_option('home_last_page', 'templates', '0'))
 					mso_page_edit_link($page_id, 'Edit page', ' [', ']');
 				echo '</div>';
 				mso_page_content($page_content);
+				mso_page_content_end();
 				echo '<div class="break"></div>';
 			echo '</div>';
 		}
@@ -162,6 +164,7 @@ else
 						echo '<div class="page_content type_home">';
 						
 							mso_page_content($page_content);
+							mso_page_content_end();
 							echo '<div class="break"></div>';
 							
 							mso_page_comments_link( array( 

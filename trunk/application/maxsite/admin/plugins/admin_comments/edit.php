@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+mso_cur_dir_lang('admin');
+
+?>
 
 <h1>Редактирование комментария</h1>
 <p><a href="<?= $MSO->config['site_admin_url'] . 'comments' ?>">К списку комментариев</a></p>
@@ -37,6 +41,8 @@
 				echo '<div class="update">Обновлено!</div>';
 			else 
 				echo '<div class="error">Ошибка обновления</div>';
+			
+			$CI->db->cache_delete_all();
 		}
 		
 		

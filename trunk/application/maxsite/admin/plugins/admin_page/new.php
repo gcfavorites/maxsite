@@ -1,4 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+	mso_cur_dir_lang('admin');	
 	
 	$CI = & get_instance();
 	
@@ -25,7 +27,10 @@
 		
 		if ( isset($post['f_tags']) and $post['f_tags'] ) $f_tags = $post['f_tags'] ;
 				else $f_tags = '';
-			
+		
+		if ( isset($post['f_menu_order'])) $page_menu_order = (int) $post['f_menu_order'] ;
+				else $page_menu_order = '';	
+					
 		if ( isset($post['f_slug']) and $post['f_slug'] ) $f_slug = $post['f_slug'] ;
 			else $f_slug = mso_slug($f_header);
 			
@@ -66,12 +71,12 @@
 				isset($post['f_time_h']) and
 				isset($post['f_time_m']) and
 				isset($post['f_time_s']) and
-				$post['f_date_y'] and
-				$post['f_date_m'] and
-				$post['f_date_d'] and
-				$post['f_time_h'] and
-				$post['f_time_m'] and
-				$post['f_time_s'] )
+				$post['f_date_y'] > -1 and $post['f_date_y'] < 3000 and
+				$post['f_date_m'] > -1 and $post['f_date_m'] < 13 and
+				$post['f_date_d'] > -1 and $post['f_date_d'] < 32 and
+				$post['f_time_h'] > -1 and $post['f_time_h'] < 25 and
+				$post['f_time_m'] > -1 and $post['f_time_m'] < 61 and
+				$post['f_time_s'] > -1 and $post['f_time_s'] < 61 )
 		{
 			$page_date_publish_y = (int) $post['f_date_y'];
 			$page_date_publish_m = (int) $post['f_date_m'];
@@ -123,6 +128,7 @@
 			'page_feed_allow' => $f_feed_allow,
 			'page_tags' => $f_tags,
 			'page_meta_options' => $f_options,
+			'page_menu_order' => $page_menu_order,
 			
 			);
 		
@@ -157,6 +163,11 @@
 			
 			mso_flush_cache(); // сбросим кэш
 			
+			if ($url and isset($post['f_return'])) // редирект на edit?
+			{
+				mso_redirect($MSO->config['site_admin_url'] . 'page_edit/' . $result['result'][0], true);
+			}
+			
 			# остальное на дефолт
 			$f_content = '';
 			$f_header = '';
@@ -170,6 +181,7 @@
 			$f_ping_allow = '1';
 			$f_feed_allow = '1';
 			$f_page_parent = '';
+			$page_menu_order = '0';
 			$f_user_id = $MSO->data['session']['users_id'];
 			
 			// еще дата опубликования
@@ -197,6 +209,7 @@
 		$f_password = '';
 		$f_comment_allow = '1';
 		$f_ping_allow = '0';
+		$page_menu_order = '0';
 		$f_feed_allow = '1';
 		$f_page_parent = '';
 		$f_user_id = $MSO->data['session']['users_id'];
@@ -388,6 +401,9 @@
 	$f_status_draft = $f_status_private = '';
 	$f_status_publish = 'checked';
 	
+	$f_return = '<input name="f_return" type="checkbox" title="После сохранения вернуться к редактированию">';
+										// checked="checked"
+
 	# форма вынесена в отдельный файл, поскольку она одна и таже для new и edit
 	# из неё получается $do и $posle
 	require($MSO->config['admin_plugins_dir'] . 'admin_page/form.php');

@@ -6,8 +6,8 @@
  * Функции для страниц
  */
 
-# переменную $page мы объявляем как глобальную - в ней содержится массив 
-# текущей страницы 
+# переменную $page мы объявляем как глобальную - в ней содержится массив текущей страницы 
+# никогда не используйте свою глобальную $page!
 global $page;
 
 
@@ -29,6 +29,15 @@ function mso_get_pages($r = array(), &$pag)
 
 	if ( !isset($r['cut']) )			$r['cut'] = 'Далее'; // ссылка на [cut]
 	if ( !isset($r['xcut']) )			$r['xcut'] = true; // для тех у кого нет cut, но есть xcut выводить после xcut
+	
+	// удалять ли [cut], если false, то cut не обрабатывается
+	// если false, то $r['cut'] и $r['xcut'] уже не учитываются
+	if ( !isset($r['work_cut']) )		$r['work_cut'] = true; 
+	
+	// отдавать все поля из таблиц (только для типов home и page)
+	// если false, то только то, что предопределено
+	if ( !isset($r['all_fields']) )		$r['all_fields'] = false; 
+	
 	
 	if ( !isset($r['cat_order']) )		$r['cat_order'] = 'category_name'; // сортировка рубрик
 	if ( !isset($r['cat_order_asc']) )	$r['cat_order_asc'] = 'asc'; // порядок рубрик
@@ -71,6 +80,7 @@ function mso_get_pages($r = array(), &$pag)
 	
 	// если true, то публикуется только те, которые старше текущей даты
 	// если false - то публикуются все
+	// если юзер залогинен, то дата сбрасывается при выводе page
 	if ( !isset($r['date_now']) )		$r['date_now'] = true;
 	
 	
@@ -136,12 +146,17 @@ function mso_get_pages($r = array(), &$pag)
 			// проверяем статус публикации - если page_status <> publish то смотрим автора и сравниваем с текущим юзером
 			$page_status = $pages[0]['page_status']; // в page - всегда одна запись
 			
-			if ($page_status<>'publish') // не опубликовано
+			if ($page_status != 'publish') // не опубликовано
 			{
 				if ( isset($MSO->data['session']['users_id']) ) // залогинен
 				{
 					if ( $pages[0]['page_id_autor'] <> $MSO->data['session']['users_id'] ) return array();
-					else $pages[0]['page_title'] .= ' (черновик)';
+					else 
+					{
+						if ($page_status == 'draft') $pages[0]['page_title'] .= ' (черновик)';
+						// else $pages[0]['page_title'] .= ' (личное)';
+					}
+					
 				}
 				else return array(); // не залогинен
 			}
@@ -165,56 +180,61 @@ function mso_get_pages($r = array(), &$pag)
 			
 			$pages[$key]['page_slug'] = $page['page_slug'] = mso_slug($page['page_slug']);
 			
-			if ($r['xcut']) // можно использовать [xcut] 
-				$content = str_replace('[xcut', '[mso_xcut][cut', $content);
-			else
-				$content = str_replace('[xcut', '[cut', $content);
-				
-			if ( preg_match('/\[cut(.*?)?\]/', $content, $matches) ) 
-			{
-				$content = explode($matches[0], $content, 2);
-				$cut = $matches[1];
-			}
-			else 
-			{
-				$content = array($content);
-				$cut = '';
-			}
-		
-			$output = $content[0]; 
-			if ( count($content) > 1 ) 
-			{
-				// ссылка на «далее...»
-				if ($r['cut'])
-				{
-					if ($cut) 
-					{
-						if (isset($content[1]))
-						{
-							if (strpos($cut, '%wordcount%')!==false)
-								$cut = str_replace('%wordcount%', mso_wordcount($content[1]), $cut);
-						}
-					} 
-					else $cut = $r['cut'];
-					
-					$output .= mso_page_title( $page['page_slug'], $cut, 
-								$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
-				}
-				else
-				{
-					$output .= mso_balance_tags($content[1]);
-				}
-				
-				$output = mso_balance_tags($output);
-			}
 			
-			if ($r['xcut'])
+			if ($r['work_cut']) // обрабатывать cut
 			{
-				if ($r['cut'])
-					$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$1", $output);
+				if ($r['xcut']) // можно использовать [xcut] 
+					$content = str_replace('[xcut', '[mso_xcut][cut', $content);
+				else
+					$content = str_replace('[xcut', '[cut', $content);
+					
+				if ( preg_match('/\[cut(.*?)?\]/', $content, $matches) ) 
+				{
+					$content = explode($matches[0], $content, 2);
+					$cut = $matches[1];
+				}
 				else 
-					$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$2", $output);
+				{
+					$content = array($content);
+					$cut = '';
+				}
+			
+				$output = $content[0]; 
+				if ( count($content) > 1 ) 
+				{
+					// ссылка на «далее...»
+					if ($r['cut'])
+					{
+						if ($cut) 
+						{
+							if (isset($content[1]))
+							{
+								if (strpos($cut, '%wordcount%')!==false)
+									$cut = str_replace('%wordcount%', mso_wordcount($content[1]), $cut);
+							}
+						} 
+						else $cut = $r['cut'];
+						
+						$output .= mso_page_title( $page['page_slug'], $cut, 
+									$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
+					}
+					else
+					{
+						$output .= mso_balance_tags($content[1]);
+					}
+					
+					$output = mso_balance_tags($output);
+				}
+				
+				if ($r['xcut'])
+				{
+					if ($r['cut'])
+						$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$1", $output);
+					else 
+						$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$2", $output);
+				}
 			}
+			else $output = $content; // отдаем как есть
 			
 			$output = mso_hook('content_complete', $output);
 			
@@ -374,15 +394,22 @@ function _mso_sql_build_home($r, &$pag)
 	
 	// теперь сами страницы
 	
-	if ($r['content'])
+	if (!$r['all_fields'])
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
+		if ($r['content'])
+		{
+			$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
+		}
+		else
+		{
+			$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
+		}
 	}
 	else
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments, page.page_id_autor, users_description, users_login');
+		$CI->db->select('page.*, page_type.*, users.*, COUNT(comments_id) AS page_count_comments');
 	}
-		
+	
 	$CI->db->from('page');
 	
 	if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
@@ -447,18 +474,28 @@ function _mso_sql_build_page($r, &$pag)
 	// $id = (int) $slug;
 	// if ( (string) $slug != (string) $id ) $id = false; // slug не число
 	
+	if (!$r['all_fields'])
+	{
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor, users_description, users_login');
+	}
+	else
+	{
+		$CI->db->select('page.*, page_type.*, users.*');
+	}
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor, users_description, users_login');
 	$CI->db->from('page');
 	
 	// if ($page_status) $CI->db->where('page_status', $page_status);
 	
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	
-		// при получении учитываем часовой пояс
+	// при получении учитываем часовой пояс
 	$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 	
-	if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
+	if (!is_login())
+	{
+		if ($r['date_now']) $CI->db->where('page_date_publish<', $date_now);
+	}
 	
 	if ($id) // если slug число, то это может быть и номер и сам slug - неопределенность!
 	{
@@ -1249,8 +1286,14 @@ function mso_page_content($page_content = '', $use_password = true, $message = '
 		echo mso_hook('content_content', $page_content);
 	}
 
-	mso_hook('content_end'); # хук на конец блока
+	// mso_hook('content_end'); # хук на конец блока
 	
+}
+
+# некоторые плагины нужно выводить после всех хуков на content
+function mso_page_content_end()
+{
+	mso_hook('content_end'); # хук на конец блока
 }
 
 # получение meta

@@ -4,7 +4,9 @@
  * MaxSite CMS
  * (c) http://maxsite.org/
  */
-
+	
+	mso_cur_dir_lang('admin');
+	
 	$CI = & get_instance();
 	
 	// проверяем входящие данные если было обновление

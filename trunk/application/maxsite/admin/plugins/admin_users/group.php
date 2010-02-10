@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+mso_cur_dir_lang('admin');
+
+?>
 
 <h1>Группы пользователей</h1>
 <p class="info">Здесь вы можете настроить группы пользователей. Вы не можете удалить группы <strong>«admins»</strong> и <strong>«users»</strong>. Группе <strong>«admins»</strong> разрешены все действия.</p>

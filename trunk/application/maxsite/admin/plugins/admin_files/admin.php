@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+mso_cur_dir_lang('admin');
+
+?>
 
 <h1>Загрузки. Файлы. Галереи</h1>
 <p class="info">Здесь вы можете выполнить необходимые операции с файлами.</p>
@@ -12,7 +16,7 @@
 	$CI->load->helper('form');
 		
 	// разрешенные типы файлов
-	$allowed_types = 'gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|flv|swf|mp3|wav|xls';
+	$allowed_types = 'gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|flv|swf|mp3|wav|xls|7z';
 	
 	
 	// по сегменту определяем текущий каталог в uploads
@@ -455,10 +459,14 @@
 			
 			$cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '" />';
 			
-			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px;" src="' . $uploads_url . $_f . '" /></a>';
+			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 0 auto; display: block;" src="' . $uploads_url . $_f . '" /></a>';
 			
 		}
-		else $predpr = '';
+		else 
+		{
+			$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img style="max-width: 100px; margin: 0 auto; display: block;" src="' . getinfo('admin_url') . 'plugins/admin_files/document_plain.png" /></a>';
+			
+		}
 		
 		$CI->table->add_row($predpr, $sel . $cod);
 	}

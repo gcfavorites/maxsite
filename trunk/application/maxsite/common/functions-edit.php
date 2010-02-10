@@ -546,6 +546,8 @@
 		$page_ping_allow = isset($data['page_ping_allow']) ? (int) $data['page_ping_allow'] : '1';
 		$page_feed_allow = isset($data['page_feed_allow']) ? (int) $data['page_feed_allow'] : '1';
 		
+		$page_menu_order = isset($data['page_menu_order']) ? (int) $data['page_menu_order'] : 0;
+		
 
 		$page_id_autor = isset($data['page_id_autor']) ? (int) $data['page_id_autor'] : -1;
 	
@@ -579,6 +581,7 @@
 			'page_feed_allow' => $page_feed_allow,
 			'page_date_publish' => $page_date_publish,
 			'page_last_modified' => $page_date_publish,
+			'page_menu_order' => $page_menu_order,
 			
 			// 'page_date_dead' => $,
 			// 'page_lang' => $,
@@ -784,6 +787,8 @@
 		$page_ping_allow = isset($data['page_ping_allow']) ? (int) $data['page_ping_allow'] : '1';
 		$page_feed_allow = isset($data['page_feed_allow']) ? (int) $data['page_feed_allow'] : '1';
 		
+		$page_menu_order = isset($data['page_menu_order']) ? (int) $data['page_menu_order'] : 0;
+		
 
 		$page_id_autor = isset($data['page_id_autor']) ? (int) $data['page_id_autor'] : -1;
 	
@@ -816,6 +821,7 @@
 			'page_ping_allow' => $page_ping_allow,
 			'page_feed_allow' => $page_feed_allow,
 			'page_last_modified' => $page_last_modified,
+			'page_menu_order' => $page_menu_order,
 			// 'page_date_dead' => $,
 			// 'page_lang' => $,
 			);

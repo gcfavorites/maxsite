@@ -66,24 +66,28 @@ function sape_init($args = array())
 		and isset($options['start']) and $options['start']) // можно подключать
 	{
 	
+		// если вкючен античек
+		if (isset($options['anticheck']) and $options['anticheck'])
+		{
 		// анализируем входящий url на предмет ?
 		// если есть, то делаем редирект на то, что до ?
-		// таким образом обнаружить продажную ссылку будет невозможно
-		if (isset($_SERVER['argv']) and $_SERVER['argv']) // есть какие-то параметры - делаем редирект
-		{
-			$url = $_SERVER['REQUEST_URI']; // /?nono  /about/?momo
-			
-			$url = explode('?', $url);
-			if (isset($url[0])) $url = $url[0];
-			else $url = '';
-			
-			$url = '/' . trim(str_replace('/', ' ', $url));
-			$url = str_replace(' ', '/', $url);
-			$url = 'http://'. $_SERVER['HTTP_HOST'] . $url;
-			
-			header('HTTP/1.1 301 Moved Permanently');
-			header('Location: ' . $url);
-			exit;
+			// таким образом обнаружить продажную ссылку будет невозможно
+			if (isset($_SERVER['argv']) and $_SERVER['argv']) // есть какие-то параметры - делаем редирект
+			{
+				$url = $_SERVER['REQUEST_URI']; // /?nono  /about/?momo
+				
+				$url = explode('?', $url);
+				if (isset($url[0])) $url = $url[0];
+				else $url = '';
+				
+				$url = '/' . trim(str_replace('/', ' ', $url));
+				$url = str_replace(' ', '/', $url);
+				$url = 'http://'. $_SERVER['HTTP_HOST'] . $url;
+				
+				header('HTTP/1.1 301 Moved Permanently');
+				header('Location: ' . $url);
+				exit;
+			}
 		}
 		
 		if ( !defined('_SAPE_USER') ) define('_SAPE_USER', $options['kod']);

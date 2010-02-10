@@ -59,7 +59,7 @@
 			if ( isset($_POST['subscribe']) ) 
 			{
 					$to_email = $_POST['contact_mail'];
-					if ( valid_email($to_email) ) mso_mail($to_email, $subject, $text_email);
+					if ( mso_valid_email($to_email) ) mso_mail($to_email, $subject, $text_email);
 			}
 			
 			echo '<h2>Ваше сообщение отправлено!</h2><p>' 

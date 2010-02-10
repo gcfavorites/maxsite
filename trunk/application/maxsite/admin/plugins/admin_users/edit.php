@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+
+mso_cur_dir_lang('admin');
+
+?>
 
 <h1>Редактирование пользователя</h1>
 <p><a href="<?= $MSO->config['site_admin_url'] . 'users' ?>">Вернуться к списку пользователей</a></p>

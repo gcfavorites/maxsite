@@ -48,6 +48,15 @@ function bbcode_custom($markup = '')
 		'~\[hr\]~si'   => '<hr />',
 		'~\[line\]~si'   => '<hr />',
 		
+		'~\[table\]~si'   => '<table>',
+		'~\[\/table\]~si'   => '</table>',
+		'~\[tr\]~si'   => '<tr>',
+		'~\[\/tr\]~si'   => '</tr>',
+		'~\[td\]~si'   => '<td>',
+		'~\[\/td\]~si'   => '</td>',
+		'~\[th\]~si'   => '<th>',
+		'~\[\/th\]~si'   => '</th>',
+		
 		'~\[\*\](.*?)\[\/\*\]~si'   => '<li>$1</li>',
 		'~\[\*\]~si'   => '<li>',
 		'~\[ul\](.*?)\[\/ul\]~si'   => "<ul>$1</li></ul>",
@@ -80,9 +89,11 @@ function bbcode_custom($markup = '')
 
 		// images
 
+		'~\[imgleft=(.*?)x(.*?)\](.*?)\[\/imgleft\]~si'  => '<img src="$3" style="float: left; margin: 0 10px 0 0; width: $1px; height: $2px" />',
 		'~\[imgleft\](.*?)\[\/imgleft\]~si'      => '<img src="$1" style="float: left; margin: 0 10px 0 0;" />',
 		'~\[imgleft (.*?)\](.*?)\[\/imgleft\]~si'      => '<img src="$2" title="$1" alt="$1" style="float: left; margin: 0 10px 0 0;" />',
 		
+		'~\[imgright=(.*?)x(.*?)\](.*?)\[\/imgright\]~si'  => '<img src="$3" style="float: right; margin: 0 0 0 10px; width: $1px; height: $2px" />',
 		'~\[imgright\](.*?)\[\/imgright\]~si'    => '<img src="$1" style="float: right; margin: 0 0 0 10px;" />',
 		'~\[imgright (.*?)\](.*?)\[\/imgright\]~si'    => '<img src="$2" title="$1" alt="$1" style="float: right; margin: 0 0 0 10px;" />',
 		

@@ -33,6 +33,9 @@ delimer = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 Для типа textarea можно указать перенос строки в виде _NR_ - он автоматически пербразуется в перенос строки \n
 
+Для типа textfield можно указать кавычку (") в виде _QUOT_ - он автоматически пербразуется в &quot; 
+
+
 [Титул]
 options_key = title
 options_type = general

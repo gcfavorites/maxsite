@@ -7,7 +7,6 @@
 
 class Maxsite extends Controller 
 {
-	
 	var $data_def = array();
 	
 	function Maxsite()
@@ -18,8 +17,12 @@ class Maxsite extends Controller
 		$this->load->library('maxsite_lib');
 		
 		# получаем к своему массиву параметров текущий URI
-		$this->data_def['uri_segment'] = $this->uri->segment_array();
-		
+		$this->data_def['uri_segment'] = mso_segment_array(); 
+		$this->data_def['uri_get'] = mso_url_get(); // здесь строчка _GET
+
+		# в случае ошибки с адресами, расскоментируйте это строчку
+		# $this->data_def['uri_segment'] = $this->uri->segment_array();
+
 		# проверяем rss
 		if ( ( count($this->data_def['uri_segment']) > 0 ) and 
 			 ( $this->data_def['uri_segment'][count($this->data_def['uri_segment'])] == 'feed' )
@@ -32,12 +35,27 @@ class Maxsite extends Controller
 		mso_initalizing();
 
 		$this->data_def['session'] = $this->session->userdata;
-		// $this->session->sess_destroy(); // для тестирования - обнуление сессии
+		
+		# $this->session->sess_destroy(); // для тестирования - обнуление сессии
 	}
 	
 	function _remap($method)
 	{	
-	
+		### в случае ошибок с адресами, закоментируйте эти две строчки
+		if ( isset($this->data_def['uri_segment'][1]) ) $method = $this->data_def['uri_segment'][1];
+		else
+		{
+			global $mso_install;
+		
+			if ($mso_install == false)
+			{
+				$CI = & get_instance();	
+				if ( !$CI->db->table_exists('options')) return $this->install();
+			}
+			else $method = 'home'; // нет сегмента, значит это главная
+		}
+		### 
+		
 		if (
 			($method == 'home') or
 			($method == 'archive') or
@@ -58,6 +76,7 @@ class Maxsite extends Controller
 		elseif ($method == 'index') $this->index();
 		elseif ($method == 'feed') $this->index('home');
 		elseif ($method == 'install') $this->install();
+		elseif ($method == 'remote') $this->_view_i('remote', 'remote');
 		elseif ($method == 'ajax') $this->_view_i('ajax', 'ajax');
 		elseif ($method == 'admin') $this->_view_i('admin', 'admin');
 		elseif ($method == 'url') $this->_view_i('url', 'url/url');

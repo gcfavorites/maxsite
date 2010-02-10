@@ -68,5 +68,5 @@ else $pubdate = date('D, d M Y H:i:s ' . $time_zone, strtotime($pages[0]['page_d
 </rss>
 <?php 
 
-mso_add_cache($cache_key, ob_get_flush(), 3600); // сразу и в кэш добавим - время 10 минут 60 сек * 10 минут *
+mso_add_cache($cache_key, ob_get_flush()); // сразу и в кэш добавим - время 10 минут 60 сек * 10 минут *
 ?>

@@ -65,6 +65,10 @@
 [imgright Название]адрес[/imgright] 
 [imgcenter Название]адрес[/imgcenter]
 
+[imgleft=300x500]адрес[/imgleft] => картинка с размерами влево
+[imgright=300x500]адрес[/imgright] => картинка с размерами вправо
+
+
  - Миниатюра (адрес-mini) со ссылкой на оригинал
 [imgmini=_адрес-mini]адрес[/imgmini] => <a href="адрес" target="_blank"><img src="адрес-mini" /></a> - в новом окне
 [imgmini=адрес-mini]адрес[/imgmini] => <a href="адрес"><img src="адрес-mini" /></a> - в том же окне
@@ -74,3 +78,21 @@
 [url]http://site/[/url] => <a href="http://site/">http://site/</a>
 [url=http://site/]текст[/url] => <a href="http://site/">текст</a>
 
+Таблица
+[table]
+[tr]
+[td]1-я ячейка 1-й строки[/td]
+[td]2-я ячейка 1-й строки[/td]
+[td]3-я ячейка 1-й строки[/td]
+[/tr]
+[tr]
+[td]1-я ячейка 2-й строки[/td]
+[td]2-я ячейка 2-й строки[/td]
+[td]3-я ячейка 2-й строки[/td]
+[/tr]
+[tr]
+[td]1-я ячейка 3-й строки[/td]
+[td]2-я ячейка 3-й строки[/td]
+[td]3-я ячейка 3-й строки[/td]
+[/tr]
+[/table]

@@ -19,7 +19,7 @@ function _mso_login()
 		$flogin_session_id = $_POST['flogin_session_id'];
 		
 		# защита сесии
-		if ($MSO->data['session']['session_id'] != $flogin_session_id) mso_redirect('loginform');
+		if ($MSO->data['session']['session_id'] != $flogin_session_id) mso_redirect('loginform/error');
 		
 		
 		$flogin_redirect = urldecode($_POST['flogin_redirect']);
@@ -31,7 +31,7 @@ function _mso_login()
 		$flogin_password = $_POST['flogin_password'];
 		
 		# проверяем на strip - запрещенные символы
-		if ( ! mso_strip($flogin_user, true) or ! mso_strip($flogin_password, true) ) mso_redirect('loginform');
+		if ( ! mso_strip($flogin_user, true) or ! mso_strip($flogin_password, true) ) mso_redirect('loginform/error');
 		
 		$flogin_password = mso_md5($flogin_password);
 		
@@ -62,7 +62,7 @@ function _mso_login()
 			}
 			else // неверные данные
 			{
-				mso_redirect('loginform');
+				mso_redirect('loginform/error');
 				exit;
 			}
 		}
@@ -104,7 +104,7 @@ function _mso_login()
 				$CI->session->set_userdata($data);
 				mso_redirect($flogin_redirect, true);
 			}
-			else mso_redirect('loginform');
+			else mso_redirect('loginform/error');
 		} // автор
 	}
 	else 

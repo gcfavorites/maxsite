@@ -45,6 +45,7 @@ if ($pages) // есть страницы
 		
 		echo '<div class="page_content type_page">';
 			mso_page_content($page_content);
+			mso_page_content_end();
 			echo '<div class="break"></div>';
 			
 			// связанные страницы по родителям

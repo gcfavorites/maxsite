@@ -59,7 +59,7 @@ function perelinks_custom($content = '')
 				}
 			}
 		}
-		mso_add_cache($cache_key, $all_title, 900);
+		mso_add_cache($cache_key, $all_title);
 	}
 	
 	$curr_page_slug = $page['page_slug']; // текущая страница - для ссылки
