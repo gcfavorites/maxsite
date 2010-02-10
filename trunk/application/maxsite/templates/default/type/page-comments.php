@@ -32,6 +32,8 @@ if ($comments) // есть страницы
 	echo '<div class="comments">';
 	echo '<h3 class="comments">Комментариев: ' . count($comments) . '</h3>';
 	
+	// pr($comments);
+	
 	echo '<ol>';
 	
 	foreach ($comments as $comment)  // выводим в цикле

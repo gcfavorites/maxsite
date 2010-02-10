@@ -83,7 +83,7 @@
 		<input type="submit" name="f_submit_new" value="Добавить новую ушку" style="margin: 25px 0 5px 0;" /></p>
 		</form>';
 		
-		$form = '<h2>Ушки</h2>';
+		$form = '';
 		
 		foreach ($ushki as $id => $us)
 		{
@@ -105,10 +105,12 @@
 			$form .= '</div>';
 		}
 		
-		
-		echo '<form action="" method="post">' . mso_form_session('f_session_id');
-		echo $form;
-		echo '<input type="submit" name="f_submit" value=" Сохранить изменения " style="margin: 25px 0 5px 0;" />';
-		echo '</form>';
+		if ($form)
+		{
+			echo '<h2>Ушки</h2><form action="" method="post">' . mso_form_session('f_session_id');
+			echo $form;
+			echo '<input type="submit" name="f_submit" value=" Сохранить изменения " style="margin: 25px 0 5px 0;" />';
+			echo '</form>';
+		}
 
 ?>

@@ -5,7 +5,6 @@
 	$site_name = getinfo('name_site');
 	$date = date('Y');
 	$CI = & get_instance();	
-	
 	$mq = $CI->db->query_count;
 	
 	echo <<<EOF

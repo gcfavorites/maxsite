@@ -193,6 +193,9 @@ function mso_initalizing()
 			// сразу выставим группу
 			// $CI->session->userdata['users_groups_id'] = 
 			$MSO->data['session']['users_groups_id'] = $row->users_groups_id;
+			
+			# сразу обновляем время последней активности сессии
+			$CI->session->set_userdata('last_activity', time());
 		}
 	}
 	
@@ -806,19 +809,14 @@ function mso_add_cache($key, $output, $time = false, $custom_fn = false)
 	$path = $CI->config->item('cache_path');
 	$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
 	
-	if ( ! is_dir($cache_path) OR ! is_writable($cache_path))
-		return;
+	if ( ! is_dir($cache_path) or ! is_writable($cache_path)) return;
 	
 	if (!$custom_fn)
 		$cache_path .= mso_md5($key . $CI->config->item('base_url'));
 	else 
 		$cache_path .= $key;
 
-	if ( ! $fp = @fopen($cache_path, 'wb'))
-	{
-		log_message('error', "Unable to write cache file: ".$cache_path);
-		return;
-	}
+	if ( ! $fp = @fopen($cache_path, 'wb')) return;
 	
 	if (!$time) $time = $MSO->config['cache_time'];
 	
@@ -830,10 +828,37 @@ function mso_add_cache($key, $output, $time = false, $custom_fn = false)
 	flock($fp, LOCK_UN);
 	fclose($fp);
 	@chmod($cache_path, 0777);
-
-	log_message('debug', "Cache file written: ".$cache_path);
 }
 
+# удаление файла в кэше файлов, начинающихся с указаной строки
+function mso_flush_cache_mask($mask = '')
+{
+	if (!$mask) return;
+	
+	$CI = & get_instance();	
+	$path = $CI->config->item('cache_path');
+
+	$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
+		
+	if ( ! is_dir($cache_path) or ! is_writable($cache_path)) return;
+	
+	$CI->load->helper('directory');
+	
+	$files = directory_map($cache_path, true); // только в текущем каталоге
+	
+	if (!$files) return; // нет файлов вообще
+	
+	foreach ($files as $file)
+	{
+		if (@is_dir($cache_path . $file)) continue; // это каталог
+		
+		$pos = strpos($file, $mask);
+		if ( $pos !== false and $pos === 0)
+		{
+			unlink($cache_path . $file);
+		}
+	}
+}
 
 # сбросить кэш - если указать true, то удалится кэш из вложенных каталогов
 # если указан $dir, то удаляется только в этом каталоге
@@ -871,6 +896,7 @@ function mso_flush_cache($full = false, $dir = false)
 		@closedir($current_dir);
 	}
 }
+
 
 # получить кеш по ключу
 function mso_get_cache($key, $custom_fn = false)
@@ -1927,13 +1953,14 @@ function mso_wordcount($str = '', $delim = ' ', $strip_tags = true, $cr_to_delim
 }
 
 # получить текущую страницу пагинации
-function mso_current_paged()
+# next - признак сегмент после которого указывается номер страницы
+function mso_current_paged($next = 'next')
 {
 	global $MSO;
 	
 	$uri = $MSO->data['uri_segment'];
 	
-	if ($n = mso_array_get_key_value($uri, 'next')) 
+	if ($n = mso_array_get_key_value($uri, $next)) 
 	{
 		if (isset($uri[$n+1])) $n = (int) $uri[$n+1];
 			else $n = 1;
@@ -2064,7 +2091,7 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false)
 # для юникода отдельный wordwrap
 # часть кода отсюда: http://us2.php.net/manual/ru/function.wordwrap.php#78846
 # переделал и исправил ошибки я
-# ширина, разделеитель
+# ширина, разделитель
 function mso_wordwrap($str, $wid = 60, $tag = ' ')
 {
 		$pos = 0;

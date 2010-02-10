@@ -7,12 +7,17 @@ ob_start();
 
 
 require_once( getinfo('common_dir') . 'page.php' ); // основные функции страниц 
+require_once( getinfo('common_dir') . 'category.php' ); 		// функции рубрик
+
 
 $this->load->helper('xml');
 
 $encoding = 'utf-8';
 $time_zone = str_replace('.', '', getinfo('time_zone')); // '+0300';
 
+$limit = mso_get_option('limit_post_rss', 'templates', 7); 
+
+$cut = mso_get_option('full_rss', 'templates', 0) ? false : 'Читать полностью »'; 
 
 $feed_name = mso_head_meta('title');
 $description = mso_head_meta('description');
@@ -20,7 +25,7 @@ $feed_url = getinfo('siteurl');
 $language = 'en-ru';
 $generator = 'MaxSite CMS (http://maxsite.org/)';
 
-$par = array( 'limit'=>7, 'cut'=>'Читать полностью »', 'type'=>'blog' ); 
+$par = array( 'limit'=>$limit, 'cut'=>$cut, 'type'=>'blog', 'pagination'=>false, 'only_feed'=>true ); 
 $pages = mso_get_pages($par, $pagination); 
 
 if ($pages) 
@@ -44,10 +49,11 @@ if ($pages)
 		<?php foreach($pages as $page) : extract($page); ?>
 
 		<item>
-			<title><?= xml_convert(strip_tags($page_title)) ?></title>
+			<title><![CDATA[<?= xml_convert(strip_tags($page_title)) ?>]]></title>
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></guid>
 			<pubdate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($page_date_publish)) ?></pubdate>
+			<?= mso_page_cat_link($page_categories, "\n", '<category><![CDATA[', ']]></category>' . "\n", false) ?>
 			<author><?= $users_nik ?></author>
 			<creator><?= $users_nik ?></creator>
 			<description><![CDATA[<?= mso_page_content($page_content) . mso_page_comments_link($page_comment_allow, $page_slug, ' Обсудить', '', '', false) ?>]]></description>

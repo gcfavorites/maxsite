@@ -492,7 +492,6 @@
 		// дата публикации если нет даты, от ставим текущую
 		$page_date_publish = isset($data['page_date_publish']) ? $data['page_date_publish'] : date('Y-m-d H:i:s');
 		
-
 		$page_type_id = isset($data['page_type_id']) ? $data['page_type_id'] : '1';
 		$page_id_parent = isset($data['page_id_parent']) ? $data['page_id_parent'] : '0';
 

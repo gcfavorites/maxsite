@@ -33,7 +33,6 @@ else
 	echo '<br /><a href="' . getinfo('siteurl') . 'users">Список комментаторов</a></p>';
 
 	echo '<div class="comments">';
-
 	if ($comments) // есть страницы
 	{ 	
 		echo '<ul>';
@@ -41,6 +40,7 @@ else
 		foreach ($comments as $comment)  // выводим в цикле
 		{
 			extract($comment);
+
 
 			echo '<li><span><a href="' . getinfo('siteurl') . 'page/' . mso_slug($page_slug) . '#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $page_title . '</a>';
 			echo ' | ' . $comments_url;

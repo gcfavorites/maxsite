@@ -112,8 +112,8 @@ if ($pages) // есть страницы
 					'page_slug' => $page_slug,
 					'title' => 'Обсудить (' . $page_count_comments . ')',
 					'title_no_link' => 'Читать комментарии (' . $page_count_comments . ')',
-					'do' => '<div class="comments-link">',
-					'posle' => '</div>',
+					'do' => '<div class="comments-link"><span>',
+					'posle' => '</span></div>',
 					'page_count_comments' => $page_count_comments
 				 ));
 				

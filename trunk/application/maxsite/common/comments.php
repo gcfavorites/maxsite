@@ -23,6 +23,36 @@ function mso_get_comments($page_id = 0, $r = array())
 
 	$CI = & get_instance();
 	
+	// вначале получим список всех комюзеров, чтобы посчитать их количество комментариев
+	$cache_key = 'all_comusers';
+	$k = mso_get_cache($cache_key);
+	if (!$k) // нет в кэше
+	{
+		$CI->db->select('comusers_id, comusers_count_comments, COUNT(comments_comusers_id) as comusers_count_comment_real');
+		$CI->db->from('comusers');
+		$CI->db->where('comments.comments_approved', '1');
+		$CI->db->join('comments', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
+		$CI->db->group_by('comments_comusers_id');
+		$query = $CI->db->get();
+		
+		$all_comusers = array();
+		if ($query->num_rows() > 0)
+		{
+			$comusers = $query->result_array();
+			foreach($comusers as $comuser)
+			{
+				$all_comusers[$comuser['comusers_id']] = $comuser['comusers_count_comment_real'];
+				
+				// сразу сверим количество кмментариев
+				if ($comuser['comusers_count_comments'] != $comuser['comusers_count_comment_real']) // не равно
+					mso_comuser_set_count_comment($comuser['comusers_id'], $comuser['comusers_count_comment_real']);
+				
+			}
+		}
+		mso_add_cache($cache_key, $all_comusers, 600); // в кэше на 10 минут
+	}
+	else $all_comusers = $k;
+	
 	$CI->db->select('page.page_id, page.page_slug, page.page_title, comments.*, users.*, comusers.*');
 	$CI->db->from('comments');
 	$CI->db->join('users', 'users.users_id = comments.comments_users_id', 'left');
@@ -68,6 +98,10 @@ function mso_get_comments($page_id = 0, $r = array())
 				$comment['comments_url'] = '<a href="' . getinfo('siteurl') . 'users/' . $comment['comusers_id'] . '">'
 						. $comment['comments_author_name'] . '</a>';
 				$commentator = 1;
+				
+				if (isset($all_comusers[$comment['comusers_id']]))
+					$comments[$key]['comusers_count_comments'] = $all_comusers[$comment['comusers_id']];
+				
 			}
 			elseif ($comment['users_id']) // это автор
 			{
@@ -99,6 +133,8 @@ function mso_get_comments($page_id = 0, $r = array())
 			
 			$comments[$key]['comments_content'] = $comments_content;
 			$comments[$key]['comments_url'] = $comment['comments_url'];
+			
+			
 		}
 	}
 	else 
@@ -172,6 +208,7 @@ function mso_email_message_new_comuser($comusers_id = 0, $ins_data = array() )
 	$text .= getinfo('siteurl') . 'users/' . $comusers_id . NR . NR;
 	$text .= 'И ввести следующий код для активации: '. NR;
 	$text .= $ins_data['comusers_activate_key'] . NR. NR;
+	$text .= '(Сохраните это письмо, поскольку код активации может понадобиться для смены пароля.)' . NR . NR;
 	$text .= 'Если же эту регистрацию выполнили не вы, то просто удалите это письмо.' . NR;
 	
 	return mso_mail($email, $subject, $text, $email); // поскольку это регистрация, то отправитель - тот же email
@@ -297,7 +334,8 @@ function mso_get_new_comment($args = array())
 			if ($res)
 			{
 				mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
-				mso_flush_cache();
+				// mso_flush_cache();
+				mso_hook('new_comment');
 				mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 			}
 			else
@@ -398,7 +436,8 @@ function mso_get_new_comment($args = array())
 													)));
 							}
 							mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
-							mso_flush_cache();
+							// mso_flush_cache();
+							mso_hook('new_comment');
 							mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 						}
 						else
@@ -450,7 +489,8 @@ function mso_get_new_comment($args = array())
 							 					)));
 						}
 						mso_email_message_new_comment($CI->db->insert_id(), $ins_data, $args['page_title']);
-						mso_flush_cache();
+						// mso_flush_cache();
+						mso_hook('new_comment');
 						mso_redirect(mso_current_url() . '#comment-' . $CI->db->insert_id());
 					}
 					else
@@ -476,10 +516,15 @@ function mso_get_comuser($id = 0, $args = array())
 	
 	$CI = & get_instance();
 	
-	$CI->db->select('*');
+	$CI->db->select('comusers.*, COUNT(comments_comusers_id) as comusers_count_comment_real');
 	$CI->db->from('comusers');
 	$CI->db->where('comusers_id', $id);
 	$CI->db->limit(1);
+	
+	$CI->db->where('comments.comments_approved', '1');
+	$CI->db->join('comments', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
+	$CI->db->group_by('comments_comusers_id');
+	
 		
 	$query = $CI->db->get();
 
@@ -487,14 +532,19 @@ function mso_get_comuser($id = 0, $args = array())
 	{
 		$comuser = $query->result_array(); // данные комюзера
 		
+		// pr($comuser);
+		
+		$comuser_count_comment_first = $comuser[0]['comusers_count_comments']; // первоначальное значание колво комментариев
+		
 		// подсоединим к нему [comments] - все его комментарии
 		$CI->db->select('comments.*, page.page_id, page.page_title, page.page_slug');
 		$CI->db->from('comments');
 		$CI->db->where('comments_comusers_id', $id);
-		$CI->db->where('page.page_status', 'publish');
-		$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		// $CI->db->where('page.page_status', 'publish');
+		// $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 		$CI->db->where('comments.comments_approved', '1');
 		$CI->db->join('page', 'page.page_id = comments.comments_page_id');
+		
 		if ($args['limit']) $CI->db->limit($args['limit']);
 		
 		$query = $CI->db->get();
@@ -503,6 +553,7 @@ function mso_get_comuser($id = 0, $args = array())
 		{
 			// нужно обработать тексты комментариев на предмет всяких хуков и лишних тэгов
 			$comments = $query->result_array();
+			
 			foreach ($comments as $key=>$comment)
 			{
 				$comments_content = $comment['comments_content'];
@@ -521,12 +572,48 @@ function mso_get_comuser($id = 0, $args = array())
 		else
 			$comuser[0]['comments'] = array();
 		
+		if ($comuser_count_comment_first != count($comments)) // колво комментариев не совпадает с реальным - нужно обновить
+		{
+			mso_comuser_set_count_comment($id, count($comments));
+		}
+		
 		// pr($comuser);
 		
 		return $comuser;
 	}
 	else return array();
 }
+
+
+# устанавливаем колво комментариев у указаного комюзера
+function mso_comuser_set_count_comment($id = 0, $count = -1)
+{
+	if (!$id) return;
+	$CI = & get_instance();
+	
+	if ($count == -1) // не указано кодичество - нужно его получить
+	{
+		$CI->db->select('COUNT(comments_comusers_id) as comusers_count_comment_real');
+		$CI->db->from('comusers');
+		$CI->db->where('comusers_id', $id);
+		$CI->db->where('comments.comments_approved', '1');
+		$CI->db->join('comments', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
+		$CI->db->group_by('comments_comusers_id');
+		$query = $CI->db->get();
+		if ($query->num_rows() > 0)
+		{
+			$comuser = $query->result_array(); // данные комюзера
+			$count = $comuser[0]['comusers_count_comment_real'];
+		}
+		else $count = 0;
+	}
+	
+	$CI->db->where('comusers_id', $id);
+	$CI->db->update('comusers', array ('comusers_count_comments' => $count  ) );
+}
+
+
+
 
 # обработка POST из формы комюзера
 function mso_comuser_edit($args = array())
@@ -661,6 +748,104 @@ function mso_comuser_edit($args = array())
 	
 	} // обновление формы
 }
+
+# восстановление паролья комюзера
+function mso_comuser_lost($args = array())
+{
+	global $MSO;
+	
+	if ( !isset($args['css_ok']) )		$args['css_ok'] = 'comment-ok';
+	if ( !isset($args['css_error']) )	$args['css_error'] = 'comment-error';
+	
+	if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comusers_email')) ) // это активация
+	{
+		# защита рефера
+		mso_checkreferer();
+		
+		# защита сессии - если не нужно закомментировать строчку!
+		if ($MSO->data['session']['session_id'] != $post['f_session_id']) mso_redirect();
+		
+		// получаем номер юзера id из f_submit[]
+		$id = (int) mso_array_get_key($post['f_submit']);
+		if (!$id) return '<div class="' . $args['css_error']. '">Ошибочный номер пользователя!</div>'; 
+		
+		$comusers_email = trim($post['f_comusers_email']);
+		if (!$comusers_email) return '<div class="' . $args['css_error']. '">Нужно указать email</div>'; 
+		
+		if (!mso_valid_email($comusers_email)) return '<div class="' . $args['css_error']. '">Ошибочный email</div>'; 
+		
+		$CI = & get_instance();
+		
+		// проверим есть ли вообще такой юзер
+		$CI->db->select('comusers_id');
+		$CI->db->where('comusers_id', $id);
+		$query = $CI->db->get('comusers');
+		
+		if ($query->num_rows() == 0)
+			return '<div class="' . $args['css_error']. '">Ошибочный номер пользователя!</div>'; 
+		
+		
+		$comusers_new_password = trim($post['f_comusers_password']);
+		$comusers_activate_key = trim($post['f_comusers_activate_key']);
+		
+		if ($comusers_email and !$comusers_activate_key and !$comusers_new_password) // указан email без остального
+		{
+			$CI->db->select('comusers_id, comusers_activate_key');
+			$CI->db->where('comusers_id', $id);
+			$CI->db->where('comusers_activate_key=comusers_activate_string');
+			$CI->db->where('comusers_email', $comusers_email);
+			$CI->db->limit(1);
+			$query = $CI->db->get('comusers');
+			
+			if ($query->num_rows() > 0) // все верно, можно установить новый пароль
+			{
+				$comuser = $query->result_array(); // данные комюзера
+				
+				mso_email_message_new_comuser($id, 
+						array('comusers_email'=>$comusers_email, 'comusers_activate_key'=>$comuser[0]['comusers_activate_key']));
+				
+				return '<div class="' . $args['css_ok']. '">Код активации отправлен на ваш email!</div>';
+			}
+			else
+				return '<div class="' . $args['css_error']. '">Данный email не зарегистрирован или не активирован</div>'; 
+			
+		}
+		elseif ($comusers_email and $comusers_new_password and !$comusers_activate_key) // нет пароля, но есть код
+			return '<div class="' . $args['css_error']. '">Для установки нового пароля нужно заполнить все поля!</div>'; 
+		elseif ($comusers_email and !$comusers_new_password and $comusers_activate_key) // нет пароля, но есть код
+			return '<div class="' . $args['css_error']. '">Для установки нового пароля нужно заполнить все поля!</div>'; 
+		
+		
+		// если указано поле активации и новый пароль, то сверяем код активации с базой + email + id и если все верно,
+		// то обновляем пароль
+		// если же поле активации не указано, то высылаем его на указанный email
+	
+		$CI->db->select('comusers_id');
+		$CI->db->where('comusers_id', $id);
+		$CI->db->where('comusers_activate_key', $comusers_activate_key);
+		$CI->db->where('comusers_activate_string', $comusers_activate_key);
+		$CI->db->where('comusers_email', $comusers_email);
+		$CI->db->limit(1);
+	
+		$query = $CI->db->get('comusers');
+
+		if ($query->num_rows() > 0) // все верно, можно установить новый пароль
+		{
+			$CI->db->where('comusers_id', $id);
+			$CI->db->where('comusers_email', $comusers_email);
+			$res = ($CI->db->update('comusers', array ('comusers_password' => mso_md5($comusers_new_password)))) ? '1' : '0';
+
+			if ($res)
+				return '<div class="' . $args['css_ok']. '">Новый пароль установлен!</div>'; 
+			else 
+				return '<div class="' . $args['css_error']. '">Ошибка БД при смене пароля...</div>'; 
+				
+		}	
+		else return '<div class="' . $args['css_error']. '">Данные указаны неверно!</div>'; 
+		
+	}
+}
+
 
 
 

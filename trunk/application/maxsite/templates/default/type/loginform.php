@@ -4,7 +4,7 @@
 
 	require(getinfo('template_dir') . 'main-start.php');
 	echo '&nbsp';
-	require(getinfo('template_dir') . 'main-end.php');
+//	require(getinfo('template_dir') . 'main-end.php');
 	
 	echo '
 	<div class="loginform">
@@ -29,4 +29,6 @@
 
 	echo '</div>';
 	
+	require(getinfo('template_dir') . 'main-end.php');
+
 ?>

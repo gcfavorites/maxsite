@@ -53,8 +53,8 @@ function admin_files_admin($args = array())
 	# выносим админские функции отдельно в файл
 	global $MSO;
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Файлы"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Файлы - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Загрузки. Файлы. Галереи"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "Загрузки. Файлы. Галереи - " . $args; ' );
 	
 	require($MSO->config['admin_plugins_dir'] . 'admin_files/admin.php');
 }

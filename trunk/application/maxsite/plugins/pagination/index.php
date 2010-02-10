@@ -15,7 +15,7 @@ function pagination_go($r = array())
 	if ( !isset($r['limit']) ) return ''; // нужно указать сколько записей выводить
 	if ( !isset($r['type']) )  $r['type'] = false; // можно задать свой тип
 	
-	if ( !isset($r['range']) ) $r['range'] = 4;
+	if ( !isset($r['range']) ) $r['range'] = 3;
 	if ( !isset($r['next_url']) ) $r['next_url'] = 'next';
 	if ( !isset($r['format']) ) $r['format'] = array('« Первая', '‹ предыдущая', 'следующая ›', 'последняя »');
 	

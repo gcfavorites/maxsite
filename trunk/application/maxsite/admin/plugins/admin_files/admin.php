@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
-<h1>Файлы</h1>
+<h1>Загрузки. Файлы. Галереи</h1>
 <p class="info">Здесь вы можете выполнить необходимые операции с файлами.</p>
 
 <?php
@@ -205,8 +205,6 @@
 						'source_image' => $up_data['full_path'],
 						'new_image' => $up_data['file_path'] . '_mso_i/' . $up_data['file_name'],
 						'maintain_ratio' => true,
-				//		'width' => 100,
-				//		'height' => 100,
 					);
 				
 				if ( $up_data['image_width']>100 or $up_data['image_height']>100 ) // если сам файл большой, то размеры _mso_i-миниатюры меняем
@@ -236,10 +234,68 @@
 							'height' => $size,
 						);
 						
-						$CI->image_lib->initialize($r_conf );
 						
-						if (!$CI->image_lib->resize())
-							echo '<div class="error">Создание миниатюры: ' . $CI->image_lib->display_errors() . '</div>';
+						$mini_type = $post['f_mini_type']; // тип миниатюры
+						/*
+						1 Пропорционального уменьшения
+						2 Обрезки (crop) по центру
+						3 Обрезки (crop) с левого верхнего края
+						4 Обрезки (crop) с левого нижнего края
+						5 Обрезки (crop) с правого верхнего края
+						6 Обрезки (crop) с правого нижнего края
+						*/
+						
+						if ($mini_type == 2) // Обрезки (crop) по центру
+						{
+							$r_conf['x_axis'] = round($up_data['image_width'] / 2 - $size / 2);
+							$r_conf['y_axis'] = round($up_data['image_height'] / 2 - $size / 2);
+							
+							$CI->image_lib->initialize($r_conf );
+							if (!$CI->image_lib->crop())
+								echo '<div class="error">Создание миниатюры: ' . $CI->image_lib->display_errors() . '</div>';
+						}
+						elseif ($mini_type == 3) // Обрезки (crop) с левого верхнего края
+						{
+							$r_conf['x_axis'] = 0;
+							$r_conf['y_axis'] = 0;
+							
+							$CI->image_lib->initialize($r_conf );
+							if (!$CI->image_lib->crop())
+								echo '<div class="error">Создание миниатюры: ' . $CI->image_lib->display_errors() . '</div>';
+						}
+						elseif ($mini_type == 4) // Обрезки (crop) с левого нижнего края
+						{
+							$r_conf['x_axis'] = 0;
+							$r_conf['y_axis'] = $up_data['image_height'] - $size;
+							
+							$CI->image_lib->initialize($r_conf );
+							if (!$CI->image_lib->crop())
+								echo '<div class="error">Создание миниатюры: ' . $CI->image_lib->display_errors() . '</div>';
+						}						
+						elseif ($mini_type == 5) // Обрезки (crop) с правого верхнего края
+						{
+							$r_conf['x_axis'] = $up_data['image_width'] - $size;
+							$r_conf['y_axis'] = 0;
+							
+							$CI->image_lib->initialize($r_conf );
+							if (!$CI->image_lib->crop())
+								echo '<div class="error">Создание миниатюры: ' . $CI->image_lib->display_errors() . '</div>';
+						}						
+						elseif ($mini_type == 6) // Обрезки (crop) с правого нижнего края
+						{
+							$r_conf['x_axis'] = $up_data['image_width'] - $size;
+							$r_conf['y_axis'] = $up_data['image_height'] - $size;
+							
+							$CI->image_lib->initialize($r_conf );
+							if (!$CI->image_lib->crop())
+								echo '<div class="error">Создание миниатюры: ' . $CI->image_lib->display_errors() . '</div>';
+						}							
+						else // ничего не указано - Пропорционального уменьшения
+						{
+							$CI->image_lib->initialize($r_conf );
+							if (!$CI->image_lib->resize())
+								echo '<div class="error">Создание миниатюры: ' . $CI->image_lib->display_errors() . '</div>';
+						}
 					}
 				}
 					
@@ -282,6 +338,9 @@
 		</form></div>';
 			
 	
+	$resize_images = mso_get_option('resize_images', 'general', 600);
+	$size_image_mini = mso_get_option('size_image_mini', 'general', 150);
+	
 	// форма загрузки
 	echo '
 		<div style="margin: 20px 0; padding: 5px 10px 15px 10px; border: 1px solid gray;">
@@ -292,10 +351,19 @@
 		<p>Описание файла: <input type="text" name="f_userfile_title" style="width: 380px" value="" /></p>
 		
 		<p><input type="checkbox" name="f_userfile_resize" checked="checked" value="" /> Для изображений изменить размер до 
-			<input type="text" name="f_userfile_resize_size" style="width: 50px" maxlength="4" value="600" /> px (по максимальной стороне)</p>
+			<input type="text" name="f_userfile_resize_size" style="width: 50px" maxlength="4" value="' . $resize_images . '" /> px (по максимальной стороне)</p>
 		
 		<p><input type="checkbox" name="f_userfile_mini" checked="checked" value="" /> Для изображений сделать миниатюру размером 
-			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="150" /> px (по максимальной стороне). <br /><em>Примечание: миниатюра будет создана в каталоге <strong>uploads/' . $current_dir . 'mini</strong></em></p>
+			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="' . $size_image_mini . '" /> px (по максимальной стороне). <br /><em>Примечание: миниатюра будет создана в каталоге <strong>uploads/' . $current_dir . 'mini</strong></em></p>
+		
+		<p>Миниатюру делать путем: <select style="width: 350px" name="f_mini_type">
+		<option value="1">Пропорционального уменьшения</option>
+		<option value="2">Обрезки (crop) по центру</option>
+		<option value="3">Обрезки (crop) с левого верхнего края</option>
+		<option value="4">Обрезки (crop) с левого нижнего края</option>
+		<option value="5">Обрезки (crop) с правого верхнего края</option>
+		<option value="6">Обрезки (crop) с правого нижнего края</option>
+		</select></p>
 		
 		</form>
 		</div>

@@ -1,0 +1,56 @@
+#MainMenu 
+{
+	width: 100%;
+	height: 20px;
+	line-hei1ght: 20px;
+	margin: 0;
+	border: 0;
+}
+
+#tab 
+{
+	margin: 0;
+	padding: 0;
+	top: 0;
+}
+
+#tab ul 
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#tab li 
+{
+	display: inline;
+	margin: 0;
+	padding: 0;
+	text-align: right;
+}
+
+#tab a 
+{	
+	text-al1ign: right;
+	displ1ay: block;
+	flo1at: left;
+	mar1gin: 0;
+	pad1ding: 0;
+	bord1er: 0;
+}
+
+#tab a span 
+{
+	displa1y: block;
+	pad1ding: 0 5px 0 5px;
+	line-hei1ght: 20px;
+}
+
+#tab a:hover,#tab li.selected a 
+{
+
+}
+
+#tab a:hover span,#tab li.selected a span 
+{
+}

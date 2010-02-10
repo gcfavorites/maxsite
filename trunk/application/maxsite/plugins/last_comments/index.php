@@ -9,7 +9,16 @@
 # функция автоподключения плагина
 function last_comments_autoload($args = array())
 {
+	global $MSO;
+	
 	mso_register_widget('last_comments_widget', 'Последние комментарии'); # регистрируем виджет
+	mso_hook_add('new_comment', 'last_comments_new_comment'); # хук на новый коммент - нужно сбросить кэш комментариев
+	
+	// для того, чтобы обновлять только ключи этого виджета, а не всего кэша
+	// в $MSO сохраним все созданные ключи кэша
+	// при хуке new_comment просто их сбросим
+	
+	$MSO->data['cache_key']['last_comments'] = array();
 }
 
 # функция выполняется при деинсталяции плагина
@@ -18,6 +27,16 @@ function last_comments_uninstall($args = array())
 	mso_delete_option_mask('last_comments_widget_', 'plugins'); // удалим созданные опции
 	return $args;
 }
+
+# хук на сброс кэша при новом комментарии
+function last_comments_new_comment($args = array())
+{
+	// очистим кэш по нашей маске, то есть файлы начинающиеся с указанной строки
+	mso_flush_cache_mask('last_comments_widget_');
+	
+	return $args;
+}
+
 
 # функция, которая берет настройки из опций виджетов
 function last_comments_widget($num = 1) 
@@ -83,6 +102,7 @@ function last_comments_widget_update($num = 1)
 # функции плагина
 function last_comments_widget_custom($options = array(), $num = 1)
 {	
+
 	if (!isset($options['count'])) $options['count'] = 5;
 	if (!isset($options['words'])) $options['words'] = 20;
 	if (!isset($options['maxchars'])) $options['maxchars'] = 20;
@@ -97,10 +117,12 @@ function last_comments_widget_custom($options = array(), $num = 1)
 	$options['maxchars'] = (int) $options['maxchars'];
 	if ($options['maxchars'] < 1) $options['maxchars'] = 20;
 	
-	$cache_key = mso_md5('last_comments_widget'. implode('', $options) . $num);
-	$k = mso_get_cache($cache_key);
-	if ($k) return $k; // да есть в кэше
+	$cache_key = 'last_comments_widget_' . mso_md5('last_comments_widget'. implode('', $options) . $num);
+	// $k = mso_get_cache($cache_key);
 	
+	$k = mso_get_cache($cache_key, true);
+	if ($k) return $k; // да есть в кэше
+
 
 	require_once( getinfo('common_dir') . 'comments.php' ); // функции комментариев
 	
@@ -169,7 +191,8 @@ function last_comments_widget_custom($options = array(), $num = 1)
 		if ($options['header']) $out = $options['header'] . $out;
 	}
 	
-	mso_add_cache($cache_key, $out); // сразу в кэш добавим
+	// mso_add_cache($cache_key, $out); // сразу в кэш добавим
+	mso_add_cache($cache_key . $num, $out, false, true); // сразу в кэш добавим
 	
 	return trim($out);
 }

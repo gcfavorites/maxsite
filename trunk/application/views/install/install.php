@@ -62,7 +62,7 @@
 <head>
 	<title>Install MaxSite CMS</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="generator" content="MaxSite <?=getinfo('version')?>">
+	<meta name="generator" content="MaxSite CMS">
 	<link rel="shortcut icon" href="<?=getinfo('siteurl')?>favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="<?=$MSO->data['url_css']?>" type="text/css" media="screen">
 </head>
@@ -122,6 +122,15 @@
 <?php 
 	endif; // конец первого шага
 	if ($step == 2 ) : // второй шаг
+	
+	$text = 'Ваш новый сайт создан: ' . getinfo('siteurl') . NR;
+	$text .= 'Для входа воспользуйтесь данными:' . NR;
+	$text .= 'Логин: ' . $username . NR;
+	$text .= 'Пароль: ' . $userpassword . NR . NR . NR;
+	$text .= 'Сайт поддержки: http://max-3000.com/';
+	
+	// поскольку это инсталяция, то отправитель - тот же email
+	@mso_mail($useremail, 'Новый сайт на MaxSite CMS', $text, $useremail); 
 ?>
 
 	<h1>Поздравляем! Всё готово!</h1>
