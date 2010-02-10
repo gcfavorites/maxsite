@@ -133,7 +133,7 @@
 	}
 	else 
 	{
-		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <b>functions.php</b> вашего шаблона. Например:', 'admin') . ' <br><b>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар', 'admin') . '\');</b></div>';
+		$error .= '<div class="error">' . t('Сайдбары не определены. Обычно они регистрируются в файле <strong>functions.php</strong> вашего шаблона. Например:', 'admin') . ' <br><strong>mso_register_sidebar(\'1\', \'' . t('Первый сайдбар', 'admin') . '\');</strong></div>';
 	}
 	
 	if (!$error)
@@ -141,7 +141,7 @@
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'admin') . '" style="margin: 15px 0 5px 0;">';
+		echo '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'admin') . '"></p>';
 		echo '</form>';
 	}
 	else

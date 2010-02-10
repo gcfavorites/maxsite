@@ -151,7 +151,7 @@ function rater_widget_custom($options = array(), $num = 1)
 	$CI->db->select('page_slug, page_rating/page_rating_count AS page_ball, page_rating, page_rating_count, page_title', false);
 	$CI->db->where('page_status', 'publish');
 	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-	$CI->db->where('page_date_publish <', 'NOW');
+	$CI->db->where('page_date_publish < ', 'NOW()', false);
 	$CI->db->order_by('page_ball', 'desc');
 	$CI->db->order_by('page_rating', 'desc');
 	// $CI->db->order_by('page_rating_count', 'desc');

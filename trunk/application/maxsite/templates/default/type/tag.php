@@ -9,7 +9,7 @@ $par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'),
 
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
-mso_head_meta('title', mso_segment(2) . ' - ' . getinfo('title')); //  meta title страницы
+mso_head_meta('title', mso_segment(2) . ' » ' . getinfo('title')); //  meta title страницы
 
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 

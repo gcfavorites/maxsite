@@ -127,9 +127,9 @@
 			$comments_date = $row['comments_date'];
 			
 			$author = '';
-			if ( $row['comments_users_id'] ) $author = '<span style="color: grey">' . $row['users_nik'] . '</span>';
-			elseif ($row['comments_comusers_id']) $author = $row['comusers_nik'] . ' (' . t('комюзер') . ' ' . $row['comments_comusers_id'] . ')';
-			else $author = $row['comments_author_name'] . ' (' . t('анонимно') . ')';
+			if ( $row['comments_users_id'] ) $author = '<span class="admin">' . $row['users_nik'] . '</span>';
+			elseif ($row['comments_comusers_id']) $author = '<span class="comuser">' . $row['comusers_nik'] . '</span> (' . t('комюзер') . ' ' . $row['comments_comusers_id'] . ')';
+			else $author = '<span class="anonymous">' . $row['comments_author_name'] . '</span> (' . t('анонимно') . ')';
 			
 			$page_slug = $row['page_slug'];
 			$page_title = '<a target="_blank" href="' . $view_url . $page_slug . '#comment-' . $id . '">' . htmlspecialchars( $row['page_title'] ) . '</a>';
@@ -143,7 +143,7 @@
 			if ( $row['comments_approved'] > 0 ) $comments_approved = '+';
 				else $comments_approved = '-';
 				
-			$out = '<strong><i>' . $author . '</i> ' . t('написал в') . ' «' . $page_title . '»</strong> (' . $comments_date. ') ip: ' . $row['comments_author_ip'] . '<p>' . $comments_content . '</p>' . NR;
+			$out = '<strong>' . $author . t(' написал в') . ' «' . $page_title . '»</strong> (' . $comments_date. ') ip: ' . $row['comments_author_ip'] . '<p>' . $comments_content . '</p>' . NR;
 						
 			
 			$CI->table->add_row($id, $id_out, $comments_approved, $out, $act);
@@ -153,15 +153,14 @@
 
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
 	echo '
-		<p>' . t('Показать') . ' <input type="submit" name="f_all_comments" value="' . t('Все') . '">
-		<input type="submit" name="f_moderation_comments" value="' . t('Только требующие модерации') . '">
+		<p>' . t('Показать') . ' <input type="submit" name="f_all_comments" value="' . t('Все') . '"> <input type="submit" name="f_moderation_comments" value="' . t('Только требующие модерации') . '">
 		</p>';
 	echo $CI->table->generate();
 	echo '
-		<br><br>' . t('C отмеченными:') .
-		'<input type="submit" name="f_aproved_submit" value="' . t('Разрешить') . '">
+		<p class="br">' . t('C отмеченными:') . '
+		<input type="submit" name="f_aproved_submit" value="' . t('Разрешить') . '">
 		<input type="submit" name="f_unaproved_submit" value="' . t('Запретить') . '">
-		<input type="submit" name="f_delete_submit" onClick="if(confirm(\'' . t('Уверены?') . '\')) {return true;} else {return false;}" value="' . t('Удалить') . '">
+		<input type="submit" name="f_delete_submit" onClick="if(confirm(\'' . t('Уверены?') . '\')) {return true;} else {return false;}" value="' . t('Удалить') . '"></p>
 		';
 	echo '</form>';
 	

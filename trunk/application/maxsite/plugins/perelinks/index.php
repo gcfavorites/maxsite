@@ -81,8 +81,8 @@ function perelinks_custom($content = '')
 		$CI->db->select('page_title, page_slug');
 		if ($options['allowlate'] > 0)
 		{
-			//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-			$CI->db->where('page_date_publish <', 'NOW');
+			$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+			// $CI->db->where('page_date_publish <', 'NOW()', false);
 		}
 		else
 		{

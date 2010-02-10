@@ -87,12 +87,14 @@ function mso_checkreferer()
 	{
 		if (!isset($_SERVER['HTTP_REFERER'])) die('<b><font color="red">Achtung! XSS attack! No REFERER!</font></b>');
 
-		$p = parse_url($_SERVER['HTTP_REFERER']);
-
-		if (isset($p['host'])) $p = $p['host'];
+		$ps = parse_url($_SERVER['HTTP_REFERER']);
+		
+		if (isset($ps['host'])) $p = $ps['host'];
 			else $p = '';
-
-		if ( $p != $_SERVER['HTTP_HOST'] )
+		
+		if ($p and isset($ps['port']) and $ps['port'] != 80) $p .= ':' . $ps['port'];
+		
+		if ($p != $_SERVER['HTTP_HOST'])
 			die('<b><font color="red">Achtung! XSS attack!</font></b>');
 	}
 }
@@ -1142,9 +1144,9 @@ function mso_flush_cache($full = false, $dir = false, $file = false)
 			fclose($fp);
 		}
 
-		// если используется родное CodeIgniter sql-кэширование, то нужно очистить и его
-		$CI->db->cache_delete_all();
 	}
+	// если используется родное CodeIgniter sql-кэширование, то нужно очистить и его
+	$CI->db->cache_delete_all();
 }
 
 

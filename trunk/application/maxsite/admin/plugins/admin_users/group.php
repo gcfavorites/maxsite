@@ -202,7 +202,7 @@ mso_cur_dir_lang('admin');
 			$data_table[] = $r; // добавим строчку
 		}
 		
-		$dop = '<div style="margin: 10px 0;"><p><input type="submit" name="f_submit" value="' . t('Изменить разрешения', 'admin') . '"></div>';
+		$dop = '<p class="br"><input type="submit" name="f_submit" value="' . t('Изменить разрешения', 'admin') . '"></p>';
 		
 		
 		echo mso_load_jquery('jquery.tablesorter.js');
@@ -231,16 +231,16 @@ mso_cur_dir_lang('admin');
 			
 			//$name = urldecode($name);
 			$id = $row['groups_id'];
-			$delete .= '<p><label><input type="checkbox" name="f_delete_check[' . $id . ']"> ' . $name . '</label></p>';
+			$delete .= '<label><input type="checkbox" name="f_delete_check[' . $id . ']"> ' . $name . '</label><br>';
 		}
 		
 		if ($delete) 
 		{
-			$delete = '<br>' . $delete . '<input type="submit" name="f_delete_submit" value="' . t('Удалить отмеченные группы', 'admin') . '" onClick="if(confirm(\'' . t('Уверены?', 'admin') . '\')) {return true;} else {return false;}" >';
+			$delete = '<p class="input checkbox wleft br"><strong>' . t('Удалить группы', 'admin') . ' </strong>' . $delete . '</p><p class="input_submit"><input type="submit" name="f_delete_submit" value="' . t('Удалить отмеченные группы', 'admin') . '" onClick="if(confirm(\'' . t('Уверены?', 'admin') . '\')) {return true;} else {return false;}" ></p>';
 		}
 		
-		$delete = '<div style="padding: 15px 5px; margin-top: 20px; background: #E0E0E0;"><input type="submit" name="f_new_submit" value="' . t('Создать новую группу', 'admin') . '"> 
-		-&gt; <input type="text" name="f_new"> ' . t('введите название новой группы', 'admin') . '</div>' . $delete ;
+		$delete = '<div class="item usergroup"><h2>' . t('Добавить/Удалить группу пользователей', 'admin') . '</h2><p class="input short"><strong>' . t('Добавить группу', 'admin') . ' </strong><input type="text" name="f_new"> <input type="submit" name="f_new_submit" value="' . t('Создать новую группу', 'admin') . '"></p> 
+		' . $delete . '</div>';
 		
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');

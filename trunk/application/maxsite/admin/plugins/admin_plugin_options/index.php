@@ -231,7 +231,7 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 		# выводим форму
 		echo NR . '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo NR . '<br><input type="submit" name="f_submit" value="' . t('Сохранить') . '">';
+		echo NR . '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить') . '"></p>';
 		echo '</form>' . NR;
 	}
 	else

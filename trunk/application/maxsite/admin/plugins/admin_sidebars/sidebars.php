@@ -77,7 +77,7 @@
 			$options = implode("\n", $options); // разделим по строкам 
 
 			$form .= '<h2>' . $sidebar['title'] . ':</h2>';
-			$form .= '<textarea id="f_sidebars[' . $name  . ']" name="f_sidebars[' . $name . ']" rows="' . $count_rows . '" style="width: 99%;">';
+			$form .= '<textarea id="f_sidebars[' . $name  . ']" name="f_sidebars[' . $name . ']" rows="' . $count_rows . '">';
 			$form .= htmlspecialchars($options);
 			$form .= '</textarea>';
 			$all_name_sidebars[$name] = $sidebar['title'];
@@ -133,7 +133,7 @@
 		// добавляем форму, а также текущую сессию
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo '<input type="submit" name="f_submit" value="' . t('Сохранить изменения') . '" style="margin: 25px 0 5px 0;">';
+		echo '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить изменения') . '" ></p>';
 		echo '</form>';
 	}
 	else

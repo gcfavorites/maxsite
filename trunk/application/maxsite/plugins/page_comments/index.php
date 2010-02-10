@@ -100,8 +100,8 @@ function page_comments_widget_custom($options = array(), $num = 1)
 	
 	$CI->db->select('page_slug, page_title, COUNT(comments_id) AS page_count_comments', false);
 	$CI->db->from('page');
-	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-	$CI->db->where('page_date_publish <', 'NOW');
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	// $CI->db->where('page_date_publish < ', 'NOW()', false);
 	$CI->db->where('page_status', 'publish');
 	
 	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');

@@ -109,37 +109,37 @@
 
 	$format = '
 	
-	<table class="page" style="width: 100%; border-collapse: collapse;">
+	<table class="page cats">
 	
-	<colgroup style="width: 30px; padding: 0 4px;">
-	<colgroup style="width: 50px; padding: 0 4px;">
-	<colgroup style="width: 200px; padding: 0 4px;">
-	<colgroup style="padding: 0 4px;">
-	<colgroup style="width: 150px; padding: 0 4px;">
-	<colgroup style="width: 50px; padding: 0 4px;">
-	<colgroup style="width: 80px; padding: 0 4px;">
-	<colgroup style="width: 80px; padding: 0 4px;">
+	<colgroup style="width: 30px">
+	<colgroup style="width: 50px">
+	<colgroup style="width: 200px">
+	<colgroup>
+	<colgroup style="width: 150px">
+	<colgroup style="width: 50px">
+	<colgroup style="width: 80px">
+	<colgroup style="width: 80px">
 	
-	<tr style="text-align: center; vertical-align: top;">
+	<tr>
 	
 	<td class="alt"><strong title="' 
 	. t('Номер рубрики. В этой рубрике [COUNT] страниц', 'admin')
-	. '">[ID]</strong><sub style="color: gray">[COUNT]</sub></td>
+	. '">[ID]</strong><sub>[COUNT]</sub></td>
 	
 	<td><input title="' . t('Номер родителя', 'admin') 
-	. '" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="50" style="width: 100%; margin: 0 -4px;" type="text"></td>
+	. '" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="50" type="text"></td>
 	
-	<td><input title="' . t('Название', 'admin') . '" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text"></td>
+	<td><input title="' . t('Название', 'admin') . '" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" type="text"></td>
 	
-	<td><textarea title="' . t('Описание', 'admin') . '" name="f_category_desc[[ID]]" style="width: 100%; margin: 0 -4px;">[DESCR]</textarea></td>
+	<td><textarea title="' . t('Описание', 'admin') . '" name="f_category_desc[[ID]]">[DESCR]</textarea></td>
 	
-	<td><input title="' . t('Короткая ссылка', 'admin') . '" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text"></td>
+	<td><input title="' . t('Короткая ссылка', 'admin') . '" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" type="text"></td>
 	
-	<td><input title="' . t('Порядок', 'admin') . '" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" style="width: 100%; margin: 0 -4px;" type="text"></td>
+	<td><input title="' . t('Порядок', 'admin') . '" name="f_category_menu_order[[ID]]" value="[MENU_ORDER]" maxlength="500" type="text"></td>
 	
-	<td><input type="submit" name="f_edit_submit[[ID]]" value="' . t('Изменить', 'admin') . '" style="width: 100%; margin: 0 -2px;"></td>
+	<td><input type="submit" name="f_edit_submit[[ID]]" value="' . t('Изменить', 'admin') . '"></td>
 	
-	<td><input type="submit" name="f_delete_submit[[ID]]" value="' . t('Удалить', 'admin') . '" style="width: 100%; margin: 0 -2px;" onClick="if(confirm(\'' . t('Удалить рубрику?', 'admin') . '\')) {return true;} else {return false;}" ></td>
+	<td><input type="submit" name="f_delete_submit[[ID]]" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Удалить рубрику?', 'admin') . '\')) {return true;} else {return false;}" ></td>
 	
 	</tr></table>
 	
@@ -171,39 +171,39 @@
 	
 	// добавляем форму, а также текущую сессию
 	echo '<form action="" method="post">' . mso_form_session('f_session_id') .
-			'<table class="page" style="width: 100%; border-collapse: collapse;">
-			<colgroup style="width: 30px; padding: 0 4px;">
-			<colgroup style="width: 50px; padding: 0 4px;">
-			<colgroup style="width: 200px; padding: 0 4px;">
-			<colgroup style="padding: 0 4px;">
-			<colgroup style="width: 150px; padding: 0 4px;">
-			<colgroup style="width: 50px; padding: 0 4px;">
-			<colgroup style="width: 80px; padding: 0 4px;">
-			<colgroup style="width: 80px; padding: 0 4px;">
-			<tr style="vertical-align: top; font-weight: bold;">
-			<td>ID</td>
-			<td>' . t('Род.', 'admin') . '</td>
-			<td>' . t('Название', 'admin') . '</td>
-			<td>' . t('Описание', 'admin') . '</td>
-			<td>' . t('Ссылка', 'admin') . '</td>
-			<td>' . t('Пор.', 'admin') . '</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			'<table class="page cats">
+			<colgroup style="width: 30px">
+			<colgroup style="width: 50px">
+			<colgroup style="width: 200px">
+			<colgroup>
+			<colgroup style="width: 150px">
+			<colgroup style="width: 50px">
+			<colgroup style="width: 80px">
+			<colgroup style="width: 80px">
+			<tr>
+			<th>ID</th>
+			<th>' . t('Род.', 'admin') . '</th>
+			<th>' . t('Название', 'admin') . '</th>
+			<th>' . t('Описание', 'admin') . '</th>
+			<th>' . t('Ссылка', 'admin') . '</th>
+			<th>' . t('Пор.', 'admin') . '</th>
+			<th>&nbsp;</th>
+			<th>&nbsp;</th>
 			</tr></table>' ;
 	
 	echo $out;
 	
 	# строчка для добавления новой рубрики
 	echo '
-	<br>
-	<br><b>' . t('Название', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_name" value="">
-	
-	<br><b>' . t('Описание', 'admin') . '</b><br><textarea style="width: 350px;" name="f_new_desc"></textarea>
-	
-	<br><b>' . t('Ссылка', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_slug" value="">
-	<br><b>' . t('Родитель', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_parent" value="">
-	<br><b>' . t('Порядок', 'admin') . '</b> <input style="width: 250px;" type="text" name="f_new_order" value="">
-	<br><br><input type="submit" name="f_new_submit" value="' . t('Добавить новую рубрику', 'admin') . '">
+	<div class="item new_cat">
+		<h2>Новая рубрика</h2>
+		<p class="input"><strong>' . t('Название', 'admin') . ' </strong><input type="text" name="f_new_name" value=""></p>
+		<p class="textarea"><strong>' . t('Описание', 'admin') . ' </strong><textarea name="f_new_desc"></textarea></p>
+		<p class="input"><strong>' . t('Ссылка', 'admin') . ' </strong><input type="text" name="f_new_slug" value=""></p>
+		<p class="input short"><strong>' . t('Родитель', 'admin') . ' </strong><input type="text" name="f_new_parent" value=""></p>
+		<p class="input short"><strong>' . t('Порядок', 'admin') . ' </strong><input type="text" name="f_new_order" value=""></p>
+		<p class="input_submit"> <input type="submit" name="f_new_submit" value="' . t('Добавить новую рубрику', 'admin') . '"></p>
+	</div>
 	</form>';
 	
 ?>

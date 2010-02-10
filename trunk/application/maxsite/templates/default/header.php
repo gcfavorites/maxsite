@@ -25,7 +25,7 @@
 	
 <?php mso_hook('head') ?>
 
-</head>
+</head><?php flush(); ?>
 <body>
 <!-- end header -->
 <?php mso_hook('body_start') ?>

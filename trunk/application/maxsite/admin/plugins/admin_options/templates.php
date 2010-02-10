@@ -59,7 +59,7 @@ mso_cur_dir_lang('admin');
 	$dirs = directory_map($templates_dir, true);
 	
 	echo '<form action="" method="post">' . mso_form_session('f_session_id');
-	echo '<div style="width: 100%;">';
+	echo '<div class="float-parent" style="width:100%">';
 	
 	foreach ($dirs as $dir)
 	{
@@ -71,7 +71,7 @@ mso_cur_dir_lang('admin');
 		
 		if (file_exists($index))
 		{
-			$out = '<div style="float: left; margin: 5px 5px 10px 5px; border: 1px silver solid; border-right: 3px gray solid; border-bottom: 3px #676767 solid; padding: 0px 10px; width: 280px; height: 340px; text-align: center; position: relative;">';
+			$out = '<div class="template">';
 			$out .= '<h2>' . $dir . '</h2>';
 			
 			$screenshot = $templates_dir . $dir . '/screenshot.jpg';
@@ -83,7 +83,7 @@ mso_cur_dir_lang('admin');
 			}
 			else
 			{
-				$out .= '<div style="margin: 0 auto; width: 250px; height: 200px; background: #f0f0f0; border: 1px solid silver;">' . t('Нет изображения', 'admin') . '</div>';
+				$out .= '<div class="template_noimage">' . t('Нет изображения', 'admin') . '</div>';
 			}
 			
 			$info_f = $templates_dir . $dir . '/info.php';

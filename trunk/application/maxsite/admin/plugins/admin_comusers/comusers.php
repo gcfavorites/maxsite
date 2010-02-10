@@ -92,7 +92,7 @@
 	}
 
 	mso_hook('pagination', $pag);
-	echo '<br>'; // вывод навигации
+	//echo '<br>'; // вывод навигации
 	
 	echo mso_load_jquery('jquery.tablesorter.js');
 	
@@ -108,7 +108,7 @@
 	
 	echo $CI->table->generate(); // вывод подготовленной таблицы
 	
-	echo '<br>';
+	//echo '<br>';
 	mso_hook('pagination', $pag);
 
 	

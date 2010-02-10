@@ -94,7 +94,7 @@
 		
 		foreach ($ushki as $id => $us)
 		{
-			$form .= '<div style="border: 1px solid #C3DAF9; padding: 10px; margin: 10px 0; background: #C3DAF9;" class="ushki">';
+			$form .= '<div class="ushki">';
 			
 			$sel_html = $sel_php = '';
 			

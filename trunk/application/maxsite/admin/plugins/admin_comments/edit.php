@@ -115,7 +115,7 @@ mso_cur_dir_lang('admin');
 			mso_hook('admin_comment_edit');
 			mso_hook('comments_content_start');
 					
-			echo '<p><textarea name="f_comments_content" id="comments_content" style="width: 100%; height: 150px;">' . htmlspecialchars($row['comments_content']) . '</textarea></p>';
+			echo '<p><textarea name="f_comments_content" id="comments_content">' . htmlspecialchars($row['comments_content']) . '</textarea></p>';
 			
 			echo '<h3>' . t('Дата') . '</h3>
 				<p><input name="f_comments_date" type="text" value="' . htmlspecialchars($row['comments_date']) .'"></p>';
@@ -138,11 +138,11 @@ mso_cur_dir_lang('admin');
 				. '</label> <label><input type="radio" name="f_comments_approved" value="0" ' . $checked2 . '> ' . t('Запретить')
 				. '</label></p>';
 			
-			echo '<br><p><input type="submit" name="f_submit" value="' . t('Готово') . '">' . 
-			'<input type="hidden" name="f_comments_email_subscribe" value="0">
-			<label><input type="checkbox" name="f_comments_email_subscribe" value="1" ' . $checked2 . '> ' 
+			echo '<p><input type="hidden" name="f_comments_email_subscribe" value="0"><label><input type="checkbox" name="f_comments_email_subscribe" value="1" ' . $checked2 . '> ' 
 				. t('Сразу разослать подписчикам')
 				. '</label></p>';
+			echo '<p class="br"><input type="submit" name="f_submit" value="' . t('Готово') . '">' . 
+			'</p>';
 			
 			
 			

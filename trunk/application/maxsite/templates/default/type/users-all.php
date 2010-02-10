@@ -6,7 +6,7 @@ require_once( getinfo('common_dir') . 'comments.php' );
 
 $comusers = mso_get_comusers_all(); // получим всех комюзеров
 
-mso_head_meta('title', getinfo('title') . ' - ' . t('Комментаторы') . '' ); // meta title страницы
+mso_head_meta('title', getinfo('title') . ' » ' . t('Комментаторы') . '' ); // meta title страницы
 
 if (!$comusers and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 

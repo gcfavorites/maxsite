@@ -397,13 +397,14 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 	$CI->db->join('page', 'cat2obj.page_id = page.page_id', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->where('page_status', 'publish');
-	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-	$CI->db->where('page_date_publish <', 'NOW');
-	// $CI->db->where('page_type_name', 'blog');
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	
+	// $CI->db->where('page_date_publish < ', 'NOW()', false);
+	
 	if ($type_page) $CI->db->where('page_type_name', $type_page);
 	$CI->db->where('category_type', $type);
 	$CI->db->order_by('category.category_id');
-
+// pr(_sql());
 	$query = $CI->db->get();
 	$cats_post = $query->result_array(); // здесь все рубрики
 	

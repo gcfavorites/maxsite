@@ -10,7 +10,7 @@ $res_post = mso_comuser_lost(); // обработка отправленных �
 
 $comuser_info = mso_get_comuser(mso_segment(2)); // получим всю информацию о комюзере
 
-mso_head_meta('title', getinfo('title') . ' - '. t('Восстановление пароля') ); // meta title страницы
+mso_head_meta('title', getinfo('title') . ' » '. t('Восстановление пароля') ); // meta title страницы
 
 if (!$comuser_info and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 

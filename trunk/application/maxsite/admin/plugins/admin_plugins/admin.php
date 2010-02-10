@@ -114,11 +114,11 @@
 					
 					if (function_exists($dir . '_mso_options'))
 						// есть опции
-						$status = '<span style="" title="' . t('Настройки плагина', 'admin') . '"><a href="' . getinfo('site_admin_url') . 'plugin_options/' . $dir . '">' . t('опции', 'admin') . '</a></span>&nbsp;';
+						$status = '<a title="' . t('Настройки плагина', 'admin') . '" href="' . getinfo('site_admin_url') . 'plugin_options/' . $dir . '">' . t('опции', 'admin') . '</a>';
 					else 
-						$status = '<span></span>';
+						$status = ' ';
 					
-					$dir = '<label for="f_check_submit_' . $dir . '"><span style="color: green;">' . $dir . '</span></label>';
+					$dir = '<label for="f_check_submit_' . $dir . '"><span class="plugin_on">' . $dir . '</span></label>';
 				}
 				else 
 				{
@@ -141,11 +141,11 @@
 	}
 	
 	# добавим строчку для дополнительного действия
-	$dop = '<div style="margin: 10px 0;">
+	$dop = '<p class="br">
 				<input type="submit" name="f_activate_submit" value="&nbsp;+ &nbsp;&nbsp;' . t('Включить', 'admin') . '&nbsp;">
 				<input type="submit" name="f_deactivate_submit" value="&nbsp;- &nbsp;&nbsp;' . t('Выключить', 'admin') . '&nbsp;">
 				<input type="submit" name="f_uninstall_submit" value="&nbsp;x&nbsp;&nbsp;' . t('Деинсталировать', 'admin') . '&nbsp;">
-	</div>';
+	</p>';
 	
 	
 	echo mso_load_jquery('jquery.tablesorter.js');

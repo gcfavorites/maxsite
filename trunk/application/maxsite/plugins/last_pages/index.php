@@ -152,7 +152,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
 	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-	$CI->db->where('page_date_publish <', 'NOW');
+	$CI->db->where('page_date_publish < ', 'NOW()', false);
 	
 	if ($arg['page_type']) $CI->db->where('page_type_name', $arg['page_type']);
 	

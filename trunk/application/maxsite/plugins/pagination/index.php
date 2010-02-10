@@ -61,7 +61,9 @@ function pagination_go($r = array())
 	// текущий урл сделаем
 	$a_cur_url = $MSO->data['uri_segment'];
 	
-	$cur_url = getinfo('site_url') . $type;
+	// $cur_url = getinfo('site_url') . $type;
+	if ($type != 'page_404') $cur_url = getinfo('site_url') . $type;
+		else $cur_url = getinfo('site_url');
 	
 	// pr($cur_url);
 	

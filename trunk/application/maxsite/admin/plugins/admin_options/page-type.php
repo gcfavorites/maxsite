@@ -83,7 +83,7 @@
 	$CI->load->library('table');
 
 	$tmpl = array (
-                    'table_open'          => '<table class="page" border="0" width="99%"><colgroup width="30"><colgroup width="150"><colgroup><colgroup width="200">',
+                    'table_open'          => '<table class="page" border="0" width="99%"><colgroup width="30"><colgroup style="width: 150px"><colgroup><colgroup style="width: 200px">',
                     'row_alt_start'		  => '<tr class="alt">',
 					'cell_alt_start'	  => '<td class="alt">',
               );
@@ -103,7 +103,8 @@
 		$name = $row['page_type_name'];
 		$desc = htmlspecialchars($row['page_type_desc'], ENT_QUOTES);
 
-		$desc = '<input style="width: 99%;" type="text" name="f_desc[' . $id . ']" value="' . $desc . '">';
+		//$desc = '<input style="width: 99%;" type="text" name="f_desc[' . $id . ']" value="' . $desc . '">';
+		$desc = '<input type="text" name="f_desc[' . $id . ']" value="' . $desc . '">';
 
 		$act = '<input type="submit" name="f_edit_submit[' . $id . ']" value="' . t('Изменить') . '">';
 
@@ -111,8 +112,10 @@
 	}
 
 	# добавим строчку для добавления нового типа
-	$name = '<b>' . t('Новый тип') . '</b><br><input style="width: 99%;" type="text" name="f_new_name" value="">';
-	$desc = '<b>' . t('Описание') . '</b><br><input style="width: 99%;" type="text" name="f_new_desc" value="">';
+	//$name = '<b>' . t('Новый тип') . '</b><br><input style="width: 99%;" type="text" name="f_new_name" value="">';
+	$name = '<b>' . t('Новый тип') . '</b><br><input type="text" name="f_new_name" value="">';
+	//$desc = '<b>' . t('Описание') . '</b><br><input style="width: 99%;" type="text" name="f_new_desc" value="">';
+	$desc = '<b>' . t('Описание') . '</b><br><input type="text" name="f_new_desc" value="">';
 	$act = '<input type="submit" name="f_new_submit" value="' . t('Добавить новый тип') . '">';
 
 	$CI->table->add_row('', $name, $desc, $act);

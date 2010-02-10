@@ -159,9 +159,9 @@ function smtp_mail_custom($arg = array())
 		$debug = '';
 		if (!$res)
 		{
-			if (isset(and $arg['preferences']['print_debugger']) and $arg['preferences']['print_debugger'])
+			$debug = '<div style="border: silver solid 1px; padding: 20px; margin: 20px;">' . $CI->email->print_debugger() . '<div>';
+			if (isset($arg['preferences']['print_debugger']) and $arg['preferences']['print_debugger'])
 			{
-				$debug = '<div style="border: silver solid 1px; padding: 20px; margin: 20px;">' . $CI->email->print_debugger() . '<div>';
 				echo $debug;
 			}
 			$sent = '!error-not-sent-';

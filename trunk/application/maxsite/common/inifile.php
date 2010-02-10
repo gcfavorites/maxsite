@@ -182,12 +182,14 @@ function mso_view_ini($all = false)
 		if ($type == 'textfield')
 		{
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
+			//$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
+			$f .= '<input type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 		}
 		elseif ($type == 'textarea')
 		{
 			$value = str_replace('_NR_', "\n", $value);
-			$f .= '<textarea style="width: 99%;" rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
+			//$f .= '<textarea style="width: 99%;" rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
+			$f .= '<textarea rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}
 		elseif ($type == 'checkbox')
 		{
@@ -222,7 +224,9 @@ function mso_view_ini($all = false)
 			
 			if ($values) // есть что-то
 			{
-				$f .= '<select style="width: 99%;" name="' . $name_f . '">';
+				//$f .= '<select name="' . $name_f . '">';
+				//$f .= '<select style="width: 99%;" name="' . $name_f . '">';
+				$f .= '<select name="' . $name_f . '">';
 				
 				foreach( $values as $val ) 
 				{
@@ -245,7 +249,8 @@ function mso_view_ini($all = false)
 		
 		if ($description) $f .= '<p><em>' .  $description . '</em></p>';
 		if (!$options_present) 
-			$key = '<span title="' . $options_key . '" style="color: red;">* ' . t($key) . ' (нет в базе)</span>';
+			//$key = '<span title="' . $options_key . '" style="color: red;">* ' . t($key) . ' (нет в базе)</span>';
+			$key = '<span title="' . $options_key . '" class="red">* ' . t($key) . ' (нет в базе)</span>';
 		else 
 			$key = '<strong title="' . $options_key . '">' . t($key) . '</strong>';
 			
@@ -256,7 +261,7 @@ function mso_view_ini($all = false)
 	$out .= '<form action="" method="post">' . mso_form_session('f_session_id');
 	$out .= '<input type="hidden" value="1" name="f_ini">'; // доп. поле - индикатор, что это ini-форма
 	$out .= $CI->table->generate(); // вывод подготовленной таблицы
-	$out .= NR . '<br><input type="submit" name="f_submit" value="' . t('Сохранить') . '">';
+	$out .= NR . '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить') . '"></p>';
 	$out .= '</form>';
 	
 	return $out;

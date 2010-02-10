@@ -105,7 +105,6 @@ function mso_get_pages($r = array(), &$pag)
 	}
 	
 	
-	
 	// учитывать ли опцию публикация RSS в странице -
 	// если true, то отдаются только те, которые отмечены с этой опцией, false - все
 	if ( !isset($r['only_feed']) )			$r['only_feed'] = false;
@@ -169,6 +168,7 @@ function mso_get_pages($r = array(), &$pag)
 	// хук, если нужно поменять параметры
 	// $r_restore = $r; 
 	$r = mso_hook('mso_get_pages', $r);
+	// pr(_sql());
 	
 	// сам запрос и его обработка
 	$query = $CI->db->get();
@@ -179,6 +179,8 @@ function mso_get_pages($r = array(), &$pag)
 	if ($query->num_rows() > 0)
 	{
 		$pages = $query->result_array();
+		
+	//	pr($pages);
 
 
 		if (is_type('page'))
@@ -433,7 +435,7 @@ function _mso_sql_build_home($r, &$pag)
 		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'NOW');
 		
 		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
 		if ($r['type']) 
 		{
@@ -531,7 +533,7 @@ function _mso_sql_build_home($r, &$pag)
 	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now );
 	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW' );
 	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 			
 	if ($r['only_feed']) $CI->db->where('page_feed_allow', '1');
 
@@ -614,7 +616,7 @@ function _mso_sql_build_page($r, &$pag)
 		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 		//if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
 	}
 
@@ -690,7 +692,7 @@ function _mso_sql_build_category($r, &$pag)
 		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
@@ -746,7 +748,7 @@ function _mso_sql_build_category($r, &$pag)
 	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
 
@@ -828,7 +830,7 @@ function _mso_sql_build_tag($r, &$pag)
 		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 		if ($r['type']) 
 		{
@@ -881,7 +883,7 @@ function _mso_sql_build_tag($r, &$pag)
 	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 			
 	if ($r['type']) 
 	{
@@ -970,7 +972,7 @@ function _mso_sql_build_archive($r, &$pag)
 		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 			
 
 		if ($r['type']) 
@@ -1025,7 +1027,7 @@ function _mso_sql_build_archive($r, &$pag)
 	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 	if ($r['type']) 
 	{
@@ -1087,13 +1089,15 @@ function _mso_sql_build_search($r, &$pag)
 		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
-		$CI->db->like('page_content', $search);
-		$CI->db->or_like('page_title', $search);
-
+		// $CI->db->like('page_content', $search);
+		// $CI->db->or_like('page_title', $search);
+		$CI->db->where(
+		'(`page_content` LIKE \'%' . $CI->db->escape_str($search) . '%\' OR `page_title` LIKE \'%' . $CI->db->escape_str($search) . '%\')', '', false);
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 
 		// $CI->db->order_by('page_date_publish', 'desc');
@@ -1127,18 +1131,23 @@ function _mso_sql_build_search($r, &$pag)
 
 	$CI->db->from('page');
 
-	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
 	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
-	$CI->db->like('page_content', $search);
-	$CI->db->or_like('page_title', $search);
+	// like делаем свой
+	$CI->db->where(
+		'(`page_content` LIKE \'%' . $CI->db->escape_str($search) . '%\' OR `page_title` LIKE \'%' . $CI->db->escape_str($search) . '%\')', '', false);
 
+	// $CI->db->like('page_content', $search);
+	// $CI->db->or_like('page_title', $search);
+
+	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
+	
 	if ($r['type']) 
 	{
 		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
@@ -1207,7 +1216,7 @@ function _mso_sql_build_author($r, &$pag)
 		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		//$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
@@ -1249,7 +1258,7 @@ function _mso_sql_build_author($r, &$pag)
 	// if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
 	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)');
+			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
 

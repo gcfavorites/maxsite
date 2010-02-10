@@ -14,7 +14,7 @@
 		$(function()
 		{
 		  autosavetime = 60000; // = 60 sec
-		  autosaveurl = '<?= getinfo('ajax') . base64_encode('admin/plugins/editor_jw/autosave-post.php') ?>';
+		  autosaveurl = '<?= getinfo('ajax') . base64_encode('admin/plugins/editor_jw/autosave-post-ajax.php') ?>';
 		  autosaveold = '<?= getinfo('siteurl') . 'uploads/_mso_float/autosave-' . $auto_id . '.txt' ?>';
 		  autosaveid = '<?= $auto_id ?>';
 		  autosavetextold = '';
@@ -33,7 +33,7 @@
 
 <form method="post" <?= $editor_config['action'] ?> enctype="multipart/form-data">
 <?= $editor_config['do'] ?>
-<textarea id="wysiwyg" name="f_content" style="height: <?= $editor_config['height'] ?>px; width: 100%;" ><?= $editor_config['content'] ?></textarea>
+<textarea id="wysiwyg" name="f_content" style="height: <?= $editor_config['height'] ?>px;" ><?= $editor_config['content'] ?></textarea>
 <?= $editor_config['posle'] ?>
 </form>
 

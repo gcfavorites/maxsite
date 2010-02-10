@@ -146,9 +146,9 @@
 		$form = '';
 		$CI->load->helper('form');
 		
-		$form .= '<br>Логин: '. form_input( array( 'name'=>'f_user_login', 'style'=>'width: 200px' ) ) ;
-		$form .= '<br>E-mail: '. form_input( array( 'name'=>'f_user_email', 'style'=>'width: 200px' ) );
-		$form .= '<br>Пароль: '. form_input( array( 'name'=>'f_user_password', 'style'=>'width: 200px' ) );
+		$form .= '<p class="input"><strong>' . t('Логин', 'admin') . ' </strong>'. form_input( array( 'name'=>'f_user_login' ) ) .'</p>';
+		$form .= '<p class="input"><strong>E-mail </strong>'. form_input( array( 'name'=>'f_user_email' ) ) .'</p>';
+		$form .= '<p class="input"><strong>' . t('Пароль', 'admin') . ' </strong>'. form_input( array( 'name'=>'f_user_password' ) ) .'</p>';
 		
 		$CI->db->select('groups_id, groups_name');
 		$q = $CI->db->get('groups');
@@ -156,29 +156,33 @@
 		foreach ($q->result_array() as $rw)
 			$groups[$rw['groups_id']] = $rw['groups_name'];
 
-		$form .= '<br>' . t('Группа:', 'admin') . ' '. form_dropdown('f_user_group', $groups, '', ' style="width: 200px;" ');	
-		$form .=  '<br><br><input type="submit" name="f_submit" value="' . t('Создать пользователя', 'admin') . '">';
+		$form .= '<p class="input"><strong>' . t('Группа', 'admin') . ' </strong>'. form_dropdown('f_user_group', $groups, '');	
+		$form .=  '<p class="input_submit"><input type="submit" name="f_submit" value="' . t('Создать пользователя', 'admin') . '"></p>';
 		
+		echo '<div class="item new_user">';
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
-		echo '<br><br><h2>' . t('Создать нового пользователя', 'admin') . '</h2>';
+		echo '<h2 class="br">' . t('Создать нового пользователя', 'admin') . '</h2>';
 		echo '<p>' . t('Если данные некорректны, то пользователь создан не будет. Для нового пользователя-админа нужно обновить разрешения.', 'admin') . '</p>';
 		echo $form;
 		echo '</form>';
+		echo '</div>';
 	}
 
 	if ( mso_check_allow('edit_delete_users') ) // если разрешено удалять юзеров
 	{
 		$CI->load->helper('form');
 		
+		echo '<div class="item delete_user">';
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
-		echo '<br><br><h2>' . t('Удалить пользователя', 'admin') . '</h2>';
+		echo '<h2 class="br">' . t('Удалить пользователя', 'admin') . '</h2>';
+		echo '<p class="input"><strong>' . t('Удалить', 'admin') . ' </strong>';
 		echo form_dropdown('f_user_delete', $all_users, '', '');
-		echo '<br><br><p><label><input type="checkbox" name="f_delete_user_comments"> ' . t('Удалить все комментарии пользователя. Иначе комментарии отметятся как анонимные.', 'admin') . '</label></p>';
-		echo '<p><label><input type="checkbox" name="f_delete_user_pages"> ' . t('Удалить все страницы пользователя. Иначе у страниц автором станет администратор.', 'admin') . '</label></p>';
-		
-		echo '<br><input type="submit" name="f_delete_submit" value="' . t('Удалить пользователя', 'admin') . '" onClick="if(confirm(\'' . t('Удалить пользователя?', 'admin') . '\')) {return true;} else {return false;}">';
-		
+		echo '</p>';
+		echo '<p class="checkbox"><label><input type="checkbox" name="f_delete_user_comments"> ' . t('Удалить все комментарии пользователя. Иначе комментарии отметятся как анонимные.', 'admin') . '</label></p>';
+		echo '<p class="checkbox"><label><input type="checkbox" name="f_delete_user_pages"> ' . t('Удалить все страницы пользователя. Иначе у страниц автором станет администратор.', 'admin') . '</label></p>';
+		echo '<p class="input_submit"><input type="submit" name="f_delete_submit" value="' . t('Удалить пользователя', 'admin') . '" onClick="if(confirm(\'' . t('Удалить пользователя?', 'admin') . '\')) {return true;} else {return false;}"></p>';
 		echo '</form>';
+		echo '</div>';
 	}
 
 

@@ -115,8 +115,8 @@ function page_views_widget_custom($options = array(), $num = 1)
 	$CI->db->select('page_slug, page_title, page_id, page_view_count, page_date_publish');
 	$CI->db->where('page_status', 'publish');
 	$CI->db->where('page_view_count > ', '0');
-	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
-	$CI->db->where('page_date_publish <', 'NOW');
+	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+	//$CI->db->where('page_date_publish <', 'NOW()', false);
 	$CI->db->order_by('page_id', 'desc');
 	
 	$query = $CI->db->get('page');
