@@ -12,6 +12,12 @@ function tagclouds_autoload($args = array())
 	mso_register_widget('tagclouds_widget', 'Облако тэгов/меток'); # регистрируем виджет
 }
 
+# функция выполняется при деинсталяции плагина
+function tagclouds_uninstall($args = array())
+{	
+	mso_delete_option_mask('tagclouds_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция, которая берет настройки из опций виджетов
 function tagclouds_widget($num = 1) 

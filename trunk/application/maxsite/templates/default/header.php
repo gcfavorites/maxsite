@@ -2,10 +2,10 @@
 <html><head>
 	<title><?= mso_head_meta('title') ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="generator" content="MaxSite CMS <?=getinfo('version') ?>">
+	<meta name="generator" content="MaxSite CMS">
 	<meta name="description" content="<?= mso_head_meta('description') ?>">
 	<meta name="keywords" content="<?= mso_head_meta('keywords') ?>">
-	<link rel="shortcut icon" href="<?= getinfo('stylesheet_url') ?>favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="<?= getinfo('stylesheet_url') ?>ico/favicon4.ico" type="image/x-icon">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>style.css" type="text/css" media="screen">
 	<?php 
 		if ( $menu = mso_get_option('menu_header', 'templates', 'custom_menu-034-1.css') ) 
@@ -16,12 +16,13 @@
 	?>
 
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?= getinfo('rss_url') ?>">
+	
 	<?= mso_load_jquery() ?>
-	<?= mso_load_jquery('ui/effects.core.js') ?>
-	<?= mso_load_jquery('ui/effects.highlight.js') ?>
-	<script type="text/javascript" src="<?= getinfo('stylesheet_url') ?>js/my_ef2.js"></script>
+	<?= mso_load_jquery('ui/effects.core.packed.js') ?>
+	<?= mso_load_jquery('ui/effects.highlight.packed.js') ?>
+	<script type="text/javascript" src="<?= getinfo('stylesheet_url') ?>js/my_ef.js"></script>
 
-	<?php mso_hook('head') ?>
+<?php mso_hook('head') ?>
 
 </head>
 <body>

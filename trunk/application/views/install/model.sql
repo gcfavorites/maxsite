@@ -200,6 +200,7 @@ CREATE TABLE _PREFIX_page (
 	page_slug varchar(255) default '',
 	page_view_count bigint(20) NOT NULL default '0',
 	page_rating bigint(20) NOT NULL default '0',
+	page_rating_count bigint(20) NOT NULL default '0',
 	page_password varchar(255) default '',
 	page_comment_allow bigint(20) NOT NULL default '1',
 	page_ping_allow bigint(20) NOT NULL default '1',

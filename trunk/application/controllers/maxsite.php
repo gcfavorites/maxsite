@@ -57,6 +57,7 @@ class Maxsite extends Controller
 		elseif ($method == 'index') $this->index();
 		elseif ($method == 'feed') $this->index('home');
 		elseif ($method == 'install') $this->install();
+		elseif ($method == 'ajax') $this->_view_i('ajax', 'ajax');
 		elseif ($method == 'admin') $this->_view_i('admin', 'admin');
 		elseif ($method == 'url') $this->_view_i('url', 'url/url');
 		elseif ($method == 'xmlrpc') $this->_view_i('xmlrpc', 'xmlrpc/xmlrpc');
@@ -156,6 +157,7 @@ class Maxsite extends Controller
 		$this->_view_i('home');
 	}
 	
+
 	function install()
 	{
 		global $MSO, $mso_install;

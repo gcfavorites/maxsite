@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function pre_to_ol_autoload($args = array())
 {
-	mso_hook_add( 'content', 'pre_to_ol_custom'); # хук на вывод контента
+	mso_hook_add( 'content_out', 'pre_to_ol_custom'); # хук на вывод контента
 }
 
 function pre_to_ol_callback($matches) 

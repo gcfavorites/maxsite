@@ -1,10 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
 <h1>Редактирование комментария</h1>
-<p><a href="<?= $MSO->config['site_admin_url'] . 'comments' ?>">Вернуться к списку комментариев</a></p>	
+<p><a href="<?= $MSO->config['site_admin_url'] . 'comments' ?>">К списку комментариев</a></p>
 
 <?php
-	
+
 	$CI = & get_instance();
 	
 	$id = mso_segment(4); // номер пользователя по сегменту url
@@ -81,6 +81,9 @@
 			
 			echo '<br /><p><input type="submit" name="f_submit" value="   Готово   "></p>';
 			echo '</form>';
+			
+			echo '<p><a href="' . getinfo('siteurl') . 'page/' . $row['page_slug'] . '#comment-' . $id . '">Вернуться к комментарию на сайте</a></p>';
+			
 			// pr($row);
 		}
 		else echo '<div class="error">Ошибочный комментарий</div>';

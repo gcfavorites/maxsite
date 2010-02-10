@@ -30,6 +30,8 @@ function perelinks_custom($content = '')
 	{
 		$CI = & get_instance();
 		$CI->db->select('page_title, page_slug');
+		$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		$CI->db->where('page_status', 'publish');
 		$CI->db->from('page');
 		$query = $CI->db->get();
 		
@@ -65,10 +67,6 @@ function perelinks_custom($content = '')
 	// pr($all_title);
 	
 	
-	// из-за того, что preg_match не работает с юникодом, выполняем преобразование
-	// потом обратно
-	//$content = mb_convert_encoding($content, "Windows-1251", "UTF-8");
-	
 	// ищем вхождения
 	foreach ($all_title as $key => $word)
 	{
@@ -90,8 +88,7 @@ function perelinks_custom($content = '')
 		
 	}
 	
-	//$content = mb_convert_encoding($content, "UTF-8", "Windows-1251");
-	
+
 	return  $content;
 }
 

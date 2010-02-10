@@ -119,7 +119,24 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	$text .= 'Дата: ' . $data['comments_date'] . NR;
 	
 	if (isset($data['comments_users_id'])) $text .= 'Пользователь: ' . $data['comments_users_id'] . NR;
-	elseif (isset($data['comments_comusers_id'])) $text .= 'Комюзер: ' . $data['comments_comusers_id'] . NR;
+	elseif (isset($data['comments_comusers_id'])) 
+	{
+		$text .= 'Комюзер: id=' . $data['comments_comusers_id'];
+		
+		$CI = & get_instance();
+		$CI->db->select('comusers_nik, comusers_email');
+		$CI->db->from('comusers');
+		$CI->db->where('comusers_id', $data['comments_comusers_id']);
+		
+		$query = $CI->db->get();
+		
+		if ($query->num_rows() > 0)	
+		{	
+			$comusers = $query->row();
+			$text .= ', ник: ' . $comusers->comusers_nik . ', email: ' . $comusers->comusers_email . NR;
+			$text .= 'Профиль: ' . getinfo('siteurl') . 'users/' . $data['comments_comusers_id'] . NR;
+		}
+	}
 	elseif (isset($data['comments_author_name'])) $text .= 'Аноним: ' . $data['comments_author_name'] . NR;
 	
 	$text .= NR . 'Текст: ' . NR . $data['comments_content'] . NR;
@@ -468,6 +485,7 @@ function mso_get_comuser($id = 0, $args = array())
 		$CI->db->from('comments');
 		$CI->db->where('comments_comusers_id', $id);
 		$CI->db->where('page.page_status', 'publish');
+		$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 		$CI->db->where('comments.comments_approved', '1');
 		$CI->db->join('page', 'page.page_id = comments.comments_page_id');
 		if ($args['limit']) $CI->db->limit($args['limit']);

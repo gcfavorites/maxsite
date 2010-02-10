@@ -13,6 +13,12 @@ function last_pages_autoload($args = array())
 	mso_register_widget('last_pages_widget', 'Последние записи'); 
 }
 
+# функция выполняется при деинсталяции плагина
+function last_pages_uninstall($args = array())
+{	
+	mso_delete_option_mask('last_pages_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция, которая берет настройки из опций виджетов
 function last_pages_widget($num = 1) 
@@ -25,6 +31,7 @@ function last_pages_widget($num = 1)
 		else $options['header'] = '';
 	
 	if ( isset($options['format']) ) $options['format'] = '<li>' . $options['format'] . '</li>';
+		else $options['format'] = '<li>%TITLE%</li>';
 	
 	return last_pages_widget_custom($options, $num);
 }
@@ -142,6 +149,8 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 		
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
+	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	
 	if ($arg['page_type']) $CI->db->where('page_type_name', $arg['page_type']);
 	
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');

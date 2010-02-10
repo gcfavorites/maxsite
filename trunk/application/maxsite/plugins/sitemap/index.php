@@ -36,15 +36,21 @@ function sitemap404($text = '')
 # явный вызов функции - отдается карта сайта
 function sitemap($arg = array())
 {
-	// кэш 
-	$cache_key = mso_md5('sitemap'. implode('', $arg));
+	global $MSO;
+
+	// кэш строим по url, потому что у он меняется от пагинации
+	$cache_key = mso_md5('sitemap'. implode('', $MSO->data['uri_segment']));
 	$k = mso_get_cache($cache_key);
-	if ($k) return $k; // да есть в кэше
+	if ($k) 
+	{
+		return $k; // да есть в кэше
+	}
 	
 	$out = '';
 	// параметры для получения страниц
 	$par = array( 
-			'no_limit' => true,
+			//'no_limit' => true,
+			 'limit'=>300,
 			'type'=> false, 
 			'custom_type'=> 'home', 
 			'content'=> false,
@@ -80,6 +86,12 @@ function sitemap($arg = array())
 		$out .= '</ul>' . NR . '</div>' . NR;
 	}
 	
+	if (function_exists('pagination_go')) 
+	{
+		$pagination['type'] = '';
+		$out .=  pagination_go($pagination); // вывод навигации
+	}
+		
 	mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	
 	return $out;

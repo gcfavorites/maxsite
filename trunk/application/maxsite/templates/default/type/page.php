@@ -30,7 +30,11 @@ if ($pages) // есть страницы
 		echo '<div class="info">';
 			mso_page_cat_link($page_categories, ' -&gt; ', '<span>Рубрика:</span> ', '<br />');
 			mso_page_tag_link($page_tags, ' | ', '<span>Метки:</span> ', '<br />');
-			mso_page_date($page_date_publish, 'd/m/Y H:i:s', '<span>Дата:</span> ', '');
+			mso_page_date($page_date_publish, 
+							array(	'format' => 'D, j F Y г.', // 'd/m/Y H:i:s'
+									'days' => 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье',
+									'month' => 'января февраля марта апреля мая июня июля августа сентября октября ноября декабря'), 
+							'<span>', '</span>');
 			mso_page_view_count($page_view_count, '<br /><span>Просмотров:</span> ', '');
 			mso_page_meta('nastr', $page_meta, '<br /><span>Настроение:</span> ', '');
 			mso_page_meta('music', $page_meta, '<br /><span>В колонках звучит:</span> ', '');
@@ -65,19 +69,13 @@ if ($pages) // есть страницы
 		
 	endforeach;
 	
-	
-
-	
-	
-	
-	
-	
 }
 else 
 {
  
 	echo '<h1>404. Ничего не найдено...</h1>';
 	echo '<p>Извините, ничего не найдено</p>';
+	echo mso_hook('page_404');
 	
 } // endif $pages
 

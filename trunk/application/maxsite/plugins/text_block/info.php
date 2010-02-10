@@ -2,7 +2,7 @@
 
 $info = array(
 	'name' => 'Text block',
-	'description' => 'Виджеты текстового блока. Можно использовать HTML',
+	'description' => 'Виджеты текстового блока. Можно использовать HTML и PHP',
 	'version' => '1.0',
 	'author' => 'Максим',
 	'plugin_url' => 'http://maxsite.org/',

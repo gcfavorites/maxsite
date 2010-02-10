@@ -63,9 +63,6 @@ if ($page_top) // есть страницы
 		mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 	
 		echo '<div class="page_content">';
-			//mso_hook('content_start'); # хук на начало блока
-			//echo mso_hook('content_content', $page_content);
-			//mso_hook('content_end'); # хук на конец блока
 			mso_page_content($page_content);
 			echo '<div class="break"></div>';
 		echo '</div>';
@@ -93,7 +90,12 @@ if ($pages) // есть страницы
 			mso_page_title($page_slug, $page_title, '<h1>', '</h1>', true);
 
 			echo '<div class="info">';
-				mso_page_date($page_date_publish, 'd/m/Y H:i:s', '<span>Дата:</span> ', '<br />');
+				mso_page_date($page_date_publish, 
+							array(	'format' => 'D, j F Y г.', // 'd/m/Y H:i:s'
+									'days' => 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье',
+									'month' => 'января февраля марта апреля мая июня июля августа сентября октября ноября декабря' ), 
+							'<span>', '</span><br />');
+				
 				mso_page_cat_link($page_categories, ' -&gt; ', '<span>Рубрика:</span> ', '<br />');
 				mso_page_tag_link($page_tags, ' | ', '<span>Метки:</span> ', '');
 				mso_page_edit_link($page_id, 'Edit page', ' [', ']');
@@ -103,10 +105,6 @@ if ($pages) // есть страницы
 			echo '<div class="page_content">';
 			
 				mso_page_content($page_content);
-				
-				// mso_hook('content_start'); # хук на начало блока
-				// echo mso_hook('content_content', $page_content);
-				// mso_hook('content_end'); # хук на конец блока
 				echo '<div class="break"></div>';
 				
 				mso_page_comments_link( array( 

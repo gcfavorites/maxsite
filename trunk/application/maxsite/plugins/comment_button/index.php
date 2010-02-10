@@ -15,7 +15,7 @@ function comment_button_autoload($args = array())
 # подключаем JS в head
 function comment_button_head($arg = array())
 {
-	echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'comment_button/comment_button.js"></script>' . NR;
+	echo '	<script type="text/javascript" src="'. getinfo('plugins_url') . 'comment_button/comment_button.js"></script>' . NR;
 }
 
 

@@ -195,6 +195,11 @@ function mso_initalizing()
 			$MSO->data['session']['users_groups_id'] = $row->users_groups_id;
 		}
 	}
+	
+	# дефолтные хуки
+	mso_hook_add('content_auto_tag', 'mso_auto_tag'); // авторасстановка тэгов
+	mso_hook_add('content_balance_tags', 'mso_balance_tags'); // автозакрытие тэгов - их баланс
+	
 }
 
 # проверка залогиннености юзера
@@ -265,8 +270,12 @@ function getinfo($info = '')
 				
 		case 'template_dir' :
 				$out = $MSO->config['templates_dir'] . $MSO->config['template'] . '/';
-				break;				
-				
+				break;
+
+		case 'templates_dir' :
+				$out = $MSO->config['templates_dir'];
+				break;
+
 		case 'url_new_comment' :
 				$out = $MSO->config['site_url'] . 'newcomment';
 				break;
@@ -345,9 +354,15 @@ function getinfo($info = '')
 		case 'plugins_url' :
 				$out = $MSO->config['plugins_url'];;
 				break;
+				
 		case 'plugins_dir' :
 				$out = $MSO->config['plugins_dir'];;
-				break;	
+				break;
+				
+		case 'ajax' :
+				$out = $MSO->config['site_url'] . 'ajax/';
+				break;
+		
 		
 	endswitch;
 	
@@ -632,6 +647,23 @@ function mso_delete_option($key, $type)
 	return true;
 }
 
+# удаление в таблице опций options ключа-маски с типом
+# маска считается от начала, например mask*
+function mso_delete_option_mask($mask, $type)
+{
+	$CI = & get_instance();
+	
+	$mask = str_replace('_', '/_', $mask);
+	$mask = str_replace('%', '/%', $mask);
+	
+	$query = $CI->db->query('DELETE FROM ' . $CI->db->dbprefix('options') . ' WHERE options_type="' . $type . '" AND options_key LIKE "'. $mask . '%" ESCAPE "/"'); 
+
+	mso_refresh_options(); # обновляем опции из базы
+
+	return true;
+}
+
+
 # получение опции из кэша опций
 function mso_get_option($key, $type = 'general', $return_value = false)
 {
@@ -774,14 +806,12 @@ function mso_get_cache($key, $custom_fn = false)
 	if (time() >= trim(str_replace('TS--->', '', $match['1'])))
 	{ 		
 		@unlink($filepath);
-		log_message('debug', "Cache file has expired. File deleted");
 		return FALSE;
 	}
 
 	$out = str_replace($match['0'], '', $cache);
 	$out = @unserialize($out);
 	
-	log_message('debug', "Cache file is current. Sending it to browser.");		
 	return $out;
 }
 
@@ -839,7 +869,7 @@ function mso_clean_pre_special_chars($matches)
 
 		$m = str_replace('<p>', '', $m);
 		$m = str_replace('</p>', '', $m);
-		$m = str_replace("<br />", "[mso_br_pre]", $m);
+		$m = str_replace("<br />", "[mso_br_n]", $m);
 		
 		$m = htmlspecialchars($m, ENT_QUOTES);
 		
@@ -855,7 +885,7 @@ function mso_clean_pre_special_chars($matches)
 
 	$text = str_replace('<p>', '', $text);
 	$text = str_replace('</p>', '', $text);
-	$text = str_replace("<br />", "[mso_br_pre]", $text);
+	$text = str_replace("<br />", "[mso_br_n]", $text);
 
 	return $text;
 }
@@ -870,18 +900,43 @@ function mso_clean_pre($matches)
 
 	$text = str_replace('<p>', '', $text);
 	$text = str_replace('</p>', '', $text);
-	$text = str_replace("<br />", "[mso_br_pre]", $text);
+	$text = str_replace("<br />", "[mso_br_n]", $text);
 
 	return $text;
 }
 
+
+
+# преобразуем введенный html в тексте между [html] и [/html]
+# к обычному html
+function mso_clean_html($matches) 
+{
+	$arr1 = array('<p>', '</p>', '<br />',      '&amp;', '&lt;', '&gt;', "\n");
+	$arr2 = array('',    '',    '[mso_br_n]',   '&',     '<',    '>',    '[mso_br_n]');
+	
+	$matches[1] = trim( str_replace($arr1, $arr2, $matches[1]) );
+	
+	// pr($matches[1], true);
+	return $matches[1];
+}
+
 # авторасстановка тэгов
+# в наглую выдрана из WordPress wpautop()
 function mso_auto_tag($pee, $pre_special_chars = false) 
 {
 	$pee = $pee . "\n";
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee);
 	$pee = str_replace("\n", "<br />", $pee);
 	$pee = str_replace('<br>', '<br />', $pee);
+	
+	if ( strpos($pee, '[volkman]') !== false and strpos(trim($pee), '[volkman]') == 0 ) // отдавать как есть
+	{
+		$pee = str_replace('[volkman]', '', $pee);
+		$pee = mso_clean_html( array('1'=>$pee) );
+		$pee = str_replace('[mso_br_n]', "\n", $pee);
+		return $pee;
+	}
+	
 	if ($pre_special_chars)
 	{
 		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre_special_chars', $pee );
@@ -891,9 +946,7 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 		if (strpos($pee, '<pre') !== false) $pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre', $pee );
 	}
 	
-	
 	$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
-	// $pee = str_replace('<br />', '', $pee);
 	$pee = str_replace('<br />', "\n\n", $pee);
 	
 	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|form|map|area|blockquote|address|math|style|input|embed|p|h[1-6]|hr)';
@@ -923,105 +976,27 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace('<p>[cut]</p>', '[cut]', $pee);
 	$pee = str_replace('<p>[page]</p>', '[page]', $pee);
 	
-	$pee = str_replace('[mso_br_pre]', "\n", $pee);
+	// $pee = str_replace('<p></p>', '', $pee);
+	
+	# если html в [html] код [/html]
+	// $pee = preg_replace('!(\[html\])(.*?)(\[\/html\])!is', '$1', $pee);
+	$pee = str_replace('<p>[html]</p>', '[html]', $pee);
+	$pee = str_replace('<p>[/html]</p>', '[/html]', $pee);
+	$pee = preg_replace_callback('!\[html\](.*?)\[\/html\]!is', 'mso_clean_html', $pee );
+
+	$pee = str_replace('[mso_br_n]', "\n", $pee);
 	
 	return $pee;
 }
 
-/*
-# функция расстановки тэгов
-# в наглую выдрана из WordPress wpautop()
-function mso_auto_tag_wp($pee, $br = 1) 
-{
-	// return $pee;
-	$pee = $pee . "\n"; // just to make things a little easier, pad the end
-	
-	$pee = str_replace('<br>', '<br />', $pee);
-	$pee = str_replace('<p>', '<br />', $pee);
-	
-	$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
-	// Space things out a little
-	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|form|map|area|blockquote|address|math|style|input|embed|p|h[1-6]|hr)';
-	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
-	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
-	$pee = str_replace(array("\r\n", "\r"), "\n", $pee); // cross-platform newlines
-	$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
-	// return $pee;
-	
-	$pee = preg_replace('/\n?(.+?)(?:\n\s*\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
-	
-	$pee = preg_replace('|<p>\s*?</p>|', '', $pee); // under certain strange conditions it could create a P of entirely whitespace
-	$pee = preg_replace('!<p>([^<]+)\s*?(</(?:div|address|form)[^>]*>)!', "<p>$1</p>$2", $pee);
-	$pee = preg_replace( '|<p>|', "$1<p>", $pee );
-	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee); // don't pee all over a tag
-	$pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee); // problem with nested lists
-	$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee);
-	$pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
-	
-	
-	$pee = str_replace('<p>[cut]</p>', '[cut]', $pee);
-	$pee = str_replace('<p>[page]</p>', '[page]', $pee);
-	
-	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
-	$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
-	
-	if ($br) {
-		$pee = preg_replace('/<(script|style).*?<\/\\1>/se', 'str_replace("\n", "<MSOPreserveNewline />", "\\0")', $pee);
-		$pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee); // optionally make line breaks
-		$pee = str_replace('<MSOPreserveNewline />', "\n", $pee);
-	}
-	$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*<br />!', "$1", $pee);
-	$pee = preg_replace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $pee);
-	
-	if (strpos($pee, '<pre') !== false)
-		$pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre', $pee );
-		
-	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
-	
-	
-	//$pee = str_replace( "<p><ul", "<ul", $pee );
-	//$pee = str_replace( "<p>\n<ul", "<ul", $pee );
-	//$pee = str_replace( "</li><li>", "</li>\n<li>", $pee );
-	//$pee = str_replace( "</p><p>", "</p>\n<p>", $pee );
-	// $pee = str_replace( "<br /><br />", "<p>", $pee );
-
-
-	return $pee;
-}
-
-
-# служебная - из WordPress
-function mso_clean_pre_wp($matches) 
-{
-	if ( is_array($matches) )
-		$text = $matches[1] . $matches[2] . "</pre>";
-	else
-		$text = $matches;
-
-	$text = str_replace('<p>', "<br />", $text);
-	$text = str_replace('</p>', '', $text);
-	$text = str_replace("\n", "<br />", $text);
-	//$text = str_replace('<br />', "\n", $text);
-
-	//$text = str_replace("\n\n", "\n", $text);
-
-	//$text = str_replace('<br />', "\n", $text);
-	//$text = str_replace('<p>', "\n", $text);
-	//$text = str_replace('</p>', '', $text);
-
-	return $text;
-}
-
-*/
 
 # функция взятая из b2
 function mso_balance_tags( $text, $force = true ) 
 {
 	if ( !$force ) return $text;
 	
-	//if (function_exists('iconv')) $text = iconv('UTF-8', 'WINDOWS-1251', $text ); // в WINDOWS-1251
-	$text = balanceTags($text);
-	//if (function_exists('iconv')) $text = iconv('WINDOWS-1251', 'UTF-8', $text ); // обратно у юникод	
+	$text1 = @balanceTags($text);
+	if ($text1) return $text1;
 	
 	return $text;
 }
@@ -1050,27 +1025,31 @@ function mso_balance_tags( $text, $force = true )
 function balanceTags($text)
 {
 	$tagstack = array(); $stacksize = 0; $tagqueue = ''; $newtext = '';
-	$single_tags = array('br', 'hr', 'img', 'input'); //Known single-entity/self-closing tags
-	$nestable_tags = array('blockquote', 'div', 'span'); //Tags that can be immediately nested within themselves
+	$single_tags = array('br', 'hr', 'img', 'input'); // Known single-entity/self-closing tags
+	$nestable_tags = array('blockquote', 'div', 'span'); // Tags that can be immediately nested within themselves
 
 	# WP bug fix for comments - in case you REALLY meant to type '< !--'
 	$text = str_replace('< !--', '<    !--', $text);
 	# WP bug fix for LOVE <3 (and other situations with '<' before a number)
 	$text = preg_replace('#<([0-9]{1})#', '&lt;$1', $text);
 
-	while (preg_match("/<(\/?\w*)\s*([^>]*)>/",$text,$regex)) {
+	while (preg_match("/<(\/?\w*)\s*([^>]*)>/si", $text, $regex)) 
+	{
 		$newtext .= $tagqueue;
 
-		$i = strpos($text,$regex[0]);
+		$i = strpos($text, $regex[0]);
 		$l = strlen($regex[0]);
 
 		// clear the shifter
 		$tagqueue = '';
+		
 		// Pop or Push
-		if ($regex[1][0] == "/") { // End Tag
+		if ($regex[1][0] == "/")  // End Tag
+		{
 			$tag = strtolower(substr($regex[1],1));
 			// if too many closing tags
-			if($stacksize <= 0) {
+			if($stacksize <= 0) 
+			{
 				$tag = '';
 				//or close to be safe $tag = '/' . $tag;
 			}
@@ -1093,13 +1072,16 @@ function balanceTags($text)
 				}
 				$tag = '';
 			}
-		} else { // Begin Tag
+		} 
+		else 
+		{ // Begin Tag
 			$tag = strtolower($regex[1]);
 
 			// Tag Cleaning
 
 			// If self-closing or '', don't do anything.
-			if((substr($regex[2],-1) == '/') || ($tag == '')) {
+			if((substr($regex[2],-1) == '/') || ($tag == '')) 
+			{
 			}
 			// ElseIf it's a known single-entity tag but it doesn't close itself, do so
 			elseif ( in_array($tag, $single_tags) ) {
@@ -1143,6 +1125,9 @@ function balanceTags($text)
 	// WP fix for the bug with HTML comments
 	$newtext = str_replace("< !--","<!--",$newtext);
 	$newtext = str_replace("<    !--","< !--",$newtext);
+	
+	# мои исправления
+	$newtext = str_replace('< \/a>', '<\/a>',$newtext);
 
 	return $newtext;
 }
@@ -1217,8 +1202,8 @@ function mso_login_form($conf = array(), $redirect = '', $echo = true)
 	<form method="post" action="{$action}" name="flogin" id="flogin">
 		<input type="hidden" value="{$redirect}" name="flogin_redirect" />
 		<input type="hidden" value="{$session_id}" name="flogin_session_id" />
-		{$login}<input type="text" value="" name="flogin_user" id="flogin_user" />
-		{$password}<input type="password" value="" name="flogin_password" id="flogin_password" />
+		<span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user" />
+		<span>{$password}</span><input type="password" value="" name="flogin_password" id="flogin_password" />
 		{$submit}<input type="submit" name="flogin_submit" id="flogin_submit" value="{$submit_value}">
 		{$form_end}
 	</form>
@@ -1583,12 +1568,17 @@ function mso_segment($segment = 2)
 
 # функция преобразования MySql-даты (ГГГГ-ММ-ДД ЧЧ:ММ:СС) в указанный формат date
 # идея - http://dimoning.ru/archives/31
-function mso_date_convert($format = 'Y-m-d H:i:s', $data, $timezone = true)
+# $days и $month - массивы или строка (через пробел) названия дней недели и месяцев
+function mso_date_convert($format = 'Y-m-d H:i:s', $data, $timezone = true, $days = false, $month = false)
 {
 	$res = '';
 	$part = explode(' ' , $data);
-	$ymd = explode ('-', $part[0]);
-	$hms = explode (':', $part[1]);
+	
+	if (isset($part[0])) $ymd = explode ('-', $part[0]);
+		else $ymd = array (0,0,0);
+	
+	if (isset($part[1])) $hms = explode (':', $part[1]);
+		else $hms = array (0,0,0);
 	
 	$y = $ymd[0];
 	$m = $ymd[1];
@@ -1601,7 +1591,32 @@ function mso_date_convert($format = 'Y-m-d H:i:s', $data, $timezone = true)
 	
 	if ($timezone) $time = $time + getinfo('time_zone') * 60 * 60;
 	
-	return date($format, $time);
+	$out = date($format, $time);
+	
+	if ($days)
+	{
+		if (!is_array($days)) $days = explode(' ', trim($days));
+		
+		$day_en = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+		$out = str_replace($day_en, $days, $out);
+		
+		$day_en = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
+		$out = str_replace($day_en, $days, $out);
+	}
+	
+	if ($month)
+	{
+		if (!is_array($month)) $month = explode(' ', trim($month));
+		
+		$month_en = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 
+							'August', 'September', 'October', 'November', 'December');
+		$out = str_replace($month_en, $month, $out);
+		
+		$month_en = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+		$out = str_replace($month_en, $month, $out);
+	}
+
+	return $out;
 }
 
 # переобразование даты в формат MySql
@@ -1632,7 +1647,7 @@ function mso_date_convert_to_mysql($year = 1970, $mon = 1, $day = 1, $hour = 0, 
 
 # получить пермалинк страницы по её id
 # через запрос БД
-function mso_get_permalink_page($id = 0)
+function mso_get_permalink_page($id = 0, $prefix = 'page/')
 {
 	global $MSO;
 	$id = (int) $id;
@@ -1649,17 +1664,17 @@ function mso_get_permalink_page($id = 0)
 		foreach ($query->result_array() as $row)
 			$slug = $row['page_slug'];
 
-		return  $MSO->config['site_url'] . 'page/' . $slug;
+		return  $MSO->config['site_url'] . $prefix . $slug;
 	}
 	else return '';
 }
 
 # получить пермалинк рубрики по указанному слагу
-function mso_get_permalink_cat_slug($slug = '')
+function mso_get_permalink_cat_slug($slug = '', $prefix = 'category/')
 {
 	global $MSO;
 	if (!$slug) return '';
-	return  $MSO->config['site_url'] . 'category/' . $slug;
+	return  $MSO->config['site_url'] . $prefix . $slug;
 }
 
 

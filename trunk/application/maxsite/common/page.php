@@ -37,6 +37,9 @@ function _mso_sql_build_home($r, &$pag)
 		$CI->db->select('page.page_id');
 		$CI->db->from('page');
 		$CI->db->where('page.page_status', 'publish');
+		
+		if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		
 		if ($r['type']) $CI->db->where('page_type.page_type_name', $r['type']);
 		
 		if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
@@ -83,11 +86,11 @@ function _mso_sql_build_home($r, &$pag)
 	
 	if ($r['content'])
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	}
 	else
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik,  page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik,  page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	}
 		
 	$CI->db->from('page');
@@ -96,6 +99,8 @@ function _mso_sql_build_home($r, &$pag)
 	
 	$CI->db->where('page_status', 'publish');
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+	
+	if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
@@ -135,19 +140,24 @@ function _mso_sql_build_page($r, &$pag)
 	
 	// $pag = false;
 	
-	$slug = mso_segment(2);
-	
+	if ($r['slug']) 
+		$slug = $r['slug'];
+	else
+		$slug = mso_segment(2);
+
 	// если slug есть число, то выполняем поиск по id
 	$id = (int) $slug;
 	if ( (string) $slug != (string) $id ) $id = false; // slug не число
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, page.page_id_autor');
+	
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, page.page_id_autor');
 	$CI->db->from('page');
 	
 	// if ($page_status) $CI->db->where('page_status', $page_status);
 	
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	
+	if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 	
 	if ($id) // если slug число, то это может быть и номер и сам slug - неопределенность!
 	{
@@ -177,7 +187,12 @@ function _mso_sql_build_category($r, &$pag)
 {
 	$CI = & get_instance();
 	
-	$slug = mso_segment(2);
+	if ($r['slug']) 
+		$slug = $r['slug'];
+	else
+		$slug = mso_segment(2);
+	
+	// $slug = mso_segment(2);
 	
 	// если slug есть число, то выполняем поиск по id
 	$id = (int) $slug;
@@ -205,6 +220,9 @@ function _mso_sql_build_category($r, &$pag)
 		$CI->db->where('page_status', 'publish');
 		//$CI->db->where('page_type_name', 'blog');
 		if ($r['type']) $CI->db->where('page_type_name', $r['type']);
+		
+		if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
 		$CI->db->join('category', 'cat2obj.category_id = category.category_id');
@@ -247,12 +265,15 @@ function _mso_sql_build_category($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments');
 		
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
+	
+	if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	
 	//$CI->db->where('page_type_name', 'blog');
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
@@ -299,7 +320,12 @@ function _mso_sql_build_tag($r, &$pag)
 {
 	$CI = & get_instance();
 	
-	$slug = mso_segment(2);
+	if ($r['slug']) 
+		$slug = $r['slug'];
+	else
+		$slug = mso_segment(2);
+	
+	// $slug = mso_segment(2);
 
 	$offset = 0;
 
@@ -313,6 +339,9 @@ function _mso_sql_build_tag($r, &$pag)
 		$CI->db->from('page');
 		$CI->db->where('page_status', 'publish');
 		// $CI->db->where('page_type_name', 'blog');
+		
+		if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		
 		if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 		$CI->db->join('meta', 'meta.meta_id_obj = page.page_id');
@@ -344,14 +373,17 @@ function _mso_sql_build_tag($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
 	
 	
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
 	// $CI->db->where('page_type_name', 'blog');
+	
+	if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+	
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
@@ -410,6 +442,9 @@ function _mso_sql_build_archive($r, &$pag)
 		$CI->db->select('page_id');
 		$CI->db->from('page');
 		$CI->db->where('page_status', 'publish');
+		
+		if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
+		
 		if ($r['type'])
 		{
 			$CI->db->where('page_type_name', $r['type']);
@@ -453,7 +488,7 @@ function _mso_sql_build_archive($r, &$pag)
 		$pag = false;
 	
 	// теперь сами страницы
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
 	
@@ -467,6 +502,8 @@ function _mso_sql_build_archive($r, &$pag)
 		$CI->db->where('page_date_publish >= ', mso_date_convert_to_mysql($year, $month));
 		$CI->db->where('page_date_publish <= ', mso_date_convert_to_mysql($year, $month+1));	
 	}
+	
+	if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 	
 	if ($r['type']) $CI->db->where('page_type_name', $r['type']);
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
@@ -491,7 +528,12 @@ function _mso_sql_build_search($r, &$pag)
 {
 	$CI = & get_instance();
 	
-	$search = mso_segment(2);
+	if ($r['slug']) 
+		$search = $r['slug'];
+	else
+		$search = mso_segment(2);
+		
+	// $search = mso_segment(2);
 	$search = mso_strip(strip_tags($search));
 	
 	$offset = 0;
@@ -509,6 +551,8 @@ function _mso_sql_build_search($r, &$pag)
 		{
 			$CI->db->where('page_type_name', $r['type']);
 		}
+		
+		if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 		
 		$CI->db->like('page_content', $search); 
 		$CI->db->or_like('page_title', $search); 
@@ -541,12 +585,14 @@ function _mso_sql_build_search($r, &$pag)
 	
 	// теперь сами страницы
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	
 		
 	$CI->db->from('page');
 	
 	$CI->db->where('page_status', 'publish');
+	
+	if ($r['date_now']) $CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 	
 	$CI->db->like('page_content', $search); 
 	$CI->db->or_like('page_title', $search);
@@ -630,6 +676,14 @@ function mso_get_pages($r = array(), &$pag)
 	// исключить указанные в массиве записи
 	if ( !isset($r['exclude_page_id']) )$r['exclude_page_id'] = array();
 	
+	// произвольный slug - используется там, где вычисляется mso_segment(2)
+	// страница, рубрика, метка, поиск
+	if ( !isset($r['slug']) )			$r['slug'] = false;
+	
+	
+	// если true, то публикуется только те, которые старше текущей даты
+	// если false - то публикуются все
+	if ( !isset($r['date_now']) )		$r['date_now'] = true;
 	
 	
 	$CI = & get_instance();
@@ -693,13 +747,21 @@ function mso_get_pages($r = array(), &$pag)
 			$all_page_id[] = $page['page_id'];
 			
 			// $content = mso_hook('content', $page['page_content']);
+			
 			$content = $page['page_content'];
-			$content = mso_hook('do_content', $content);
-			$content = mso_auto_tag($content);
-			$content = mso_balance_tags($content);
 			$content = mso_hook('content', $content);
-			$content = mso_auto_tag($content);
-			$content = mso_balance_tags($content);
+			$content = mso_hook('content_auto_tag', $content);
+			$content = mso_hook('content_balance_tags', $content);
+			
+			// $content = mso_auto_tag($content);
+			// $content = mso_balance_tags($content);
+			
+			$content = mso_hook('content_out', $content);
+			
+			//$content = mso_hook('content_auto_tag', $content);
+			
+			// $content = mso_auto_tag($content);
+			// $content = mso_balance_tags($content);
 			
 			$pages[$key]['page_slug'] = $page['page_slug'] = mso_slug($page['page_slug']);
 			
@@ -708,9 +770,15 @@ function mso_get_pages($r = array(), &$pag)
 			// echo mso_text_to_html($page['page_content']);
 			
 			if ( preg_match('/\[cut(.*?)?\]/', $content, $matches) ) 
-					$content = explode($matches[0], $content, 2);
+			{
+				$content = explode($matches[0], $content, 2);
+				$cut = $matches[1];
+			}
 			else 
-					$content = array($content);
+			{
+				$content = array($content);
+				$cut = '';
+			}
 		
 			$output = $content[0]; 
 			if ( count($content) > 1 ) 
@@ -718,6 +786,7 @@ function mso_get_pages($r = array(), &$pag)
 				// ссылка на «далее...»
 				if ($r['cut'])
 				{
+					if ($cut) $r['cut'] = $cut;
 					$output .= mso_page_title( $page['page_slug'], $r['cut'], 
 								$do = '<span class="cut">', $posle = '</span>', true, false, $r['link_page_type'] );
 				}
@@ -727,7 +796,6 @@ function mso_get_pages($r = array(), &$pag)
 				}
 				
 				$output = mso_balance_tags($output);
-				
 			}
 
 			$pages[$key]['page_content'] = $output;
@@ -886,8 +954,26 @@ function mso_page_date($date = 0, $format = 'Y-m-d H:i:s', $do = '', $posle = ''
 {
 	if (!$date) return '';
 	
+	if (is_array($format)) // формат в массиве, значит там и замены
+	{
+		if (isset($format['format'])) $df = $format['format'];
+			else $df = 'Y-m-d H:i:s';
+			
+		if (isset($format['days'])) $dd = $format['days'];
+			else $dd = false;
+			
+		if (isset($format['month'])) $dm = $format['month'];
+			else $dm = false;
+	}
+	else
+	{
+		$df = $format;
+		$dd = false;
+		$dm = false;
+	}
+	
 	// учитываем смещение времени time_zone
-	$out = mso_date_convert($format, $date, true);
+	$out = mso_date_convert($df, $date, true, $dd, $dm);
 
 	if ($echo) echo $do . $out . $posle;
 		else return $do . $out . $posle;
@@ -928,11 +1014,51 @@ function mso_page_feed($page_slug = '', $page_title = 'Подписаться', 
 }
 
 # формирование ссылки для rss страницы
-function mso_page_content($page_content = '')
+function mso_page_content($page_content = '', $use_password = true, $message = 'Данная запись защищена паролем.')
 {
+	global $page;
+	
 	mso_hook('content_start'); # хук на начало блока
-	echo mso_hook('content_content', $page_content);
+	
+	if ($use_password and $page['page_password']) // есть пароль
+	{
+		
+		$form ='<p><strong>' . $message . '</strong></p>';
+		$form .= '<form action="' . getinfo('siteurl') . 'page/' . $page['page_slug'] . '" method="post">' . mso_form_session('f_session_id');
+		$form .= '<input type="hidden" name="f_page_id" value="' . $page['page_id'] . '" />';
+		$form .= '<p>Пароль: <input type="text" name="f_password" value="" /> ';
+		$form .= '<input type="submit" name="f_submit" value="ОК" /></p>';
+		$form .= '</form>';
+		
+		// возможно пароль уже был отправлен
+		if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_page_id', 'f_password')) ) 
+		{
+			mso_checkreferer();
+			
+			$f_page_id = (int) $post['f_page_id']; // номер записи
+			$f_password = $post['f_password']; // пароль
+			
+			if ($f_page_id == $page['page_id'] and $f_password == $page['page_password'])
+			{ 	// верный пароль
+				echo mso_hook('content_content', $page_content);
+			}
+			else // ошибка в пароле
+			{
+				echo '<p style="color: red;"><strong>Ошибочный пароль!</strong> Повторите ввод.</p>'. $form;
+			}
+		}
+		else // нет post, выводим форму 
+		{
+			echo $form;
+		}
+	}
+	else // нет пароля 
+	{
+		echo mso_hook('content_content', $page_content);
+	}
+
 	mso_hook('content_end'); # хук на конец блока
+	
 }
 
 # получение meta
@@ -1033,7 +1159,7 @@ if ( !function_exists('get_total_days') )
 # если нужно убрать уникальность и учитывать все хиты, то $unique = false
 # начения хранятся в виде url1|url2|url2|url3 
 # url - второй сегмент
-# время жизни 30 дней: 1 час * 24 часа * 30 дней
+# время жизни 30 дней: 60 секунд * 60 минут * 24 часа * 30 дней = 2592000
 
 function mso_page_view_count_first($unique = true, $name_cookies = 'maxsite-cms', $expire = 2592000) 
 {

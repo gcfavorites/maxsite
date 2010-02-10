@@ -18,9 +18,9 @@ function login_form_autoload($args = array())
 function login_form_widget($num = 1) 
 {
 	if (!is_login())
-				return mso_login_form(array( 'login'=>'Логин: ', 'password'=>'<br />Пароль: ', 'submit'=>'<br />'), '', false);
+				return mso_login_form(array( 'login'=>'Логин: ', 'password'=>'Пароль: ', 'submit'=>''), '', false);
 			else
-				return '<p>Привет, ' . getinfo('users_nik') . '!<br /> [<a href="' . getinfo('siteurl') 
+				return '<p><strong>Привет, ' . getinfo('users_nik') . '!</strong><br /> [<a href="' . getinfo('siteurl') 
 						. 'logout'.'">выйти</a>] [<a href="' . getinfo('siteurl') . 'admin">управление</a>]</p>';
 }
 

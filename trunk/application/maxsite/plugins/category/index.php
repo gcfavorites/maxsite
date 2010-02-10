@@ -13,6 +13,13 @@ function category_autoload($args = array())
 	mso_register_widget('category_widget', 'Рубрики'); 
 }
 
+# функция выполняется при деинсталяции плагина
+function category_uninstall($args = array())
+{	
+	mso_delete_option_mask('category_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
+
 
 # функция, которая берет настройки из опций виджетов
 function category_widget($num = 1) 

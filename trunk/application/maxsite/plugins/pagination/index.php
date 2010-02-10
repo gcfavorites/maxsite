@@ -12,7 +12,8 @@ function pagination_go($r = array())
 	
 	if (!$r) return '';
 	if ( !isset($r['maxcount']) ) return '';
-	if ( !isset($r['limit']) ) return '';
+	if ( !isset($r['limit']) ) return ''; // нужно указать сколько записей выводить
+	if ( !isset($r['type']) )  $r['type'] = false; // можно задать свой тип
 	
 	if ( !isset($r['range']) ) $r['range'] = 4;
 	if ( !isset($r['next_url']) ) $r['next_url'] = 'next';
@@ -25,22 +26,32 @@ function pagination_go($r = array())
 	
 	if ($current_paged > $r['maxcount']) $current_paged = $r['maxcount'];
 	
+	if ($r['type'] !== false) $type = $r['type'];
+		else $type = $MSO->data['type'];
+	
 	// текущий урл сделаем
 	$a_cur_url = $MSO->data['uri_segment'];
-	$cur_url = $MSO->config['site_url'] . $MSO->data['type'];
+	
+	$cur_url = $MSO->config['site_url'] . $type;
+	
 	foreach ($a_cur_url as $val)
 	{
 		if ($val == 'next') break; // next - дальше не нужно
 		else
 		{
-			if ($val != $MSO->data['type']) $cur_url .= '/' . $val;
+			if ($val != $type) $cur_url .= '/@@' . $val;
 		}
 	}
 	
-	if ($MSO->data['type'] == 'home') 
+	$cur_url = str_replace('//@@', '/', $cur_url);
+	
+	
+	if ($type == 'home') 
 		$home_url = $MSO->config['site_url'];
 	else
 		$home_url = $cur_url;
+	
+	// pr($home_url);
 	
 	$out = _pagination( $r['maxcount'], 
 						$current_paged, 

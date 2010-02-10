@@ -416,26 +416,10 @@
 		$page_password = isset($data['page_password']) ? mso_strip($data['page_password']) : '';
 		
 		
-		// дата публикации
-		$page_date_publish_y = isset($data['page_date_publish_y']) ? (int) $data['page_date_publish_y'] : false;
-		$page_date_publish_m = isset($data['page_date_publish_m']) ? (int) $data['page_date_publish_m'] : false;
-		$page_date_publish_d = isset($data['page_date_publish_d']) ? (int) $data['page_date_publish_d'] : false;
-		$page_date_publish_h = isset($data['page_date_publish_h']) ? (int) $data['page_date_publish_h'] : false;
-		$page_date_publish_n = isset($data['page_date_publish_n']) ? (int) $data['page_date_publish_n'] : false;
+		// дата публикации если нет даты, от ставим текущую
+		$page_date_publish = isset($data['page_date_publish']) ? $data['page_date_publish'] : date('Y-m-d H:i:s');
 		
-		// если хоть что-то не указано, от ставим текущую дату
-		if ( !$page_date_publish_y or $page_date_publish_m or !$page_date_publish_d 
-			or !$page_date_publish_h or !$page_date_publish_n )
-		{
-			$page_date_publish = date('Y-m-d H:i:s');
-		}
-		else 
-		{
-			$page_date_publish = mso_date_convert_to_mysql($page_date_publish_y, $page_date_publish_m, 
-										$page_date_publish_d, $page_date_publish_h, $page_date_publish_n, 0);
-		}
-		
-		
+
 		$page_type_id = isset($data['page_type_id']) ? $data['page_type_id'] : '1';
 		$page_id_parent = isset($data['page_id_parent']) ? $data['page_id_parent'] : '0';
 
@@ -487,6 +471,7 @@
 			
 			);
 		
+		// pr($ins_data);
 		
 		$res = ($CI->db->insert('page', $ins_data)) ? '1' : '0';
 		
@@ -651,24 +636,8 @@
 		
 		
 		// дата публикации
-		$page_date_publish_y = isset($data['page_date_publish_y']) ? (int) $data['page_date_publish_y'] : false;
-		$page_date_publish_m = isset($data['page_date_publish_m']) ? (int) $data['page_date_publish_m'] : false;
-		$page_date_publish_d = isset($data['page_date_publish_d']) ? (int) $data['page_date_publish_d'] : false;
-		$page_date_publish_h = isset($data['page_date_publish_h']) ? (int) $data['page_date_publish_h'] : false;
-		$page_date_publish_n = isset($data['page_date_publish_n']) ? (int) $data['page_date_publish_n'] : false;
-		
-		// если хоть что-то не указано, от ставим текущую дату
-		if ( !$page_date_publish_y or $page_date_publish_m or !$page_date_publish_d 
-			or !$page_date_publish_h or !$page_date_publish_n )
-		{
-			$page_date_publish = false; // date('Y-m-d H:i:s'); // если дата не указана, то не меняем её
-		}
-		else 
-		{
-			$page_date_publish = mso_date_convert_to_mysql($page_date_publish_y, $page_date_publish_m, 
-											$page_date_publish_d, $page_date_publish_h, $page_date_publish_n, 0);
-		}
-		
+		$page_date_publish = isset($data['page_date_publish']) ? $data['page_date_publish'] : false;
+	
 		
 		# дата последней модификации страницы
 		$page_last_modified = date('Y-m-d H:i:s');

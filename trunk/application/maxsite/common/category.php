@@ -358,6 +358,7 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 	$CI->db->join('page', 'cat2obj.page_id = page.page_id', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->where('page_status', 'publish');
+	$CI->db->where('page_date_publish<', date('Y-m-d H:i:s'));
 	// $CI->db->where('page_type_name', 'blog');
 	if ($type_page) $CI->db->where('page_type_name', $type_page);
 	$CI->db->where('category_type', $type);

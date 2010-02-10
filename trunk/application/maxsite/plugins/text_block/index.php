@@ -12,6 +12,12 @@ function text_block_autoload($args = array())
 	mso_register_widget('text_block_widget', 'Текстовый блок'); # регистрируем виджет
 }
 
+# функция выполняется при деинсталяции плагина
+function text_block_uninstall($args = array())
+{	
+	mso_delete_option_mask('text_block_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция, которая берет настройки из опций виджетов
 function text_block_widget($num = 1) 

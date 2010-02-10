@@ -54,7 +54,40 @@
 			
 		if ( isset($post['f_page_parent']) and $post['f_page_parent'] ) $f_page_parent = (int) $post['f_page_parent'];
 			else $f_page_parent = '';
+		
+		
+		$f_date_change = isset($post['f_date_change']) ? '1' : '0'; // сменить дату?
+		
+		if ( // проверяем есть ли дата
+				$f_date_change and
+				isset($post['f_date_y']) and 
+				isset($post['f_date_m']) and
+				isset($post['f_date_d']) and 
+				isset($post['f_time_h']) and
+				isset($post['f_time_m']) and
+				isset($post['f_time_s']) and
+				$post['f_date_y'] and
+				$post['f_date_m'] and
+				$post['f_date_d'] and
+				$post['f_time_h'] and
+				$post['f_time_m'] and
+				$post['f_time_s'] )
+		{
+			$page_date_publish_y = (int) $post['f_date_y'];
+			$page_date_publish_m = (int) $post['f_date_m'];
+			$page_date_publish_d = (int) $post['f_date_d'];
+			$page_date_publish_h = (int) $post['f_time_h'];
+			$page_date_publish_n = (int) $post['f_time_m'];
+			$page_date_publish_s = (int) $post['f_time_s'];
 			
+			$page_date_publish = date('Y-m-d H:i:s', mktime($page_date_publish_h, $page_date_publish_n, $page_date_publish_s,
+									$page_date_publish_m, $page_date_publish_d, $page_date_publish_y) );
+			
+		}
+		else
+			$page_date_publish = false;
+		
+		
 			
 		// тут нужно будет изменить логику
 		// если автор указан, то нужно проверять есть разрешение на указание другого
@@ -89,10 +122,13 @@
 			'page_ping_allow' => $f_ping_allow,
 			'page_feed_allow' => $f_feed_allow,
 			'page_tags' => $f_tags,
-			'page_meta_options' => $f_options
-			);
+			'page_meta_options' => $f_options,
 			
-		//pr($data);
+			);
+		
+		if ($page_date_publish) $data['page_date_publish'] = $page_date_publish;
+		
+		// pr($data);
 		// pr($post);
 		//pr($f_tags);
 		//pr(mso_explode($f_tags, false, false));
@@ -156,7 +192,7 @@
 		$f_cat = array();
 		$f_password = '';
 		$f_comment_allow = '1';
-		$f_ping_allow = '1';
+		$f_ping_allow = '0';
 		$f_feed_allow = '1';
 		$f_page_parent = '';
 		$f_user_id = $MSO->data['session']['users_id'];
@@ -223,8 +259,50 @@
 	
 	$name_submit = 'f_submit';
 	
+	// дата публикации
+	// $f_date_change = 'checked="checked"';
+	$f_date_change = ''; // сменить дату не нужно - будет время автоматом поставлено текущее
 	
+	// $date_time = date('Y-m-d H:i:s');
+	// $date_cur = strtotime($page_date_publish);
+	// $date_time = 'Сейчас: ' . $page_date_publish;
+	$date_time = 'Сейчас: ' . date('Y-m-d H:i:s');
+	
+	$date_cur_y = date('Y');
+	$date_cur_m = date('m');
+	$date_cur_d = date('d');	
+	$tyme_cur_h = date('H');
+	$tyme_cur_m = date('i');
+	$tyme_cur_s = date('s');
+	
+	
+	$date_all_y = array();
+	for ($i=2005; $i<2021; $i++) $date_all_y[$i] = $i;
+	
+	$date_all_m = array();
+	for ($i=1; $i<13; $i++) $date_all_m[$i] = $i;
+	
+	$date_all_d = array();
+	for ($i=1; $i<32; $i++) $date_all_d[$i] = $i;
+	
+	$date_y = form_dropdown('f_date_y', $date_all_y, $date_cur_y, ' style="margin-top: 5px; width: 60px;" ');
+	$date_m = form_dropdown('f_date_m', $date_all_m, $date_cur_m, ' style="margin-top: 5px; width: 60px;" ');
+	$date_d = form_dropdown('f_date_d', $date_all_d, $date_cur_d, ' style="margin-top: 5px; width: 60px;" ');
+	
+	$time_all_h = array();
+	for ($i=0; $i<24; $i++) $time_all_h[$i] = $i;
+	
+	$time_all_m = array();
+	for ($i=0; $i<60; $i++) $time_all_m[$i] = $i;
 
+	$time_all_s = $time_all_m;
+	
+	$time_h = form_dropdown('f_time_h', $time_all_h, $tyme_cur_h, ' style="margin-top: 5px; width: 60px;" ');
+	$time_m = form_dropdown('f_time_m', $time_all_m, $tyme_cur_m, ' style="margin-top: 5px; width: 60px;" ');
+	$time_s = form_dropdown('f_time_s', $time_all_s, $tyme_cur_s, ' style="margin-top: 5px; width: 60px;" ');	
+
+
+	
 	# мета большие,вынесена в отдельный файл
 	# из неё получается $all_meta = '<p>Нет</p>';
 	require($MSO->config['admin_plugins_dir'] . 'admin_page/all_meta.php');

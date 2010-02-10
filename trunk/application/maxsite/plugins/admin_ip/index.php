@@ -14,12 +14,6 @@ function admin_ip_autoload($args = array())
 }
 
 
-# функция выполняется при деактивации (выкл) плагина
-//function admin_ip_deactivate($args = array())
-//{	
-//	mso_delete_option('plugin_admin_ip', 'plugins'); // удалим созданные опции
-//	return $args;
-//}
 
 # функция выполняется при деинстяляции плагина
 function admin_ip_uninstall($args = array())
@@ -79,8 +73,7 @@ function admin_ip_admin_init($args = array())
 	
 	if ( !mso_check_allow('admin_ip_admin_page') ) // разрешение для юзеров
 	{
-		echo 'Доступ запрещен';
-		return $args;
+		return $args; // 'Доступ запрещен';
 	}
 	
 	$this_plugin_url = 'plugin_admin_ip'; // url и hook

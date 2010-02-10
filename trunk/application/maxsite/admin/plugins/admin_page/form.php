@@ -51,8 +51,16 @@ EOF;
 			<div class="block_page">
 				<h3>Обсуждение</h3>
 				<p><input name="f_comment_allow" type="checkbox" {$f_comment_allow} /> Разрешить комментирование</p>
-				<p><input name="f_ping_allow" type="checkbox" {$f_ping_allow} /> Разрешить пинг</p>
 				<p><input name="f_feed_allow" type="checkbox" {$f_feed_allow} /> Публикация в RSS</p>
+				<p><input name="f_ping_allow" type="checkbox" {$f_ping_allow} /> Разрешить пинг</p>
+			</div>
+
+			<div class="block_page">
+				<h3>Дата публикации</h3>
+				<p><input name="f_date_change" type="checkbox" {$f_date_change} /> Изменить дату публикации</p>
+				<p>{$date_y} - {$date_m} - {$date_d}</p>
+				<p>{$time_h} : {$time_m} : {$time_s}</p>
+				<p><em>{$date_time}</em></p>
 			</div>
 			
 			<div class="block_page">

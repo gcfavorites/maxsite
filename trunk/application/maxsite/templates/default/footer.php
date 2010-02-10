@@ -4,12 +4,11 @@
 <?php
 	$site_name = getinfo('name_site');
 	$date = date('Y');
-	$ver = getinfo('version');
 	$CI = & get_instance();	
 	$mq = $CI->db->query_count;
 	
 	echo <<<EOF
-	&copy; {$site_name}, {$date}<br/>Работает на <a href="http://max-3000.com/">MaxSite CMS</a> {$ver} | Время: {elapsed_time} | SQL: {$mq} | Память: {memory_usage}
+	&copy; {$site_name}, {$date}<br/>Работает на <a href="http://max-3000.com/">MaxSite CMS</a> | Время: {elapsed_time} | SQL: {$mq} | Память: {memory_usage}
 EOF;
 
 	if (is_login())

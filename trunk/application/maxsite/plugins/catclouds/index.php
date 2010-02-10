@@ -12,6 +12,12 @@ function catclouds_autoload($args = array())
 	mso_register_widget('catclouds_widget', 'Облако рубрик'); # регистрируем виджет
 }
 
+# функция выполняется при деинсталяции плагина
+function catclouds_uninstall($args = array())
+{	
+	mso_delete_option_mask('catclouds_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция, которая берет настройки из опций виджетов
 function catclouds_widget($num = 1) 

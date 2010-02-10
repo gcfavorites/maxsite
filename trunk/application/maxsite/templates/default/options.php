@@ -12,7 +12,8 @@
 	if (mso_check_post_ini()) echo '<div class="update">Обновлено!</div>';
 	
 	// получим ini-файл
-	$all = mso_get_ini_file( getinfo('template_dir') . 'options.ini');
+	// $all = mso_get_ini_file( getinfo('templates_dir') . 'default/options.ini'); // можно использовать дефолтный
+	$all = mso_get_ini_file( getinfo('template_dir') . 'options.ini'); // или свой
 	
 	// вывод всех ini-опций
 	echo mso_view_ini($all);

@@ -12,6 +12,12 @@ function twitter_autoload($args = array())
 	mso_register_widget('twitter_widget', 'Twitter, RSS'); 
 }
 
+# функция выполняется при деинсталяции плагина
+function twitter_uninstall($args = array())
+{	
+	mso_delete_option_mask('twitter_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 function twitter_widget($num = 1)
 {

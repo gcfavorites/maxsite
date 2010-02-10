@@ -12,6 +12,12 @@ function favorites_autoload($args = array())
 	mso_register_widget('favorites_widget', 'Избранное'); # регистрируем виджет
 }
 
+# функция выполняется при деинсталяции плагина
+function favorites_uninstall($args = array())
+{	
+	mso_delete_option_mask('favorites_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция, которая берет настройки из опций виджетов
 function favorites_widget($num = 1) 

@@ -1,6 +1,3 @@
-/* @ imp1ort "reset.css"; */
-
-
 
 /* FIRST */
 
@@ -118,8 +115,9 @@ div.twitter a {font-weight: bold;}
 div.pagination {border-top: 1px solid #5368A1; border-bottom: 1px solid #5368A1; padding: 3px; font-size: 8pt; margin: 25px 0 10px 0; text-align: center;}
 div.pagination strong {background: #8591B7; padding: 2px;}
 
-#flogin_user {width: 99%;}
-#flogin_password {width: 99%;}
+#flogin span {display: block; font-weight: bold;}
+#flogin_user {width: 98%;}
+#flogin_password {width: 98%;}
 #flogin_submit { margin: 5px 0;}
 
 div.page_content {margin-bottom: 20px;}
@@ -230,7 +228,7 @@ img.border {border: 1px solid #3D61B6; }
 img.smiley {vertical-align: middle;}
 
 /*  PRE to OL */
-div.pre {background: #F0F0F0; padding: 5px; overflow: auto; wi1dth: 99%; margin: 0 0 10px 0;}
+div.pre {background: #F0F0F0; padding: 5px; overflow: auto; width: 99%; margin: 0 0 10px 0;}
 ol.pre {line-hei1ght: 1em; font-family: monospace; padding: 0; margin: 0 0 0 30px;  }
 ol.pre li {padding: 0; margin: 0; white-space: pre; line-he1ight: 0.8em;}
 ol.pre li.odd {background: none;}

@@ -12,6 +12,12 @@ function last_comments_autoload($args = array())
 	mso_register_widget('last_comments_widget', 'Последние комментарии'); # регистрируем виджет
 }
 
+# функция выполняется при деинсталяции плагина
+function last_comments_uninstall($args = array())
+{	
+	mso_delete_option_mask('last_comments_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция, которая берет настройки из опций виджетов
 function last_comments_widget($num = 1) 
