@@ -20,7 +20,7 @@ EOF;
 	$posle = <<<EOF
 
 			<div style="margin: 10px 0;">
-				<input type="submit" name="{$name_submit}" value="           Готово           " class="wymupdate" />
+				<input type="submit" name="{$name_submit}" value="           Готово           " class="wymupdate" /><span class="autosave-editor"></span>
 			</div>
 			
 			<div style="margin: 20px 0;">
@@ -82,7 +82,7 @@ EOF;
 			
 			<div class="block_page">
 				<h3>Родительская страница (id)</h3>
-				<p><input type="text" value="{$f_page_parent}" name="f_page_parent" style="width: 99%;" /></p>
+				<p>{$all_pages}</p>
 			</div>
 			
 			<div class="block_page">

@@ -107,7 +107,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 	$comments = mso_get_comments(false, 
 			array('limit' => $options['count'], 'order'=>'desc'));
 
-	$out = NR;
+	$out = '';
 	
 	if ($comments) // есть страницы
 	{ 	
@@ -171,7 +171,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 	
 	mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	
-	return $out;
+	return trim($out);
 }
 
 ?>

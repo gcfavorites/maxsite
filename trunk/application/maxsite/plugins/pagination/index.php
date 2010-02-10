@@ -44,6 +44,7 @@ function pagination_go($r = array())
 	}
 	
 	$cur_url = str_replace('//@@', '/', $cur_url);
+	$cur_url = str_replace('@@', '', $cur_url);
 	
 	
 	if ($type == 'home') 

@@ -262,8 +262,8 @@
 		
 		$input_style = 'style="width: 99%; border: 1px solid #3B619C; margin: 5px auto 5px auto; background: #E3FAFF; color: #333399; padding: 2px; font-size: 18pt;"';
 		
-		$f_header = mso_text_to_html($f_header);
-		$f_tags = mso_text_to_html($f_tags);
+		$f_header = htmlspecialchars($f_header);
+		$f_tags = htmlspecialchars($f_tags);
 		
 		$fses = mso_form_session('f_session_id'); // сессия
 
@@ -363,6 +363,28 @@
 		$time_h = form_dropdown('f_time_h', $time_all_h, $tyme_cur_h, ' style="margin-top: 5px; width: 60px;" ');
 		$time_m = form_dropdown('f_time_m', $time_all_m, $tyme_cur_m, ' style="margin-top: 5px; width: 60px;" ');
 		$time_s = form_dropdown('f_time_s', $time_all_s, $tyme_cur_s, ' style="margin-top: 5px; width: 60px;" ');
+		
+		
+		// получаем все страницы, для того чтобы отобразить их в паренте
+		$CI->db->select('page_id, page_title');
+		$CI->db->where('page_status', 'publish');
+		$CI->db->where('page_id!=', $id);
+		$CI->db->order_by('page_date_publish', 'desc');
+		$query = $CI->db->get('page');
+		$all_pages = NR . '<select name="f_page_parent"  style="margin-top: 5px; width: 99%;" >' . NR;
+		$all_pages .= NR . '<option value="0">Нет</option>';
+		if ($query->num_rows() > 0)
+		{
+			
+			foreach ($query->result_array() as $row)
+			{
+				if ($row['page_id'] == $f_page_parent) $sel = ' selected="selected"';
+					else $sel = '';
+					$all_pages .= NR . '<option ' . $sel . 'value="' . $row['page_id'] . '">' . $row['page_id'] . ' - ' . $row['page_title'] . '</option>';
+			}
+		}
+		
+		$all_pages .= NR . '</select>' . NR;
 		
 		
 		# мета большие,вынесена в отдельный файл

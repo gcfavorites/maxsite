@@ -6,19 +6,98 @@
 <?php
 	
 	$CI = & get_instance();
-	
-	// разрешенные типы файлов
-	$allowed_types = 'gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|flv|swf|mp3|wav';
-	
-	
 	$CI->load->helper('file'); // хелпер для работы с файлами
 	$CI->load->library('table');
 	$CI->load->helper('directory');
 	$CI->load->helper('form');
+		
+	// разрешенные типы файлов
+	$allowed_types = 'gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|flv|swf|mp3|wav';
+	
+	
+	// по сегменту определяем текущий каталог в uploads
+	// если каталога нет, скидываем на дефолтный ''
+	
+	$current_dir = $current_dir_h2 = mso_segment(3);
+	if ($current_dir) $current_dir .= '/';
+	
+	$path = $MSO->config['uploads_dir'] . $current_dir;
+	if ( ! is_dir($path) ) // нет каталога
+	{
+		$path = $MSO->config['uploads_dir'];
+		$current_dir = $current_dir_h2 = '';
+	}
+	else
+	{
+		if ($current_dir_h2) $current_dir_h2 = '/' . $current_dir_h2;
+	}
+	
+	echo '<h2>Текущий каталог: uploads' . $current_dir_h2 . '</h2>';
+	
+	
+	
+	# новый каталог - создаем до того, как отобразить навигацию
+	if ( $post = mso_check_post(array('f_session3_id', 'f_cat_name', 'f_newcat_submit')) )
+	{
+		mso_checkreferer();
+
+		$f_cat_name = mso_slug($post['f_cat_name']);
+		
+		if (!$f_cat_name)
+			echo '<div class="error">Нужно ввести имя каталога</div>';
+		else 
+		{
+			$new_dir = getinfo('uploads_dir') . $f_cat_name;
+			
+			if ( is_dir($new_dir) ) // уже есть
+			{
+				echo '<div class="error">Такой каталог уже есть!</div>';
+			}
+			else
+			{
+				@mkdir($new_dir, 0777); // нет каталога, пробуем создать
+				@mkdir($new_dir . '/_mso_i', 0777); // нет каталога, пробуем создать
+				@mkdir($new_dir . '/mini', 0777); // нет каталога, пробуем создать	
+				echo '<div class="update">Каталог <strong>' . $f_cat_name . '</strong> создан!</div>';
+			}
+		}
+	}	
+	
+	
+	
+	
+	
+	
+	// нужно вывести навигацию по каталогам в uploads
+	$all_dirs = directory_map($MSO->config['uploads_dir'], true); // только в uploads
+	$out = '';
+	foreach ($all_dirs as $d)
+	{
+		// это каталог
+		if (is_dir( getinfo('uploads_dir') . $d) and $d != '_mso_float' and $d != 'mini' and $d != '_mso_i' and $d != 'smiles') 
+		{
+			$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '">' . $d . '</a>   ';
+		}
+	}
+	if ($out) 
+	{
+		$out = '<a href="'. $MSO->config['site_admin_url'] . 'files">uploads</a>   ' . $out;
+		$out = str_replace('   ', ' | ', trim($out));
+		$out = '<p>Навигация: ' . $out . '</p>';
+		echo $out;
+	}
+	
+
+	// нужно создать в этом каталоге _mso_i и mini если нет
+	if ( ! is_dir($path . '_mso_i') ) @mkdir($path . '_mso_i', 0777); // нет каталога, пробуем создать
+	if ( ! is_dir($path . 'mini') ) @mkdir($path . 'mini', 0777); // нет каталога, пробуем создать
+	
+		
 	
 	// описания файлов хранятся в виде серилизованного массива в
 	// uploads/_mso_i/_mso_descritions.dat
-	$fn_mso_descritions = $MSO->config['uploads_dir'] . '_mso_i/_mso_descritions.dat';
+	$fn_mso_descritions = $path . '_mso_i/_mso_descriptions.dat';
+	
 	if (!file_exists( $fn_mso_descritions )) // файла нет, нужно его создать
 		write_file($fn_mso_descritions, serialize(array())); // записываем в него пустой массив
 	
@@ -29,6 +108,12 @@
 	}
 	else $mso_descritions = array();
 	
+	
+	
+	
+	
+	
+	
 	# удаление выделенных файлов
 	if ( $post = mso_check_post(array('f_session_id', 'f_check_files', 'f_delete_submit')) )
 	{
@@ -37,21 +122,23 @@
 		
 		foreach ($post['f_check_files'] as $file)
 		{
-			@unlink($MSO->config['uploads_dir'] . $file);
-			@unlink($MSO->config['uploads_dir'] . '_mso_i/' . $file);
-			@unlink($MSO->config['uploads_dir'] . 'mini/' . $file);
-			
-			
+			@unlink($MSO->config['uploads_dir'] . $current_dir . $file);
+			@unlink($MSO->config['uploads_dir'] . $current_dir . '_mso_i/' . $file);
+			@unlink($MSO->config['uploads_dir'] . $current_dir . 'mini/' . $file);
 		}
 		echo '<div class="update">Выполнено</div>';
 	}
+	
+	
+
+	
 	
 	# загрузка нового файла
 	if ( $post = mso_check_post(array('f_session2_id', 'f_upload_submit')) )
 	{
 		mso_checkreferer();
 		
-		$config['upload_path'] = $MSO->config['uploads_dir'];
+		$config['upload_path'] = $MSO->config['uploads_dir'] . $current_dir;
 		$config['allowed_types'] = $allowed_types;
 		//$config['max_size'] = '2048';
 		// $config['max_width'] = '1024';
@@ -186,12 +273,21 @@
 		}
 	}	
 	
+	// форма нового каталога
+	echo '
+		<div style="margin: 20px 0; padding: 5px 10px 5px 10px; border: 1px solid gray;">
+		<form action="" method="post">' . mso_form_session('f_session3_id') . 
+		'<p>Новый каталог: <input type="text" name="f_cat_name" style="width: 380px" value="" />
+		<input type="submit" name="f_newcat_submit" value="&nbsp;Создать&nbsp;" onClick="if(confirm(\'Создать каталог в uploads?\')) {return true;} else {return false;}" ></p>
+		</form></div>';
+			
+	
+	// форма загрузки
 	echo '
 		<div style="margin: 20px 0; padding: 5px 10px 15px 10px; border: 1px solid gray;">
 		<h2>Загрузка файла</h2>
 		<p>Для загрузки файла нажмите кнопку «Обзор», выберите файл на своем компьютере. После этого нажмите кнопку «Загрузить». Размер файла не должен превышать 2Мб.</p>
-		<form action="" method="post" enctype="multipart/form-data">'
-		. mso_form_session('f_session2_id') . 
+		<form action="" method="post" enctype="multipart/form-data">' . mso_form_session('f_session2_id') . 
 		'<p><input type="file" name="f_userfile" size="80" />&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="f_upload_submit" value="Загрузить" /></p>
 		<p>Описание файла: <input type="text" name="f_userfile_title" style="width: 380px" value="" /></p>
 		
@@ -199,7 +295,7 @@
 			<input type="text" name="f_userfile_resize_size" style="width: 50px" maxlength="4" value="600" /> px (по максимальной стороне)</p>
 		
 		<p><input type="checkbox" name="f_userfile_mini" checked="checked" value="" /> Для изображений сделать миниатюру размером 
-			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="150" /> px (по максимальной стороне). <br /><em>Примечание: миниатюра будет создана в каталоге <strong>uploads/mini/</strong></em></p>
+			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="150" /> px (по максимальной стороне). <br /><em>Примечание: миниатюра будет создана в каталоге <strong>uploads/' . $current_dir . 'mini</strong></em></p>
 		
 		</form>
 		</div>
@@ -221,11 +317,14 @@
 	
 	// проходимся по каталогу аплоада и выводим их списком
 	
-	$uploads_dir = $MSO->config['uploads_dir'];
-	$uploads_url = $MSO->config['uploads_url'];
+	$uploads_dir = $MSO->config['uploads_dir'] . $current_dir;
+	$uploads_url = $MSO->config['uploads_url'] . $current_dir;
 	
 	// все файлы в массиве $dirs
 	$dirs = directory_map($uploads_dir, true); // только в текущем каталоге
+	
+	if (!$dirs) $dirs = array();
+	
 	sort($dirs);
 
 	$allowed_ext = explode('|', $allowed_types);
@@ -289,7 +388,7 @@
 	echo '</form>';
 	
 	$n = '\n';
-	$up = $MSO->config['uploads_url'];
+	$up = $uploads_url;
 	
 	echo <<<EOF
 	<script type="text/javascript">

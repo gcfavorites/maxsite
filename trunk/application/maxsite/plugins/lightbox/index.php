@@ -78,7 +78,7 @@ function lightbox_content($text = '')
 		'~\[image=(.*?)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$1" alt="" /></a>',
 		'~\[image\](.*?)\[\/image\]~si' => '<a href="$1" class="lightbox"><img src="$1" alt="" /></a>',
 	
-		'~\[galname\](.*?)\[\/galname\]~si' => '<span>$1</span>',
+		'~\[galname\](.*?)\[\/galname\]~si' => '<div>$1</div>',
 	);
 
 	return preg_replace(array_keys($preg), array_values($preg), $text);

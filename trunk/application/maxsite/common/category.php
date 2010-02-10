@@ -143,7 +143,7 @@ function _get_child2($childs, $li_format = '', $checked_id = array(), $list = ''
 
 # получение всех рубрик в массиве - сразу всё с учетом вложенности
 # используются рекурсивные функции с sql-запросами - РЕСУРСОЕМКАЯ!
-function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc')
+function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false)
 {
 	// если неверный тип, то возвратим пустой массив
 	if ( ($type != 'page') and ($type != 'links') ) return array();
@@ -151,30 +151,34 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	$parent_id = (int)$parent_id;
 	
 	$CI = & get_instance();
-	$CI->db->where(array('category_type'=>$type, 'category_id_parent'=>$parent_id));
-	$CI->db->order_by($order, $asc);
-	$CI->db->from('category');
 	
-	# используем кэширование
-	$sql = $CI->db->_compile_select();
-	$cache_key = $sql;
+	$CI->db->select('category.*, COUNT(cat2obj_id) AS pages_count');
 	
-	$k = mso_get_cache($cache_key);
+	$CI->db->where('category_type', $type);
+	$CI->db->where('category_id_parent', $parent_id);
 	
-	if ($k) $result = $k;
-	else 
-	{
-		$query = $CI->db->get();
-		$result = $query->result_array(); // здесь все рубрики
-		mso_add_cache($cache_key, $result); // сразу в кэш добавим
-	}
+	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
+	
+	if ($hide_empty) $CI->db->having('pages_count>', 0);
+	
+	// включить только указанные
+	if ($in) $CI->db->where_in('category.category_id', $in);
+	
+	// исключить указанные
+	if ($ex) $CI->db->where_not_in('category.category_id', $ex);
+
+	$CI->db->order_by('category.'.$order, $asc);
+	$CI->db->group_by('category.category_id');
+	
+	$query = $CI->db->get('category');
+	$result = $query->result_array(); // здесь все рубрики
 	
 	$r = array();
 	foreach ($result as $key=>$row)
 	{
 		$k = $row['category_id'];
 		$r[$k] = $row;
-		$ch = _get_child($type, $row['category_id'], $child_order, $child_asc);
+		$ch = _get_child($type, $row['category_id'], $child_order, $child_asc, $in, $ex, $in_child, $hide_empty);
 	
 		if ($ch) $r[$k]['childs'] = $ch;
 	}
@@ -183,14 +187,26 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 }
 
 # вспомогательная рекурсивная рубрика для получения всех потомков рубрики mso_cat_array
-function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc')
+function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false)
 {
 	$CI = & get_instance();
+	$CI->db->select('category.*, COUNT(cat2obj_id) AS pages_count');
 	$CI->db->where(array('category_type'=>$type, 'category_id_parent'=>$parent_id));
-	$CI->db->order_by($order, $asc);
-	$CI->db->from('category');
+	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
 	
-	$query = $CI->db->get();
+	// включить только указанные
+	// если разрешено опцией для детей
+	if ($in_child and $in) $CI->db->where_in('category_id', $in);
+	
+	if ($hide_empty) $CI->db->having('pages_count>', 0);
+	
+	// исключить указанные
+	if ($ex) $CI->db->where_not_in('category_id', $ex);
+	
+	$CI->db->order_by('category.'.$order, $asc);
+	$CI->db->group_by('category.category_id');
+	
+	$query = $CI->db->get('category');
 	$result = $query->result_array(); // здесь все рубрики
 	
 	if ($result) 
@@ -205,7 +221,7 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 		$result = $r0;
 		foreach ($result as $key=>$row)
 		{
-			$r = _get_child($type, $row['category_id'], $order, $asc);
+			$r = _get_child($type, $row['category_id'], $order, $asc, $in, $ex, $in_child, $hide_empty);
 			if ($r) $result[$key]['childs'] = $r;
 		}
 	}
@@ -232,14 +248,16 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 # массив можно использовать для быстрого доступа к параметрам рубрик
 # автоматом вычисляются родители (parents) и дочерние элементы (childs)
 # дополнительный параметр level указывает на левый отступ от края списка
-function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = 'ASC', $type_page = 'blog')
+function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = 'ASC', $type_page = 'blog', $cache = true)
 {
 
-	// возможно, что этот список уже сформирован, поэтому посмотрим в кэше
-	$cache_key = mso_md5( __FUNCTION__ . $type . $order . $asc . $type_page );
-	$k = mso_get_cache($cache_key);
-	if ($k) return $k; // да есть в кэше
-	
+	if ($cache) // можно кэшировать
+	{
+		// возможно, что этот список уже сформирован, поэтому посмотрим в кэше
+		$cache_key = mso_md5( __FUNCTION__ . $type . $order . $asc . $type_page );
+		$k = mso_get_cache($cache_key);
+		if ($k) return $k; // да есть в кэше
+	}
 	
 	// если неверный тип, то возвратим пустой массив
 	if ( ($type != 'page') and ($type != 'links') ) return array();
@@ -382,7 +400,7 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 
 	//pr($cat);
 
-	mso_add_cache($cache_key, $cat); // сразу в кэш добавим
+	if ($cache) mso_add_cache($cache_key, $cat); // сразу в кэш добавим
 	
 	return $cat;
 }
@@ -507,7 +525,10 @@ function _mso_cat_ul_glue($in, &$all, $li_format, $checked_id, $selected_id, $sh
 		$add = $li_format;
 		$add = str_replace('%NAME%', $all[$id]['category_name'], $add);
 		$add = str_replace('%ID%', $all[$id]['category_id'], $add);
-		$add = str_replace('%DESC%', $all[$id]['category_desc'], $add);
+		if ($all[$id]['category_desc'])
+			$add = str_replace('%DESC%', '<div class="category_desc">' . $all[$id]['category_desc'] . '</div>', $add);
+		else 
+			$add = str_replace('%DESC%', '', $add);
 		$add = str_replace('%LEVEL%', $level, $add);
 		$add = str_replace('%COUNT_PAGES%', $count_pages, $add);
 		

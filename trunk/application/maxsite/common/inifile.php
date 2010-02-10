@@ -132,6 +132,7 @@ function mso_view_ini($all = false)
 		}
 		elseif ($type == 'textarea')
 		{
+			$value = str_replace('_NR_', "\n", $value);
 			$f .= '<textarea style="width: 99%;" rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}
 		elseif ($type == 'checkbox')

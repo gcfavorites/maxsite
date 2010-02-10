@@ -112,7 +112,7 @@
 	$CI->load->helper('form');
 	
 	$tmpl = array (
-					'table_open'		  => '<table class="page" border="0" width="99%"><colgroup width="30"><colgroup width="45"><colgroup><colgroup><colgroup width="50"><colgroup width="50"><colgroup width="180">',
+					'table_open'		  => '<table class="page" border="0" width="99%"><colgroup width="30"><colgroup width="45"><colgroup><colgroup><colgroup width="100"><colgroup width="50"><colgroup width="180">',
 					'row_alt_start'		  => '<tr class="alt">',
 					'cell_alt_start'	  => '<td class="alt">',
 			  );

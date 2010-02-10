@@ -13,7 +13,19 @@
 	# редактирование рубрики
 	function mso_edit_category($data)
 	{
+		global $MSO;
+		
 		$CI = & get_instance();
+		
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+			
+		# проверка доступа этому пользователю с этим паролем и этим разрешением
+		if ( !mso_check_user_password($user_login, $password, 'admin_cat') )
+				return array( 'result' => 0, 'description' => 'Login/password incorrect');
 		
 		$category_id = isset($data['category_id']) ? (int) $data['category_id'] : 0;
 		$category_id_parent = isset($data['category_id_parent']) ? (int) $data['category_id_parent'] : 0;
@@ -55,13 +67,27 @@
 			$response = array('result'=> '0', 'description'=>'Ошибочный данные');
 		}
 		
+		if ($response['result']) mso_hook('edit_category');
+		
 		return $response;
 	}
 
 	# добавление новой рубрики
 	function mso_new_category($data)
 	{
+		global $MSO;
+		
 		$CI = & get_instance();
+		
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+			
+		# проверка доступа этому пользователю с этим паролем и этим разрешением
+		if ( !mso_check_user_password($user_login, $password, 'admin_cat') )
+				return array( 'result' => 0, 'description' => 'Login/password incorrect');
 		
 		$category_id_parent = isset($data['category_id_parent']) ? (int) $data['category_id_parent'] : 0;
 		$category_menu_order = isset($data['category_menu_order']) ? (int) $data['category_menu_order'] : 0;
@@ -95,21 +121,30 @@
 					);
 					
 				$res = ($CI->db->insert('category', $ins_data)) ? '1' : '0';
-		
-				$response =	array(
+				
+				if ($res)
+					$response =	array(
 									'result' => $res,
-									'description'=>''
+									'description'=>'Inserting new category'
 								);
+				else
+					$response =	array(
+									'result' => 0,
+									'description'=>'Error inserting new category'
+								);				
+				
 			}
 			else
 			{   // есть такая рубрика - не добавляем
-				$response = array('result'=>'0', 'description'=>'Рубрика уже существует');
+				$response = array('result'=>'0', 'description'=>'Category existing');
 			}
 		}
 		else
 		{
-			$response = array('result'=> '0', 'description'=>'Ошибочные данные');
+			$response = array('result'=> '0', 'description'=>'Error data');
 		}
+		
+		if ($response['result']) mso_hook('new_category');
 	
 		return $response;
 	}
@@ -118,12 +153,29 @@
 	# удаление рубрики
 	function mso_delete_category($data)
 	{
+		global $MSO;
+		
 		$CI = & get_instance();
+		
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+			
+		# проверка доступа этому пользователю с этим паролем и этим разрешением
+		if ( !mso_check_user_password($user_login, $password, 'admin_cat') )
+				return array( 'result' => 0, 'description' => 'Login/password incorrect');
 		
 		$category_id = isset($data['category_id']) ? (int) $data['category_id'] : 0;
 		
 		if ($category_id > 0)// все ок - выполняем sql запрос
 		{
+		
+			// нужно удалить у всех страниц этой рубрики эту рубрику
+			$CI->db->where('category_id', $category_id);
+			$CI->db->delete('cat2obj');
+			
 			$CI->db->where('category_id', $category_id);
 			$res = ($CI->db->delete('category')) ? '1' : '0';
 			
@@ -136,7 +188,9 @@
 		{
 			$response = array('result'=> '0', 'description'=>'Ошибочные данные');
 		}
-	
+		
+		if ($response['result']) mso_hook('delete_category');
+		
 		return $response;
 	}
 
@@ -148,10 +202,16 @@
 	# редактирование юзера
 	function mso_edit_user($data)
 	{
+		global $MSO;
+		
 		$CI = & get_instance();
 		
-		$user_login = $data['user_login'];
-		$password = $data['password'];
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+			
 		
 		# проверка можно ли редактировать этому пользователю с этим паролем и этим разрешением
 		if ( !mso_check_user_password($user_login, $password, 'edit_self_users') )
@@ -275,10 +335,15 @@
 	# новый юзер
 	function mso_new_user($data)
 	{
+		global $MSO;
+		
 		$CI = & get_instance();
 		
-		$user_login = $data['user_login'];
-		$password = $data['password'];
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
 		
 		# проверка доступа этому пользователю с этим паролем и этим разрешением
 		if ( !mso_check_user_password($user_login, $password, 'edit_add_new_users') )
@@ -353,10 +418,18 @@
 	# новая страница
 	function mso_new_page($data)
 	{
+		global $MSO;
+		
 		$CI = & get_instance();
 		
-		$user_login = $data['user_login'];
-		$password = $data['password'];
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+			
+		if (!isset($data['page_id_autor'])) $data['page_id_autor'] = $MSO->data['session']['users_id'];
+			
 		
 		# проверка доступа этому пользователю с этим паролем и этим разрешением
 		if ( !mso_check_user_password($user_login, $password, 'admin_page_new') )
@@ -377,18 +450,18 @@
 		}
 		
 		// нужно проверить есть ли уже такая запись
-		// проверяем по заголовку + тексту + slug
-
+		// проверяем по заголовку + тексту 
 		$CI->db->select('page_slug, page_title, page_content');
-		$CI->db->from('page');
-		$CI->db->where(array('page_slug'=>$page_slug, 'page_title'=>$page_title, 'page_content'=> $page_content ));
-		$query = $CI->db->get();
+		$CI->db->where(array('page_title'=>$page_title, 'page_content'=>$page_content ));
+		// $CI->db->where(array('page_slug'=>$page_slug, 'page_title'=>$page_title ));
+		$query = $CI->db->get('page');
 		if ($query->num_rows()) // что-то есть
-		{ // выходим 
+		{ 
 			$response = array(
 							'result' => 0,
 							'description' => 'Existing page'
 							);
+			// pr($response);
 			return $response;
 		}
 		
@@ -557,6 +630,8 @@
 						'description' => 'Error inserting page'
 						);
 		}
+		
+		if ($response['result']) mso_hook('new_page');
 
 		return $response;
 	}
@@ -566,10 +641,17 @@
 	# редактирование существующих страниц
 	function mso_edit_page($data)
 	{
+		global $MSO;
+		
 		$CI = & get_instance();
 		
-		$user_login = $data['user_login'];
-		$password = $data['password'];
+		if (isset($data['user_login'])) $user_login = $data['user_login'];
+			else $user_login = $MSO->data['session']['users_login'];
+		
+		if (isset($data['password'])) $password = $data['password'];
+			else $password = $MSO->data['session']['users_password'];
+			
+		if (!isset($data['page_id_autor'])) $data['page_id_autor'] = $MSO->data['session']['users_id'];
 		
 		# проверка доступа этому пользователю с этим паролем и этим разрешением
 		if ( !mso_check_user_password($user_login, $password, 'admin_page_edit') )
@@ -802,6 +884,8 @@
 						'description' => 'Error inserting page'
 						);
 		}
+		
+		if ($response['result']) mso_hook('edit_page');
 
 		return $response;
 	}

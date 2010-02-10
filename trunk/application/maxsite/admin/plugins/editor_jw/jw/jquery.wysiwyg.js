@@ -458,7 +458,12 @@
                  */
                 setTimeout(function() { $(self.editorDoc.body).css('border', 'none'); }, 0);
             }
-
+            
+            //setTimeout(function() { alert('save!'); }, 500);
+            
+            // max autosave
+            $(self.editorDoc.body).everyTime(autosavetime, function() { self.autosaveContent(); } );
+            
             $(this.editorDoc).click(function( event )
             {
                 self.checkTargets( event.target ? event.target : event.srcElement);
@@ -480,7 +485,7 @@
                 $(this.editorDoc).keydown(function() { self.saveContent(); })
                                  .mousedown(function() { self.saveContent(); });
             }
-
+            
             if ( this.options.css )
             {
                 setTimeout(function()
@@ -512,7 +517,21 @@
 
     				return false;
                 }
-            });
+               
+               // ctrl+s = autosave
+               if (event.keyCode == 83 && event.ctrlKey) 
+               { 
+					// alert('save'); 
+					self.autosaveContent();
+					return false; 
+               }
+            },
+            
+            // последнее сохранение автосаве
+            $('span.autosave-editor').html('<a target="_blank" href="' + autosaveold + '">Последнее автосохранение</a> (Ctrl+S - сохранить / фокус в визуальном редакторе)').css('margin-left', '20px')
+            
+        
+            );
         },
 
         designMode : function()
@@ -624,6 +643,21 @@
         },
         
         // max +
+        autosaveContent : function()
+        {
+			autotext = this.getContent();
+			
+			$('span.autosave-editor').html('Сохранение...');
+				
+			$.post(autosaveurl, { "text": autotext }, function(data)
+			{ 
+				var dd = new Date();
+				$('span.autosave-editor').html('<a target="_blank" href="' + data + '">Автосохранение в ' + dd.toLocaleTimeString() + '</a>');
+			} );
+        },
+        // max -
+        
+        // max +
         submitContent : function()
         {
 			if ( this.viewHTML )
@@ -635,8 +669,6 @@
 			}
 			else 
 			{ 
-				//alert(2); 
-				//self.saveContent();
 				return true;
 			}
         },       

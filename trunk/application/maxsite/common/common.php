@@ -299,6 +299,7 @@ function getinfo($info = '')
 		case 'comments_rss2_url' :
 		
 				break;
+		
 		case 'admin_url' :
 				$out = $MSO->config['admin_url']; // [admin_url] => http://localhost/codeigniter/application/maxsite/admin/
 				break;
@@ -318,6 +319,10 @@ function getinfo($info = '')
 		case 'uploads_url' :
 				$out = $MSO->config['uploads_url'];
 				break;
+				
+		case 'uploads_dir' :
+				$out = $MSO->config['uploads_dir'];
+				break;				
 				
 		case 'users_nik' :
 				$out = $MSO->data['session']['users_nik'];
@@ -610,7 +615,7 @@ function mso_refresh_options()
 
 
 # добавление в таблицу опций options
-function mso_add_option($key, $value, $type)
+function mso_add_option($key, $value, $type = 'general')
 {
 	# если value массив или объект, то серилизуем его в строку
 	if ( !is_scalar($value) ) $value = '_serialize_' . serialize($value);
@@ -646,7 +651,7 @@ function mso_add_option($key, $value, $type)
 }
 
 # удаление в таблице опций options ключа с типом
-function mso_delete_option($key, $type)
+function mso_delete_option($key, $type = 'general')
 {
 	$CI = & get_instance();
 
@@ -660,7 +665,7 @@ function mso_delete_option($key, $type)
 
 # удаление в таблице опций options ключа-маски с типом
 # маска считается от начала, например mask*
-function mso_delete_option_mask($mask, $type)
+function mso_delete_option_mask($mask, $type = 'general')
 {
 	$CI = & get_instance();
 	
@@ -693,6 +698,97 @@ function mso_get_option($key, $type = 'general', $return_value = false)
 	}
 
 	return $result;
+}
+
+
+# добавление float-опции
+# float-опция - это файл из серилизованного текста в каталоге uploads
+# аналог опций, хранящейся в отдельном файле/каталоге _mso_float
+function mso_add_float_option($key, $value, $type = 'general', $serialize = true, $ext = '', $md5_key = true, $dir = '')
+{
+	$CI = & get_instance();	
+	
+	if ($dir) $dir .= '/';
+	
+	$path = getinfo('uploads_dir') . '_mso_float/' . $dir;
+	
+	if ( ! is_dir($path) ) @mkdir($path, 0777); // нет каталога, пробуем создать
+	
+	if ( ! is_dir($path) OR ! is_writable($path)) return false; // нет каталога или он не для записи
+	
+	if ($md5_key) $path .= mso_md5($key . $type) . $ext;
+		else $path .= $key . $type . $ext;
+	
+	if ( ! $fp = @fopen($path, 'wb') ) return false; // нет возможности сохранить файл
+	
+	if ($serialize)	$output = serialize($value);
+		else $output = $value;
+		
+	flock($fp, LOCK_EX);
+	fwrite($fp, $output);
+	flock($fp, LOCK_UN);
+	fclose($fp);
+	@chmod($path, 0777);
+	
+	// возвращаем имя файла
+	if ($md5_key) $return = '_mso_float/' . $dir . mso_md5($key . $type) . $ext;
+		else $return = '_mso_float/' . $dir . $key . $type . $ext;
+	
+	return $return;
+}
+
+
+# получение данных из flat-опций
+function mso_get_float_option($key, $type = 'general', $return_value = false, $serialize = true, $ext = '', $md5_key = true, $dir = '')
+{
+	$CI = & get_instance();	
+	
+	if (!$key or !$type) return $return_value;
+	
+	if ($dir) $dir .= '/';
+	
+	if ($md5_key) $path = getinfo('uploads_dir') . '_mso_float/' . $dir . mso_md5($key . $type) . $ext;
+		else $path = getinfo('uploads_dir') . '_mso_float/' . $dir . $key . $type . $ext;
+	
+	if ( file_exists($path)) 
+	{	
+		if ( ! $fp = @fopen($path, 'rb')) return $return_value;
+		
+		flock($fp, LOCK_SH);
+		
+		$out = $return_value;
+		if (filesize($path) > 0)
+		{
+			if ($serialize) $out = @unserialize(fread($fp, filesize($path)));
+				else $out = fread($fp, filesize($path));
+		}
+		
+		flock($fp, LOCK_UN);
+		fclose($fp);
+		
+		return $out;
+	}
+	else return $return_value;
+}
+
+
+# удаление flat-опции если есть
+function mso_delete_float_option($key, $type = 'general', $dir = '')
+{
+	$CI = & get_instance();	
+	
+	if (!$key or !$type) return false;
+	
+	if ($dir) $dir .= '/';
+	
+	$path = getinfo('uploads_dir') . '_mso_float/' . $dir . mso_md5($key . $type);
+	
+	if ( file_exists($path)) 
+	{	
+		@unlink($path);
+		return true;
+	}
+	else return false;
 }
 
 
@@ -885,8 +981,8 @@ function mso_clean_pre_special_chars($matches)
 		$m = htmlspecialchars($m, ENT_QUOTES);
 		
 		// для смайлов избежать конфликта
-		$arr1 = array(':', '\'', '(', ')', '|', '-');
-		$arr2 = array('&#58;', '&#39;', '&#40;', '&#41;', '&#124;', '&#45;');
+		$arr1 = array(':', '\'', '(', ')', '|', '-', '[', ']');
+		$arr2 = array('&#58;', '&#39;', '&#40;', '&#41;', '&#124;', '&#45;', '&#91;', '&#93;');
 		$m = str_replace($arr1, $arr2, $m);
 		
 		$text = "\n\n" . $matches[1] . $m . "</pre>\n\n";
@@ -1476,39 +1572,44 @@ function mso_slug($slug)
 {
 	$slug = mso_hook('slug_do', $slug);
 	
-	// таблица замены
-	$repl = array(
-	"А"=>"a", "Б"=>"b",  "В"=>"v",  "Г"=>"g",   "Д"=>"d",
-	"Е"=>"e", "Ё"=>"yo", "Ж"=>"zh",
-	"З"=>"z", "И"=>"i",  "Й"=>"j",  "К"=>"k",   "Л"=>"l",
-	"М"=>"m", "Н"=>"n",  "О"=>"o",  "П"=>"p",   "Р"=>"r",
-	"С"=>"s", "Т"=>"t",  "У"=>"u",  "Ф"=>"f",   "Х"=>"x",
-	"Ц"=>"c", "Ч"=>"ch", "Ш"=>"sh", "Щ"=>"shh", "Ъ"=>"",
-	"Ы"=>"C", "Ь"=>"",   "Э"=>"e",  "Ю"=>"yu", "Я"=>"ya",
-	
-	"а"=>"a", "б"=>"b",  "в"=>"v",  "г"=>"g",   "д"=>"d",
-	"е"=>"e", "ё"=>"yo", "ж"=>"zh",
-	"з"=>"z", "и"=>"i",  "й"=>"j",  "к"=>"k",   "л"=>"l",
-	"м"=>"m", "н"=>"n",  "о"=>"o",  "п"=>"p",   "р"=>"r",
-	"с"=>"s", "т"=>"t",  "у"=>"u",  "ф"=>"f",   "х"=>"x",
-	"ц"=>"c", "ч"=>"ch", "ш"=>"sh", "щ"=>"shh", "ъ"=>"",
-	"ы"=>"y", "ь"=>"",   "э"=>"e",  "ю"=>"yu",  "я"=>"ya",
-	
-	"Є"=>"ye", "І"=>"i", "Ѓ"=>"g", "і"=>"i", "є"=>"ye", "ѓ"=>"g",
-	
-	"«"=>"", "»"=>"", "—"=>"-", "`"=>"", " "=>"-",
-	"["=>"", "]"=>"", "{"=>"", "}"=>"", "<"=>"", ">"=>"",
-	"?"=>"", "."=>"", ","=>"", "*"=>"", "%"=>"", "$"=>"",
-	"@"=>"", "!"=>"", ";"=>"", ":"=>"", "^"=>"", "\""=>"",
-	"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
-	"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>""
-	);
-	
-	$slug = strtolower(strtr(trim($slug), $repl));
-	$slug = str_replace('---', '-', $slug);
-	$slug = str_replace('--', '-', $slug);
-	
-	$slug = mso_hook('slug', $slug);
+	if (!mso_hook_present('slug'))
+	{
+		// таблица замены
+		$repl = array(
+		"А"=>"a", "Б"=>"b",  "В"=>"v",  "Г"=>"g",   "Д"=>"d",
+		"Е"=>"e", "Ё"=>"jo", "Ж"=>"zh",
+		"З"=>"z", "И"=>"i",  "Й"=>"j",  "К"=>"k",   "Л"=>"l",
+		"М"=>"m", "Н"=>"n",  "О"=>"o",  "П"=>"p",   "Р"=>"r",
+		"С"=>"s", "Т"=>"t",  "У"=>"u",  "Ф"=>"f",   "Х"=>"h",
+		"Ц"=>"c", "Ч"=>"ch", "Ш"=>"sh", "Щ"=>"shh", "Ъ"=>"",
+		"Ы"=>"y", "Ь"=>"",   "Э"=>"e",  "Ю"=>"ju", "Я"=>"ja",
+		
+		"а"=>"a", "б"=>"b",  "в"=>"v",  "г"=>"g",   "д"=>"d",
+		"е"=>"e", "ё"=>"jo", "ж"=>"zh",
+		"з"=>"z", "и"=>"i",  "й"=>"j",  "к"=>"k",   "л"=>"l",
+		"м"=>"m", "н"=>"n",  "о"=>"o",  "п"=>"p",   "р"=>"r",
+		"с"=>"s", "т"=>"t",  "у"=>"u",  "ф"=>"f",   "х"=>"h",
+		"ц"=>"c", "ч"=>"ch", "ш"=>"sh", "щ"=>"shh", "ъ"=>"",
+		"ы"=>"y", "ь"=>"",   "э"=>"e",  "ю"=>"ju",  "я"=>"ja",
+		
+		"Є"=>"ye", "І"=>"i", "Ѓ"=>"g", "і"=>"i", "є"=>"ye", "ѓ"=>"g",
+		
+		"«"=>"", "»"=>"", "—"=>"-", "`"=>"", " "=>"-",
+		"["=>"", "]"=>"", "{"=>"", "}"=>"", "<"=>"", ">"=>"",
+		"?"=>"", "."=>"", ","=>"", "*"=>"", "%"=>"", "$"=>"",
+		"@"=>"", "!"=>"", ";"=>"", ":"=>"", "^"=>"", "\""=>"",
+		"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
+		"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>"", "”"=>"", "“"=>""
+		);
+		
+		$slug = strtolower(strtr(trim($slug), $repl));
+		$slug = str_replace('---', '-', $slug);
+		$slug = str_replace('--', '-', $slug);
+		
+		$slug = str_replace('-', ' ', $slug);
+		$slug = str_replace(' ', '-', trim($slug));
+	}
+	else $slug = mso_hook('slug', $slug);
 
 	return $slug;
 }
@@ -1868,6 +1969,8 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 {
 	global $MSO;
 	
+	static $num_widget = array(); // номер виджета по порядку в одном сайдбаре
+	
 	//$sidebar = mso_slug($sidebar);
 	
 	// $widgets = mso_get_option('sidebars-' . mso_slug($sidebar), 'sidebars', array());
@@ -1895,7 +1998,28 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '')
 			{
 				if ($temp = $widget($num)) // выполняем виджет если он пустой, то пропускаем вывод
 				{
-					$out .= $block_start . $temp . $block_end;
+					
+					if (isset($num_widget[$sidebar]['numw'])) //уже есть номер виджета
+					{
+						$numw = ++$num_widget[$sidebar]['numw'];
+						$num_widget[$sidebar]['numw'] = $numw;
+					}
+					else // нет такого = пишем 1
+					{
+						$numw = $num_widget[$sidebar]['numw'] = 1;
+					}
+	
+					$st = str_replace('[FN]', $widget, $block_start); // название функции виджета
+					$st = str_replace('[NUMF]', $num, $st); // номер функции
+					$st = str_replace('[NUMW]', $numw, $st);	// 
+					$st = str_replace('[SB]', $sidebar, $st); // номер сайдбара
+					
+					$en = str_replace('[FN]', $widget, $block_end);
+					$en = str_replace('[NUMF]', $num, $en);
+					$en = str_replace('[NUMW]', $numw, $en);
+					$en = str_replace('[SB]', $sidebar, $en);
+					
+					$out .= $st . $temp . $en;
 				}
 			}
 		}
@@ -1940,7 +2064,8 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false)
 # для юникода отдельный wordwrap
 # часть кода отсюда: http://us2.php.net/manual/ru/function.wordwrap.php#78846
 # переделал и исправил ошибки я
-function mso_wordwrap($str, $wid, $tag)
+# ширина, разделеитель
+function mso_wordwrap($str, $wid = 60, $tag = ' ')
 {
 		$pos = 0;
 		$tok = array();
@@ -2082,5 +2207,107 @@ function mso_get_cookie($name_cookies, $def_value = '', $allow_vals = false)
 	}
 	else return $value;
 }
+
+# функция построения из массивов списка UL
+# вход - массив из с [childs]=>array(...)
+function mso_create_list($a = array(), $options = array(), $child = false)
+{
+	if (!$a) return '';
+	
+	if (!isset($options['class_ul'])) $options['class_ul'] = ''; // класс UL
+	if (!isset($options['class_child'])) $options['class_child'] = 'child'; // класс для ребенка
+	if (!isset($options['class_current'])) $options['class_current'] = 'current-page'; // класс текущей страницы
+	if (!isset($options['format'])) $options['format'] = '[LINK][TITLE][/LINK]'; // формат ссылки
+	if (!isset($options['format_current'])) $options['format_current'] = '<span>[TITLE]</span>'; // формат для текущей
+	if (!isset($options['title'])) $options['title'] = 'page_title'; // имя ключа для титула
+	if (!isset($options['link'])) $options['link'] = 'page_slug'; // имя ключа для слага
+	if (!isset($options['descr'])) $options['descr'] = 'category_desc'; // имя ключа для описания
+	if (!isset($options['count'])) $options['count'] = 'count'; // имя ключа для количества элементов
+	if (!isset($options['prefix'])) $options['prefix'] = 'page/'; // префикс для ссылки
+	if (!isset($options['current_id'])) $options['current_id'] = true; // текущая страница отмечается по page_id - иначе по текущему url
+	if (!isset($options['childs'])) $options['childs'] = 'childs'; // поле для массива детей
+	
+	if ($child) $out = NR . '	<ul class="' . $options['class_child'] . '">';
+		else $out = NR . '<ul class="' . $options['class_ul'] . '">';
+	
+	$current_url = getinfo('siteurl') . mso_current_url(); // текущий урл
+	
+	foreach ($a as $elem)
+	{
+		$title = $elem[$options['title']];
+		$url = getinfo('siteurl') . $options['prefix'] . $elem[$options['link']];
+		
+		//if ($url == $current_url)
+		//	$link = '<a href="' . $url . '" title="' . mso_strip($title) . '" class="' . $options['class_current'] . '">';
+		//else
+		
+		$link = '<a href="' . $url . '" title="' . mso_strip($title) . '">';
+		
+		if (isset($elem[$options['descr']])) $descr = $elem[$options['descr']];
+		else $descr = '';
+
+		if (isset($elem[$options['count']])) $count = $elem[$options['count']];
+		else $count = '';		
+		
+		
+		$cur = false;
+		
+		if ($options['current_id']) // текущий определяем по id страницы
+		{
+			if (isset($elem['current'])) 
+			{
+				$e = $options['format_current'];
+				$cur = true;
+			}
+			else 
+				$e = $options['format'];
+		}
+		else // определяем по урлу
+		{
+			if ($url == $current_url)
+			{
+				$e = $options['format_current'];
+				$cur = true;
+			}
+			else $e = $options['format'];
+			
+		}
+		
+		
+		
+		$e = str_replace('[LINK]', $link, $e);
+		$e = str_replace('[/LINK]', '</a>', $e);
+		$e = str_replace('[TITLE]', $title, $e);
+		$e = str_replace('[DESCR]', $descr, $e);
+		$e = str_replace('[COUNT]', $count, $e);
+		
+		if (isset($elem[$options['childs']])) 
+		{
+			if ($cur) $out .= NR . '<li class="' . $options['class_current'] . '">' . $e;
+				else $out .= NR . '<li>' . $e;
+			$out .= mso_create_list($elem[$options['childs']], $options, true);
+			$out .= NR . '</li>';
+		}
+		else 
+		{
+			if ($child) $out .= NR . '	';
+				else $out .= NR;
+			
+			if ($cur) $out .= '<li class="' . $options['class_current'] . '">' . $e . '</li>';
+				else $out .= '<li>' . $e . '</li>';
+		}
+	}
+	
+	if ($child) $out .= NR . '	</ul>' . NR;
+		else $out .= NR . '</ul>' . NR;
+	
+	return $out;
+}
+
+
+
+
+
+
 
 ?>

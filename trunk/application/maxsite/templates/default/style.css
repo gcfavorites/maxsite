@@ -8,7 +8,8 @@ body { font: 62.5% Verdana, Tahoma, Arial, sans-serif; background: #8591B7 url(i
 p { margin: 3px 0px 7px 0px;}
 p.podpis { margin: 15px 0px 7px 0px; text-align: right; font-weight: bold;}
 
-ul, ol {margin-top: 10px; margin-bottom: 10px;}
+#content ul, #content ol {margin-top: 10px; margin-bottom: 10px;}
+#content ul ul, #content ol ol {margin-top: 0px; margin-bottom: 0px;}
 li {margin-left: 30px;} 
 
 a { color: blue; text-decoration: none;}
@@ -21,6 +22,7 @@ li.current_url a {font-weight: bold;}
 li.current_url li a {font-weight: normal;}
 
 li.current-page a {font-weight: bold;}
+li.current-page li a {font-weight: normal;}
 
 a img { border: none; text-decoration: none;} /* ie fix*/
 a img, a:visited img, a:hover img, a img:hover, img+a, img+a:hover { border: none; text-decoration: none;}
@@ -137,18 +139,27 @@ div.page_other_pages {margin: 20px 0 20px 0;}
 div.page_other_pages h3 {color: black; margin: 0 0 5px 0; background: #E8E8E8; padding: 3px;}
 div.page_other_pages ul {list-style-type: square;}
 
+
+div.gallery {border: 5px double white; background: #E4EAEE; padding: 7px 3px 3px 3px; text-align: justify;}
+div.gallery img {border: 1px solid #7E7E82; margin: 0 4px; }
+div.gallery img:hover {border: 1px solid #922A35; }
+div.gallery div {text-align: left; font-weight: bold; margin: 0 0 3px 3px;}
+
+
 /* LIST */
-ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; fo1nt-size: 9pt; list-style-type: none; l1ist-style-type: square; line-height: 1.5em;}
+ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; list-style-type: none; line-height: 1.5em;}
 
 ul.is_link ul {marg1in: 0; padd1ing: 0px; list-style-type: none;}
 
 ul.is_link li {margin: 0px; background: url(images/bullet.jpg) no-repeat 0 6px; padding: 0 0 0 14px;}
-ul.is_link li li {margin-left: 10px;}
+ul.is_link li li {margin-left: 5px; }
 
 li.level0, li.level0 a {}
 li.count0 {color: grey;}
 
 ul.category {color: gray;}
+ul.category div.category_desc {color: gray;}
+
 
 ul.last_comment {font-size: 8pt; }
 ul.last_comment em {display: block; color: gray; f1ont-size: 0.9em; text-align: right;}

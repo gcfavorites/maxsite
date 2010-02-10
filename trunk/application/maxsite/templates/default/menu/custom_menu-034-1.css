@@ -2,7 +2,7 @@
 {
 	width:100%;
 	height:31px;
-	background: url("images/bmid_034-1.gif");
+	
 	margin:0;
 	border:0;
 }
@@ -66,7 +66,6 @@ display:inline;
 	display:block;
 	visibility:hidden;
 	border:0 solid #330066;
-	background: url("images/bmid_034-1.gif");
 	color:#000000;
 	z-index:100;
 	text-decoration:none;

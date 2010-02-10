@@ -80,15 +80,22 @@ function mso_get_comments($page_id = 0, $r = array())
 			
 			
 			$comments_content = $comment['comments_content'];
+			$comments_content = mso_hook('comments_content', $comments_content);
+			
+			$comments_content = str_replace('<p>', '&lt;p&gt;', $comments_content);
+			$comments_content = str_replace('</p>', '&lt;/p&gt;', $comments_content);
+			$comments_content = str_replace('<P>', '&lt;P&gt;', $comments_content);
+			$comments_content = str_replace('</P>', '&lt;/P&gt;', $comments_content);
+			
 			$comments_content = mso_auto_tag($comments_content, true);
 			
+			$comments_content = mso_hook('content_auto_tag', $comments_content);
+			$comments_content = mso_hook('content_balance_tags', $comments_content);
+			$comments_content = mso_balance_tags($comments_content);
+					
 			if ($commentator==1) $comments_content = strip_tags($comments_content, $r['tags_comusers']);
 			elseif ($commentator==2) $comments_content = strip_tags($comments_content, $r['tags_users']);
 			else $comments_content = strip_tags($comments_content, $r['tags']);
-			
-			$comments_content = mso_balance_tags($comments_content);
-			
-			$comments_content = mso_hook('comments_content', $comments_content);
 			
 			$comments[$key]['comments_content'] = $comments_content;
 			$comments[$key]['comments_url'] = $comment['comments_url'];
@@ -674,6 +681,11 @@ function mso_get_comusers_all($args = array())
 	else return array();
 }
 
+
+function mso_comments_content($text = '')
+{
+	return $text;
+}
 
 
 ?>

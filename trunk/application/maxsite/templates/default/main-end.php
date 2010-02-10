@@ -27,5 +27,8 @@
 
 <?php mso_hook('body_end') ?>
 
+<?php
+	if (function_exists('ushka')) echo ushka('google_analytics');
+?>
 </body>
 </html>

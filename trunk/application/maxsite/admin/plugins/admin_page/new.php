@@ -51,7 +51,7 @@
 		
 		if ( isset($post['f_page_type']) ) $f_page_type = $post['f_page_type'][0];
 			else $f_page_type = '1';
-			
+		
 		if ( isset($post['f_page_parent']) and $post['f_page_parent'] ) $f_page_parent = (int) $post['f_page_parent'];
 			else $f_page_parent = '';
 		
@@ -141,7 +141,7 @@
 			
 		// pr($result);
 		
-		if (isset($result['result']) and $result['result']) 
+		if (isset($result['result']) and $result['result'])
 		{
 			if (isset($result['result'][0])) 
 			{
@@ -301,6 +301,27 @@
 	$time_m = form_dropdown('f_time_m', $time_all_m, $tyme_cur_m, ' style="margin-top: 5px; width: 60px;" ');
 	$time_s = form_dropdown('f_time_s', $time_all_s, $tyme_cur_s, ' style="margin-top: 5px; width: 60px;" ');	
 
+
+	// получаем все страницы, для того чтобы отобразить их в паренте
+	$CI->db->select('page_id, page_title');
+	$CI->db->where('page_status', 'publish');
+	$CI->db->order_by('page_date_publish', 'desc');
+	$query = $CI->db->get('page');
+
+	$all_pages = NR . '<select name="f_page_parent"  style="margin-top: 5px; width: 99%;" >' . NR;
+	$all_pages .= NR . '<option value="0">Нет</option>';
+	if ($query->num_rows() > 0)
+	{
+		
+		foreach ($query->result_array() as $row)
+		{
+			if ($row['page_id'] == $f_page_parent) $sel = ' selected="selected"';
+				else $sel = '';
+				$all_pages .= NR . '<option ' . $sel . 'value="' . $row['page_id'] . '">' . $row['page_id'] . ' - ' . $row['page_title'] . '</option>';
+		}
+	}
+	
+	$all_pages .= NR . '</select>' . NR;
 
 	
 	# мета большие,вынесена в отдельный файл

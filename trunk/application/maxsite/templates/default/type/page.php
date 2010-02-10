@@ -45,6 +45,12 @@ if ($pages) // есть страницы
 			mso_page_content($page_content);
 			echo '<div class="break"></div>';
 			
+			// связанные страницы по родителям
+			if ($page_nav = mso_page_nav($page_id, $page_id_parent))
+			{
+				echo '<div class="page_nav">' . $page_nav . '</div>';
+			}
+			
 			// выводить ли блок "Еще записи этой рубрики"
 			if ($bl_title = mso_get_option('page_other_pages', 'templates', 'Еще записи по теме'))
 			{

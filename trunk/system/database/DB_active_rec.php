@@ -1003,7 +1003,10 @@ class CI_DB_active_record extends CI_DB_driver {
 		}
 			
 		$sql = $this->_compile_select();
-
+		
+		# fix max ORDER BY `` RAND()
+		$sql = str_replace('ORDER BY `` RAND()', 'ORDER BY RAND()', $sql);
+		
 		$result = $this->query($sql);
 		$this->_reset_select();
 		return $result;

@@ -72,9 +72,9 @@ function %%%_admin_page($args = array())
 		return $args;
 	}
 	
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "Admin "; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "Admin - " . $args; ' );
-
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "%%%"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "%%% - " . $args; ' );
+	
 	require($MSO->config['plugins_dir'] . '%%%/admin.php');
 }
 

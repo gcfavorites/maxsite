@@ -47,7 +47,7 @@ if ($comments) // есть страницы
 		
 		if (!$comments_approved) echo ' | Ожидает модерации';
 
-		echo '</span><br />' . $comments_content;
+		echo '</span><br />' . mso_comments_content($comments_content);
 		echo '</li>'; 
 		
 	//	pr($comment);

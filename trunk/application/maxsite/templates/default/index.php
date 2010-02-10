@@ -50,7 +50,7 @@ if ( is_type('archive') ) 			require($type_dir . 'archive.php');	// архив �
 	{
 		if (mso_segment(3)=='edit')	require($type_dir . 'users-form.php'); // редактирование комюзера
 		elseif (mso_segment(2)=='') require($type_dir . 'users-all.php');	// список всех комюзеров
-		else require('type/users.php');								// комюзер
+		else require($type_dir . 'users.php');								// комюзер
 	}
 	elseif ( mso_segment(1)=='sitemap' ) require($type_dir . 'sitemap.php'); // карта сайта
 	else 							require($type_dir . 'page_404.php');	// 404 - если ничего так и не найдено

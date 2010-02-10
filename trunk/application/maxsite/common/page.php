@@ -86,11 +86,11 @@ function _mso_sql_build_home($r, &$pag)
 	
 	if ($r['content'])
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	}
 	else
 	{
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik,  page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik,  page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	}
 		
 	$CI->db->from('page');
@@ -150,7 +150,7 @@ function _mso_sql_build_page($r, &$pag)
 	if ( (string) $slug != (string) $id ) $id = false; // slug не число
 	
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, page.page_id_autor');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor');
 	$CI->db->from('page');
 	
 	// if ($page_status) $CI->db->where('page_status', $page_status);
@@ -265,7 +265,7 @@ function _mso_sql_build_category($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments');
 	else
 		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, COUNT(comments_id) AS page_count_comments');
 		
@@ -373,9 +373,9 @@ function _mso_sql_build_tag($r, &$pag)
 	
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, meta.meta_value AS tag_name, COUNT(comments_id) AS page_count_comments');
 	
 	
 	$CI->db->from('page');
@@ -488,7 +488,7 @@ function _mso_sql_build_archive($r, &$pag)
 		$pag = false;
 	
 	// теперь сами страницы
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	$CI->db->from('page');
 	$CI->db->where('page_status', 'publish');
 	
@@ -585,7 +585,7 @@ function _mso_sql_build_search($r, &$pag)
 	
 	// теперь сами страницы
 	
-	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, COUNT(comments_id) AS page_count_comments');
+	$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, COUNT(comments_id) AS page_count_comments');
 	
 		
 	$CI->db->from('page');
@@ -715,9 +715,18 @@ function mso_get_pages($r = array(), &$pag)
 	else return array();
 	
 	
-	// сам запрос и его обработка
-	$query = $CI->db->get();
+	$sql = $CI->db->_compile_select();
 	
+	$sql = str_replace('ORDER BY `` RAND()', 'ORDER BY RAND()', $sql); # fix CodeIgniter ORDER BY `` RAND() 
+	
+
+	// сам запрос и его обработка
+	//$query = $CI->db->get();
+	
+	// сам запрос теперь сделаем вручную
+	$query = $CI->db->query($sql);
+	$CI->db->_reset_select();
+		
 	if ($query->num_rows() > 0)	
 	{	
 		$pages = $query->result_array();
@@ -813,7 +822,9 @@ function mso_get_pages($r = array(), &$pag)
 				
 				$output = mso_balance_tags($output);
 			}
-
+			
+			$output = mso_hook('content_complete', $output);
+			
 			$pages[$key]['page_content'] = $output;
 			
 			$pages[$key]['page_categories'] = array();
@@ -1004,7 +1015,7 @@ function mso_page_title($page_slug = '', $page_title = 'no title', $do = '<h1>',
 	if (!$page_slug) return '';
 	
 	if ($link)
-		$out = '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '">' . $page_title . '</a>';
+		$out = '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '" title="' . mso_strip($page_title) . '">' . $page_title . '</a>';
 	else
 		$out = $page_title;
 	
@@ -1029,7 +1040,7 @@ function mso_page_feed($page_slug = '', $page_title = 'Подписаться', 
 		else return $do . $out . $posle;
 }
 
-# формирование ссылки для rss страницы
+# вывод текста
 function mso_page_content($page_content = '', $use_password = true, $message = 'Данная запись защищена паролем.')
 {
 	global $page;
@@ -1226,4 +1237,94 @@ function mso_page_view_count($page_view_count = 0, $do = '<span>Прочтени
 	if ($echo) echo $do . $page_view_count . $posle;
 		else return $do . $page_view_count . $posle;
 }
+
+
+# вывод списка страниц по паренту - навигация под страницами - все связанные
+function mso_page_nav($page_id = 0, $page_id_parent = 0, $echo = false)
+{
+	$r = mso_page_map($page_id, $page_id_parent); // построение карты страниц
+	$r = mso_create_list($r); // создание ul-списка
+	
+	if ($echo) echo $r;
+		else return $r;
+}
+
+
+# вывод карты страниц по паренту - готовый массив с вложениями с childs=>...
+# функция ресурсоемкая!
+function mso_page_map($page_id = 0, $page_id_parent = 0)
+{
+	$cache_key = 'mso_page_map' . $page_id . '-' . $page_id_parent;
+	$k = mso_get_cache($cache_key);
+	if ($k) return $k; // да есть в кэше
+	
+	$CI = & get_instance();
+	$CI->db->select('page_id, page_id_parent, page_title, page_slug');
+	
+	if ($page_id) 
+	{
+		$CI->db->where('page_id', $page_id);
+		$CI->db->where('page_id_parent', '0');
+		$CI->db->or_where('page_id', $page_id_parent);
+	}
+	
+	$query = $CI->db->get('page');
+	$result = $query->result_array(); // здесь все страницы
+	
+	foreach ($result as $key=>$row)
+	{
+		$k = $row['page_id'];
+		$r[$k] = $row;
+		if ($k == $page_id) $r[$k]['current'] = 1;
+		
+		$ch = _mso_page_map_get_child($row['page_id'], $page_id);
+		if ($ch) $r[$k]['childs'] = $ch;
+	}
+	
+	// pr($k);
+	// pr($r);
+	
+	if (!isset($r[$k]['childs'])) $r = array(); // в итоге нет детей у первого элемента, все обнуляем
+	
+	mso_add_cache($cache_key, $r); // в кэш
+
+	return $r;
+}
+
+
+# вспомогательная рекурсивная рубрика для получения всех потомков страницы
+function _mso_page_map_get_child($page_id = 0, $cur_id = 0)
+{
+	$CI = & get_instance();
+	$CI->db->select('page_id, page_id_parent, page_title, page_slug');
+	$CI->db->where('page_id_parent', $page_id);
+	
+	$query = $CI->db->get('page');
+	
+	$result = $query->result_array(); // здесь все рубрики
+	
+	if ($result) 
+	{
+		$r0 = array();
+		foreach ($result as $key=>$row)
+		{
+			$k = $row['page_id'];
+			$r0[$k] = $row;
+			
+			if ($k == $cur_id) $r0[$k]['current'] = 1;
+		}
+		
+		
+		$result = $r0;
+		foreach ($result as $key=>$row)
+		{
+			$r = _mso_page_map_get_child($row['page_id'], $cur_id);
+			if ($r) $result[$key]['childs'] = $r;
+		}
+	}
+	
+	return $result;
+}
+
+
 ?>
