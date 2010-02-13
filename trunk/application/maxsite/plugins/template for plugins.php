@@ -11,7 +11,7 @@
 # функция автоподключения плагина
 function %%%_autoload()
 {
-
+	//mso_create_allow('%%%_edit', t('Админ-доступ к настройкам', 'plugins') . ' %%%');
 }
 
 # функция выполняется при активации (вкл) плагина
@@ -41,6 +41,13 @@ function %%%_mso_options()
 {
 	# ключ, тип, ключи массива
 	mso_admin_plugin_options('plugin_%%%', 'plugins', 
+/*
+		if ( !mso_check_allow('%%%_edit') ) 
+		{
+			echo t('Доступ запрещен', 'plugins');
+			return $args;
+		}
+*/
 		array(
 			'option1' => array(
 							'type' => 'text', 

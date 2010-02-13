@@ -196,7 +196,7 @@
 	# строчка для добавления новой рубрики
 	echo '
 	<div class="item new_cat">
-		<h2>Новая рубрика</h2>
+		<h2>' . t('Новая рубрика') . '</h2>
 		<p class="input"><strong>' . t('Название', 'admin') . ' </strong><input type="text" name="f_new_name" value=""></p>
 		<p class="textarea"><strong>' . t('Описание', 'admin') . ' </strong><textarea name="f_new_desc"></textarea></p>
 		<p class="input"><strong>' . t('Ссылка', 'admin') . ' </strong><input type="text" name="f_new_slug" value=""></p>

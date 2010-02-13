@@ -66,7 +66,7 @@
 ?>
 <h1><?= t('Комментарии') ?></h1>
 <p class="info"><?= t('Последние комментарии') ?></p>
-<p><?= t('<strong>Фильтр:</strong>') ?> <a href="<?= getinfo('site_admin_url') ?>comments/all">Все</a> | <a href="<?= getinfo('site_admin_url') ?>comments/moderation">Только требующие модерации</a></p>
+<p><strong><?= t('Фильтр:') ?></strong> <a href="<?= getinfo('site_admin_url') ?>comments/all"><?= t('Все') ?></a> | <a href="<?= getinfo('site_admin_url') ?>comments/moderation"><?= t('Только требующие модерации') ?></a></p>
 
 
 <?php

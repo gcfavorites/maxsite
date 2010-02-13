@@ -9,6 +9,7 @@
 # функция автоподключения плагина
 function smtp_mail_autoload()
 {
+	mso_create_allow('smtp_mail_edit', t('Админ-доступ к настройкам', 'plugins') . ' smtp_mail');
 	mso_hook_add( 'mail', 'smtp_mail_custom');
 }
 
@@ -37,6 +38,12 @@ function smtp_mail_uninstall($args = array())
 # если не нужна, удалите целиком
 function smtp_mail_mso_options() 
 {
+	if ( !mso_check_allow('smtp_mail_edit') ) 
+	{
+		echo t('Доступ запрещен', 'plugins');
+		return $args;
+	}
+
 	# ключ, тип, ключи массива
 	mso_admin_plugin_options('plugin_smtp_mail', 'plugins',
 		array(

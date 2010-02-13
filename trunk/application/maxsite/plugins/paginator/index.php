@@ -5,13 +5,11 @@ function paginator_autoload($a = array())
 	mso_hook_add('head', 'paginator_head');
 	mso_hook_add('admin_head', 'paginator_head');
 	mso_hook_add('pagination', 'paginator_go', 10);
-	
 	return $a;
 }
 
-# функция выполняется при активации (вкл) плагина
 function paginator_activate($args = array())
-{	
+{
 	if (!function_exists('paginator3000_go')) mso_delete_option('paginator3000', 'plugins');
 	return $args;
 }
@@ -92,7 +90,7 @@ function paginator_go($r = array())
 	$r_orig = $r;
 
 	if (!$r) return $r;
-	if ( !isset($r['maxcount']) ) return $r;
+	if ( !isset($r['maxcount']) || $r['maxcount'] == '1' ) return $r;
 	if ( !isset($r['limit']) ) return $r;
 	if ( !isset($r['type']) )  $r['type'] = false;
 	if ( !isset($r['next_url']) ) $r['next_url'] = 'next';
@@ -131,7 +129,7 @@ function paginator_go($r = array())
 	$returnOrder = ( $options['returnOrder'] == '1' ) ? 'true' : 'false';
 	$id = mt_rand(1,999);
 
-	echo '<script language="javascript">$(document).ready(function() {$("#pag'.$id.'").paginator({pagesTotal:'.$r['maxcount'].', pagesSpan:'.$options['page_count'].', pageCurrent:'.$current_paged.', baseUrl:"'.$cur_url.'/next/", returnOrder:'.$returnOrder.', lang: {next:"'.$options['lang_next'].'", last:"'.$options['lang_last'].'", prior:"'.$options['lang_prior'].'", first:"'.$options['lang_first'].'", arrowRight:String.fromCharCode(8594), arrowLeft:String.fromCharCode(8592)}});})</script>'.NR.'<div id="pag'.$id.'" class="paginator"></div>'.NR;
+	echo '<script type="text/javascript">$(document).ready(function() {$("#pag'.$id.'").paginator({pagesTotal:'.$r['maxcount'].', pagesSpan:'.$options['page_count'].', pageCurrent:'.$current_paged.', baseUrl:"'.$cur_url.'/next/", returnOrder:'.$returnOrder.', lang: {next:"'.$options['lang_next'].'", last:"'.$options['lang_last'].'", prior:"'.$options['lang_prior'].'", first:"'.$options['lang_first'].'", arrowRight:String.fromCharCode(8594), arrowLeft:String.fromCharCode(8592)}});})</script>'.NR.'<div id="pag'.$id.'" class="paginator"></div>'.NR;
 
 	return $r_orig;
 }

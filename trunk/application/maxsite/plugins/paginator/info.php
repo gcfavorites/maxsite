@@ -3,7 +3,7 @@
 $info = array(
 	'name' => 'Paginator',
 	'description' => 'Пагинация страниц (с использованием скроллбара)',
-	'version' => '1.1',
+	'version' => '1.2',
 	'author' => 'DRiVER, Radik_Wind',
 	'plugin_url' => 'http://DRiVERlab.ru/page/28',
 	'author_url' => 'http://DRiVERlab.ru',

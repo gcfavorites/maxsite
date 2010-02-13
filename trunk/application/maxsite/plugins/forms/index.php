@@ -182,7 +182,7 @@ function forms_content_callback($matches)
 function forms_show_form($f = array())
 {
 	$out = '';
-	srand((double) microtime() * 1000000);
+
 	$antispam1 = rand(1, 10);
 	$antispam2 = rand(1, 10);
 	

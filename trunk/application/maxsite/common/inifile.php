@@ -247,16 +247,14 @@ function mso_view_ini($all = false)
 			}
 		}
 		
-		if ($description) $f .= '<p><em>' .  $description . '</em></p>';
+		if ($description) $f .= '<p><em>' .  t($description) . '</em></p>';
 		if (!$options_present) 
-			//$key = '<span title="' . $options_key . '" style="color: red;">* ' . t($key) . ' (нет в базе)</span>';
-			$key = '<span title="' . $options_key . '" class="red">* ' . t($key) . ' (нет в базе)</span>';
+			$key = '<span title="' . $options_key . '" class="red">* ' . t($key) . ' '. t('(нет в базе)') .'</span>';
 		else 
 			$key = '<strong title="' . $options_key . '">' . t($key) . '</strong>';
 			
 		$CI->table->add_row($key, $f);
 	}
-	
 	
 	$out .= '<form action="" method="post">' . mso_form_session('f_session_id');
 	$out .= '<input type="hidden" value="1" name="f_ini">'; // доп. поле - индикатор, что это ini-форма

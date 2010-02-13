@@ -19,7 +19,7 @@ function audioplayer_head($arg = array())
 	static $audioplayer_js = false;
 	
 	if (!$audioplayer_js)
-		echo '	<script language="JavaScript" src="' . getinfo('plugins_url') . 'audioplayer/audio-player.js"></script>';
+		echo '	<script type="text/javascript" src="' . getinfo('plugins_url') . 'audioplayer/audio-player.js"></script>';
 	
 	$audioplayer_js = true;
 	

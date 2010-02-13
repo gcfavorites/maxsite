@@ -151,8 +151,12 @@ function mso_get_comments($page_id = 0, $r = array())
 			
 			$t = preg_replace_callback('!<pre>(.*?)</pre>!is', 'mso_clean_html_do', $t);
 			
-			$t = mso_xss_clean($t);
+			if ($commentator==1) $t = strip_tags($t, $r['tags_comusers']);
+			elseif ($commentator==2) $t = strip_tags($t, $r['tags_users']);
+			else $t = strip_tags($t, $r['tags']);
 			
+			$t = mso_xss_clean($t);
+
 			$t = str_replace('[html_base64]', '<pre>[html_base64]', $t); // проставим pre
 			$t = str_replace('[/html_base64]', '[/html_base64]</pre>', $t);
 			
@@ -164,11 +168,12 @@ function mso_get_comments($page_id = 0, $r = array())
 			$comments_content = mso_hook('comments_content', $comments_content);
 			
 			$comments_content = str_replace("\n", "<br>", $comments_content);
-
+	
 			$comments_content = str_replace('<p>', '&lt;p&gt;', $comments_content);
 			$comments_content = str_replace('</p>', '&lt;/p&gt;', $comments_content);
 			$comments_content = str_replace('<P>', '&lt;P&gt;', $comments_content);
 			$comments_content = str_replace('</P>', '&lt;/P&gt;', $comments_content);
+			
 			
 			if (mso_hook_present('comments_content_custom'))
 			{
@@ -177,20 +182,13 @@ function mso_get_comments($page_id = 0, $r = array())
 			else
 			{
 				$comments_content = mso_auto_tag($comments_content, true);
-				//$comments_content = mso_hook('content_auto_tag', $comments_content);
 				$comments_content = mso_hook('content_balance_tags', $comments_content);
-			//	$comments_content = mso_balance_tags($comments_content);
 			}
-
-			if ($commentator==1) $comments_content = strip_tags($comments_content, $r['tags_comusers']);
-			elseif ($commentator==2) $comments_content = strip_tags($comments_content, $r['tags_users']);
-			else $comments_content = strip_tags($comments_content, $r['tags']);
 			
 			$comments_content = mso_hook('comments_content_out', $comments_content);
 
 			$comments[$key]['comments_content'] = $comments_content;
 			$comments[$key]['comments_url'] = $comment['comments_url'];
-
 
 		}
 	}

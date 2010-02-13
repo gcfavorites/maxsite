@@ -152,9 +152,9 @@ function down_count_content_callback($matches)
 	//'|\[dc\]<a(.*?)href="(.*?)"(.*?)>(.*?)</a>\[/dc\]|ui';
 	
 	// ститик, чтобы не получать каждый раз опции
-	static $prefix, $format;
+	static $prefix, $format, $real_title;
 	
-	if (!isset($prefix) or !isset($format)) 
+	if (!isset($prefix) or !isset($format) or !isset($real_title)) 
 	{
 		$options = mso_get_option('plugin_down_count', 'plugins', array());
 		
@@ -163,6 +163,9 @@ function down_count_content_callback($matches)
 		
 		if ( !isset($options['format']) ) $options['format'] = ' <sup title="' . t('Количество переходов', 'plugins') . '">%COUNT%</sup>';
 		$format = $options['format'];
+
+		if ( !isset($options['real_title']) ) $options['real_title'] = 1;
+		$real_title = $options['real_title'];
 	}
 	
 	$data = down_count_get_data(); // получаем массив из файла, в котором ведется подсчет колва переходов
@@ -176,8 +179,9 @@ function down_count_content_callback($matches)
 	$format_out = str_replace('%COUNT%', $count, $format);
 	$matches[1] = str_replace('%COUNT%', $count, $matches[1]);
 	$matches[3] = str_replace('%COUNT%', $count, $matches[3]);
-	
-	$out = '<a' . $matches[1] . 'href="' . $url . '"' . ' title="' . $matches[2] . '" '. $matches[3] . '>' . $matches[4] . '</a>' . $format_out;
+
+	$title = ($real_title)?(' title="' . $matches[2] . '" '):(' ');
+	$out = '<a' . $matches[1] . 'href="' . $url . '"' . $title . $matches[3] . '>' . $matches[4] . '</a>' . $format_out;
 
 	return $out;
 }

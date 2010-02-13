@@ -27,13 +27,17 @@ function addzakl_content_end($args = array())
 
 	$path = getinfo('plugins_url') . 'addzakl/images/'; # путь к картинкам
 	
-	$post_title = urlencode ( stripslashes($page['page_title']) . ' - ' . getinfo('name_site') );
+	$post_title = urlencode ( stripslashes($page['page_title'] . ' - ' . mso_get_option('name_site', 'general') ) );
 	$post_link = getinfo('siteurl') . mso_current_url();
 	$out = '';
 	
 	$img_src = 'twitter.png';
 	$link = '<a rel="nofollow" href="http://twitter.com/home/?status=' . urlencode (stripslashes(mb_substr($page['page_title'], 0, 139 - mb_strlen($post_link, 'UTF8'), 'UTF8') . ' ' . $post_link)) . '">';
 	$out .= $link . '<img border="0" title="Retweet twitter.com" alt="twitter.com" src="' . $path . $img_src  . '"' . $width_height . '></a>';	
+	
+	$img_src = 'buzz.png';
+	$link = '<a rel="nofollow" href="http://www.google.com/reader/link?url=' . $post_link . '&title=' . $post_title . '&srcURL=' . getinfo('siteurl') . '">';
+	$out .= $sep . $link . '<img border="0" title="Google Buzz" alt="Google Buzz" src="' . $path . $img_src  . '"' . $width_height . '></a>';		
 	
 	$img_src = 'google_bmarks.gif';
 	$link = '<a rel="nofollow" href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=' . $post_link . '&amp;title=' . $post_title .  '">';

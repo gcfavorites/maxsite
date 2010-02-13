@@ -5,7 +5,6 @@
  * (c) http://max-3000.com/
  */
 
-	global $MSO;
 	mso_cur_dir_lang(__FILE__);
 	$CI = & get_instance();
 	$options_key = 'plugin_admin_announce';
@@ -53,7 +52,7 @@
 		$form .= '<p><label><input name="f_use_visual" type="checkbox" ' . $chk . '> <strong>' . t('Использовать редактор системы') . '</strong></label><br>';
 		$form .= t('Если отмечено, то используется визуальный редактор системы или подключенный плагин редактора. Иначе просто textarea и вывод не пропускается через балансировку тегов.'). '</p>';
 
-		$form .= '<br><br><p><input name="f_delta" type="text" value="' . $options['delta'] . '"> <strong>' . t('Приблизительность максимальных и минимальных страниц.') . '</strong><br>';
+		$form .= '<br><br><p><input name="f_delta" type="text" value="' . $options['delta'] . '"> <strong>' . t('Дельта подсчёта (приблизительность максимальных и минимальных страниц).') . '</strong><br>';
 		$form .= t('Насколько близко по количеству просмотров к минимуму и максимуму должны быть страницы в отчёте.');
 
 		$form .= '<br><br><h2>' . t('Текст на стартовой странице') . '</h2>';

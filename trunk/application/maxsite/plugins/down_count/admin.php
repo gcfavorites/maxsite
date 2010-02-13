@@ -18,6 +18,7 @@
 		$options['prefix'] = $post['f_prefix'];
 		$options['format'] = $post['f_format'];
 		$options['referer'] = isset( $post['f_referer']) ? 1 : 0;
+		$options['real_title'] = isset( $post['f_real_title']) ? 1 : 0;
 	
 		mso_add_option($options_key, $options, 'plugins');
 		
@@ -35,6 +36,7 @@
 		if ( !isset($options['prefix']) ) $options['prefix'] = 'dc'; // префикса
 		if ( !isset($options['format']) ) $options['format'] = ' <sup title="' . t('Количество переходов', 'plugins') . '">%COUNT%</sup>'; // формат количества
 		if ( !isset($options['referer']) ) $options['referer'] = 1; // запретить скачку с чужого сайта
+		if ( !isset($options['real_title']) ) $options['real_title'] = 1; // выводить в title реальный адрес
 
 		$form = '';
 
@@ -50,6 +52,9 @@
 		
 		$chk = $options['referer'] ? ' checked="checked"  ' : '';
 		$form .= '<p><label><input name="f_referer" type="checkbox" ' . $chk . '> <strong>' . t('Запретить переходы с чужих сайтов', 'plugins') . '</strong></label></p>';
+
+		$chk = $options['real_title'] ? ' checked="checked"  ' : '';
+		$form .= '<p><label><input name="f_real_title" type="checkbox" ' . $chk . '> <strong>' . t('Выводить в title реальный адрес', 'plugins') . '</strong></label></p>';
 		
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;

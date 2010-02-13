@@ -1261,13 +1261,18 @@ function mso_clean_pre_special_chars($matches)
 		$m = str_replace("<br />", "<br>", $m);
 		$m = str_replace("<br>", "MSO_N", $m);
 
+
 		$m = htmlspecialchars($m, ENT_QUOTES);
 
 		// для смайлов избежать конфликта
 		$arr1 = array(':', '\'', '(', ')', '|', '-', '[', ']');
 		$arr2 = array('&#58;', '&#39;', '&#40;', '&#41;', '&#124;', '&#45;', '&#91;', '&#93;');
 		$m = str_replace($arr1, $arr2, $m);
-
+		
+		// ошибочный & перед < и >
+		$m = str_replace('&amp;lt;', '&lt;', $m);
+		$m = str_replace('&amp;gt;', '&gt;', $m);
+		
 		$text = "" . $matches[1] . $m . "</pre>\n";
 	}
 	else
@@ -1364,9 +1369,11 @@ function mso_clean_html_do($matches)
 {
 	$arr1 = array('&amp;', '&lt;', '&gt;', '<br />', '<br>', '&nbsp;');
 	$arr2 = array('&',     '<',    '>',    "\n",     "\n",   ' ');
-
+	
 	$m = trim( str_replace($arr1, $arr2, $matches[1]) );
+
 	$m = '[html_base64]' . base64_encode($m) . '[/html_base64]';
+
 	return $m;
 }
 

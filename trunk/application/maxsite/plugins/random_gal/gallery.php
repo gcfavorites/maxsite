@@ -14,7 +14,7 @@ if (isset($options['all']))
 	
 	// first | Моя галерея | / % test | name_file | 100
 
-	$all = explode("\n", $options['all']);
+	$all = explode("\n", trim($options['all']));
 	
 	if ($current_gal) // указана конкретная галерея
 	{
