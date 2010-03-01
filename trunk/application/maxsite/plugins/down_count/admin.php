@@ -27,7 +27,7 @@
 	
 ?>
 <h1><?= t('Счетчик переходов', 'plugins') ?></h1>
-<p class="info"><?= t('С помощью этого плагина вы можете подсчитывать количество скачиваний или переходв по ссылке. Для использования плагина обрамите нужную ссылку в код [dc]ваша ссылка[/dc]', 'plugins') ?></p>
+<p class="info"><?= t('С помощью этого плагина вы можете подсчитывать количество скачиваний или переходов по ссылке. Для использования плагина обрамите нужную ссылку в код [dc]ваша ссылка[/dc]', 'plugins') ?></p>
 
 <?php
 		
@@ -74,13 +74,28 @@
 			
 			if ($data)
 			{
+				$CI->load->library('table');
+				$tmpl = array (
+						'table_open'		  => '<table class="page tablesorter" id="table-dc">',
+						'row_alt_start'		  => '<tr class="alt">',
+						'cell_alt_start'	  => '<td class="alt">',
+						'heading_row_start' 	=> NR . '<thead><tr>',
+						'heading_row_end' 		=> '</tr></thead>' . NR,
+						'heading_cell_start'	=> '<th style="cursor: pointer;">',
+						'heading_cell_end'		=> '</th>',
+							);
+				$CI->table->set_template($tmpl);
+				$CI->table->set_heading('URL', t('переходов', 'plugins'));
+
 				echo '<br><h2>' . t('Статистика переходов', 'plugins') . '</h2>';
-				echo '<ul>';
 				foreach($data as $url => $aaa)
 				{
-					echo '<li><strong>' . htmlspecialchars($CI->input->xss_clean($url)) . '</strong> - ' . t('переходов', 'plugins') . ': ' . $data[$url]['count'] . '</li>' . NR;
+					$CI->table->add_row(
+										'<strong>' . htmlspecialchars($CI->input->xss_clean($url)) . '</strong>',
+										$data[$url]['count']
+										);
 				}
-				echo '</ul>';
+				echo $CI->table->generate();
 			}
 			// pr($data);
 		}

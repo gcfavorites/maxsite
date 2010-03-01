@@ -124,6 +124,7 @@ $lang['Такой каталог уже есть!'] = 'This catalogue exist!';
 $lang['Текущий каталог:'] = 'Current dir:';
 $lang['Создать'] = 'Create';
 $lang['Удалить'] = 'Delete';
+$lang['Инвертировать выделение'] = 'Invert selection';
 $lang['Уменьшение изображения:'] = 'Reduction of the picture:';
 $lang['Водяной знак:'] = 'Watermark';
 $lang['файл водяного знака не найден! Загрузите его в каталог uploads/'] = 'Watermark file not found! Upload it to directory uploads/';

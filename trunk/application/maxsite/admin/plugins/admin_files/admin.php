@@ -487,6 +487,8 @@
 	
 	$size_image_mini = (int) mso_get_option('size_image_mini', 'general', 150);
 	if ($size_image_mini < 1) $size_image_mini = 150;
+
+	$watermark_type = mso_get_option('watermark_type', 'general', 1);
 	
 	// форма загрузки
 	echo '
@@ -513,16 +515,17 @@
 		</select></p>
 
 		<p><label><input type="checkbox" name="f_userfile_water" value="" '.
-			((file_exists($MSO->config['uploads_dir']. 'watermark.png'))?'':' disabled="disabled"').
-			'/> ' . t('Для изображений установить водяной знак', 'admin') . '</label>
+			((file_exists($MSO->config['uploads_dir']. 'watermark.png'))?'':' disabled="disabled"') . 
+			((mso_get_option('use_watermark', 'general', 0))?(' checked="checked"'):('')) .
+			'> ' . t('Для изображений установить водяной знак', 'admin') . '</label>
 			<br><em>' . t('Примечание: водяной знак должен быть файлом <strong>watermark.png</strong> и находиться в каталоге', 'admin') . ' <strong>uploads</strong></em></p>
 
 		<p>' . t('Водяной знак устанавливается:', 'admin') . ' <select name="f_water_type">
-		<option value="1">' . t('По центру', 'admin') . '</option>
-		<option value="2">' . t('В левом верхнем углу', 'admin') . '</option>
-		<option value="3">' . t('В правом верхнем углу', 'admin') . '</option>
-		<option value="4">' . t('В левом нижнем углу', 'admin') . '</option>
-		<option value="5">' . t('В правом нижнем углу', 'admin') . '</option>
+		<option value="1"'.(($watermark_type == 1)?(' selected="selected"'):('')).'>' . t('По центру', 'admin') . '</option>
+		<option value="2"'.(($watermark_type == 2)?(' selected="selected"'):('')).'>' . t('В левом верхнем углу', 'admin') . '</option>
+		<option value="3"'.(($watermark_type == 3)?(' selected="selected"'):('')).'>' . t('В правом верхнем углу', 'admin') . '</option>
+		<option value="4"'.(($watermark_type == 4)?(' selected="selected"'):('')).'>' . t('В левом нижнем углу', 'admin') . '</option>
+		<option value="5"'.(($watermark_type == 5)?(' selected="selected"'):('')).'>' . t('В правом нижнем углу', 'admin') . '</option>
 		</select></p>
 
 		</form>
@@ -671,8 +674,9 @@
 		echo $out_all;
 		echo '<div style="clear:both"></div></div>';
 
-		echo '<p class="br"><input type="submit" name="f_delete_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Выделенные файы будут безвозвратно удалены! Удалять?', 'admin') . '\')) {return true;} else {return false;}" ></p>';
-		echo '</form>';
+		echo '<p class="br"><input type="submit" name="f_delete_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Выделенные файы будут безвозвратно удалены! Удалять?', 'admin') . '\')) {return true;} else {return false;}" ></p>
+			<p class="br"><input type="button" id="check-all" value="' . t('Инвертировать выделение', 'admin') . '"></p>
+			</form>';
 
 		$n = '\n';
 		$up = $uploads_url;
@@ -683,8 +687,19 @@
 
 		echo <<<EOF
 <script type="text/javascript">
+function toggleAll() {
+	var allCheckboxes = $(".cornerz input:checkbox:enabled");
+	var notChecked = allCheckboxes.not(':checked');
+	allCheckboxes.removeAttr('checked');
+	notChecked.attr('checked', 'checked');
+}
+
 $(function()
 {
+	$("#check-all").click(function(){
+		toggleAll()
+	});
+
 	//nicothin добавления
 	if ($('script[src$="jquery/cornerz.js"]').size()) 
 	{ 

@@ -11,6 +11,7 @@ function down_count_autoload($args = array())
 {
 	mso_create_allow('down_count_edit', t('Админ-доступ к настройкам счетчика переходов (Download count)', 'plugins')); 
 	mso_hook_add( 'admin_init', 'down_count_admin_init'); # хук на админку
+	mso_hook_add( 'admin_head', 'down_count_head');
 	mso_hook_add( 'content', 'down_count_content'); # хук на обработку текста
 	mso_hook_add( 'init', 'down_count_init'); # хук на обработку входящего url
 }
@@ -31,6 +32,26 @@ function down_count_admin_init($args = array())
 	mso_admin_menu_add('plugins', $this_plugin_url, t('Счетчик переходов', 'plugins'));
 	mso_admin_url_hook ($this_plugin_url, 'down_count_admin_page');
 	
+	return $args;
+}
+
+
+function down_count_head($args = array()) 
+{
+	if (mso_segment(2) == 'plugin_down_count')
+	{
+		echo mso_load_jquery();
+		echo mso_load_jquery('jquery.tablesorter.js');
+		echo '
+			<script type="text/javascript">
+				$(function() {
+					$("table.tablesorter th").animate({opacity: 0.7});
+					$("table.tablesorter th").hover(function(){ $(this).animate({opacity: 1}); }, function(){ $(this).animate({opacity: 0.7}); });
+					$("#table-dc").tablesorter();
+				});	
+				</script>
+		';
+	}
 	return $args;
 }
 
