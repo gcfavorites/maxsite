@@ -11,7 +11,7 @@
 # функция автоподключения плагина
 function %%%_autoload()
 {
-	//mso_create_allow('%%%_edit', t('Админ-доступ к настройкам', 'plugins') . ' %%%');
+	//mso_create_allow('%%%_edit', t('Админ-доступ к настройкам', 'plugins') . ' ' . t('%%%', __FILE__));
 }
 
 # функция выполняется при активации (вкл) плагина
@@ -39,20 +39,21 @@ function %%%_uninstall($args = array())
 # если не нужна, удалите целиком
 function %%%_mso_options() 
 {
+	/*
+	if ( !mso_check_allow('%%%_edit') ) 
+	{
+		echo t('Доступ запрещен', 'plugins');
+		return;
+	}
+	*/
+	
 	# ключ, тип, ключи массива
 	mso_admin_plugin_options('plugin_%%%', 'plugins', 
-/*
-		if ( !mso_check_allow('%%%_edit') ) 
-		{
-			echo t('Доступ запрещен', 'plugins');
-			return $args;
-		}
-*/
 		array(
 			'option1' => array(
 							'type' => 'text', 
-							'name' => 'Название', 
-							'description' => 'Описание', 
+							'name' => t('Название', __FILE__), 
+							'description' => t('Описание', __FILE__), 
 							'default' => ''
 						),
 			),
@@ -60,38 +61,40 @@ function %%%_mso_options()
 		'Укажите необходимые опции.'   // инфо
 	);
 	
-/*
-mso_admin_plugin_options('my_plugin', 'plugins', 
-	array(
-		'f1' => array(
-						'type' => 'text', 
-						'name' => 'название', 
-						'description' => 'описание', 
-						'default' => ''
-					),
-		'f2' => array(
-						'type' => 'textarea', 
-						'name' => 'название', 
-						'description' => 'описание', 
-						'default' => ''
-					),					
-		'f3' => array(
-						'type' => 'checkbox', 
-						'name' => 'название', 
-						'description' => 'описание', 
-						'default' => '1' // для чекбоксов только 1 и 0
-					),						
-		'f4' => array(
-						'type' => 'select', 
-						'name' => 'название', 
-						'description' => 'описание',
-						'values' => '0.00||Гринвич (0) # 1.00||что-то # 2.00||Киев (+2) # 3.00||Москва (+3)',  // правила для select как в ini-файлах
-						'default' => '2.00'
-					),	
-		)
-);
+	/*
+	# пример использования
 	
-*/
+	mso_admin_plugin_options('my_plugin', 'plugins', 
+		array(
+			'f1' => array(
+							'type' => 'text', 
+							'name' => 'название', 
+							'description' => 'описание', 
+							'default' => ''
+						),
+			'f2' => array(
+							'type' => 'textarea', 
+							'name' => 'название', 
+							'description' => 'описание', 
+							'default' => ''
+						),					
+			'f3' => array(
+							'type' => 'checkbox', 
+							'name' => 'название', 
+							'description' => 'описание', 
+							'default' => '1' // для чекбоксов только 1 и 0
+						),						
+			'f4' => array(
+							'type' => 'select', 
+							'name' => 'название', 
+							'description' => 'описание',
+							'values' => '0.00||Гринвич (0) # 1.00||что-то # 2.00||Киев (+2) # 3.00||Москва (+3)',  // правила для select как в ini-файлах
+							'default' => '2.00'
+						),	
+			)
+	);
+		
+	*/
 }
 
 # функции плагина

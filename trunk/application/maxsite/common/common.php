@@ -1452,7 +1452,6 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace("<p><p>", "<p>", $pee); 
 	$pee = str_replace("</p></p>", "</p>", $pee); 
 	
-	
 	# блочные тэги
 	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|embed|h1|h2|h3|h4|h5|h6|hr)';
 	
@@ -1463,6 +1462,9 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)</p>!', "\n$1", $pee); # <tag></p>
 	$pee = preg_replace('!(</' . $allblocks . '>)</p>!', "$1", $pee); # </tag></p>
 	$pee = preg_replace('!(</' . $allblocks . '>) </p>!', "$1", $pee); # </tag></p>
+	
+	$pee = preg_replace('!<p>&nbsp;&nbsp;(<' . $allblocks . '[^>]*>)!', "\n$1", $pee); # <p>&nbsp;&nbsp;<tag> 
+	$pee = preg_replace('!<p>&nbsp;(<' . $allblocks . '[^>]*>)!', "\n$1", $pee); # <p>&nbsp;<tag> 
 	
 	# если был cut, то уберем с ссылки абзац
 	$pee = str_replace('<p><a name="cut"></a></p>', '<a name="cut"></a>', $pee); 
@@ -2433,7 +2435,7 @@ function mso_load_jquery($plugin = '')
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.4.1.min.js"></script>' . NR;
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.4.2.min.js"></script>' . NR;
 	}
 }
 

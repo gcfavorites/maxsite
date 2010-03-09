@@ -19,7 +19,7 @@ function mso_get_comments($page_id = 0, $r = array())
 	if ( !isset($r['tags_users']) )	$r['tags_users'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
 	if ( !isset($r['tags_comusers']) )	$r['tags_comusers'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
 	if ( !isset($r['anonim_comments']) )	$r['anonim_comments'] = array();
-	if ( !isset($r['anonim_title']) )	$r['anonim_title'] = ' ('. t('анонимно'). ')'; // дописка к имени для анонимов
+	if ( !isset($r['anonim_title']) )	$r['anonim_title'] = '';// ' ('. t('анонимно'). ')'; // дописка к имени для анонимов
 
 	// дописка к имени для комментаторов без ника
 	if ( !isset($r['add_author_name']) )	$r['add_author_name'] = t('Комментатор');

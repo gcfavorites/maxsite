@@ -139,7 +139,7 @@ $lang['Подсчет количества переходов по ссылке.
 $lang['Данная ссылка доступна только со <a href="%s">страниц сайта</a>'] = ' This link enabled only from <a href="%s">pages of site</a>';
 $lang['Запрещен переход по этой ссылке с чужого сайта'] = 'Disallow refferer to this link from other sites';
 $lang['Количество переходов'] = 'Count of downloading';
-$lang['С помощью этого плагина вы можете подсчитывать количество скачиваний или переходв по ссылке. Для использования плагина обрамите нужную ссылку в код [dc]ваша ссылка[/dc]'] =
+$lang['С помощью этого плагина вы можете подсчитывать количество скачиваний или переходов по ссылке. Для использования плагина обрамите нужную ссылку в код [dc]ваша ссылка[/dc]'] =
 'By this plugin you can count the number of downloading or accrossing over reference. To use plugin write over necessary reference code [dc]your reference[/dc]';
 $lang['Файл для хранения количества скачиваний:'] = 'File for store downloading count';
 $lang['Префикс URL:'] = 'Prefix URL';

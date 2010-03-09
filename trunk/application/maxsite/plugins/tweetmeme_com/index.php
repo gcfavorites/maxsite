@@ -8,7 +8,7 @@
 # функция автоподключения плагина
 function tweetmeme_com_autoload()
 {
-	mso_hook_add( 'content_content', 'tweetmeme_com_content'); # хук на вывод контента
+	if (!is_feed()) mso_hook_add( 'content_content', 'tweetmeme_com_content'); # хук на вывод контента
 }
 
 

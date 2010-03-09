@@ -222,6 +222,7 @@ function mso_get_pages($r = array(), &$pag)
 			
 
 			$content = str_replace('<!-- pagebreak -->', '[cut]', $content); // совместимость с TinyMCE
+			$content = str_replace('<!--more-->', '[cut]', $content); // совместимость с Wordpress
 			
 			# если после [cut] пробелы до конца строки, то удалим их 
 			$content = preg_replace('|\[cut\]\s*<br|', '[cut]<br', $content);

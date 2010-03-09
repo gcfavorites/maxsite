@@ -11,7 +11,7 @@
 
 	$CI = & get_instance();
 	$CI->load->helper('file'); // хелпер для работы с файлами
-	# $CI->load->library('table');
+	
 	$CI->load->helper('directory');
 	$CI->load->helper('form');
 
@@ -153,324 +153,39 @@
 	if ( $post = mso_check_post(array('f_session2_id', 'f_upload_submit')) )
 	{
 		mso_checkreferer();
-
-		$config['upload_path'] = $MSO->config['uploads_dir'] . $current_dir;
-		$config['allowed_types'] = $allowed_types;
-		//$config['max_size'] = '2048';
-		// $config['max_width'] = '1024';
-		// $config['max_height'] = '768';
-
-		$CI->load->library('upload', $config);
-
-		// если была отправка файла, то нужно заменить поле имени с русского на что-то другое
-		// это ошибка при копировании на сервере - он не понимает русские буквы
-		if (isset($_FILES['f_userfile']['name']))
+		
+		require_once( getinfo('common_dir') . 'uploads.php' ); // функции загрузки 
+		
+		mso_upload(
+			array( // конфиг CI-библиотеки upload
+				'upload_path' => getinfo('uploads_dir') . $current_dir,
+				'allowed_types' => $allowed_types,
+			),
+			
+			'f_userfile', // поле с именем файла
+			
+			array( // массив прочих опций
+				'userfile_title' => $post['f_userfile_title'], // описание файла
+				'fn_mso_descritions' => $fn_mso_descritions, // файл для описаний
+				'userfile_resize' => isset($post['f_userfile_resize']), // нужно ли менять размер
+				'userfile_resize_size' => $post['f_userfile_resize_size'], // размер
+				'userfile_water' => isset($post['f_userfile_water']), // нужен ли водяной знак
+				'userfile_water_file' => getinfo('uploads_dir') . 'watermark.png', // файл водяного знака
+				'water_type' => $post['f_water_type'], // тип водяного знака
+				'userfile_mini' => isset($post['f_userfile_mini']), // делать миниатюру?
+				'userfile_mini_size' => $post['f_userfile_mini_size'], // размер миниатюры
+				'mini_type' => $post['f_mini_type'], // тип миниатюры
+				'prev_size' => 100, // размер превьюхи
+			)
+		);
+		
+		// после загрузки сразу обновим массив описаний - он ниже используется
+		if (file_exists( $fn_mso_descritions )) // файла нет, нужно создать массив
 		{
-			$f_temp = $_FILES['f_userfile']['name'];
-
-			// оставим только точку
-			$f_temp = str_replace('.', '__mso_t__', $f_temp);
-			$f_temp = mso_slug($f_temp); // остальное как обычно mso_slug
-			$f_temp = str_replace('__mso_t__', '.', $f_temp);
-
-			$_FILES['f_userfile']['name'] = $f_temp;
+			// массив данных: fn => описание )
+			$mso_descritions = unserialize( read_file($fn_mso_descritions) ); // получим из файла все описания
 		}
-
-		$res = $CI->upload->do_upload('f_userfile');
-
-		if ($res)
-		{
-			echo '<div class="update">' . t('Загрузка выполнена', 'admin') . '</div>';
-
-			// если это файл картинки, то нужно сразу сделать скриншот маленький в _mso_i 100px, который будет выводиться в
-			// списке файлов
-			$up_data = $CI->upload->data();
-
-			// файл нужно поменять к нижнему регистру
-			if ( $up_data['file_name'] != strtolower($up_data['file_name']) )
-			{
-				// переименуем один раз
-				if (rename($up_data['full_path'], $up_data['file_path'] . strtolower('__' . $up_data['file_name'])))
-				{
-					// потом второй в уже нужный - это из-за бага винды
-					rename($up_data['file_path'] . strtolower('__' . $up_data['file_name']),
-								$up_data['file_path'] . strtolower($up_data['file_name']));
-
-					$up_data['file_name'] = strtolower($up_data['file_name']);
-					$up_data['full_path'] = $up_data['file_path'] . $up_data['file_name'];
-					// echo '<div class="update">' . $up_data['full_path'] . $up_data['file_name'] . '</div>';
-				}
-				else echo '<div class="error">' . t('Не удалось перименовать файл в нижний регистр', 'admin') . '</div>';
-			}
-
-			$fn_descr = trim(strip_tags($post['f_userfile_title'])); // описание файла
-			$fn_descr = str_replace('"', '', $fn_descr); // удалим лишнее
-			$fn_descr = str_replace('\'', '', $fn_descr);
-
-			$mso_descritions[$up_data['file_name']] = $fn_descr;
-			write_file($fn_mso_descritions, serialize($mso_descritions) ); // сохраняем в файл
-
-
-			//pr($up_data);
-			/*
-			    [file_name] => warfare7.jpg
-				[file_type] => image/jpeg
-				[file_path] => D:/xampplite/htdocs/codeigniter/uploads/
-				[full_path] => D:/xampplite/htdocs/codeigniter/uploads/warfare7.jpg
-				[raw_name] => warfare7
-				[orig_name] => warfare.jpg
-				[file_ext] => .jpg
-				[file_size] => 52.09
-				[is_image] => 1
-				[image_width] => 450
-				[image_height] => 300
-				[image_type] => jpeg
-				[image_size_str] => width="450" height="300"
-			*/
-
-			if ($up_data['is_image']) // это картинка
-			{
-				$CI->load->library('image_lib');
-
-
-				# вначале нужно изменить размер
-				# потом делаем миниатюру с указанными размерами
-				# потом делаем такую же миниатюру для  _mso_i с размером 100x100
-
-				# меняем размер
-				if (isset($post['f_userfile_resize'])) // нужно изменить размер
-				{
-					$size = abs((int) $post['f_userfile_resize_size']);
-
-					($up_data['image_width'] >= $up_data['image_height']) ? ($max = $up_data['image_width']) : ($max = $up_data['image_height']);
-					if ( $size > 1 and $size < $max ) // корректный размер
-					{
-						$r_conf = array(
-							'image_library' => 'gd2',
-							'source_image' => $up_data['full_path'],
-							'new_image' => $up_data['full_path'],
-							'maintain_ratio' => true,
-							'width' => $size,
-							'height' => $size,
-						);
-
-						$CI->image_lib->initialize($r_conf );
-
-						if (!$CI->image_lib->resize())
-							echo '<div class="error">' . t('Уменьшение изображения:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-
-				}
-
-				//Меняли или не меняли размер, но теперь проверяем, нужна ли нам ватермарка.
-				if (isset($post['f_userfile_water']))
-				{ //todo — проверка, всё ли нам прислали, всё ли на месте. В идеале бы проверить размеры картинки по отношению к ватермарке.
-					if (!file_exists($MSO->config['uploads_dir']. 'watermark.png'))
-					{
-						echo '<div class="error">' . t('Водяной знак:', 'admin') . ' ' . t('файл водяного знака не найден! Загрузите его в каталог uploads/', 'admin') . '</div>';
-					}
-					else
-					{
-						$water_type = $post['f_water_type']; // Расположение ватермарка
-						$hor = 'right'; //Инитим дефолтом.
-						$vrt = 'bottom'; //Инитим дефолтом.
-						if (($water_type == 2) or ($water_type == 4)) $hor = 'left';
-						if (($water_type == 2) or ($water_type == 3)) $vrt = 'top';
-						if ($water_type == 1) {$hor = 'center'; $vrt = 'middle';}
-
-						$r_conf = array(
-							'image_library' => 'gd2',
-							'source_image' => $up_data['full_path'],
-							'new_image' => $up_data['full_path'],
-							'wm_type' => 'overlay',
-							'wm_vrt_alignment' => $vrt,
-							'wm_hor_alignment' => $hor,
-							'wm_overlay_path' => $MSO->config['uploads_dir']. 'watermark.png' //Жёстко, а что делать?
-						);
-
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->watermark())
-							echo '<div class="error">' . t('Водяной знак:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-				}
-
-				# получим новые размеры файла
-				$image_info = GetImageSize($up_data['full_path']);
-				$image_width = $image_info[0];
-				$image_height = $image_info[1];
-
-
-				# теперь нужно сделать миниатюру указанного размера в mini
-				if (isset($post['f_userfile_mini']))
-				{
-					$size = abs((int) $post['f_userfile_mini_size']);
-
-					($image_width >= $image_height) ? ($max = $image_width) : ($max = $image_height);
-					if ( $size > 1 and $size < $max ) // корректный размер
-					{
-						$r_conf = array(
-							'image_library' => 'gd2',
-							'source_image' => $up_data['full_path'],
-							'new_image' => $up_data['file_path'] . 'mini/' . $up_data['file_name'],
-							'maintain_ratio' => true,
-							'width' => $size,
-							'height' => $size,
-						);
-
-
-						$mini_type = $post['f_mini_type']; // тип миниатюры
-						/*
-						1 Пропорционального уменьшения
-						2 Обрезки (crop) по центру
-						3 Обрезки (crop) с левого верхнего края
-						4 Обрезки (crop) с левого нижнего края
-						5 Обрезки (crop) с правого верхнего края
-						6 Обрезки (crop) с правого нижнего края
-						*/
-
-						if ($mini_type == 2) // Обрезки (crop) по центру
-						{
-							$r_conf['x_axis'] = round($image_width / 2 - $size / 2);
-							$r_conf['y_axis'] = round($image_height / 2 - $size / 2);
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->crop())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-						elseif ($mini_type == 3) // Обрезки (crop) с левого верхнего края
-						{
-							$r_conf['x_axis'] = 0;
-							$r_conf['y_axis'] = 0;
-
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->crop())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-						elseif ($mini_type == 4) // Обрезки (crop) с левого нижнего края
-						{
-							$r_conf['x_axis'] = 0;
-							$r_conf['y_axis'] = round($image_height - $size * $image_height/$image_width);
-
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->crop())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-						elseif ($mini_type == 5) // Обрезки (crop) с правого верхнего края
-						{
-							$r_conf['x_axis'] = $image_width - $size;
-							$r_conf['y_axis'] = 0;
-
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->crop())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-						elseif ($mini_type == 6) // Обрезки (crop) с правого нижнего края
-						{
-							$r_conf['x_axis'] = $image_width - $size;
-							$r_conf['y_axis'] = $image_height - $size;
-
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->crop())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-						else // ничего не указано - Пропорционального уменьшения
-						{
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->resize())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-					}
-					else
-					{
-						//Размер некорректный и миниатюру просто копируем из большого изображения.
-						copy($up_data['full_path'], $up_data['file_path']. 'mini/'. $up_data['file_name']);
-					}
-				}
-
-
-				# всегда делаем 100 на 100
-				# алгоритм тот же, что и у миниатюры
-				$size = 100;
-
-				$r_conf = array(
-					'image_library' => 'gd2',
-					'source_image' => $up_data['full_path'],
-					'new_image' => $up_data['file_path'] . '_mso_i/' . $up_data['file_name'],
-					'maintain_ratio' => true,
-					'width' => $size,
-					'height' => $size,
-				);
-
-
-				$mini_type = $post['f_mini_type']; // тип миниатюры
-				/*
-				1 Пропорционального уменьшения
-				2 Обрезки (crop) по центру
-				3 Обрезки (crop) с левого верхнего края
-				4 Обрезки (crop) с левого нижнего края
-				5 Обрезки (crop) с правого верхнего края
-				6 Обрезки (crop) с правого нижнего края
-				*/
-
-				if ($mini_type == 2) // Обрезки (crop) по центру
-				{
-					$r_conf['x_axis'] = round($image_width / 2 - $size / 2);
-					$r_conf['y_axis'] = round($image_height / 2 - $size / 2);
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 3) // Обрезки (crop) с левого верхнего края
-				{
-					$r_conf['x_axis'] = 0;
-					$r_conf['y_axis'] = 0;
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 4) // Обрезки (crop) с левого нижнего края
-				{
-					$r_conf['x_axis'] = 0;
-					$r_conf['y_axis'] = round($image_height - $size * $image_height/$image_width);
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 5) // Обрезки (crop) с правого верхнего края
-				{
-					$r_conf['x_axis'] = $image_width - $size;
-					$r_conf['y_axis'] = 0;
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 6) // Обрезки (crop) с правого нижнего края
-				{
-					$r_conf['x_axis'] = $image_width - $size;
-					$r_conf['y_axis'] = $image_height - $size;
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				else // ничего не указано - Пропорционального уменьшения
-				{
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->resize())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-
-
-			}
-		}
-		else
-		{
-			$er = $CI->upload->display_errors();
-			echo '<div class="error">' . t('Ошибка загрузки файла.', 'admin') . $er . '</div>';
-		}
+		else $mso_descritions = array();
 	}
 
 	// форма нового каталога
@@ -496,7 +211,10 @@
 		<h2>' . t('Загрузка файла', 'admin') . '</h2>
 		<p>' . t('Для загрузки файла нажмите кнопку «Обзор», выберите файл на своем компьютере. После этого нажмите кнопку «Загрузить». Размер файла не должен превышать', 'admin') . ' ' . ini_get ('post_max_size') . '.</p>
 		<form action="" method="post" enctype="multipart/form-data">' . mso_form_session('f_session2_id') .
-		'<p><input type="file" name="f_userfile" size="80"> &nbsp; <input type="submit" name="f_upload_submit" value="' . t('Загрузить', 'admin') . '"></p>
+		'<p>
+		<input type="file" name="f_userfile" size="80"> 
+ 
+		&nbsp;<input type="submit" name="f_upload_submit" value="' . t('Загрузить', 'admin') . '"></p>
 		<p>' . t('Описание файла:', 'admin') . ' <input type="text" name="f_userfile_title" class="description_file" value=""></p>
 
 		<p><label><input type="checkbox" name="f_userfile_resize" checked="checked" value=""> ' . t('Для изображений изменить размер до', 'admin') . '</label>
@@ -532,20 +250,23 @@
 		</div>
 		';
 
-
-
-	/*
-	$tmpl = array (
+	// как выводим файлы
+	$admin_view_files = mso_get_option('admin_view_files', 'general', 'mini');
+	
+	
+	if ($admin_view_files == 'table')
+	{
+		$CI->load->library('table');
+		$tmpl = array (
 					'table_open'		  => '<table class="page" border="0" width="100%"><colgroup width="110">',
 					'row_alt_start'		  => '<tr class="alt">',
 					'cell_alt_start'	  => '<td class="alt">',
 			  );
 
-	$CI->table->set_template($tmpl); // шаблон таблицы
-
-	// заголовки
-	$CI->table->set_heading('&bull;', t('Коды для вставки', 'admin'));
-	*/
+		$CI->table->set_template($tmpl); // шаблон таблицы
+		// заголовки
+		$CI->table->set_heading('&bull;', t('Коды для вставки', 'admin'));
+	}
 
 	// проходимся по каталогу аплоада и выводим их списком
 
@@ -573,7 +294,7 @@
 		$cod = '<p>';
 		$title = '';
 		$title_f = '';
-
+		
 		if (isset($mso_descritions[$file]))
 		{
 			$title = $mso_descritions[$file];
@@ -581,7 +302,7 @@
 		}
 
 		$sel = form_checkbox('f_check_files[]', $file, false,
-			'title="' . $title . '" id="' . mso_strip($file) . '"')
+			'title="' . $title . '" id="' . mso_strip($file) . '" class="f_check_files"')
 			. '<label for="' . mso_strip($file)
 			. '"> '
 			. $file . $title_f . '</label>';
@@ -662,17 +383,21 @@
 
 		$out_all .= '<div class="cornerz">' . $sel . $predpr . $cod . '</div>';
 
-		# $CI->table->add_row($predpr, $sel . $cod);
+		if ($admin_view_files == 'table') $CI->table->add_row($predpr, $sel . $cod);
 	}
 
 	// добавляем форму, а также текущую сессию
 	if ($out_all != '') 
 	{
 		echo '<form action="" method="post">' . mso_form_session('f_session_id');
-		# echo $CI->table->generate(); // вывод подготовленной таблицы
-		echo '<div class="float-parent" style="width:100%">';
-		echo $out_all;
-		echo '<div style="clear:both"></div></div>';
+		if ($admin_view_files == 'table') 
+			echo $CI->table->generate(); // вывод подготовленной таблицы
+		else
+		{
+			echo '<div class="float-parent" style="width:100%">';
+			echo $out_all;
+			echo '<div style="clear:both"></div></div>';
+		}
 
 		echo '<p class="br"><input type="submit" name="f_delete_submit" value="' . t('Удалить', 'admin') . '" onClick="if(confirm(\'' . t('Выделенные файы будут безвозвратно удалены! Удалять?', 'admin') . '\')) {return true;} else {return false;}" ></p>
 			<p class="br"><input type="button" id="check-all" value="' . t('Инвертировать выделение', 'admin') . '"></p>
@@ -688,7 +413,7 @@
 		echo <<<EOF
 <script type="text/javascript">
 function toggleAll() {
-	var allCheckboxes = $(".cornerz input:checkbox:enabled");
+	var allCheckboxes = $("input.f_check_files:enabled");
 	var notChecked = allCheckboxes.not(':checked');
 	allCheckboxes.removeAttr('checked');
 	notChecked.attr('checked', 'checked');
@@ -711,7 +436,7 @@ $(function()
 		{
 			var file_name = $(this).parent().parent().children(':checkbox').attr('id');
 			var old_descr = $(this).parent().parent().children('label').children('em').text();
-			var form_code = '<div class="edit_descr" style="display:none"><form action="" method="post">{$session}<input type="hidden" name="f_file_name" value="' + file_name + '"><textarea name="f_file_description" >' + old_descr + '</textarea><br><input type="submit" name="f_edit_submit" value="{$save_button}"></form></div>';
+			var form_code = '<div class="edit_descr" style="width: 100%;" style="display:none"><form action="" method="post">{$session}<input type="hidden" name="f_file_name" value="' + file_name + '"><textarea name="f_file_description" >' + old_descr + '</textarea><br><input type="submit" name="f_edit_submit" value="{$save_button}"></form></div>';
 			$(this).parent().parent().append(form_code);
 		}
 		$(this).parent().parent().find('.edit_descr').slideDown('fast');

@@ -18,6 +18,7 @@
 		$options['delta']           = isset( $post['f_delta'])           ? (int)$post['f_delta'] : 10;
 		$options['admin_statistic'] = isset( $post['f_admin_statistic']) ? 1 : 0;
 		$options['admin_showall']   = isset( $post['f_admin_showall'])   ? 1 : 0;
+		$options['show_future']     = isset( $post['f_show_future'])     ? 1 : 0;
 		$options['use_visual']      = isset( $post['f_use_visual'])      ? 1 : 0;
 
 		mso_add_float_option($options_key, $options, 'plugins');
@@ -35,6 +36,7 @@
 		if ( !isset($options['admin_announce']) )  $options['admin_announce']  = '';
 		if ( !isset($options['admin_statistic']) ) $options['admin_statistic'] = true;
 		if ( !isset($options['admin_showall']) )   $options['admin_showall']   = true;
+		if ( !isset($options['show_future']) )     $options['show_future']     = true;
 		if ( !isset($options['delta']) or ($options['delta'] == 0) ) $options['delta'] = 10;
 		if ( !isset($options['use_visual']) )      $options['use_visual']      = true;
 
@@ -47,6 +49,10 @@
 		$chk   = $options['admin_showall'] ? ' checked="checked"  ' : '';
 		$form .= '<p><label><input name="f_admin_showall" type="checkbox" ' . $chk . '> <strong>' . t('Показывать статистику всем') . '</strong></label><br>';
 		$form .= t('Если не отмечено, то показывается только для тех, кому разрешено редактировать «Админ-анонс»'). '</p>';
+
+		$chk   = $options['show_future'] ? ' checked="checked"  ' : '';
+		$form .= '<p><label><input name="f_show_future" type="checkbox" ' . $chk . '> <strong>' . t('Учитывать страницы из будущего') . '</strong></label><br>';
+		$form .= t('Если не отмечено, то статистика считается для страниц с датой раньше текущей'). '</p>';
 
 		$chk   = $options['use_visual'] ? ' checked="checked"  ' : '';
 		$form .= '<p><label><input name="f_use_visual" type="checkbox" ' . $chk . '> <strong>' . t('Использовать редактор системы') . '</strong></label><br>';

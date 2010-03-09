@@ -11,7 +11,7 @@
 # функция автоподключения плагина
 function %%%_autoload()
 {
-	mso_create_allow('%%%_edit', t('Админ-доступ к %%%', __FILE__));
+	mso_create_allow('%%%_edit', t('Админ-доступ к настройкам', 'plugins') . ' ' . t('%%%', __FILE__));
 	mso_hook_add( 'admin_init', '%%%_admin_init'); # хук на админку
 }
 

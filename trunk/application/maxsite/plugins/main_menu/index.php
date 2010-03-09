@@ -63,13 +63,13 @@ function main_menu_head($arg = array())
 	echo mso_load_jquery('ddsmoothmenu.js');
 	
 	if (file_exists(getinfo('template_dir') . 'main-menu.css'))
-		echo NR . '		<link rel="stylesheet" href="' . getinfo('template_url') . 'main-menu.css' . '" type="text/css" media="screen">
+		echo NR . '	<link rel="stylesheet" href="' . getinfo('template_url') . 'main-menu.css' . '" type="text/css" media="screen">
 	';
 	elseif (file_exists(getinfo('template_dir') . 'css/main-menu.css'))
-		echo NR . '		<link rel="stylesheet" href="' . getinfo('template_url') . 'css/main-menu.css' . '" type="text/css" media="screen">
+		echo NR . '	<link rel="stylesheet" href="' . getinfo('template_url') . 'css/main-menu.css' . '" type="text/css" media="screen">
 	';
 	else
-		echo NR . '		<link rel="stylesheet" href="' . getinfo('plugins_url') . 'main_menu/main-menu.css' . '" type="text/css" media="screen">
+		echo NR . '	<link rel="stylesheet" href="' . getinfo('plugins_url') . 'main_menu/main-menu.css' . '" type="text/css" media="screen">
 	';
 	
 	
@@ -84,6 +84,9 @@ function main_menu_custom($arg = array())
 	if (!isset($options['menu'])) $options['menu'] = '';
 	
 	if (!$options['menu']) return $arg;
+	
+	// для динамического изменения меню используем хук 
+	$options['menu'] = mso_hook('main_menu_custom', $options['menu']);
 	
 	$menu = mso_menu_build($options['menu'], 'selected', true);
 	
