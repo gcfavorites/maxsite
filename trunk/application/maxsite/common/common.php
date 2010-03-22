@@ -2516,7 +2516,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			}
 			else
 			{
-				if ( array_key_exists(($i+1), $menu) and (trim($menu[$i+1]) == ']') ) $class .= ' group-last';
+				if ( array_key_exists(($i), $menu) and (trim($menu[$i]) == ']') ) $class .= ' group-last';
 				$out .= '<li class="' . trim($class) . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a></li>' . NR;
 			}
 			
