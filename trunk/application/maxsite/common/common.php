@@ -2468,6 +2468,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 	$i = 1;
 	
 	$group_in = false;
+	$group_in_first = false;
 	
 	foreach ($menu as $elem)
 	{
@@ -2495,6 +2496,11 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 
 			# для первого элемента добавляем класс first
 			if ($i == 1) $class .= ' first';
+			if ($group_in_first)
+			{
+				$class .= ' group-first';
+				$group_in_first = false;
+			}
 
 			# для последнего элемента добавляем класс last
 			if ($i == count($menu)) $class .= ' last';
@@ -2506,9 +2512,11 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 				$out .= '<li class="group' . $class . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a>' 
 						. NR . '<ul>' . NR;
 				$group_in = false;
+				$group_in_first = true;
 			}
 			else
 			{
+				if ( array_key_exists(($i+1), $menu) and (trim($menu[$i+1]) == ']') ) $class .= ' group-last';
 				$out .= '<li class="' . trim($class) . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a></li>' . NR;
 			}
 			
@@ -2527,6 +2535,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 				$group_in = false;
 				$out .= '</ul>' . NR . '</li>' . NR;
 			}
+			$i++;
 		}
 	}
 	
