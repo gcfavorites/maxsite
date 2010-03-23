@@ -25,10 +25,10 @@
 	$current_dir = $current_dir_h2 = mso_segment(3);
 	if ($current_dir) $current_dir .= '/';
 
-	$path = $MSO->config['uploads_dir'] . $current_dir;
+	$path = getinfo('uploads_dir') . $current_dir;
 	if ( ! is_dir($path) ) // нет каталога
 	{
-		$path = $MSO->config['uploads_dir'];
+		$path = getinfo('uploads_dir');
 		$current_dir = $current_dir_h2 = '';
 	}
 	else
@@ -69,7 +69,7 @@
 
 
 	// нужно вывести навигацию по каталогам в uploads
-	$all_dirs = directory_map($MSO->config['uploads_dir'], true); // только в uploads
+	$all_dirs = directory_map(getinfo('uploads_dir'), true); // только в uploads
 	asort($all_dirs);
 	$out = '';
 	foreach ($all_dirs as $d)
@@ -78,20 +78,19 @@
 		if (is_dir( getinfo('uploads_dir') . $d) and $d != '_mso_float' and $d != 'mini' and $d != '_mso_i' and $d != 'smiles')
 		{
 			if (mso_segment(3) == $d)
-				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '"><strong>' . $d . '</strong></a>   ';
+				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '"><strong>' . $d . '</strong></a> ';
 			else
-				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '">' . $d . '</a>   ';
+				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '">' . $d . '</a> ';
 		}
 	}
 	if ($out)
 	{
 		if (!mso_segment(3))
-			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files"><strong>uploads</strong></a>   ' . $out;
+			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files"><strong>uploads</strong></a> ' . $out;
 		else
-			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files">uploads</a>   ' . $out;
+			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files">uploads</a> ' . $out;
 
-		$out = str_replace('   ', ' | ', trim($out));
-		$out = '<p>' . t('Навигация:', 'admin') . ' ' . $out . '</p>';
+		$out = '<div class="admin_files_nav"><span>' . t('Навигация:', 'admin') . '</span>' . $out . '</div>';
 		echo $out;
 	}
 
@@ -137,9 +136,9 @@
 
 		foreach ($post['f_check_files'] as $file)
 		{
-			@unlink($MSO->config['uploads_dir'] . $current_dir . $file);
-			@unlink($MSO->config['uploads_dir'] . $current_dir . '_mso_i/' . $file);
-			@unlink($MSO->config['uploads_dir'] . $current_dir . 'mini/' . $file);
+			@unlink(getinfo('uploads_dir') . $current_dir . $file);
+			@unlink(getinfo('uploads_dir') . $current_dir . '_mso_i/' . $file);
+			@unlink(getinfo('uploads_dir') . $current_dir . 'mini/' . $file);
 
 			// удалим описание из _mso_i/_mso_descriptions.dat
 			unset($mso_descritions[$file]);
@@ -156,15 +155,13 @@
 		
 		require_once( getinfo('common_dir') . 'uploads.php' ); // функции загрузки 
 		
-		mso_upload(
-			array( // конфиг CI-библиотеки upload
+		// параметры для mso_upload
+		$mso_upload_ar1 = array( // конфиг CI-библиотеки upload
 				'upload_path' => getinfo('uploads_dir') . $current_dir,
 				'allowed_types' => $allowed_types,
-			),
+			);
 			
-			'f_userfile', // поле с именем файла
-			
-			array( // массив прочих опций
+		$mso_upload_ar2 = array( // массив прочих опций
 				'userfile_title' => $post['f_userfile_title'], // описание файла
 				'fn_mso_descritions' => $fn_mso_descritions, // файл для описаний
 				'userfile_resize' => isset($post['f_userfile_resize']), // нужно ли менять размер
@@ -176,8 +173,26 @@
 				'userfile_mini_size' => $post['f_userfile_mini_size'], // размер миниатюры
 				'mini_type' => $post['f_mini_type'], // тип миниатюры
 				'prev_size' => 100, // размер превьюхи
-			)
-		);
+				'message1' => '', // не выводить сообщение о загрузке каждого файла
+				// 'message2' => '',
+				
+			);
+		
+		// подготовим массив $_FILES - у нас множественная загрузка
+		$new_files = mso_prepare_files('f_userfile');
+		
+		$res = false; // результат загрузки
+		// формируем поэлементно с загрузкой файлов
+		foreach ($new_files as $key => $val)
+		{
+			$_FILES[$key] = $val; // формируем $_FILES для одиночного файла
+			$res = mso_upload($mso_upload_ar1, $key, $mso_upload_ar2);
+			unset($_FILES[$key]);
+		}
+		
+		if ($res) echo '<div class="update">' . t('Загрузка выполнена', 'admin') . '</div>';
+			else echo '<div class="error">' . t('Возникли ошибки при загрузке', 'admin') . '</div>';
+		
 		
 		// после загрузки сразу обновим массив описаний - он ниже используется
 		if (file_exists( $fn_mso_descritions )) // файла нет, нужно создать массив
@@ -186,6 +201,7 @@
 			$mso_descritions = unserialize( read_file($fn_mso_descritions) ); // получим из файла все описания
 		}
 		else $mso_descritions = array();
+		
 	}
 
 	// форма нового каталога
@@ -208,12 +224,16 @@
 	// форма загрузки
 	echo '
 		<div class="upload_file">
-		<h2>' . t('Загрузка файла', 'admin') . '</h2>
+		<h2>' . t('Загрузка файлов', 'admin') . '</h2>
 		<p>' . t('Для загрузки файла нажмите кнопку «Обзор», выберите файл на своем компьютере. После этого нажмите кнопку «Загрузить». Размер файла не должен превышать', 'admin') . ' ' . ini_get ('post_max_size') . '.</p>
 		<form action="" method="post" enctype="multipart/form-data">' . mso_form_session('f_session2_id') .
 		'<p>
-		<input type="file" name="f_userfile" size="80"> 
- 
+		<input type="file" name="f_userfile[]" size="80"><br>
+		<input type="file" name="f_userfile[]" size="80"><br>
+		<input type="file" name="f_userfile[]" size="80"><br>
+		<input type="file" name="f_userfile[]" size="80"><br>
+		<input type="file" name="f_userfile[]" size="80">
+		
 		&nbsp;<input type="submit" name="f_upload_submit" value="' . t('Загрузить', 'admin') . '"></p>
 		<p>' . t('Описание файла:', 'admin') . ' <input type="text" name="f_userfile_title" class="description_file" value=""></p>
 
@@ -233,8 +253,8 @@
 		</select></p>
 
 		<p><label><input type="checkbox" name="f_userfile_water" value="" '.
-			((file_exists($MSO->config['uploads_dir']. 'watermark.png'))?'':' disabled="disabled"') . 
-			((mso_get_option('use_watermark', 'general', 0))?(' checked="checked"'):('')) .
+			((file_exists(getinfo('uploads_dir') . 'watermark.png')) ? '' : ' disabled="disabled"') . 
+			((mso_get_option('use_watermark', 'general', 0)) ? (' checked="checked"') : ('')) .
 			'> ' . t('Для изображений установить водяной знак', 'admin') . '</label>
 			<br><em>' . t('Примечание: водяной знак должен быть файлом <strong>watermark.png</strong> и находиться в каталоге', 'admin') . ' <strong>uploads</strong></em></p>
 
@@ -381,7 +401,7 @@
 		$cod .= '<br><a href="#" class="edit_descr_link" onClick="return false;">' . t('Изменить описание', 'admin') . '</a>';
 		// конец добавления
 
-		$out_all .= '<div class="cornerz">' . $sel . $predpr . $cod . '</div>';
+		$out_all .= '<div class="cornerz"><div class="wrap">' . $sel . $predpr . $cod . '</div></div>';
 
 		if ($admin_view_files == 'table') $CI->table->add_row($predpr, $sel . $cod);
 	}

@@ -510,3 +510,8 @@ td.editor_and_meta > div > p label {margin-right: 10px}
 .float-parent {width:100%; overflow:hidden}
 /* plugins */
 .ushki {border: 1px solid #C3DAF9; padding: 10px; margin: 10px 0; background: #C3DAF9;}
+
+div.float-parent div.cornerz div.wrap {overflow: auto;}
+div.admin_files_nav strong {font-size: 1.5em;}
+div.admin_files_nav span {margin: 0 7px 0 0;}
+div.admin_files_nav a {margin: 0 7px 0 0;}

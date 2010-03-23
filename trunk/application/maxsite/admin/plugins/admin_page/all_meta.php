@@ -66,7 +66,7 @@
 		if ( !isset($row['type']) ) $type = 'textfield';
 			else $type = stripslashes(trim($row['type']));
 		
-		if ( !isset($row['values']) ) $value = '';
+		if ( !isset($row['values']) ) $values = '';
 			else $values = _mso_ini_check_php(stripslashes(htmlspecialchars(trim($row['values']))));
 			
 		if ( !isset($row['description']) ) $description = '';

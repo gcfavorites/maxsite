@@ -40,7 +40,7 @@ blockquote p {width: 100%; margin: 0; }
 
 /* DIV */
 
-div.widget { b1order: 1px solid #86A7CA; margin: 10px 0 20px 10px; background: #EFF4FA; }
+div.widget { margin: 10px 0 20px 10px; background: #EFF4FA; }
 div.widget div.w0 {position: relative;}
 div.widget div.w1 {}
 div.widget div.w2 {}
@@ -79,9 +79,9 @@ div.page_other_pages ul {list-style-type: square;}
 
 
 /* LIST */
-ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; fo1nt-size: 9pt; list-style-type: none; l1ist-style-type: square; line-height: 1.5em;}
+ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; list-style-type: none; line-height: 1.5em;}
 
-ul.is_link ul {marg1in: 0; padd1ing: 0px; list-style-type: none;}
+ul.is_link ul {list-style-type: none;}
 
 ul.is_link li {margin: 0px; background: url(images/bulletblue.gif) no-repeat 0 4px; padding: 0 0 0 14px;}
 ul.is_link li li {margin-left: 10px;}
@@ -92,7 +92,7 @@ li.count0 {color: grey;}
 ul.category {color: gray;}
 
 ul.last_comment {font-size: 8pt; }
-ul.last_comment em {display: block; color: gray; f1ont-size: 0.9em; text-align: right;}
+ul.last_comment em {display: block; color: gray; text-align: right;}
 ul.last_comment li {margin-bottom: 7px;}
 
 div.comments ul.last_comment li {margin: 5px 0;}
@@ -111,23 +111,23 @@ div.calendar td a {text-decoration: underline;}
 
 /* COMMENTS */
 div.comment-form {line-height: 1.2em; width: 100%;}
-div.comment-form label {wid1th: 120px; font-weight: bold; fl1oat: left; te1xt-align: right; cl1ear: both; margin: 3px;}
+div.comment-form label {margin: 3px;}
 div.comment-form p {margin: 3px;}
 div.comment-form input.text {width: 300px; margin: 3px;}
 div.comment-form input.no-margin {width: auto; margin: 3px; }
 div.comment-form textarea {width: 99%; margin: 3px;}
 *html div.comment-form textarea {width: 95%; margin: 3px;}
 div.comment-form span { position: relative; top: -5px; font-size: 8pt; color: gray;}
-div.comment-form span.black { font-si1ze: 9pt; color: black;}
-div.comment-form input.comments_submit {width: 120px; margi1n-left: 126px;}
+div.comment-form span.black { color: black;}
+div.comment-form input.comments_submit {width: 120px; }
 div.comment-form input.comments_captha {width: 90px;}
 div.comment-form img { position: relative; top: 7px; }
 
-div.comment-form div.comments-reg {border: 1px solid #8591B7; margin: 10px 0; backgr1ound: #E5E5F1; padding: 10px;}
-div.comment-form div.comments-noreg {border: 1px solid #8591B7; margin: 10px 0; backg1round: #F1E5E5; padding: 10px;}
-div.comment-form div.comments-textarea {border: 1px solid #8591B7; margin: 10px 0; backg1round: #E5F1E5; padding: 10px;}
+div.comment-form div.comments-reg {border: 1px solid #8591B7; margin: 10px 0; padding: 10px;}
+div.comment-form div.comments-noreg {border: 1px solid #8591B7; margin: 10px 0; padding: 10px;}
+div.comment-form div.comments-textarea {border: 1px solid #8591B7; margin: 10px 0; padding: 10px;}
 
-div.comment-form div.comments-user {border: 1px solid #8591B7; margin: 10px 0; backgr1ound: #E5F1E5; padding: 10px; -moz-border-radius: 10px; font-weight: bold;}
+div.comment-form div.comments-user {border: 1px solid #8591B7; margin: 10px 0; padding: 10px; -moz-border-radius: 10px; font-weight: bold;}
 
 div.comment-ok {background: #40A040; color: white; padding: 10px; text-align: center; font-weight: bold;}
 div.comment-error {background: #FF4040; color: white; padding: 10px; text-align: center; font-weight: bold;}
@@ -137,8 +137,8 @@ div.comment-form .comment_button input {margin: 0px; padding: 0 5px; font-size: 
 
 div.comments {margin: 20px 0 0 0;}
 div.comments ul, div.comments ol {margin: 10px 0 20px 0;}
-div.comments li {bor1der-bottom: 1px solid #8591B7; margin: 0 0 20px 30px;}
-div.comments li span {bor1der-bottom: 1px solid #8591B7; font-style: italic;}
+div.comments li {margin: 0 0 20px 30px;}
+div.comments li span {font-style: italic;}
 
 div.comments h3.comments {background: #E8E8E8; padding: 3px;}
 div.comments blockquote {margin-left: 0; padding: 10px; border-left: 2px gray solid;}
@@ -170,9 +170,9 @@ img.border {border: 1px solid #3D61B6; }
 img.smiley {vertical-align: middle;}
 
 /*  PRE to OL */
-div.pre {background: #F0F0F0; padding: 5px; overflow: auto; wi1dth: 99%; margin: 0 0 10px 0;}
-ol.pre {line-hei1ght: 1em; font-family: monospace; padding: 0; margin: 0 0 0 30px;  }
-ol.pre li {padding: 0; margin: 0; white-space: pre; line-he1ight: 0.8em;}
+div.pre {background: #F0F0F0; padding: 5px; overflow: auto; margin: 0 0 10px 0;}
+ol.pre {font-family: monospace; padding: 0; margin: 0 0 0 30px;  }
+ol.pre li {padding: 0; margin: 0; white-space: pre;}
 ol.pre li.odd {background: none;}
 ol.pre span.php-comment {color: gray;}
 

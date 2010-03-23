@@ -1,9 +1,9 @@
 #wysiwyg {position: relative; background: #E0EFFF; border: none; padding: 7px 7px 0 7px; margin: -1px 0 10px 0; border-left: 1px solid #ccc; border-right: 1px solid #ccc; float: left;}
 
-div.wysiwyg { border: 1px solid #ccc; background: #FFF; hei1ght: 400px; }
-div.wysiwyg * { margin: 0px; padding: 0; }
+div.wysiwyg { border: 1px solid #ccc; background: #FFF;}
+div.wysiwyg * { margin: 0; padding: 0; }
 
-div.wysiwyg iframe { border: 0; margin: 0; cle1ar: left; padding: 0px; width: 100%;}
+div.wysiwyg iframe { border: 0; margin: 0; padding: 0; width: 100%;}
 
 div.wysiwyg ul.panel { border-bottom: 1px solid #ccc; float: left; width: 100%; padding: 4px 0; }
 

@@ -89,6 +89,14 @@ mso_cur_dir_lang('admin');
 			$f_content = str_replace('src="../../', 'src="' . $MSO->config['site_url'], $f_content);
 			$f_content = str_replace('src="../', 'src="' . $MSO->config['site_url'], $f_content);
 			
+			// замены из-за мусора FireFox
+			$f_content = str_replace('-moz-background-clip: -moz-initial;', '', $f_content);
+			$f_content = str_replace('-moz-background-origin: -moz-initial;', '', $f_content);
+			$f_content = str_replace('-moz-background-inline-policy: -moz-initial;', '', $f_content);
+			
+			
+			
+			
 			// $f_content = str_replace('src="../../application/', 'src="' . $MSO->config['application_url'], $f_content);
 			// $f_content = str_replace('src="../application/', 'src="' . $MSO->config['application_url'], $f_content);
 			

@@ -91,6 +91,8 @@ if ($pages) // есть страницы
 	
 	if (!$full_posts) echo '</ul>';
 	
+	if ($f = mso_page_foreach('_category-posle-pages')) require($f); // подключаем кастомный вывод
+	
 	mso_hook('pagination', $pagination);
 
 }
@@ -108,6 +110,8 @@ else
 	}
 } // endif $pages
 
+if ($f = mso_page_foreach('category-posle')) require($f); // подключаем кастомный вывод
+	
 echo NR . '</div><!-- class="type type_category" -->' . NR;
 
 # конечная часть шаблона

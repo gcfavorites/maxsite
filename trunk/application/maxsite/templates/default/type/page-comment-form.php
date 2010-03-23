@@ -2,6 +2,8 @@
 
 mso_cur_dir_lang('templates');
 
+
+
 ?>
 
 <div class="comment-form">
@@ -15,7 +17,12 @@ mso_cur_dir_lang('templates');
 			
 				<?php if (mso_get_option('allow_comment_anonim', 'general', '1') ) { ?>
 					<div class="comments-noreg">
+						
+						<?php if (mso_get_option('allow_comment_comusers', 'general', '1')) { ?>
 						<input type="radio" name="comments_reg" id="comments_reg_1" value="noreg"  checked="checked" class="no-margin"> <span class="black"><?=t('Не регистрировать/аноним')?></span> <br>
+						<?php } else { ?>
+						<input type="hidden" name="comments_reg" value="noreg">
+						<?php } ?>
 						
 						<label for="comments_author"><?=t('Ваше имя')?></label>
 						<input type="text" name="comments_author" id="comments_author" class="text" onfocus="document.getElementById('comments_reg_1').checked = 'checked';">
@@ -29,12 +36,16 @@ mso_cur_dir_lang('templates');
 					</div>		
 				<?php } ?>
 			
+				<?php if (mso_get_option('allow_comment_comusers', 'general', '1')) { ?>
 			<div class="comments-reg">
+			
 				<?php if ( mso_get_option('allow_comment_anonim', 'general', '1') ) {	?>
 					<input type="radio" name="comments_reg" id="comments_reg_2" value="reg" class="no-margin"> 
 				<?php } else { ?>
 					<input type="hidden" name="comments_reg" id="comments_reg_2" value="reg" class="no-margin" checked="checked"> 
 				<?php } ?>
+				
+			
 					<span class="black"><?=t('Если вы уже зарегистрированы как комментатор или хотите зарегистрироваться, укажите пароль и свой действующий email. <br>(<i>При регистрации на указанный адрес придет письмо с кодом активации и ссылкой на ваш персональный аккаунт, где вы сможете изменить свои данные, включая адрес сайта, ник, описание, контакты и т.д.</i>)')?></span><br>
 				
 				<label for="comments_email"><?= t('E-mail') ?></label>
@@ -42,7 +53,11 @@ mso_cur_dir_lang('templates');
 
 				<label for="comments_password"><?= t('Пароль') ?></label>
 				<input type="password" name="comments_password" id="comments_password" value="" class="text" onfocus="document.getElementById('comments_reg_2').checked = 'checked';"><br>
+				
+				
 			</div>
+				<?php } ?>
+			
 			<?php  } else { // comusers?>
 				
 				<input type="hidden" name="comments_email" value="<?= $comuser['comusers_email'] ?>">

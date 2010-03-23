@@ -6,11 +6,39 @@
  * Функции для загрузки файлов, создания миниатюры и описания файла.
  */
 
+# функция преобразует $_FILES в массив, годный для mso_upload
+# если используется множественная загрузка файлов 
+# <input type="file" name="f_userfile[]">
+function mso_prepare_files($field_userfile = 'f_userfile')
+{
+	$new_files = array();
+	
+	// алгоритм преобразования: http://code-igniter.ru/wiki/Multi_upload
+	foreach ($_FILES[$field_userfile]['name'] as $index => $val)
+	{
+		if ($val)
+		{
+			foreach ($_FILES[$field_userfile] as $key => $val_arr)
+			{
+				$new_files[$field_userfile . $index][$key] = $val_arr[$index];
+			}
+		}
+	}
+	
+	// обнуляем $_FILES
+	unset($_FILES['f_userfile']);
+	return $new_files;
+}
+
+
+# функция загрузки
+# автоматом загружает, меняет размеры, делает миниатюры, опсиания и т.д.
 function mso_upload($config_library = array(), $field_userfile = 'f_userfile', $r = array())
 {
 
 	$CI = & get_instance();
 	$CI->load->library('upload', $config_library);
+	$CI->upload->initialize($config_library);
 	
 	// если была отправка файла, то нужно заменить поле имени с русского на что-то другое
 	// это ошибка при копировании на сервере - он не понимает русские буквы
@@ -25,9 +53,9 @@ function mso_upload($config_library = array(), $field_userfile = 'f_userfile', $
 
 		$_FILES[$field_userfile]['name'] = $f_temp;
 	}
-
-	$res = $CI->upload->do_upload($field_userfile);
 	
+	$res = $CI->upload->do_upload($field_userfile);
+
 	if (!isset($r['message1'])) $r['message1'] = '<div class="update">' . t('Загрузка выполнена', 'admin') . '</div>';
 	if (!isset($r['message2'])) $r['message2'] = '<div class="error">' . t('Не удалось перименовать файл в нижний регистр', 'admin') . '</div>';
 	
@@ -62,7 +90,7 @@ function mso_upload($config_library = array(), $field_userfile = 'f_userfile', $
 		// если это файл картинки, то нужно сразу сделать скриншот маленький в _mso_i 100px, который будет выводиться в
 		// списке файлов
 		$up_data = $CI->upload->data();
-
+		
 		// файл нужно поменять к нижнему регистру
 		if ( $up_data['file_name'] != strtolower($up_data['file_name']) )
 		{
@@ -358,12 +386,13 @@ function mso_upload($config_library = array(), $field_userfile = 'f_userfile', $
 			}
 			
 		}
-		
+		return true;
 	}
 	else
 	{
 		$er = $CI->upload->display_errors();
 		echo '<div class="error">' . t('Ошибка загрузки файла.', 'admin') . $er . '</div>';
+		return false;
 	}
 		
 }

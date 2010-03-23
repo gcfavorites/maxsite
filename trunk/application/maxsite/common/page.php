@@ -48,7 +48,11 @@ function mso_get_pages($r = array(), &$pag)
 	if ( !isset($r['cat_order_asc']) )	$r['cat_order_asc'] = 'asc'; // порядок рубрик
 	if ( !isset($r['pagination']) )		$r['pagination'] = true; // использовать пагинацию
 	if ( !isset($r['content']) )		$r['content'] = true; // получать весь текст
-	if ( !isset($r['page_id']) )		$r['page_id'] = 0; // если 0, значит все страницы - только для главной
+	
+	// если 0, значит все страницы - только для главной
+	// можно указать массивом номера страниц
+	if ( !isset($r['page_id']) )		$r['page_id'] = 0; 
+	
 	if ( !isset($r['cat_id']) )			$r['cat_id'] = 0; // если 0, значит все рубрики - только для главной
 
 	if ( !isset($r['type']) )			$r['type'] = 'blog'; // если false - то все, иначе blog или static
@@ -416,7 +420,9 @@ function _mso_sql_build_home($r, &$pag)
 
 	if ($r['cat_id']) $cat_id = mso_explode($r['cat_id']);
 	else $cat_id = false;
-
+	
+	$r['page_id'] = mso_explode($r['page_id']);
+		
 	// еслу указан массив номеров рубрик, значит выводим только его
 	if ($r['categories']) $categories = true;
 	else $categories = false;
@@ -451,7 +457,7 @@ function _mso_sql_build_home($r, &$pag)
 				else $CI->db->where('page_type.page_type_name', $r['type']);
 		}
 
-		if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
+		if ($r['page_id']) $CI->db->where_in('page.page_id', $r['page_id']);
 
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
@@ -516,8 +522,8 @@ function _mso_sql_build_home($r, &$pag)
 
 	$CI->db->from('page');
 
-	if ($r['page_id']) $CI->db->where('page.page_id', $r['page_id']);
-
+	if ($r['page_id']) $CI->db->where_in('page.page_id', $r['page_id']);
+		
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
 	

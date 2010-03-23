@@ -20,6 +20,7 @@ function samborsky_polls_autoload($args = array()){
 	
 	// Хук в <head></head>
 	mso_hook_add('head', 'samborsky_polls_head');
+	mso_register_widget('samborsky_polls_widget', t('Голосования', __FILE__)); # регистрируем виджет
 }
 
 function samborsky_polls_head($args = array()){
@@ -103,7 +104,7 @@ function samborsky_polls_admin_page($args = array()){
 function samborsky_polls($id = 0){
 	global $MSO;
 	
-	$question = new sp_question();
+	$question = new sp_question($id);
 	return $question->get_active_code();
 }
 
@@ -116,6 +117,88 @@ function samborsky_polls_archive(){
 	
 	$archive = new sp_archive;
 	return $archive->get();
+}
+
+/*  добавил виджет MAX   */
+
+# функция, которая берет настройки из опций виджетов
+function samborsky_polls_widget($num = 1) 
+{
+	$widget = 'samborsky_polls_widget_' . $num; // имя для опций = виджет + номер
+	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
+	
+	// заменим заголовок, чтобы был в  h2 class="box"
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
+	
+	
+	return samborsky_polls_widget_custom($options, $num);
+}
+
+
+# форма настройки виджета 
+# имя функции = виджет_form
+function samborsky_polls_widget_form($num = 1) 
+{
+	$widget = 'samborsky_polls_widget_' . $num; // имя для формы и опций = виджет + номер
+	
+	// получаем опции 
+	$options = mso_get_option($widget, 'plugins', array());
+	
+	if ( !isset($options['header']) ) $options['header'] = '';
+	if ( !isset($options['polls_id']) ) $options['polls_id'] = '';
+	if ( !isset($options['text_posle']) ) $options['text_posle'] = '';
+	
+	// вывод самой формы
+	$CI = & get_instance();
+	$CI->load->helper('form');
+	
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> ' . 
+			form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+			
+	$form .= '<p><div class="t150">' . t('Номер голосования:', 'plugins') . '</div> ' . 
+			form_input( array( 'name'=>$widget . 'polls_id', 'value'=>$options['polls_id'] ) ) ;			
+	
+	$form .= '<p><div class="t150">' . t('Текст после:', 'plugins') . '</div> ' . 
+			form_textarea( array( 'name'=>$widget . 'text_posle', 'value'=>$options['text_posle'], 'style'=>'height: 100px;' ) ) ;
+			
+	return $form;
+}
+
+
+# сюда приходят POST из формы настройки виджета
+# имя функции = виджет_update
+function samborsky_polls_widget_update($num = 1) 
+{
+	$widget = 'samborsky_polls_widget_' . $num; // имя для опций = виджет + номер
+	
+	// получаем опции
+	$options = $newoptions = mso_get_option($widget, 'plugins', array());
+	
+	# обрабатываем POST
+	$newoptions['header'] = mso_widget_get_post($widget . 'header');
+	$newoptions['polls_id'] = (int) mso_widget_get_post($widget . 'polls_id');
+	$newoptions['text_posle'] = mso_widget_get_post($widget . 'text_posle');
+	
+	if ( $options != $newoptions ) 
+		mso_add_option($widget, $newoptions, 'plugins');
+}
+
+# функции плагина
+function samborsky_polls_widget_custom($options = array(), $num = 1)
+{
+	$out = '';
+	if ( !isset($options['header']) ) $options['header'] = '';
+	if ( !isset($options['polls_id']) ) $options['polls_id'] = 0;
+	if ( !isset($options['text_posle']) ) $options['text_posle'] = '';
+
+	$out = samborsky_polls((int) $options['polls_id']);
+	
+	if($out and $options['header']) $out = $options['header'] . $out;
+	if ($out) $out .= $options['text_posle'];
+	
+	return $out;	
 }
 
 

@@ -2496,12 +2496,13 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 
 			# для первого элемента добавляем класс first
 			if ($i == 1) $class .= ' first';
-			if ($group_in_first)
-			{
-				$class .= ' group-first';
-				$group_in_first = false;
-			}
 
+			if ($group_in_first)
+ 			{
+				$class .= ' group-first';
+ 				$group_in_first = false;
+			}
+ 				
 			# для последнего элемента добавляем класс last
 			if ($i == count($menu)) $class .= ' last';
 
@@ -2623,17 +2624,26 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 
 	$class_child = $class_child_style = $class_ul = $class_ul_style = '';
 	$class_current = $class_current_style = $class_li = $class_li_style = '';
-
-	if ($options['class_child']) $class_child = ' class="' . $options['class_child'] . '"';
+	
+	// [LEVEL] - заменяется на level-текущий уровень вложенности
+	if ($options['class_child']) $class_child = ' class="' . $options['class_child'] . ' [LEVEL]"';
+	
+	static $level = 0;
+	$class_child = str_replace('[LEVEL]', 'level' . $level, $class_child);
+	
 	if ($options['class_child_style']) $class_child_style = ' style="' . $options['class_child_style'] . '"';
 	if ($options['class_ul']) $class_ul = ' class="' . $options['class_ul'] . '"';
 	if ($options['class_ul_style']) $class_ul_style = ' style="' . $options['class_ul_style'] . '"';
 
 	if ($options['class_current']) $class_current = ' class="' . $options['class_current'] . '"';
 	if ($options['class_current_style']) $class_current_style = ' style="' . $options['class_current_style'] . '"';
-	if ($options['class_li']) $class_li = ' class="' . $options['class_li'] . '"';
+	
+	if ($options['class_li']) $class_li = ' class="' . $options['class_li'] . ' group"';
+		else $class_li = ' class="group"';
 	if ($options['class_li_style']) $class_li_style = ' style="' . $options['class_li_style'] . '"';
 
+	
+	
 
 	if ($child) $out = NR . '	<ul' . $class_child . $class_child_style . '>';
 		else $out = NR . '<ul' . $class_ul . $class_ul_style . '>';
@@ -2707,23 +2717,32 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 
 		if (isset($elem[$options['childs']]))
 		{
+			
 			if ($cur) $out .= NR . '<li' . $class_current . $class_current_style . '>' . $e;
 				else $out .= NR . '<li' . $class_li . $class_li_style . '>' . $e;
+				
+			++$level;
 			$out .= mso_create_list($elem[$options['childs']], $options, true);
+			--$level;
 			$out .= NR . '</li>';
 		}
 		else
 		{
 			if ($child) $out .= NR . '	';
 				else $out .= NR;
+				
+			// если нет детей, то уберем класс group
+			$class_li_1 = str_replace('group', '', $class_li);
 
 			if ($cur) $out .= '<li' . $class_current . $class_current_style . '>' . $e . '</li>';
-				else $out .= '<li' . $class_li . $class_li_style . '>' . $e . '</li>';
+				else $out .= '<li' . $class_li_1 . $class_li_style . '>' . $e . '</li>';
 		}
 	}
 
 	if ($child) $out .= NR . '	</ul>' . NR;
 		else $out .= NR . '</ul>' . NR;
+	
+	$out = str_replace('<li class="">', '<li>', $out);
 
 	return $out;
 }

@@ -48,6 +48,7 @@ function search_form_widget_form($num = 1)
 	if ( !isset($options['submit']) ) $options['submit'] = t('Поиск', 'plugins');
 	if ( !isset($options['style_text']) ) $options['style_text'] = '';
 	if ( !isset($options['style_submit']) ) $options['style_submit'] = 'margin-left: 5px; font-size: 8pt;';
+	if ( !isset($options['text_posle']) ) $options['text_posle'] = '';
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -62,6 +63,10 @@ function search_form_widget_form($num = 1)
 	$form .= '<p><div class="t150">' . t('CSS-стиль текста:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style_text', 'value'=>$options['style_text'] ) ) ;
 	
 	$form .= '<p><div class="t150">' . t('CSS-стиль кнопки:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'style_submit', 'value'=>$options['style_submit'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Текст внизу:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'text_posle', 'value'=>$options['text_posle'], 'rows' => '3' ) ) ;
+	
+	
 	
 	return $form;
 }
@@ -82,6 +87,7 @@ function search_form_widget_update($num = 1)
 	$newoptions['submit'] = mso_widget_get_post($widget . 'submit');
 	$newoptions['style_text'] = mso_widget_get_post($widget . 'style_text');
 	$newoptions['style_submit'] = mso_widget_get_post($widget . 'style_submit');
+	$newoptions['text_posle'] = mso_widget_get_post($widget . 'text_posle');
 
 	
 	if ( $options != $newoptions ) 
@@ -97,17 +103,24 @@ function search_form_widget_custom($options = array(), $num = 1)
 	if ( !isset($options['submit']) ) $options['submit'] = t('Поиск', 'plugins');
 	if ( !isset($options['style_text']) ) $options['style_text'] = '';
 	if ( !isset($options['style_submit']) ) $options['style_submit'] = 'margin-left: 5px; font-size: 8pt;';
+	if ( !isset($options['text_posle']) ) $options['text_posle'] = '';
+	
+	if ($options['text_posle'])
+	{
+		// d тексте можно указать [SITEURL], который заменится на адрес сайта
+		$options['text_posle'] = str_replace('[SITEURL]', getinfo('site_url'), $options['text_posle']);
+	}
 	
 	if ($options['style_text']) $options['style_text'] = ' style ="' . $options['style_text'] . '"';
 	
 	$out .= '
 	<form class="search_form_widget" name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">
-	<input type="text" name="s"' . $options['style_text'] . ' class="search_text" onfocus="if (this.value == \'' . $options['text'] . '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \'' . $options['text'] . '\';}" value="' . $options['text'] . '"><input type="submit" name="Submit" value="' . $options['submit'] . '" style="' . $options['style_submit'] . '" class="search_submit"></form>
-	';
+	<input type="text" name="s"' . $options['style_text'] . ' class="search_text" onfocus="if (this.value == \'' . $options['text'] . '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \'' . $options['text'] . '\';}" value="' . $options['text'] . '"><input type="submit" name="Submit" value="' . $options['submit'] . '" style="' . $options['style_submit'] . '" class="search_submit">'
+	. $options['text_posle']
+	.'</form>';
 	
 	if ($options['header']) $out = $options['header'] . $out;
 	
 	return $out;	
 }
 
-?>

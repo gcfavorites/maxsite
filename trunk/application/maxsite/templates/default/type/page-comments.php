@@ -107,15 +107,19 @@ if ($comments) // есть страницы
 
 if ($page_comment_allow)
 {
-	if ($f = mso_page_foreach('page-comment-form-do')) require($f); // подключаем кастомный вывод
-	else echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
-	
-	if ($f = mso_page_foreach('page-comment-form')) 
+	// если запрещены комментарии и от анонимов и от комюзеров, то выходим
+	if ( mso_get_option('allow_comment_anonim', 'general', '1') 
+		or mso_get_option('allow_comment_comusers', 'general', '1') ) 
 	{
-		require($f); // подключаем кастомный вывод
+		if ($f = mso_page_foreach('page-comment-form-do')) require($f); // подключаем кастомный вывод
+		else echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
+		
+		if ($f = mso_page_foreach('page-comment-form')) 
+		{
+			require($f); // подключаем кастомный вывод
+		}
+		else require( 'page-comment-form.php' ); // форма комментариев из дефолта
 	}
-	else require( 'page-comment-form.php' ); // форма комментариев из дефолта
-
 }
 else
 {

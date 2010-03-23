@@ -44,7 +44,7 @@ div.admin-content {margin: 0 0 0 250px; padding: 10px; border-left: 2px #4472C5 
 div.admin-menu {width: 250px; background: #A4C5EF; color: #527FD0; float: left; border-right: 2px #4472C5 solid;}
 div.admin-menu div.r {padding: 10px 0 10px 0;}
 
-div.admin-footer {clear: both; background: #0D419B url(images/maxsitelogo-blue.png) no-repeat right 3px; color: white; padding: 15px 0 10px 10px; te2xt-align: center;}
+div.admin-footer {clear: both; background: #0D419B url(images/maxsitelogo-blue.png) no-repeat right 3px; color: white; padding: 15px 0 10px 10px; }
 div.admin-footer a {color: white;}
 
 
@@ -192,3 +192,9 @@ td sub {color: gray}
 
 /* plugins */
 .ushki {border: 1px solid #C3DAF9; padding: 10px; margin: 10px 0; background: #C3DAF9;}
+
+
+div.float-parent div.cornerz div.wrap {overflow: auto;}
+div.admin_files_nav strong {font-size: 1.5em;}
+div.admin_files_nav span {margin: 0 7px 0 0;}
+div.admin_files_nav a {margin: 0 7px 0 0;}

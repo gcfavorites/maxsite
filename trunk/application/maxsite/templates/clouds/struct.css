@@ -20,7 +20,7 @@ a img { border: none; text-decoration: none;} /* ie fix*/
 a img, a:visited img, a:hover img, a img:hover, img+a, img+a:hover { border: none; text-decoration: none;}
 
 h1 {font-size: 14pt; line-height: 1.2em; margin: 0; font-weight: normal;}
-h2 {font-size: 11pt; margin: 5px 0 10px 0; font-weig1ht: normal;}
+h2 {font-size: 11pt; margin: 5px 0 10px 0; }
 h3 {font-size: 10pt; margin: 5px 0 10px 0;}
 h4 {font-size: 9pt; margin: 5px 0 10px 0;}
 h5 {font-size: 8pt; margin: 5px 0 10px 0;}

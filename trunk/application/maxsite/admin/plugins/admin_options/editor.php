@@ -41,15 +41,15 @@
 							'name' => t('Разрешить публикацию RSS'), 
 							'description' => t('Отмечать опцию «Публикация в RSS» по-умолчанию'),
 							'default' => '1'
-						),
+						),					
 			
 	);
-
-
+	
+	
 	# если нужно подключить свои опции используйте хук editor_options
 	$_options = mso_hook('editor_options', $_options);
-
-
+	
+	
 	# отображение опций
 	mso_admin_plugin_options('editor_options', 'admin', 
 		$_options,

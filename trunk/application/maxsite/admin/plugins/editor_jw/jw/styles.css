@@ -2,9 +2,9 @@
 body {font-family: Courier New; font-size: 10pt; cursor: text; line-height: 1.2em;} 
 
 pre {background: #E8E8E8; padding: 10px; overflow: auto;}
-code {backgro1und: #E0E0E0; padding: 10px; overflow: auto;}
+code {padding: 10px; overflow: auto;}
 
-ul, ol {back1ground: #E0E0F0; padding: 5px 5px 5px 30px; margin: 5px 0;}
+ul, ol { padding: 5px 5px 5px 30px; margin: 5px 0;}
 li {margin-bottom: 5px;}
 
 p {margin: 0;}

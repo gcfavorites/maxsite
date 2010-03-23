@@ -53,7 +53,7 @@ function addzakl_content_end($args = array())
 
 	$img_src = 'technorati.gif';
 	$link = '<a rel="nofollow" href="http://www.technorati.com/faves?add=' . $post_link . '">';
-	$out .= $sep . $link . '<img border="0" title="technorati.com" alt="technorati.com" src="' . $path . $img_src  . '"></a>';
+	$out .= $sep . $link . '<img border="0" title="technorati.com" alt="technorati.com" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 
 	$img_src = 'linkstore.gif';
 	$link = '<a rel="nofollow" href="http://www.linkstore.ru/servlet/LinkStore?a=add&amp;url=' . $post_link . '&amp;title=' . $post_title .  '">';
@@ -61,7 +61,7 @@ function addzakl_content_end($args = array())
 	
 	$img_src = 'news2-ru.gif';
 	$link = '<a rel="nofollow" href="http://news2.ru/add_story.php?url=' . $post_link . '">';
-	$out .= $sep . $link . '<img border="0" title="news2.ru" alt="news2.ru" src="' . $path . $img_src  . '"></a>';
+	$out .= $sep . $link . '<img border="0" title="news2.ru" alt="news2.ru" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 
 	$img_src = 'rumark.gif';
 	$link = '<a rel="nofollow" href="http://rumarkz.ru/bookmarks/?action=add&amp;popup=1&amp;address=' . $post_link . '&amp;title=' . $post_title .  '">';

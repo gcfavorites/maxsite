@@ -58,10 +58,10 @@
 		$form .= '<p><label><input name="f_use_visual" type="checkbox" ' . $chk . '> <strong>' . t('Использовать редактор системы') . '</strong></label><br>';
 		$form .= t('Если отмечено, то используется визуальный редактор системы или подключенный плагин редактора. Иначе просто textarea и вывод не пропускается через балансировку тегов.'). '</p>';
 
-		$form .= '<br><br><p><input name="f_delta" type="text" value="' . $options['delta'] . '"> <strong>' . t('Дельта подсчёта (приблизительность максимальных и минимальных страниц).') . '</strong><br>';
-		$form .= t('Насколько близко по количеству просмотров к минимуму и максимуму должны быть страницы в отчёте.');
+		$form .= '<br><p><input name="f_delta" type="text" value="' . $options['delta'] . '"> <strong>' . t('Дельта подсчёта (приблизительность максимальных и минимальных страниц).') . '</strong><br>';
+		$form .= t('Насколько близко по количеству просмотров к минимуму и максимуму должны быть страницы в отчёте.') . '</p>';
 
-		$form .= '<br><br><h2>' . t('Текст на стартовой странице') . '</h2>';
+		$form .= '<br><h2>' . t('Текст на стартовой странице') . '</h2>';
 		$form .= '<p>' . t('Введите текст (с html-оформлением), который должен быть на стартовой странице админки.') . '</p>';
 
 		if ($options['use_visual'] == 1)
@@ -70,8 +70,9 @@
 						'action'  => '',
 						'content' => htmlspecialchars($options['admin_announce']),
 						'do'      => mso_form_session('f_session_id'). $form,
-						'posle'   => '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">'
+						'posle'   => '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">',
 						);
+						
 			if (mso_hook_present('editor_custom')) mso_hook('editor_custom', $ad_config);
 				else editor_jw($ad_config);
 		}
@@ -83,7 +84,7 @@
 
 			echo '<form action="" method="post">' . mso_form_session('f_session_id');
 			echo $form;
-			echo '<br /><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;" />';
+			echo '<br><input type="submit" name="f_submit" value="' . t('Сохранить изменения', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 			echo '</form>';
 		}
 
