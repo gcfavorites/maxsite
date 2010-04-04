@@ -132,7 +132,14 @@ function bbcode_custom($text = '')
 		// quoting
 		'~\[quote\](.*?)\[\/quote\]~si'         => '<blockquote>$1</blockquote>',
 		'~\[quote=(?:&quot;|"|\')?(.*?)["\']?(?:&quot;|"|\')?\](.*?)\[\/quote\]~si'   => '<blockquote><strong class="src">$1:</strong>$2</blockquote>',
+		
+		# [div(class)]текст[/div]
+		'~\[div\((.[^ ]*?)\)\](.*?)\[\/div\]~si' => '<div class="$1">$2</div>',
 
+		# [span(class)]текст[/div]
+		'~\[span\((.[^ ]*?)\)\](.*?)\[\/span\]~si' => '<span class="$1">$2</span>',
+		
+		
   );
   
   $text = preg_replace(array_keys($preg), array_values($preg), $text);

@@ -7,6 +7,9 @@ $par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'),
 			'cut' => mso_get_option('more', 'templates', t('Читать полностью »')),
 			'cat_order'=>'category_name', 'cat_order_asc'=>'asc', 'type'=>false ); 
 
+// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+if ($f = mso_page_foreach('tag-mso-get-pages')) require($f); 
+		
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
 mso_head_meta('title', mso_segment(2) . ' » ' . getinfo('title')); //  meta title страницы

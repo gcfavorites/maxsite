@@ -20,20 +20,20 @@ function login_form_widget($num = 1)
 	$out = '';
 	if (is_login())
 	{
-		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' . getinfo('users_nik') 
-				. '!</strong><br> [<a href="' . getinfo('siteurl') 
-				. 'logout'.'">' . t('выйти', 'plugins') . '</a>] [<a href="' 
-				. getinfo('siteurl') . 'admin">' . t('управление', 'plugins') . '</a>]</p>';	
+		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' . getinfo('users_nik') . '!</strong><br>
+				[<a href="' . getinfo('siteurl') . 'admin">' . t('управление', 'plugins') . '</a>]
+				[<a href="' . getinfo('siteurl') . 'logout'.'">' . t('выйти', 'plugins') . '</a>] 
+				</p>';	
 	}
 	elseif ($comuser = is_login_comuser())
 	{
 		if (!$comuser['comusers_nik']) $cun = t('Привет!', 'plugins');
 			else $cun = t('Привет,', 'plugins') . ' ' . $comuser['comusers_nik'] . '!';
 			
-		$out = '<p><strong>' . $cun 
-				. '</strong><br> [<a href="' . getinfo('siteurl')
-				. 'logout'.'">' . t('выйти', 'plugins') . '</a>] [<a href="' 
-				. getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">' . t('своя страница', 'plugins') . '</a>]</p>';
+		$out = '<p><strong>' . $cun . '</strong><br>
+				[<a href="' . getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">' . t('своя страница', 'plugins') . '</a>]
+				[<a href="' . getinfo('siteurl') . 'logout'.'">' . t('выйти', 'plugins') . '</a>] 
+				</p>';
 
 	}
 	else

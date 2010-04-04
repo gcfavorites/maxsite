@@ -20,6 +20,8 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 			'cat_order_asc' => 'asc',
 			'pagination' => false,
 			); 
+	// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+	if ($f = mso_page_foreach('home-top-mso-get-pages')) require($f); 
 	
 	$page_top = mso_get_pages($par, $pag);
 
@@ -59,6 +61,8 @@ if (mso_get_option('home_last_page', 'templates', '0'))
 			'cat_order_asc' => 'asc',
 			'pagination' => false,
 			); 
+	// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+	if ($f = mso_page_foreach('home-cat-block-last-page-mso-get-pages')) require($f); 
 	
 	$page_last = mso_get_pages($par, $pag);
 	
@@ -152,6 +156,10 @@ else
 			}
 		
 			$par['cat_id'] = $cat_id;
+			
+			// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+			if ($f = mso_page_foreach('home-cat-block-mso-get-pages')) require($f); 
+			
 			$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 			
 			// и выводим как обычно на главной, только добавляем в начало блока заголовок из рубрик

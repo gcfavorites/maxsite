@@ -11,13 +11,16 @@ $par = array( 'limit' => mso_get_option('limit_post', 'templates', '15'),
 			'cut' => mso_get_option('more', 'templates', 'Читать полностью »'),
 			'cat_order'=>'category_id_parent', 'cat_order_asc'=>'asc', 'type'=> false, 'content'=> $full_posts ); 
 
+// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+if ($f = mso_page_foreach('category-mso-get-pages')) require($f); 
+
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
-$title_page = mso_head_meta('title', &$pages, '%category_name%'); // заголовок для записи на основе титла
+$title_page = mso_head_meta('title', $pages, '%category_name%'); // заголовок для записи на основе титла
 
-mso_head_meta('title', &$pages, '%category_name%|%title%', ' » '); //  meta title страницы
-mso_head_meta('description', &$pages, '%category_name%'); // meta description страницы
-mso_head_meta('keywords', &$pages, '%category_name%'); // meta keywords страницы
+mso_head_meta('title', $pages, '%category_name%|%title%', ' » '); //  meta title страницы
+mso_head_meta('description', $pages, '%category_desc%'); // meta description страницы
+mso_head_meta('keywords', $pages, '%category_name%'); // meta keywords страницы
 
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
@@ -91,7 +94,7 @@ if ($pages) // есть страницы
 	
 	if (!$full_posts) echo '</ul>';
 	
-	if ($f = mso_page_foreach('_category-posle-pages')) require($f); // подключаем кастомный вывод
+	if ($f = mso_page_foreach('category-posle-pages')) require($f); // подключаем кастомный вывод
 	
 	mso_hook('pagination', $pagination);
 

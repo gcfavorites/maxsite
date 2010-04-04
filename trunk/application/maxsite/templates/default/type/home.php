@@ -5,7 +5,12 @@ mso_cur_dir_lang('templates');
 // нужно выводить рубрики блоками - сделаем отдельным файлом
 if (mso_get_option('home_cat_block', 'templates', '0'))
 {
-	require('home-cat-block.php'); 
+	// home-cat-block.php может быть в type своего шаблона
+	$fn1 = getinfo('template_dir') . 'type/home-cat-block.php'; 		 // путь в шаблоне
+	$fn2 = getinfo('templates_dir') . 'default/type/home-cat-block.php'; // путь в default
+	if ( file_exists($fn1) ) require($fn1); // если есть, подключаем шаблонный
+	elseif (file_exists($fn2)) require($fn2); // нет, значит дефолтный
+
 	return;
 }
 
@@ -26,6 +31,9 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 			'pagination' => false,
 			); 
 	
+	// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+	if ($f = mso_page_foreach('home-top-mso-get-pages')) require($f); 
+
 	$page_top = mso_get_pages($par, $pag);
 }
 else $page_top = false;
@@ -55,8 +63,10 @@ $par = array(
 	
 			); 
 
-// если только заголовки, то отключим пагинацию
-// if ( !mso_get_option('home_full_text', 'templates', '1') ) $par['pagination'] = false;
+
+// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+if ($f = mso_page_foreach('home-mso-get-pages')) require($f); 
+	
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 

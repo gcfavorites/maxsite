@@ -211,6 +211,24 @@ div.comments ul, div.comments ol {margin: 10px 0 20px 0;}
 div.comments li {margin: 0 0 20px 30px;}
 div.comments li span { font-style: italic;}
 
+div.comments li.users {color: maroon;}
+div.comments li.users a {color: maroon;}
+div.comments li.users span.date a {}
+div.comments li.users span.url a {color: maroon;}
+
+div.comments li.comusers {color: green;}
+div.comments li.comusers a {color: green;}
+div.comments li.comusers span.date a {}
+div.comments li.comusers span.url a {color: green;}
+
+div.comments li.anonim {color: gray;}
+div.comments li.anonim a {color: gray;}
+div.comments li.anonim span.date a {}
+div.comments li.anonim span.url {color: gray;}
+div.comments li.anonim span.url a {color: gray;}
+
+div.comments div.comments_content {color: black;}
+
 div.comments h3.comments {background: #E8E8E8; padding: 3px;}
 div.comments blockquote {margin-left: 0; padding: 10px; border-left: 2px gray solid;}
 

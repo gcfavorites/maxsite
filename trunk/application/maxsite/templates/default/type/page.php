@@ -7,12 +7,15 @@ mso_page_view_count_first(); // для подсчета количества п�
 // параметры для получения страниц
 $par = array( 'cut'=>false, 'cat_order'=>'category_id_parent', 'cat_order_asc'=>'asc', 'type'=>false ); 
 
+// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+if ($f = mso_page_foreach('page-mso-get-pages')) require($f); 
+
 $pages = mso_get_pages($par, $pagination); // получим все
 
 // в титле следует указать формат вывода | заменяется на  » true - использовать только page_title
-mso_head_meta('title', &$pages, '%page_title%|%title%', ' » ', true ); // meta title страницы
-mso_head_meta('description', &$pages); // meta description страницы
-mso_head_meta('keywords', &$pages); // meta keywords страницы
+mso_head_meta('title', $pages, '%page_title%|%title%', ' » ', true ); // meta title страницы
+mso_head_meta('description', $pages); // meta description страницы
+mso_head_meta('keywords', $pages); // meta keywords страницы
 
 // теперь сам вывод
 
@@ -32,7 +35,14 @@ if ($pages) // есть страницы
 		if ($f = mso_page_foreach('page')) 
 		{
 			require($f); // подключаем кастомный вывод
-			require('page-comments.php'); // здесь форма комментариев
+			
+			// здесь комментарии
+			// page-comments.php может быть в type своего шаблона
+			$fn1 = getinfo('template_dir') . 'type/page-comments.php'; 		 // путь в шаблоне
+			$fn2 = getinfo('templates_dir') . 'default/type/page-comments.php'; // путь в default
+			if ( file_exists($fn1) ) require($fn1); // если есть, подключаем шаблонный
+			elseif (file_exists($fn2)) require($fn2); // нет, значит дефолтный
+			
 			continue; // следующая итерация
 		}
 
@@ -95,8 +105,13 @@ if ($pages) // есть страницы
 		
 		echo NR . '</div><!--div class="page_only"-->' . NR;
 		
-		require('page-comments.php'); // здесь форма комментариев
-		
+		// здесь комментарии
+		// page-comments.php может быть в type своего шаблона
+		$fn1 = getinfo('template_dir') . 'type/page-comments.php'; 		 // путь в шаблоне
+		$fn2 = getinfo('templates_dir') . 'default/type/page-comments.php'; // путь в default
+		if ( file_exists($fn1) ) require($fn1); // если есть, подключаем шаблонный
+		elseif (file_exists($fn2)) require($fn2); // нет, значит дефолтный
+			
 	endforeach;
 	
 }

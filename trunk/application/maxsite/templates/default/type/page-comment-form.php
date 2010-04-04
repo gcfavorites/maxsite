@@ -69,7 +69,7 @@ mso_cur_dir_lang('templates');
 					<?php
 						if (!$comuser['comusers_nik']) echo t('Привет!');
 							else echo t('Привет,') . ' ' . $comuser['comusers_nik'] . '!';
-					?> <a href="<?= getinfo('siteurl') ?>logout"><?=t('Выход')?></a>
+					?> <a href="<?= getinfo('siteurl') ?>logout"><?=t('Выйти')?></a>
 				</div>
 			
 			<?php  } ?>
@@ -78,7 +78,7 @@ mso_cur_dir_lang('templates');
 			<input type="hidden" name="comments_user_id" value="<?= getinfo('users_id') ?>">
 		
 			<div class="comments-user">
-				<?=t('Привет')?>, <?= getinfo('users_nik') ?>! <a href="<?= getinfo('siteurl') ?>logout"><?=t('Выход')?></a>
+				<?=t('Привет')?>, <?= getinfo('users_nik') ?>! <a href="<?= getinfo('siteurl') ?>logout"><?=t('Выйти')?></a>
 			</div>
 		
 		<?php  } ?>

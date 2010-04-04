@@ -97,7 +97,9 @@ mso_cur_dir_lang('admin');
 				echo '<p><strong>' . t('Автор') . '</strong>: '
 				. '<a href="' . getinfo('site_admin_url') . 'comusers/edit/' . $row['comments_comusers_id'] . '">'
 				. $row['comusers_nik'] 
-				. '</a></p>';
+				. '</a>'
+				. ' | <a href="' . getinfo('site_url') . 'users/' . $row['comments_comusers_id'] . '">Персональная страница</a>'
+				.'</p>';
 			}			
 			
 			echo '<form action="" method="post">' . mso_form_session('f_session_id');

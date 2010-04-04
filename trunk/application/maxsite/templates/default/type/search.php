@@ -20,6 +20,10 @@
 	else
 	{
 		$par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'), 'cut'=>false, 'type'=>false ); 
+		
+		// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+		if ($f = mso_page_foreach('search-mso-get-pages')) require($f); 
+
 		$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 	}
 	

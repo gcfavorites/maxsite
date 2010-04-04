@@ -20,6 +20,9 @@ function mso_get_comments($page_id = 0, $r = array())
 	if ( !isset($r['tags_comusers']) )	$r['tags_comusers'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
 	if ( !isset($r['anonim_comments']) )	$r['anonim_comments'] = array();
 	if ( !isset($r['anonim_title']) )	$r['anonim_title'] = '';// ' ('. t('анонимно'). ')'; // дописка к имени для анонимов
+	
+	// если аноним указывает имя с @, то это страница в твиттере - делаем ссылку
+	if ( !isset($r['anonim_twitter']) )	$r['anonim_twitter'] = true; 
 
 	// дописка к имени для комментаторов без ника
 	if ( !isset($r['add_author_name']) )	$r['add_author_name'] = t('Комментатор');
@@ -27,7 +30,6 @@ function mso_get_comments($page_id = 0, $r = array())
 
 	$CI = & get_instance();
 	
-
 	// вначале получим список всех комюзеров, чтобы посчитать их количество комментариев
 	$cache_key = 'all_comusers';
 	$k = mso_get_cache($cache_key);
@@ -141,7 +143,27 @@ function mso_get_comments($page_id = 0, $r = array())
 					else $comment['comments_url'] = $comment['users_nik'];
 				$commentator = 2;
 			}
-			else $comment['comments_url'] = $comment['comments_author_name'] . $r['anonim_title']; // просто аноним
+			else // просто аноним
+			{
+				if ($r['anonim_twitter']) // разрешено проверять это твиттер-логин?
+				{
+					if (strpos($comment['comments_author_name'], '@') === 0) // первый символ @
+					{	
+						$lt = substr($comment['comments_author_name'], 1); // вычленим @
+						
+						// проверим корректность логина
+						if ($lt == mso_slug($lt))
+							$comment['comments_url'] = '<a href="http://twitter.com/' . $lt . '" rel="nofollow">@' . $lt . '</a>';
+						else
+							$comment['comments_url'] = $comment['comments_author_name'] . $r['anonim_title']; 
+					}
+					else $comment['comments_url'] = $comment['comments_author_name'] . $r['anonim_title']; 
+				}
+				else
+				{
+					$comment['comments_url'] = $comment['comments_author_name'] . $r['anonim_title']; 
+				}
+			}
 
 
 			$comments_content = $comment['comments_content'];
@@ -1344,6 +1366,7 @@ function mso_email_message_new_comment_subscribe($data)
 			if (mso_valid_email($comuser['comusers_email']))
 			{
 				$res = mso_mail($comuser['comusers_email'], $subject, $message, $from);
+				
 				if (!$res) break; // ошибка отправки почты - рубим цикл
 			}
 		}

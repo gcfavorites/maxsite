@@ -256,7 +256,7 @@ function admin_announce($args = array())
 	if ( !isset($options['admin_showall']) )   $options['admin_showall']   = true; // По умолчанию показываем статистику всем.
 	if ( !isset($options['delta'])
 			or ($options['delta'] == 0) )      $options['delta']           = 10;
-	if ( !isset($options['use_visual']) )      $options['use_visual']      = true;
+	if ( !isset($options['use_visual']) )      $options['use_visual']      = false;
 	if ( !isset($options['show_future']) )     $options['show_future']     = true;
 
 

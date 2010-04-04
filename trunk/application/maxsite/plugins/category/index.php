@@ -95,7 +95,8 @@ function category_widget_form($num = 1)
 			array( 
 				'category_name' => t('По имени рубрики', 'plugins'), 
 				'category_id' => t('По ID рубрики', 'plugins'), 
-				'category_menu_order' => t('По выставленному menu order', 'plugins')), 
+				'category_menu_order' => t('По выставленному menu order', 'plugins'), 
+				'pages_count' => t('По количеству записей', 'plugins')), 
 				$options['order']);
 	
 	$form .= '<p><div class="t150">' . t('Порядок:', 'plugins') . '</div> '. 

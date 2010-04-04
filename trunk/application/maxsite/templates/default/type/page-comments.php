@@ -2,7 +2,6 @@
 
 mso_cur_dir_lang('templates');
 
-
 # коммментарии
 echo '<span><a name="comments"></a></span>';
 
@@ -43,7 +42,6 @@ if ($comments) // есть страницы
 		echo '<div class="comments">';
 		echo '<h3 class="comments">' . t('Комментариев') . ': ' . count($comments) . '</h3>';
 	}
-	// pr($comments);
 	
 	echo '<ol>';
 	
@@ -54,15 +52,17 @@ if ($comments) // есть страницы
 			require($f); // подключаем кастомный вывод
 			continue; // следующая итерация
 		}
-
+		
 		extract($comment);
 		
-		// pr($comment);
+		if ($users_id) $class = ' class="users"';
+		elseif ($comusers_id) $class = ' class="comusers"';
+		else $class = ' class="anonim"';
 		
 		$comments_date = mso_date_convert('Y-m-d в H:i:s', $comments_date);
 		
-		echo '<li style="clear: both;"><span><a href="#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $comments_date . '</a>';
-		echo ' | ' . $comments_url;
+		echo NR . '<li style="clear: both"' . $class . '><span class="date"><a href="#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $comments_date . '</a></span>';
+		echo ' | <span class="url">' . $comments_url . '</span>';
 		
 		if ($edit_link) echo ' | <a href="' . $edit_link . $comments_id . '">edit</a>';
 		
@@ -75,7 +75,6 @@ if ($comments) // есть страницы
 		
 		if (!$avatar_url) 
 		{ // аватарки нет, попробуем получить из gravatara
-			// pr($comment);
 			
 			if ($users_email) $grav_email = $users_email;
 			elseif ($comusers_email) $grav_email = $comusers_email;
@@ -85,7 +84,6 @@ if ($comments) // есть страницы
 			{
 				$avatar_url = "http://www.gravatar.com/avatar.php?gravatar_id=" 
 						. md5($grav_email)
-						// . "&default=" . urlencode('')
 						. "&amp;size=80";
 			}
 		}
@@ -93,8 +91,9 @@ if ($comments) // есть страницы
 		if ($avatar_url) 
 			$avatar_url = '<span style="display: none"><![CDATA[<noindex>]]></span><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar"><span style="display: none"><![CDATA[</noindex>]]></span>';
 		
-		echo '</span><br>' . $avatar_url;
+		echo '</span><div class="comments_content">' . $avatar_url;
 		echo mso_comments_content($comments_content);
+		echo '</div>';
 		
 		echo '</li>'; 
 		
@@ -118,12 +117,16 @@ if ($page_comment_allow)
 		{
 			require($f); // подключаем кастомный вывод
 		}
-		else require( 'page-comment-form.php' ); // форма комментариев из дефолта
+		else 
+		{
+			// форма комментариев
+			// page-comment-form.php может быть в type своего шаблона
+			$fn1 = getinfo('template_dir') . 'type/page-comment-form.php'; 		 // путь в шаблоне
+			$fn2 = getinfo('templates_dir') . 'default/type/page-comment-form.php'; // путь в default
+			if ( file_exists($fn1) ) require($fn1); // если есть, подключаем шаблонный
+			elseif (file_exists($fn2)) require($fn2); // нет, значит дефолтный
+		}
 	}
-}
-else
-{
-	// echo '<div class="no-comments"><h3 class="comments">'. t('Комментарии запрещены'). '</h3></div>';
 }
 
 if ($comments or $page_comment_allow) echo NR . '</div><!-- class="type type_page_comments" -->' . NR;

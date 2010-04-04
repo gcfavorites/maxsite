@@ -173,8 +173,10 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	
 	// исключить указанные
 	if ($ex) $CI->db->where_not_in('category.category_id', $ex);
-
-	$CI->db->order_by('category.'.$order, $asc);
+	
+	if ($order == 'pages_count' ) $CI->db->order_by($order, $asc);
+		else $CI->db->order_by('category.' . $order, $asc);
+	
 	$CI->db->group_by('category.category_id');
 	
 	$query = $CI->db->get('category');
@@ -217,7 +219,9 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 	// исключить указанные
 	if ($ex) $CI->db->where_not_in('category.category_id', $ex);
 	
-	$CI->db->order_by('category.' . $order, $asc);
+	if ($order == 'pages_count' ) $CI->db->order_by($order, $asc);
+		else $CI->db->order_by('category.' . $order, $asc);
+	
 	$CI->db->group_by('category.category_id');
 	
 	$query = $CI->db->get('category');

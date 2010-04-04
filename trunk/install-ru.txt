@@ -185,7 +185,10 @@ RewriteRule ^(.*)$ /index.php?$1 [L,QSA]
 			
 	  либо обратитесь в службу поддержки вашего хостинга.
 	
-	
+	* Если выскакивает ошибка Call-time pass-by-reference has been deprecated, 
+	  см. директивы .htaccess ниже.
+	  
+
 
 ===================
 Директивы .htaccess

@@ -75,6 +75,11 @@
 
 [quote]текст[/quote] => <blockquote>текст</blockquote> - цитата
 
+[div(class)]текст[/div] => <div class="class">текст</div>
+
+[span(class)]текст[/span] => <span class="class">текст</span>
+
+
 [url]http://site/[/url] => <a href="http://site/">http://site/</a>
 [url=http://site/]текст[/url] => <a href="http://site/">текст</a>
 

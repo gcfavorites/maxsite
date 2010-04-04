@@ -46,6 +46,10 @@ function mso_get_pages($r = array(), &$pag)
 
 	if ( !isset($r['cat_order']) )		$r['cat_order'] = 'category_name'; // сортировка рубрик
 	if ( !isset($r['cat_order_asc']) )	$r['cat_order_asc'] = 'asc'; // порядок рубрик
+	
+	if ( !isset($r['meta_order']) )		$r['meta_order'] = 'meta_value'; // сортировка meta
+	if ( !isset($r['meta_order_asc']) )	$r['meta_order_asc'] = 'asc'; // порядок meta
+
 	if ( !isset($r['pagination']) )		$r['pagination'] = true; // использовать пагинацию
 	if ( !isset($r['content']) )		$r['content'] = true; // получать весь текст
 	
@@ -341,7 +345,7 @@ function mso_get_pages($r = array(), &$pag)
 		{
 			// теперь одним запросом получим все рубрики каждой записи
 
-			$CI->db->select('page_id, category.category_id, category.category_name, category.category_slug');
+			$CI->db->select('page_id, category.category_id, category.category_name, category.category_slug, category.category_desc');
 			$CI->db->where_in('page_id', $all_page_id);
 			$CI->db->order_by('category.' . $r['cat_order'], $r['cat_order_asc']); // сортировка рубрик
 			$CI->db->from('cat2obj');
@@ -356,7 +360,7 @@ function mso_get_pages($r = array(), &$pag)
 			foreach ($cat as $key=>$val)
 			{
 				$page_cat[$val['page_id']][] = $val['category_id'];
-				$page_cat_detail[$val['page_id']][$val['category_id']] = array('category_name'=>$val['category_name'], 'category_slug' => $val['category_slug']);
+				$page_cat_detail[$val['page_id']][$val['category_id']] = array('category_name' => $val['category_name'], 'category_slug' => $val['category_slug'], 'category_desc' => $val['category_desc']);
 			}
 		}
 		
@@ -366,7 +370,9 @@ function mso_get_pages($r = array(), &$pag)
 			$CI->db->select('meta_id_obj, meta_key, meta_value');
 			$CI->db->where( array (	'meta_table' => 'page' ) );
 			$CI->db->where_in('meta_id_obj', $all_page_id);
-			$CI->db->order_by('meta_value');
+			// $CI->db->order_by('meta_value');
+			$CI->db->order_by($r['meta_order'], $r['meta_order_asc']); // сортировка мета
+
 			$query = $CI->db->get('meta');
 			$meta = $query->result_array();
 

@@ -559,7 +559,7 @@ function is_feed()
 function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $sep = '', $only_meta = false )
 {
 	// ошибочный info
-	if ( $info!='title' and $info!='description' and $info!='keywords') return '';
+	if ( $info != 'title' and $info != 'description' and $info != 'keywords') return '';
 
 
 	if (mso_hook_present('head_meta')) // если есть хуки, то управление передаем им
@@ -586,41 +586,54 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 			// pr($args);
 
 			$category_name = '';
+			$category_desc = '';
 			$page_title = '';
 			$users_nik = '';
 			$title = getinfo($info);
 
-			if ( $info!='title') $format = '%title%';
+			// if ( !$info ) $format = '%title%';
 
-			if ( isset($args[0]['category_name']) ) $category_name = $args[0]['category_name'];
+			// название рубрики
+			if ( isset($args[0]['category_name']) ) 
+			{
+				$category_name = htmlspecialchars($args[0]['category_name']);
+				
+				// по названию рубрики ищем её описание в $args[0]['page_categories_detail'][$id]['category_desc']
+				if (isset($args[0]['page_categories_detail']))
+				{
+					foreach ($args[0]['page_categories_detail'] as $id => $val)
+					{
+						if ($args[0]['category_name'] === $val['category_name'] )
+						{
+							$category_desc = htmlspecialchars($val['category_desc']);
+							break;
+						}
+					}
+				}
+				
+				if (!$category_desc) $category_desc = $category_name; // если нет описания, то берем название
+			}
+			
 			if ( isset($args[0]['page_title']) ) $page_title = $args[0]['page_title'];
 			if ( isset($args[0]['users_nik']) ) $users_nik = $args[0]['users_nik'];
 
 			// если есть мета, то берем её
 			if ( isset($args[0]['page_meta'][$info][0]) and $args[0]['page_meta'][$info][0] )
 			{
-				if ( $only_meta ) $category_name = $title = $sep = '';
+				if ( $only_meta ) $category_name = $category_desc = $title = $sep = '';
 				$page_title = $args[0]['page_meta'][$info][0];
 
 				if ( $info!='title') $title = $page_title;
 			}
-			else
-			{
-			//	$page_title = $title;
-			//	if ($page_title == $title) $page_title = '';
-			}
 
-			// pr($page_title);
-
-			$arr_key = array( '%title%', '%page_title%',  '%category_name%', '%users_nik%', '|' );
-			$arr_val = array( $title ,  $page_title, $category_name, $users_nik, $sep );
-
+			$arr_key = array( '%title%', '%page_title%',  '%category_name%', '%category_desc%', '%users_nik%', '|' );
+			$arr_val = array( $title ,  $page_title, $category_name, $category_desc, $users_nik, $sep );
+			
 			$out = str_replace($arr_key, $arr_val, $format);
-			// pr($out);
 		}
 	}
 
-	// отдаем результат, сразу же указывая измененный $info в $MSO->
+	// отдаем результат, сразу же указывая измененный $info в $MSO
 	$out = $MSO->$info = trim($out);
 
 	return $out;
@@ -1070,7 +1083,7 @@ function mso_flush_cache_mask($mask = '')
 		$pos = strpos($file, $mask);
 		if ( $pos !== false and $pos === 0)
 		{
-			unlink($cache_path . $file);
+			@unlink($cache_path . $file);
 		}
 	}
 }
@@ -1572,7 +1585,16 @@ function mso_slug($slug)
 		"&"=>"", "="=>"", "№"=>"", "\\"=>"", "/"=>"", "#"=>"",
 		"("=>"", ")"=>"", "~"=>"", "|"=>"", "+"=>"", "”"=>"", "“"=>"",
 		"'"=>"",
-		
+
+		chr(146)=>"", // ’
+		chr(151)=>"-", // mdash (длинное тире)
+		chr(150)=>"-", // ndash (короткое тире)
+		chr(153)=>"tm", // tm (торговая марка)
+		chr(169)=>"c", // (c) (копирайт)
+		chr(174)=>"r", // (R) (зарегистрированная марка)
+		chr(133)=>"", // ... (троеточие)
+
+
 		);
 
 		$slug = strtolower(strtr(trim($slug), $repl));

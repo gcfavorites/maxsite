@@ -44,7 +44,7 @@ if ($pages)
 	extract($page);
 	
 	// $feed_name = mso_meta_title($page_title) . ' ('. t('Комментарии к странице'). ')';
-	$feed_name = mso_head_meta('title', &$pages, '%page_title%', '', true ) . ' ('. t('комментарии к странице'). ')' ;
+	$feed_name = mso_head_meta('title', $pages, '%page_title%', '', true ) . ' ('. t('комментарии к странице'). ')' ;
 	
 	$comments = mso_get_comments($page_id);
 ?>

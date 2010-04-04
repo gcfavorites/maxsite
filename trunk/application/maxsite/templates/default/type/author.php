@@ -11,13 +11,16 @@ $par = array( 'limit' => mso_get_option('limit_post', 'templates', '15'),
 			'cut' => mso_get_option('more', 'templates', 'Читать полностью »'), 
 			'cat_order'=>'category_name', 'cat_order_asc'=>'asc', 'type'=> 'blog', 'content'=> $full_posts ); 
 
+// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
+if ($f = mso_page_foreach('author-mso-get-pages')) require($f); 
+
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
-$title_page = mso_head_meta('title', &$pages, '%users_nik%'); // заголовок для записи на основе титла
+$title_page = mso_head_meta('title', $pages, '%users_nik%'); // заголовок для записи на основе титла
 
-mso_head_meta('title', &$pages, '%users_nik%|%title%', ' » '); //  meta title страницы
-mso_head_meta('description', &$pages, '%users_nik%'); // meta description страницы
-mso_head_meta('keywords', &$pages, '%users_nik%'); // meta keywords страницы
+mso_head_meta('title', $pages, '%users_nik%|%title%', ' » '); //  meta title страницы
+mso_head_meta('description', $pages, '%users_nik%'); // meta description страницы
+mso_head_meta('keywords', $pages, '%users_nik%'); // meta keywords страницы
 
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 

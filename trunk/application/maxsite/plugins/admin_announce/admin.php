@@ -38,7 +38,7 @@
 		if ( !isset($options['admin_showall']) )   $options['admin_showall']   = true;
 		if ( !isset($options['show_future']) )     $options['show_future']     = true;
 		if ( !isset($options['delta']) or ($options['delta'] == 0) ) $options['delta'] = 10;
-		if ( !isset($options['use_visual']) )      $options['use_visual']      = true;
+		if ( !isset($options['use_visual']) )      $options['use_visual']      = false;
 
 
 		$form  = '<h2>' . t('Настройки', 'plugins') . '</h2>';
