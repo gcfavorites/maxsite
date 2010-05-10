@@ -303,7 +303,6 @@ function mso_strip($s = '', $logical = false, $arr_strip = array('\\', '|', '/',
 	$s1 = strip_tags($s1);
 	$s1 = htmlspecialchars($s1, ENT_QUOTES);
 
-	// $arr_strip = array('\\', '|', '/', '?', '%', '*', '`');
 	$s1 = str_replace($arr_strip, '', $s1);
 	$s1 = trim($s1);
 
@@ -627,7 +626,8 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 			}
 
 			$arr_key = array( '%title%', '%page_title%',  '%category_name%', '%category_desc%', '%users_nik%', '|' );
-			$arr_val = array( $title ,  $page_title, $category_name, $category_desc, $users_nik, $sep );
+			$arr_val = array( htmlspecialchars($title),  htmlspecialchars($page_title), htmlspecialchars($category_name), $category_desc, htmlspecialchars($users_nik), $sep );
+			//$arr_val = array( $title ,  $page_title, $category_name, $category_desc, $users_nik, $sep );
 			
 			$out = str_replace($arr_key, $arr_val, $format);
 		}
@@ -1027,8 +1027,6 @@ function mso_add_cache($key, $output, $time = false, $custom_fn = false)
 
 	$CI = & get_instance();
 	
-	//$path = $CI->config->item('cache_path');
-	//$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
 	$cache_path = getinfo('cache_dir');
 
 	if ( ! is_dir($cache_path) or ! is_writable($cache_path)) return;
@@ -1063,8 +1061,6 @@ function mso_flush_cache_mask($mask = '')
 		return mso_hook('mso_flush_cache_mask', array('mask' => $mask));
 	
 	$CI = & get_instance();
-	// $path = $CI->config->item('cache_path');
-	// $cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
 
 	$cache_path = getinfo('cache_dir');	
 
@@ -1103,9 +1099,6 @@ function mso_flush_cache($full = false, $dir = false, $file = false)
 		));
 		
 	$CI = & get_instance();
-	
-	//$path = $CI->config->item('cache_path');
-	//$cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
 	
 	$cache_path = getinfo('cache_dir');
 
@@ -1172,9 +1165,6 @@ function mso_get_cache($key, $custom_fn = false)
 		));
 
 	$CI = & get_instance();
-	
-	//$path = $CI->config->item('cache_path');
-	// $cache_path = ($path == '') ? BASEPATH . 'cache/' : $path;
 	
 	$cache_path = getinfo('cache_dir');
 	
@@ -3011,12 +3001,6 @@ function mso_page_foreach($f = false)
 		
 		if (in_array($f . '.php', $files)) return getinfo('template_dir') . 'type_foreach/' . $f . '.php';
 			else return false;
-		
-		
-		# старый вариант
-		# $fn = getinfo('template_dir') . 'type_foreach/' . $f . '.php';
-		# if (file_exists($fn)) return $fn;
-		#	else return false;
 	}
 	
 	return false;

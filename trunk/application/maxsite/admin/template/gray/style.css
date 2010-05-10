@@ -140,7 +140,9 @@ input[type='checkbox'] {cursor: pointer;}
 textarea {width:99%}
 table input[type=text] {width:99%}
 input[type='checkbox'] {vertical-align:middle}
+td select  {width:99%}
 select {max-width:99%}
+
 th {text-align:left}
 table.new_or_edit {width: 99%; border: none; line-height: 1.4em;}
 	td.editor_and_meta {padding: 0 10px 0;vertical-align: top;}

@@ -191,7 +191,7 @@ function mso_get_pages($r = array(), &$pag)
 	// восстанавливать после запроса???
 	// $r = mso_hook('mso_get_pages_restore', $r_restore);
 
-	if ($query->num_rows() > 0)
+	if ($query and $query->num_rows() > 0)
 	{
 		$pages = $query->result_array();
 		

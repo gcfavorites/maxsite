@@ -2,6 +2,8 @@
 
 mso_cur_dir_lang('templates');
 
+if ($f = mso_page_foreach('home-cat-block-head-meta')) require($f);
+
 // нужно выводить рубрики блоками 
 
 # начальная часть шаблона
@@ -131,6 +133,7 @@ $par = array(
 
 $home_cat_block = mso_get_option('home_cat_id', 'templates', '0');
 $home_cat_block = mso_explode($home_cat_block); // в массив
+
 
 # все блоки можно закэшировать
 $key_home_cache = serialize($home_cat_block);

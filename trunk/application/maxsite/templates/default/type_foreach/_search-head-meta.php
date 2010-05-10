@@ -1,3 +1,4 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-	if ($pages) echo '<h1 class="category">' . $title_page . '</h1>';
+	mso_head_meta('title', $search); //  meta title страницы
+

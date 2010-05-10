@@ -18,9 +18,13 @@ $pages = mso_get_pages($par, $pagination); // получим все - второ
 
 $title_page = mso_head_meta('title', $pages, '%category_name%'); // заголовок для записи на основе титла
 
-mso_head_meta('title', $pages, '%category_name%|%title%', ' » '); //  meta title страницы
-mso_head_meta('description', $pages, '%category_desc%'); // meta description страницы
-mso_head_meta('keywords', $pages, '%category_name%'); // meta keywords страницы
+if ($f = mso_page_foreach('category-head-meta')) require($f);
+else
+{ 
+	mso_head_meta('title', $pages, '%category_name%|%title%', ' » '); //  meta title страницы
+	mso_head_meta('description', $pages, '%category_desc%'); // meta description страницы
+	mso_head_meta('keywords', $pages, '%category_name%'); // meta keywords страницы
+}
 
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 

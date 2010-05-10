@@ -15,6 +15,10 @@ if ($f = mso_page_foreach('archive-mso-get-pages')) require($f);
 
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
+
+if ($f = mso_page_foreach('archive-head-meta')) require($f);
+ 
+
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 // теперь сам вывод
@@ -24,12 +28,11 @@ require(getinfo('template_dir') . 'main-start.php');
 
 echo NR . '<div class="type type_archive">' . NR;
 
-if ($pages) // есть страницы
-{ 	
-	
-	if ($f = mso_page_foreach('archive-do')) require($f); // подключаем кастомный вывод
+if ($f = mso_page_foreach('archive-do')) require($f); // подключаем кастомный вывод
 	else echo '<h1 class="archive">' . t('Архивы') . '</h1>';
 	
+if ($pages) // есть страницы
+{ 	
 	if (!$full_posts) echo '<ul class="category">';
 	
 	foreach ($pages as $page) : // выводим в цикле

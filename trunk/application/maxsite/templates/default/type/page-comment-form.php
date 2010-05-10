@@ -2,8 +2,6 @@
 
 mso_cur_dir_lang('templates');
 
-
-
 ?>
 
 <div class="comment-form">

@@ -11,11 +11,11 @@
 function spoiler_autoload($args = array())
 {
 	mso_hook_add( 'head', 'spoiler_head');
-	mso_hook_add( 'content_out', 'spoiler_custom'); # хук на вывод контента
+	mso_hook_add( 'content', 'spoiler_custom'); # хук на вывод контента
 
 	$options_key = 'plugin_spoiler';
 	$options = mso_get_option($options_key, 'plugins', array());
-	if ( isset($options['comments']) && (isset($options['comments']) == 1) )
+	if ( isset($options['comments']) and ( $options['comments'] == 1) )
 	{
 		mso_hook_add( 'comments_content_out', 'spoiler_custom');
 	}
@@ -34,8 +34,7 @@ function spoiler_uninstall($args = array())
 # функции плагина
 function spoiler_custom($text)
 {
-	//mso_cur_dir_lang(__FILE__);
-	
+
 	// константа
 	$options_key = 'plugin_spoiler';
 
@@ -58,7 +57,7 @@ function spoiler_custom($text)
 		for ($i = 0; $i < count($matches[0]); $i++)
 		{
 			//$id   = 'id'.rand();
-			$id = 'id'.rand(100,999);
+			$id = 'id' . rand(100,999);
 			$html = '';
 			
 			if ($matches[1][$i] == '=')
@@ -92,10 +91,11 @@ function spoiler_custom($text)
 				$hidetext = $options['hide'];			
 			}
 			  
-			$html .= '<a class="spoiler_link_show" href="javascript:void(0)" onclick="SpoilerToggle(\''.$id.'\', this, \''.$showtext.'\', \''.$hidetext.'\')">'.$showtext.'</a>'. PHP_EOL;
-			$html .= '<div class="spoiler_div" id="'.$id.'" style="display:none">'.$matches[3][$i].'</div>'.PHP_EOL;
+			$html .= '<a class="spoiler_link_show" href="javascript:void(0)" onclick="SpoilerToggle(\'' . $id . '\', this, \'' . $showtext.'\', \'' . $hidetext . '\')">' . $showtext . '</a></p>';
+			$html .= '<div class="spoiler_div" id="' . $id . '" style="display:none"><p>' . $matches[3][$i] . '</p></div>';
 			//$text = str_replace($matches[0][$i], $html, $text);
-			$text = preg_replace($pattern, $html, $text,1);
+			
+			$text = preg_replace($pattern, $html, $text, 1);
 		}
     }
 
@@ -108,14 +108,34 @@ function spoiler_head($args = array())
 	$options_key = 'plugin_spoiler';
 	$options = mso_get_option($options_key, 'plugins', array());
 	
-	if ( !isset($options['style'])  ) {$options['style'] = ''; }
+	if ( !isset($options['style'])  ) $options['style'] = '';
 	if ($options['style'] != '')
 	{
 		echo '
 		<link rel="stylesheet" href="' . getinfo('plugins_url') . 'spoiler/style/'.$options['style']. '" type="text/css" media="screen">';
 	}	
+	
 	echo '	
-	<script type="text/javascript" src="' . getinfo('plugins_url') . 'spoiler/spoiler.js"></script>';
+	<script type="text/javascript">
+	
+	function SpoilerToggle(id, link, showtext, hidetext)
+	{
+		var spoiler = document.getElementById(id);
+    	if (spoiler.style.display != "none")
+		{
+           	spoiler.style.display = "none";
+            link.innerHTML = showtext;
+            link.className = "spoiler_link_show";
+        }
+		else
+		{
+	       	spoiler.style.display = "block";
+            link.innerHTML = hidetext;
+            link.className = "spoiler_link_hide";
+        }
+    }
+	</script>
+	';
 }
 
 # функция отрабатывающая миниопции плагина (function плагин_mso_options)

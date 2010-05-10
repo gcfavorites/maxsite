@@ -12,11 +12,16 @@ if ($f = mso_page_foreach('page-mso-get-pages')) require($f);
 
 $pages = mso_get_pages($par, $pagination); // получим все
 
-// в титле следует указать формат вывода | заменяется на  » true - использовать только page_title
-mso_head_meta('title', $pages, '%page_title%|%title%', ' » ', true ); // meta title страницы
-mso_head_meta('description', $pages); // meta description страницы
-mso_head_meta('keywords', $pages); // meta keywords страницы
-
+if ($f = mso_page_foreach('page-head-meta')) require($f);
+else
+{ 
+	// в титле следует указать формат вывода | заменяется на  » true - использовать только page_title
+	mso_head_meta('title', $pages, '%page_title%|%title%', ' » ', true ); // meta title страницы
+	mso_head_meta('description', $pages); // meta description страницы
+	mso_head_meta('keywords', $pages); // meta keywords страницы
+}
+	
+	
 // теперь сам вывод
 
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
@@ -26,11 +31,11 @@ require(getinfo('template_dir') . 'main-start.php');
 
 echo NR . '<div class="type type_page">' . NR;
 
+if ($f = mso_page_foreach('page-do')) require($f);
+
 if ($pages) // есть страницы
 { 	
-	
 	foreach ($pages as $page) : // выводим в цикле
-		
 
 		if ($f = mso_page_foreach('page')) 
 		{
@@ -113,7 +118,7 @@ if ($pages) // есть страницы
 		elseif (file_exists($fn2)) require($fn2); // нет, значит дефолтный
 			
 	endforeach;
-	
+
 }
 else 
 {
@@ -128,6 +133,8 @@ else
 		echo mso_hook('page_404');
 	}
 } // endif $pages
+
+if ($f = mso_page_foreach('page-posle')) require($f);
 
 echo NR . '</div><!-- class="type type_page" -->' . NR;
 

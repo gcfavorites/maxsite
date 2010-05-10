@@ -69,6 +69,8 @@ if ($f = mso_page_foreach('home-mso-get-pages')) require($f);
 	
 $pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 
+if ($f = mso_page_foreach('home-head-meta')) require($f);
+
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 // теперь сам вывод

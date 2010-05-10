@@ -15,13 +15,6 @@ function main_menu_autoload()
 }
 
 
-# функция выполняется при деактивации (выкл) плагина
-function main_menu_deactivate($args = array())
-{	
-	mso_delete_option('plugin_main_menu', 'plugins'); // удалим созданные опции
-	return $args;
-}
-
 # функция выполняется при деинсталяции плагина
 function main_menu_uninstall($args = array())
 {	
@@ -48,6 +41,12 @@ function main_menu_mso_options()
 							'name' => 'Пункты меню', 
 							'description' => 'Укажите полные адреса в меню и через | название ссылки. Каждый пункт в одной строчке.<br>Пример: http://maxsite.org/ | Блог Макса<br> Для группы меню используйте [ для открытия и ] для закрытия группы выпадающих пунктов. Например:<pre>[<br># | Медиа<br>audio | Аудио<br>video | Видео<br>photo | Фото<br>]</pre>', 
 							'default' => ''
+						),
+			'menu_admin' => array(
+							'type' => 'checkbox', 
+							'name' => 'Пункт Admin', 
+							'description' => 'Нужно ли добавлять пункт Admin в конце меню, если вы вошли в систему', 
+							'default' => '1'
 						),
 			),
 		'Настройки плагина Main menu', // титул
@@ -82,13 +81,14 @@ function main_menu_custom($arg = array())
 	$options = mso_get_option('plugin_main_menu', 'plugins', array());
 	
 	if (!isset($options['menu'])) $options['menu'] = '';
+	if (!isset($options['menu_admin'])) $options['menu_admin'] = true;
 	
 	if (!$options['menu']) return $arg;
 	
 	// для динамического изменения меню используем хук 
 	$options['menu'] = mso_hook('main_menu_custom', $options['menu']);
 	
-	$menu = mso_menu_build($options['menu'], 'selected', true);
+	$menu = mso_menu_build($options['menu'], 'selected', (bool) $options['menu_admin']);
 	
 	if ($menu)
 		echo '

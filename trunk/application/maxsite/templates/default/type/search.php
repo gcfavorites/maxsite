@@ -9,8 +9,12 @@
 	$search = mso_strip(strip_tags($search));
 	$searh_to_text = mb_strtolower($search, 'UTF8');
 
-	mso_head_meta('title', $search); //  meta title страницы
-
+	if ($f = mso_page_foreach('search-head-meta')) require($f);
+	else
+	{ 
+		mso_head_meta('title', $search); //  meta title страницы
+	}
+	
 	// параметры для получения страниц
 	if (!$search or (strlen(mso_slug($search)) <= 3) ) // нет запроса или он короткий
 	{

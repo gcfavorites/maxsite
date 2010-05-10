@@ -5,7 +5,13 @@ mso_cur_dir_lang('templates');
 // возможно включен плагин last_comments - тогда выводим все через него
 if ( function_exists('last_comments_widget_custom') )
 {
-	mso_head_meta('title', t('Последние комментарии').' » ' . getinfo('title') ); //  meta title страницы
+	
+	if ($f = mso_page_foreach('comments-head-meta')) require($f);
+	else
+	{ 
+		mso_head_meta('title', t('Последние комментарии').' » ' . getinfo('title') ); //  meta title страницы
+	}
+	
 	require(getinfo('template_dir') . 'main-start.php');
 	echo NR . '<div class="type type_comments">' . NR;
 	
