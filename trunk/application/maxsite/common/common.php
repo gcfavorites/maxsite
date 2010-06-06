@@ -118,7 +118,8 @@ function getinfo($info = '')
 				break;
 
 		case 'title' :
-				$out = htmlspecialchars(mso_get_option('title', 'general'));
+				//$out = htmlspecialchars(mso_get_option('title', 'general'));
+				$out = mso_get_option('title', 'general');
 				break;
 
 		case 'description' :
@@ -1121,7 +1122,7 @@ function mso_flush_cache($full = false, $dir = false, $file = false)
 		
 		if ($file) // указан конкретный файл
 		{
-			if ( file_exists($cache_path . $file) ) unlink($cache_path . $file);
+			if ( file_exists($cache_path . $file) ) @unlink($cache_path . $file);
 		}
 		else
 		{
@@ -1130,7 +1131,7 @@ function mso_flush_cache($full = false, $dir = false, $file = false)
 			{
 				if ($filename != "." and $filename != "..")
 				{
-					if (!is_dir($cache_path . $filename)) unlink($cache_path . $filename);
+					if (!is_dir($cache_path . $filename)) @unlink($cache_path . $filename);
 				}
 			}
 			@closedir($current_dir);

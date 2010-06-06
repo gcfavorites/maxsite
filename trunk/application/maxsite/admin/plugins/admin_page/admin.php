@@ -129,7 +129,7 @@
 	
 	$query = $CI->db->get('category');
 
-	if ($query->num_rows() > 0) 
+	if ($query and $query->num_rows() > 0) 
 	{
 		//echo '<h1>Страницы по рубрикам</h1>';
 		$cat_segment_id = 0;

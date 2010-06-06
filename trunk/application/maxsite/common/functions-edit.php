@@ -121,7 +121,7 @@
 			// $CI->db->where(array('category_name'=>$category_name, 'category_id_parent'=>$category_id_parent));
 			$CI->db->where(array('category_slug'=>$category_slug));
 			$query = $CI->db->get('category');
-
+			
 			if ($query->num_rows() == 0 ) // нет такого
 			{
 				# проверим, чтобы category_id_parent был существующим

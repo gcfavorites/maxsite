@@ -8,7 +8,7 @@ var ddsmoothmenu={
 /*arrowimages: {down:['downarrowclass', 'down.gif', 23], right:['rightarrowclass', 'right.gif']},*/
 
 transition: {overtime:200, outtime:200}, //duration of slide in/ out animation, in milliseconds
-shadow: {enabled:true, offsetx:5, offsety:5},
+shadow: {enabled:true, offsetx:3, offsety:3},
 
 ///////Stop configuring beyond here///////////////////////////
 

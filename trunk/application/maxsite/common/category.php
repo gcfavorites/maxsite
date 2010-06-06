@@ -8,7 +8,6 @@
 
 
 # получить номера рубрик указанной страницы в виде массива
-
 function mso_get_cat_page($id = 0)
 {
 	$id = (int) $id;
@@ -81,7 +80,7 @@ function mso_cat($li_format = '%NAME%', $checked_id = array(), $type = 'page', $
 	}
 	
 	mso_add_cache($cache_key, $list); // сразу в кэш добавим
-			
+	
 	return $list;
 }
 
@@ -143,6 +142,30 @@ function _get_child2($childs, $li_format = '', $checked_id = array(), $list = ''
 
 # получение всех рубрик в массиве - сразу всё с учетом вложенности
 # используются рекурсивные функции с sql-запросами - РЕСУРСОЕМКАЯ!
+
+#[15] => Array
+#        (
+#            [category_id] => 15
+#            [category_id_parent] => 0
+#            [category_type] => page
+#            [category_name] => Тестовая рубрика
+#            [category_desc] => 
+#            [category_slug] => test
+#            [category_menu_order] => 0
+#            [pages_count] => 2
+#            [childs] => Array
+#                (
+#                    [16] => Array
+#                        (
+#                            [category_id] => 16
+#                            ...
+#                          )
+#                    [17] => Array
+#                        (
+#                            [category_id] => 17
+#                            ...
+#                          )
+
 function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false, $only_page_publish = false)
 {
 	// если неверный тип, то возвратим пустой массив
@@ -179,8 +202,8 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	
 	$CI->db->group_by('category.category_id');
 	
-	$query = $CI->db->get('category');
-	$result = $query->result_array(); // здесь все рубрики
+	if ($query = $CI->db->get('category')) $result = $query->result_array(); // здесь все рубрики
+	else $result = array();
 	
 	$r = array();
 	foreach ($result as $key=>$row)
@@ -191,7 +214,7 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	
 		if ($ch) $r[$k]['childs'] = $ch;
 	}
-	
+
 	return $r;
 }
 
@@ -252,15 +275,27 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 
 # получение всех рубрик в одномерной структуре
 # функция возвращает массив, 
-#[10] => Array
+#[4] => Array
 #        (
-#            [category_id] => 10
-#            [category_id_parent] => 1
-#            [category_menu_order] => 4
-#            [category_name] => Новости
-#            [parents] => 3 1
-#            [childs] => 6 5
-#            [level] => 2
+#            [category_id] => 4
+#            [category_id_parent] => 3
+#            [category_type] => page
+#            [category_name] => Виджеты
+#            [category_desc] => описания виджетов
+#            [category_slug] => widgets
+#            [category_menu_order] => 0
+#            [level] => 1
+#            [parents] => 3
+#            [childs] => 
+#            [pages] => Array
+#                (
+#                    [0] => 128
+#                    [1] => 4
+#                )
+#           [links] => Array
+#               (
+#               )
+#
 #        )
 # где ключ - номер рубрики
 # массив можно использовать для быстрого доступа к параметрам рубрик
@@ -281,51 +316,12 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 
 	$CI = & get_instance();
 	
-	/*
-	$p = $CI->db->dbprefix;
-
-	$query = $CI->db->query("
-	
-	SELECT {$p}category.*
-	FROM {$p}category
-	WHERE {$p}category.category_type = '{$type}'
-	GROUP BY {$p}category.category_id
-	ORDER BY {$p}category.{$order} {$asc}
-	");
-	*/
-	/*
-	JOIN {$p}cat2obj ON {$p}cat2obj.category_id = {$p}category.category_id	
-	, COUNT({$p}cat2obj.page_id) AS count_pages
-		JOIN {$p}page ON {$p}page.page_id = {$p}cat2obj.page_id
-	JOIN {$p}page_type ON {$p}page.page_type_id = {$p}page_type.page_type_id
-	
-		AND {$p}page.page_status = 'publish'
-		AND {$p}page_type.page_type_name = 'blog'
-	*/
-	
-	
-
-	//$CI->db->select();
-	//$CI->db->select('COUNT(page_id) AS count_pages', false);
-	
 	$CI->db->from('category');
 	$CI->db->where('category_type', $type);
 	$CI->db->order_by($order, $asc);
 	
-	
-	// $CI->db->from('page');
-	
-	// $CI->db->where('page_status', 'publish');
-	// $CI->db->where('page_type_name', 'blog');
-	
-	// $CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
-	// $CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
-	
-	//$CI->db->join('cat2obj', 'cat2obj.category_id = category.category_id');
-	//$CI->db->group_by('cat2obj.page_id');
-	
-	$query = $CI->db->get();
-	$cats = $query->result_array(); // здесь все рубрики
+	if ($query = $CI->db->get()) $cats = $query->result_array(); // здесь все рубрики
+	else $cats = array();
 	
 	$r = array();
 	foreach ($cats as $row)
@@ -393,8 +389,8 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 		$cat[$row['category_id']] = $row;
 		$cat[$row['category_id']]['childs'] = trim($cat[$row['category_id']]['childs']);
 	}	
-		
-	// нам нужно получить количество записей по каждой рубрике
+
+	// нам нужно получить номера записей по каждой рубрике
 	$CI->db->select('cat2obj.*');
 	$CI->db->from('category');
 	$CI->db->join('cat2obj', 'cat2obj.category_id = category.category_id');
@@ -403,29 +399,22 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 	$CI->db->where('page_status', 'publish');
 	$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	
-	// $CI->db->where('page_date_publish < ', 'NOW()', false);
-	
 	if ($type_page) $CI->db->where('page_type_name', $type_page);
 	$CI->db->where('category_type', $type);
 	$CI->db->order_by('category.category_id');
-// pr(_sql());
-	$query = $CI->db->get();
-	$cats_post = $query->result_array(); // здесь все рубрики
-	
+
+	if ($query = $CI->db->get()) $cats_post = $query->result_array(); // здесь все рубрики
+	else $cats_post = array();
 	//pr($cats_post);
-	
-	
+
 	foreach ($cats_post as $key=>$val) 
 	{
 		if ($type == 'page') 
 			$cat[$val['category_id']]['pages'][] = $val['page_id'];
 		else
 			$cat[$val['category_id']]['links'][] = $val['links_id'];
-		
-		// $cat[$val['category_id']]['count_pages'] = count($cat[$val['category_id']]['pages']);
 	}
 
-	//pr($cat);
 
 	if ($cache) mso_add_cache($cache_key, $cat); // сразу в кэш добавим
 	
@@ -436,7 +425,6 @@ function mso_cat_array_single($type = 'page', $order = 'category_name', $asc = '
 
 
 # получение ul-списка всех рубрик
-# рекомендуется для использования
 function mso_cat_ul(
 	$li_format = '%NAME%', // формат вывода: %NAME% %ID% %DESC% %LEVEL% %LINK_START% %LINK_END% %CHECKED% %COUNT_PAGES%
 	$show_empty = true, // показывать рубрики без записей
@@ -649,4 +637,4 @@ function mso_get_cat_url_from_id($id = 0)
 	return '';
 }
 
-?>
+# end file

@@ -112,7 +112,7 @@
 								'size'=>'50',
 								'style'=>'width:80%') );						
 							
-		echo '<p>' . form_checkbox('demoposts', '1', $demoposts) . ' Установить демонстрационные данные</p>';
+		echo '<p><label>' . form_checkbox('demoposts', '1', $demoposts) . ' Установить демонстрационные данные</label></p>';
 		
 		// echo '<br />';
 		
@@ -222,6 +222,7 @@
 	$text .= 'Пароль: ' . $userpassword . NR . NR . NR;
 	$text .= 'Сайт поддержки: http://max-3000.com/';
 	
+	mso_flush_cache(); // сбросим кэш
 ?>
 
 	<h1>Поздравляем! Всё готово!</h1>
