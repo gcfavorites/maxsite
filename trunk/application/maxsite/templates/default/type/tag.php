@@ -75,7 +75,15 @@ if ($pages) // есть страницы
 				mso_page_content($page_content);
 				mso_page_content_end();
 				echo '<div class="break"></div>';
-				mso_page_comments_link($page_comment_allow, $page_slug, t('Обсудить'). ' (' . $page_count_comments . ')', '<div class="comments-link"><span>', '</span></div>');
+				mso_page_comments_link(array( 
+					'page_comment_allow' => $page_comment_allow,
+					'page_slug' => $page_slug,
+					'title' => t('Обсудить'). ' (' . $page_count_comments . ')',
+					'title_no_link' => t('Читать комментарии').' (' . $page_count_comments . ')',
+					'do' => '<div class="comments-link"><span>',
+					'posle' => '</span></div>',
+					'page_count_comments' => $page_count_comments
+				 ));
 				
 			echo '</div>';
 			echo NR . '</div><!--div class="page_only"-->' . NR;

@@ -77,7 +77,12 @@
 
 [div(class)]текст[/div] => <div class="class">текст</div>
 
+[div атрибуты]текст[/div] => <div атрибуты>текст</div>
+
 [span(class)]текст[/span] => <span class="class">текст</span>
+
+[span атрибуты]текст[/span] => <span атрибуты>текст</span>
+
 
 
 [url]http://site/[/url] => <a href="http://site/">http://site/</a>
@@ -101,3 +106,10 @@
 [td]3-я ячейка 3-й строки[/td]
 [/tr]
 [/table]
+
+В таблице можно указывать произвольные стили, классы и т.п.:
+[table class="red" style="border: 1px solid red"]
+	...
+[tr rowspan="2"]
+[td style="font-size: 18pt"]
+

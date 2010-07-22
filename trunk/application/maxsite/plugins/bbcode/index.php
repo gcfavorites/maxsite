@@ -46,7 +46,7 @@ function bbcode_custom($text = '')
 		
 		'~\[size=(.*?)\](.*?)\[\/size\]~si'   => '<span style="font-size:$1">$2</span>',
 
-		// стиль для блока
+		// стиль для блока [div=color: red]текст[/div]
 		'~\[div=(.*?)\](.*?)\[\/div\]~si' => '<div style="$1">$2</div>',
 		'~\[p=(.*?)\](.*?)\[\/p\]~si'   => '<p style="$1">$2</p>',
 		'~\[span=(.*?)\](.*?)\[\/span\]~si'   => '<span style="$1">$2</span>',
@@ -69,12 +69,19 @@ function bbcode_custom($text = '')
 		'~\[line\]~si'   => '<hr>',
 		
 		'~\[table\]~si'   => '<table>',
+		'~\[table (.*?)\]~si' => '<table $1>',
 		'~\[\/table\]~si'   => '</table>',
+		
 		'~\[tr\]~si'   => '<tr>',
+		'~\[tr (.*?)\]~si' => '<tr $1>',
 		'~\[\/tr\]~si'   => '</tr>',
+		
 		'~\[td\]~si'   => '<td>',
+		'~\[td (.*?)\]~si' => '<td $1>',
 		'~\[\/td\]~si'   => '</td>',
+		
 		'~\[th\]~si'   => '<th>',
+		'~\[th (.*?)\]~si' => '<th $1>',
 		'~\[\/th\]~si'   => '</th>',
 		
 		'~\[\*\](.*?)\[\/\*\]~si'   => '<li>$1</li>',
@@ -135,10 +142,15 @@ function bbcode_custom($text = '')
 		
 		# [div(class)]текст[/div]
 		'~\[div\((.[^ ]*?)\)\](.*?)\[\/div\]~si' => '<div class="$1">$2</div>',
+		
+		# [div style="color: red"]текст[/div] - произвольные атрибуты
+		'~\[div (.*?)\](.*?)\[\/div\]~si' => '<div $1>$2</div>',
 
 		# [span(class)]текст[/div]
 		'~\[span\((.[^ ]*?)\)\](.*?)\[\/span\]~si' => '<span class="$1">$2</span>',
 		
+		# [span style="color: red"]текст[/span] - произвольные атрибуты
+		'~\[span (.*?)\](.*?)\[\/span\]~si' => '<span $1>$2</span>',
 		
   );
   

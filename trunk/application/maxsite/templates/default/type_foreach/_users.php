@@ -13,7 +13,7 @@
 		if ($comusers_url) echo '<p><strong>'. t('Сайт'). ':</strong> <noindex><a rel="nofollow" href="' . $comusers_url . '">' . $comusers_url . '</a></noindex></p>';
 		if ($comusers_icq) echo '<p><strong>'. t('ICQ'). ':</strong> ' . $comusers_icq . '</p>';
 		if ($comusers_msn) echo '<p><strong>'. t('MSN'). ':</strong> ' . $comusers_msn . '</p>';
-		if ($comusers_jaber) echo '<p><strong>'. t('Jaber'). ':</strong> ' . $comusers_jaber . '</p>';
+		if ($comusers_jaber) echo '<p><strong>'. t('Jabber'). ':</strong> ' . $comusers_jaber . '</p>';
 		if ($comusers_date_birth and $comusers_date_birth!='1970-01-01 00:00:00' and $comusers_date_birth!='0000-00-00 00:00:00'   ) 
 				echo '<p><strong>'. t('Дата рождения'). ':</strong> ' . $comusers_date_birth . '</p>';
 		

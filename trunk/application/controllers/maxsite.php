@@ -2,7 +2,7 @@
 
 /**
  * MaxSite CMS
- * (c) hhttp://max-3000.com/
+ * (c) http://max-3000.com/
  */
 
 class Maxsite extends Controller 

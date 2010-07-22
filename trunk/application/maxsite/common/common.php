@@ -687,7 +687,11 @@ function mso_admin_plugin_load($plugin = '')
 
 
 # подключение функции к хуку
-function mso_hook_add($hook, $func, $priory = 0)
+# приоритет по-умолчанию 10.
+# если нужно, чтобы хук сработал раньше всех, то ставим более 10
+# если нужно сработать последним - ставим приоритет менее 10
+# http://forum.max-3000.com/viewtopic.php?p=9550#p9550
+function mso_hook_add($hook, $func, $priory = 10)
 {
 	global $MSO;
 
@@ -1475,6 +1479,8 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	
 	# специфичные ошибки
 	$pee = str_replace("<blockquote>\n<p>", "<blockquote>", $pee); 
+	
+	$pee = preg_replace('!<p><br(.*)></p>!', "<br$1>", $pee); # <br clear="all">
 
 	# преформатированный текст
 	if ($pre_special_chars)
@@ -2356,6 +2362,11 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false, $pre
 
 	$config['wordwrap'] = TRUE;
 	$config['wrapchars'] = 90;
+	
+	# можно отправлять письмо в html-формате
+	if (isset($preferences['mailtype']) and $preferences['mailtype'])
+		$config['mailtype'] = $preferences['mailtype'];
+	
 	$CI->email->initialize($config);
 
 	$CI->email->to($email);

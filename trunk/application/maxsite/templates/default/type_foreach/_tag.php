@@ -20,7 +20,15 @@
 		echo '<div class="page_content">';
 			mso_page_content($page_content);
 			mso_page_content_end();
-			mso_page_comments_link($page_comment_allow, $page_slug, t('Обсудить'). ' (' . $page_count_comments . ')', '<div class="comment">', '</div>');
+			mso_page_comments_link(array( 
+					'page_comment_allow' => $page_comment_allow,
+					'page_slug' => $page_slug,
+					'title' => t('Обсудить'). ' (' . $page_count_comments . ')',
+					'title_no_link' => t('Читать комментарии').' (' . $page_count_comments . ')',
+					'do' => '<div class="comments-link"><span>',
+					'posle' => '</span></div>',
+					'page_count_comments' => $page_count_comments
+				 ));
 			
 		echo '</div>';
 		

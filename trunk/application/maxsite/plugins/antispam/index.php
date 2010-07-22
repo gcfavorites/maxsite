@@ -114,7 +114,7 @@ function antispam_check_spam($arg = array())
 	
 	foreach ($black_words as $word)
 	{
-		if (mb_stristr($arg['comments_content'], $word, false, 'UTF-8')) // есть какое-то вхождение
+		if ($word and mb_stristr($arg['comments_content'], $word, false, 'UTF-8')) // есть какое-то вхождение
 		{
 			if ($options['logging']) antispam_log($options['logging_file'], 
 												  'BLACK WORD: ' . $word . NR 
@@ -139,7 +139,7 @@ function antispam_check_spam($arg = array())
 	
 	foreach ($moderation_words as $word)
 	{
-		if (mb_stristr($arg['comments_content'], $word, false, 'UTF-8')) // есть какое-то вхождение
+		if ($word and mb_stristr($arg['comments_content'], $word, false, 'UTF-8')) // есть какое-то вхождение
 		{
 			return array('moderation'=>1);
 		} 

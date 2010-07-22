@@ -231,6 +231,9 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 			$out = str_replace('%TEXT%', mso_balance_tags( mso_auto_tag( mso_hook('content_complete', $page['page_content']) ) ), $out);
 			
 			# если есть cut, то обрабатываем и его
+			
+			$page_content = str_replace('[xcut', '[cut', $page_content);
+			
 			if ( preg_match('/\[cut(.*?)?\]/', $page_content, $matches) )
 			{
 				$page_content = explode($matches[0], $page_content, 2);

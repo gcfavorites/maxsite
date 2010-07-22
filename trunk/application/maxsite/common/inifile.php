@@ -188,6 +188,7 @@ function mso_view_ini($all = false)
 		elseif ($type == 'textarea')
 		{
 			$value = str_replace('_NR_', "\n", $value);
+			$value = str_replace('_QUOT_', '&quot;', $value);
 			//$f .= '<textarea style="width: 99%;" rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 			$f .= '<textarea rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}

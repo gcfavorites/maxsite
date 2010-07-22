@@ -8,7 +8,8 @@
 # функция автоподключения плагина
 function tweetmeme_com_autoload()
 {
-	if (!is_feed()) mso_hook_add( 'content_content', 'tweetmeme_com_content'); # хук на вывод контента
+	if (!is_feed() and (is_type('page') or is_type('home'))) 
+		mso_hook_add('content_content', 'tweetmeme_com_content'); # хук на вывод контента
 }
 
 
@@ -45,7 +46,16 @@ function tweetmeme_com_mso_options()
 						'description' => 'Можно использовать обычный и компактный',
 						'values' => 'none||Обычный # compact||Компактный',
 						'default' => 'none'
+					),
+			'show_only_page' => array(
+						'type' => 'select', 
+						'name' => 'Отображение', 
+						'description' => 'Выводить ли блок только на одиночной странице',
+						'values' => '1||Отображать только на одиночной странице # 0||Везде',
+						'default' => '1'
 					),		
+					
+					
 			),
 		'Настройки плагина tweetmeme.com', // титул
 		'Укажите необходимые опции.'   // инфо
@@ -55,12 +65,16 @@ function tweetmeme_com_mso_options()
 # функции плагина
 function tweetmeme_com_content($text = '')
 {
-	if (!is_type('page') and !is_type('home')) return $text;
-	
 	global $page;
+	
+	if (!is_type('page') and !is_type('home')) return $text;
 	
 	$options = mso_get_option('plugin_tweetmeme_com', 'plugins', array() ); // получаем опции
 	
+	// отображать только на одиночной странице
+	if (!isset($options['show_only_page'])) $options['show_only_page'] = 0; 
+	if ($options['show_only_page'] and !is_type('page')) return $text;
+		
 	if (!isset($options['style'])) $options['style'] = '';
 	if (!isset($options['align'])) $options['align'] = 'right';
 	if (!isset($options['tweetmeme_style'])) $options['tweetmeme_style'] = 'none';

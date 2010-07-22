@@ -153,7 +153,9 @@ function mso_get_pages($r = array(), &$pag)
 	else 
 		if (!function_exists($r['function_add_custom_sql'])) $r['function_add_custom_sql'] = false;
 	
-	
+	// хук, если нужно поменять параметры
+	// $r_restore = $r; 
+	$r = mso_hook('mso_get_pages', $r);
 	
 	$CI = & get_instance();
 
@@ -182,11 +184,6 @@ function mso_get_pages($r = array(), &$pag)
 	elseif ( is_type('search') ) _mso_sql_build_search($r, &$pag);
 	elseif ( is_type('author') ) _mso_sql_build_author($r, &$pag);
 	else return array();
-
-	// хук, если нужно поменять параметры
-	// $r_restore = $r; 
-	$r = mso_hook('mso_get_pages', $r);
-	// pr(_sql());
 	
 	// сам запрос и его обработка
 	$query = $CI->db->get();
@@ -197,9 +194,6 @@ function mso_get_pages($r = array(), &$pag)
 	if ($query and $query->num_rows() > 0)
 	{
 		$pages = $query->result_array();
-		
-	//	pr($pages);
-
 
 		if (is_type('page'))
 		{
@@ -469,9 +463,6 @@ function _mso_sql_build_home($r, &$pag)
 	// если указаны номера записей, котоыре следует исключить
 	if ($r['exclude_page_id']) $exclude_page_id = true;
 	else $exclude_page_id = false;
-
-	// при получении учитываем часовой пояс
-	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 	
 	if ($r['pagination'])
 	{
@@ -484,9 +475,6 @@ function _mso_sql_build_home($r, &$pag)
 
 		if ($r['page_status']) $CI->db->where('page.page_status', $r['page_status']);
 
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'NOW');
-		
 		if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
@@ -572,8 +560,6 @@ function _mso_sql_build_home($r, &$pag)
 			else $CI->db->where('page_type_name', $r['type']);
 	}
 	
-	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now );
-	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW' );
 	if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 			
@@ -583,7 +569,6 @@ function _mso_sql_build_home($r, &$pag)
 
 	$CI->db->join('users', 'users.users_id = page.page_id_autor', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
-//	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 
 	if ($cat_id) // указаны рубрики
 	{
@@ -601,9 +586,6 @@ function _mso_sql_build_home($r, &$pag)
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
 
-	//$CI->db->group_by('page.page_id');
-	//$CI->db->group_by('comments_page_id');
-
 	if (!$r['no_limit'])
 	{
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
@@ -618,8 +600,6 @@ function _mso_sql_build_page($r, &$pag)
 {
 	$CI = & get_instance();
 
-	// $pag = false;
-
 	if ($r['slug'])
 		$slug = $r['slug'];
 	else
@@ -628,9 +608,6 @@ function _mso_sql_build_page($r, &$pag)
 	// если slug есть число, то выполняем поиск по id
 	if (!is_numeric($slug)) $id = false; // slug не число
 		else $id = (int) $slug;
-
-	// $id = (int) $slug;
-	// if ( (string) $slug != (string) $id ) $id = false; // slug не число
 
 	if (!$r['all_fields'])
 	{
@@ -643,21 +620,14 @@ function _mso_sql_build_page($r, &$pag)
 
 	$CI->db->from('page');
 
-	// if ($page_status) $CI->db->where('page_status', $page_status);
-
 	if ($r['type']) 
 	{
 		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
 			else $CI->db->where('page_type_name', $r['type']);
 	}
 
-	// при получении учитываем часовой пояс
-	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
-
 	if (!is_login())
 	{
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
@@ -667,20 +637,13 @@ function _mso_sql_build_page($r, &$pag)
 
 	if ($id) // если slug число, то это может быть и номер и сам slug - неопределенность!
 	{
-		$CI->db->where(array('page_slug'=>$slug));
-		$CI->db->or_where(array('page_id'=>$slug));
+		$slug = $CI->db->escape($slug);
+		$CI->db->where("(page_slug = $slug OR page_id = $slug)");
 	}
 	else
 	{
 		$CI->db->where(array('page_slug'=>$slug));
 	}
-
-	/*
-	#if ($id)
-	#	$CI->db->where('page_id', $id);
-	#else
-	#	$CI->db->where('page_slug', $slug);
-	*/
 
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
@@ -700,8 +663,6 @@ function _mso_sql_build_category($r, &$pag)
 	else
 		$slug = mso_segment(2);
 
-	// $slug = mso_segment(2);
-
 	// если slug есть число, то выполняем поиск по id
 	if (!is_numeric($slug)) $id = false; // slug не число
 		else $id = (int) $slug;
@@ -713,9 +674,6 @@ function _mso_sql_build_category($r, &$pag)
 	// если указаны номера записей, котоыре следует исключить
 	if ($r['exclude_page_id']) $exclude_page_id = true;
 	else $exclude_page_id = false;
-
-	// при получении учитываем часовой пояс
-	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
 	$offset = 0;
 
@@ -736,8 +694,6 @@ function _mso_sql_build_category($r, &$pag)
 				else $CI->db->where('page_type_name', $r['type']);
 		}
 
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
@@ -793,8 +749,6 @@ function _mso_sql_build_category($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
@@ -813,8 +767,6 @@ function _mso_sql_build_category($r, &$pag)
 
 	$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
 	$CI->db->join('category', 'cat2obj.category_id = category.category_id');
-	// $CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
-
 
 	if ($categories)
 	{
@@ -836,9 +788,6 @@ function _mso_sql_build_category($r, &$pag)
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
 
-//	$CI->db->group_by('page.page_id');
-//	$CI->db->group_by('comments_page_id');
-
 	if (!$r['no_limit'])
 	{
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
@@ -859,11 +808,6 @@ function _mso_sql_build_tag($r, &$pag)
 	else
 		$slug = mso_segment(2);
 
-	// $slug = mso_segment(2);
-
-	// при получении учитываем часовой пояс
-	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
-
 	$offset = 0;
 
 	if ($r['pagination'])
@@ -875,10 +819,7 @@ function _mso_sql_build_tag($r, &$pag)
 		$CI->db->select('page.page_id');
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
-		// $CI->db->where('page_type_name', 'blog');
 
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
@@ -930,10 +871,7 @@ function _mso_sql_build_tag($r, &$pag)
 
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
-	// $CI->db->where('page_type_name', 'blog');
 
-	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 			
@@ -948,16 +886,12 @@ function _mso_sql_build_tag($r, &$pag)
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->join('meta', 'meta.meta_id_obj = page.page_id');
-//	$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 
 	$CI->db->where('meta_key', $r['meta_key']);
 	$CI->db->where('meta_table', $r['meta_table']);
 	if ($slug) $CI->db->where('meta_value', $slug);
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
-
-	//$CI->db->group_by('page.page_id');
-	//$CI->db->group_by('comments_page_id');
 
 	if (!$r['no_limit'])
 	{
@@ -992,7 +926,6 @@ function _mso_sql_build_archive($r, &$pag)
 		$dmax = get_total_days($month, $year);
 		if ( $day>$dmax ) $day = $dmax;
 	}
-	//else $day = 1;
 
 	if ($day)
 	{
@@ -1005,14 +938,6 @@ function _mso_sql_build_archive($r, &$pag)
 		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-31 23:59:59', -1);
 	}
 
-	// pr($date_in);
-	// pr($date_in_59);
-
-	// при получении учитываем часовой пояс
-	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
-
-	// echo $year . $month . $day;
-
 	if ($r['pagination'])
 	{
 		# пагинация
@@ -1023,8 +948,6 @@ function _mso_sql_build_archive($r, &$pag)
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 			
@@ -1041,8 +964,6 @@ function _mso_sql_build_archive($r, &$pag)
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
-
-		// $CI->db->order_by('page_date_publish', 'desc');
 
 		$CI->db->order_by($r['order'], $r['order_asc']);
 		
@@ -1080,8 +1001,6 @@ function _mso_sql_build_archive($r, &$pag)
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
-	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
@@ -1093,12 +1012,8 @@ function _mso_sql_build_archive($r, &$pag)
 	
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
-	//$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
-
-	//$CI->db->group_by('page.page_id');
-	//$CI->db->group_by('comments_page_id');
 
 	if (!$r['no_limit'])
 	{
@@ -1123,9 +1038,6 @@ function _mso_sql_build_search($r, &$pag)
 	// $search = mso_segment(2);
 	$search = mso_strip(strip_tags($search));
 
-	// при получении учитываем часовой пояс
-	//$date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
-
 	$offset = 0;
 
 	if ($r['pagination'])
@@ -1144,21 +1056,16 @@ function _mso_sql_build_search($r, &$pag)
 				else $CI->db->where('page_type_name', $r['type']);
 		}
 
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
-		// $CI->db->like('page_content', $search);
-		// $CI->db->or_like('page_title', $search);
 		$CI->db->where(
 		'(`page_content` LIKE \'%' . $CI->db->escape_str($search) . '%\' OR `page_title` LIKE \'%' . $CI->db->escape_str($search) . '%\')', '', false);
 		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 
-		// $CI->db->order_by('page_date_publish', 'desc');
 		$CI->db->order_by($r['order'], $r['order_asc']);
 		
 		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
@@ -1191,9 +1098,6 @@ function _mso_sql_build_search($r, &$pag)
 
 	$CI->db->from('page');
 
-
-	//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
@@ -1202,9 +1106,6 @@ function _mso_sql_build_search($r, &$pag)
 	// like делаем свой
 	$CI->db->where(
 		'(`page_content` LIKE \'%' . $CI->db->escape_str($search) . '%\' OR `page_title` LIKE \'%' . $CI->db->escape_str($search) . '%\')', '', false);
-
-	// $CI->db->like('page_content', $search);
-	// $CI->db->or_like('page_title', $search);
 
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 	
@@ -1216,13 +1117,8 @@ function _mso_sql_build_search($r, &$pag)
 
 	$CI->db->join('users', 'users.users_id = page.page_id_autor', 'left');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id', 'left');
-	//$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
 
-	// $CI->db->order_by('page_date_publish', 'desc');
 	$CI->db->order_by($r['order'], $r['order_asc']);
-
-	//$CI->db->group_by('page.page_id');
-	//$CI->db->group_by('comments_page_id');
 
 	if (!$r['no_limit'])
 	{
@@ -1237,8 +1133,6 @@ function _mso_sql_build_search($r, &$pag)
 # страницы автора
 function _mso_sql_build_author($r, &$pag)
 {
-	// $CI = & get_instance();
-	// _mso_sql_build_home($r, &$pag);
 	$CI = & get_instance();
 
 	if ($r['slug'])
@@ -1246,15 +1140,9 @@ function _mso_sql_build_author($r, &$pag)
 	else
 		$slug = mso_segment(2);
 
-	// $slug = mso_segment(2);
-
 	// если slug есть число, то выполняем поиск по id
 	if (!is_numeric($slug)) $id = 0; // slug не число
 		else $id = (int) $slug;
-
-	// при получении учитываем часовой пояс
-	// $date_now = mso_date_convert('Y-m-d H:i:s', date('Y-m-d H:i:s'));
-	
 
 	$offset = 0;
 
@@ -1275,14 +1163,10 @@ function _mso_sql_build_author($r, &$pag)
 				else $CI->db->where('page_type_name', $r['type']);
 		}
 
-		//if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-		// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 		if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
-		//$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
-		//$CI->db->join('category', 'cat2obj.category_id = category.category_id');
 
 		$CI->db->where('page.page_id_autor', $id);
 		
@@ -1319,8 +1203,6 @@ function _mso_sql_build_author($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	// if ($r['date_now']) $CI->db->where('page_date_publish <', $date_now);
-	// if ($r['date_now']) $CI->db->where('page_date_publish <', 'NOW');
 	if ($r['date_now']) 
 			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
@@ -1338,16 +1220,10 @@ function _mso_sql_build_author($r, &$pag)
 
 	$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
 	$CI->db->join('category', 'cat2obj.category_id = category.category_id');
-	//$CI->db->join('comments', 'comments.comments_page_id = page.page_id AND comments_approved = 1', 'left');
-
 
 	$CI->db->where('page.page_id_autor', $id);
 
-
 	$CI->db->order_by($r['order'], $r['order_asc']);
-
-	//$CI->db->group_by('page.page_id');
-	//$CI->db->group_by('comments_page_id');
 
 	if (!$r['no_limit'])
 	{
@@ -1549,8 +1425,6 @@ function mso_page_content($page_content = '', $use_password = true, $message = '
 		echo mso_hook('content_content', $page_content);
 	}
 
-	// mso_hook('content_end'); # хук на конец блока
-
 }
 
 # некоторые плагины нужно выводить после всех хуков на content
@@ -1585,7 +1459,7 @@ function mso_page_meta($meta = '', $page_meta = array(), $do = '', $posle = '', 
 function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $title = 'Обсудить', $do = '', $posle = '', $echo = true, $type = 'page')
 {
 	global $MSO;
-
+	
 	if (is_array($page_comment_allow)) // первый элемент - массив, значит принимаем его значения - остальное игнорируем
 	{
 		$def = array(
@@ -1603,8 +1477,6 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 
 		if (!$r['page_slug']) return ''; // не указан slug - выходим
 
-		// pr($r);
-
 		$out = '';
 
 		if (!$r['page_comment_allow']) // коментирование запрещено
@@ -1619,8 +1491,14 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		{
 			
 			if ( !$r['page_count_comments'] ) // если нет комментариев, то выводим строчку title_no_link
-				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
+			{
+				// если запрещены комментарии от всех, если их нет, не выводим ссылку ОБСУДИТЬ
+				if (mso_get_option('allow_comment_comusers', 'general', '1') or mso_get_option('allow_comment_anonim', 'general', '1') ) 
+				{
+					$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
 						. $r['page_slug'] . '#comments">' . t($r['title_no_comments']) . '</a>' . $r['posle'];
+				}
+			}
 			else
 				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
 						. $r['page_slug'] . '#comments">' . t($r['title']) . '</a>' . $r['posle'];			
@@ -1691,53 +1569,6 @@ if ( !function_exists('get_total_days') )
 # начения хранятся в виде url1|url2|url2|url3
 # url - второй сегмент
 # время жизни 30 дней: 60 секунд * 60 минут * 24 часа * 30 дней = 2592000
-
-/* старый вариант
-function mso_page_view_count_first($unique = true, $name_cookies = 'maxsite-cms', $expire = 2592000)
-{
-	
-	if ( !mso_get_option('page_view_enable', 'templates', '1') ) return true;
-	
-	global $_COOKIE;
-
-	if (isset($_COOKIE[$name_cookies]))	$all_slug = $_COOKIE[$name_cookies]; // значения текущего кука
-		else $all_slug = ''; // нет такой куки вообще
-
-	$slug = mso_segment(2);
-
-	$all_slug = explode('|', $all_slug); // разделим в массив
-
-	if ( $unique )
-		if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
-
-	// нужно увеличить счетчик
-	$all_slug[] = $slug; // добавляем текущий id
-	$all_slug = array_unique($all_slug); // удалим дубли на всякий пожарный
-	$all_slug = implode('|', $all_slug); // соединяем обратно в строку
-	$expire = time() + $expire;
-	@setcookie($name_cookies, $all_slug, $expire); // записали в кук
-
-	// получим текущее значение page_view_count
-	// и увеличиваем значение на 1
-	$CI = & get_instance();
-	$CI->db->select('page_view_count');
-	$CI->db->where('page_slug', $slug);
-	$CI->db->limit(1);
-	$query = $CI->db->get('page');
-
-	if ($query->num_rows() > 0)
-	{
-		$pages = $query->row_array();
-		$page_view_count = $pages['page_view_count'] + 1;
-
-		$CI->db->where('page_slug', $slug);
-		$CI->db->update('page', array('page_view_count'=>$page_view_count));
-		$CI->db->cache_delete('page', $slug);
-
-		return true;
-	}
-}
-*/
 # новый вариант от Ramir'а
 # http://forum.max-3000.com/viewtopic.php?f=6&t=129#p689
 function mso_page_view_count_first($unique = false, $name_cookies = 'maxsite-cms', $expire = 2592000)
@@ -1906,4 +1737,4 @@ function _mso_page_map_get_child($page_id = 0, $cur_id = 0)
 }
 
 
-?>
+# end file
