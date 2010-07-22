@@ -24,7 +24,9 @@
 <pre>http://mysite.com/about | http://newsite.com/hello</pre>
 <p class="info"><?= t('При переходе к странице вашего сайта «http://mysite.com/about» будет осуществлен автоматический редирект на указанный «http://newsite.com/hello».', 'plugins') ?></p>
 <p class="info"><?= t('Третьим параметром вы можете указать тип редиректа: 301 или 302.', 'plugins') ?></p>
-<pre>http://mysite.com/about | http://newsite.com/hello | 301</pre><br>
+<pre>http://mysite.com/about | http://newsite.com/hello | 301</pre>
+<p class="info"><?= t('Также можно использовать регулярные выражения.', 'plugins') ?></p>
+<pre>http://mysite.com/category/(.*) | http://newsite.com/$1 | 301</pre><br>
 
 <?php
 

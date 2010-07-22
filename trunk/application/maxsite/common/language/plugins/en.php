@@ -327,6 +327,14 @@ $lang['Средняя оценка'] = 'Average rating';
 $lang['из'] = 'from';
 $lang['проголосовавших'] = 'voters';
 
+#redirect
+$lang['Редирект'] = 'Redirect';
+$lang['Редиректы'] = 'Redirects';
+$lang['С помощью этого плагина вы можете организовать редиректы со своего сайта. Укажите исходный и конечный адрес через «|», например:'] = 'By this plugin you can set redirects from your site. Write start and needed adress over «|», for example:';
+$lang['При переходе к странице вашего сайта «http://mysite.com/about» будет осуществлен автоматический редирект на указанный «http://newsite.com/hello».'] = 'On requesting page «http://mysite.com/about» visitor will redirect to page «http://newsite.com/hello».';
+$lang['Третьим параметром вы можете указать тип редиректа: 301 или 302.'] = 'Third param is type of redirect: 301 або 302';
+$lang['Также можно использовать регулярные выражения.'] = 'Also you can use regexps.';
+
 # search_form
 $lang['Форма поиска'] = 'Search form';
 $lang['Что искать?'] = 'What to find?';
