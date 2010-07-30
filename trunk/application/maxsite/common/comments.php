@@ -225,8 +225,6 @@ function mso_get_comments($page_id = 0, $r = array())
 # первый парметр id, второй данные текст и т.д.
 function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '')
 {
-	$CI = & get_instance();
-	
 	$data['page_title'] = $page_title; // заголовок страницы
 	$data['id'] = $id; // номер комментария
 	$data['comments_content'] =	mso_xss_clean($data['comments_content']);
@@ -236,10 +234,29 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	
 	# рассылаем комментарий всем, кто на него подписан
 	mso_email_message_new_comment_subscribe($data);
-	
-	$email = mso_get_option('admin_email', 'general', false); // email куда приходят уведомления
+
+	# После рассылки смотрим, какие уведомления мы хотим получать.
+	$level = mso_get_option('email_comments_level', 'general', 1);
+	$return = false; //А это потому, что пых не понимает return false; внутри кейсов.
+	switch ($level)
+	{
+		case 6 : $return = true; break;                                    // Ни от кого.
+		case 5 : if ( $data['comments_approved'] ) $return = true; break;  // Требующий модераци
+		case 4 : if ( (array_key_exists('comments_users_id', $data) or array_key_exists('comments_comusers_id', $data)) ) $return = true; break;
+		case 3 : if ( !array_key_exists('comments_comusers_id', $data) ) $return = true; break; // От комментаторов
+		case 2 : if ( array_key_exists('comments_users_id', $data) ) $return = true; break;     // От всех кроме юзеров
+		case 1 : break;                                                                         // От всех
+	}
+
+	if ($return) return false;
+
+
+	$email = mso_get_option('comments_email', 'general', false); // email куда приходят уведомления
+	if (!$email) $email = mso_get_option('admin_email', 'general', false); // если не задан, отдельный email, то берём email администратора.
 
 	if (!$email) return false;
+
+	$CI = & get_instance();
 
 	if ($data['comments_approved'] == 0) // нужно промодерировать
 		$subject = '[' . getinfo('name_site') . '] ' . '(-) '. t('Новый комментарий'). ' (' . $id . ') "' . $page_title . '"';
@@ -285,7 +302,8 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	$text .= NR . t('Администрировать комментарий вы можете по ссылке'). ': ' . NR
 			. getinfo('site_admin_url') . 'comments/edit/' . $id . NR;
 
-	return mso_mail($email, $subject, $text);
+	$data = array_merge($data, array('comment' => true));      //Чтобы плагин smtp_mail точно знал, что ему подсунули коммент, а не вычислял это по subject
+	return mso_mail($email, $subject, $text, $false, $data);   //А зная о комментарии, он сможет сотворить некоторые бонусы.
 }
 
 
@@ -1323,7 +1341,10 @@ function mso_email_message_new_comment_subscribe($data)
 	    -- [comments_author_ip] => 127.0.0.1 - ip - пока не используется
 	)
 	*/
-	
+
+	# Опция не рассылать подписку.
+	if (!mso_get_option('allow_comments_subscribe', 'general', 1)) return;
+
 	// комментарий не одобрен, не отсылаем
 	if ($data['comments_approved'] == 0) return;
 	
@@ -1365,8 +1386,9 @@ function mso_email_message_new_comment_subscribe($data)
 			// можно отправлять
 			if (mso_valid_email($comuser['comusers_email']))
 			{
-				$res = mso_mail($comuser['comusers_email'], $subject, $message, $from);
-				
+				$data = array_merge($data, array('subscription' => true));  //А здесь для smtp_mail важно знать, чтобы запретить сохранять мыло в файл.
+				$res = mso_mail($comuser['comusers_email'], $subject, $message, $from, $data);
+
 				if (!$res) break; // ошибка отправки почты - рубим цикл
 			}
 		}
