@@ -98,7 +98,7 @@
 			$form_hide = mso_mail($email, $subject, $text_email, $_POST['contact_mail']);
 
 			// отправим отправителю, если он хотел
-			if (isset($_POST['subscribe'])) {
+			if (isset($_POST['subscribe']) and mso_get_option('ask_copy', 'templates', '1') ) {
 				$subject = t('Копия Вашего письма с темой').' «'.$_POST['contact_subject'].'»';
 				$text_email = t("Копия Вашего письма"). ": \n\n" . $text_email;
 				$to_email = $_POST['contact_mail'];
