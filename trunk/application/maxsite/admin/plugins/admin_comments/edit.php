@@ -150,21 +150,25 @@ mso_cur_dir_lang('admin');
 			$users = $CI->db->get('users');
 			if ($users->num_rows() > 0) // больше нуля, можно работать
 			{
+				$out .= '<optgroup label="' . t('Авторы') . '">' . NR;
 				foreach ($users->result_array() as $user) // обходим в цикле
 				{
 					$out .= '<option value="1-'. $user['users_id']. '"'. ( ($row['comments_users_id'] == $user['users_id'])?(' selected="selected"'):('') ).'>' . $user['users_nik'] . '</option>'. NR;
 				}
+				$out .= '</optgroup>' . NR;
 			}
 
 			$CI->db->select('comusers_id , comusers_nik ');
 			$users = $CI->db->get('comusers');
 			if ($users->num_rows() > 0) // больше нуля, можно работать
 			{
+				$out .= '<optgroup label="' . t('Комментаторы') . '">' . NR;
 				foreach ($users->result_array() as $user) // обходим в цикле
 				{
 					if (!$user['comusers_nik']) $user['comusers_nik'] = '! ' . t('Комментатор') . ' ' . $user['comusers_id'];
 					$out .= '<option value="2-'. $user['comusers_id']. '"'. ( ($row['comments_comusers_id'] == $user['comusers_id'])?(' selected="selected"'):('') ).'>' . $user['comusers_nik'] . '</option>'. NR;
 				}
+				$out .= '</optgroup>' . NR;
 			}
 			$out .= '</select></p>' . NR;
 			echo t('<p>Выберите пользователя или комментатора, которого вы хотите назначить автором комментария, либо выберите «Аноним» и введите имя анонимного комментатора.</p>') . $out;
