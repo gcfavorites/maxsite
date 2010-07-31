@@ -57,13 +57,13 @@ function admin_plugin_options_admin($args = array())
 	{
 		if ( !file_exists(getinfo('plugins_dir') . $plugin . '/index.php') )
 		{
-			echo 'Плагин не найден.';
+			echo t('Плагин не найден.', 'admin');
 			return $args;
 		}	
 		
 		if (!function_exists($plugin . '_mso_options'))
 		{
-			echo 'Для данного плагина настроек опций не предусмотрено.';
+			echo t('Для данного плагина настроек опций не предусмотрено.', 'admin');
 			return $args;
 		}
 		else 
@@ -74,7 +74,7 @@ function admin_plugin_options_admin($args = array())
 	}
 	else
 	{
-		echo 'Неверно указан плагин.';
+		echo t('Неверно указан плагин.', 'admin');
 	}
 }
 
@@ -88,16 +88,16 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 	if ($title)
 		echo '<h1>' . $title . '</h1>';
 	else
-		echo '<h1>' . t('Опции плагина') . '</h1>';
+		echo '<h1>' . t('Опции плагина', 'admin') . '</h1>';
 	
 	if ($info)
 		echo '<p class="info">' . $info . '</p>';
 	else
-		echo '<p class="info">' . t('Укажите необходимые опции плагина.') . '</p>';
+		echo '<p class="info">' . t('Укажите необходимые опции плагина.', 'admin') . '</p>';
 		
 	
 	if ($text_other === true)
-		echo '<p><a href="' . getinfo('site_admin_url') . 'plugins">' . t('Вернуться на страницу плагинов') . '</a></p>';
+		echo '<p><a href="' . getinfo('site_admin_url') . 'plugins">' . t('Вернуться на страницу плагинов', 'admin') . '</a></p>';
 	elseif ($text_other) echo '<p>' . $text_other . '</p>';
 	
 	
@@ -142,7 +142,7 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 			$options = $newoptions; // сразу обновим переменную на новые опции
 		}
 		
-		echo '<div class="update">' . t('Обновлено!') . '</div>';
+		echo '<div class="update">' . t('Обновлено!', 'admin') . '</div>';
 	}
 	
 	if ($ar) // есть опции
@@ -231,12 +231,12 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 		# выводим форму
 		echo NR . '<form action="" method="post">' . mso_form_session('f_session_id');
 		echo $form;
-		echo NR . '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить') . '"></p>';
+		echo NR . '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить', 'admin') . '"></p>';
 		echo '</form>' . NR;
 	}
 	else
 	{
-		echo '<p>Опции не определены.</p>' . NR;
+		echo t('<p>Опции не определены.</p>', 'admin') . NR;
 	}
 	
 	/*
