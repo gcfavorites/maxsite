@@ -4,9 +4,9 @@
  * MaxSite CMS
  * Language file
  * (c) http://max-3000.com/
- * Author: (c) Ваше имя
- * Author URL: 
- * Update URL: 
+ * Author: (c) Wave
+ * Author URL: http://wave.fantregata.com/
+ * Update URL: http://wave.fantregata.com/page/work-for-maxsite
  */
  
 $lang['Доступ запрещен'] = 'Access denied';

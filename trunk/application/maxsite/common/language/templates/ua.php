@@ -1,9 +1,10 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Language for MaxSite CMS
+ * MaxSite CMS
+ * Language file
  * (c) http://max-3000.com/
- * Author: (c) Wave and Pavonine
+ * Author: (c) Pavonine, Wave
  * Author URL: http://pavonine.com.ua/
  * Update URL: http://wave.fantregata.com/page/ukrainian-for-maxsite-cms
  */

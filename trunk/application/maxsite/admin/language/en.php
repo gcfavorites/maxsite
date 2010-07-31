@@ -1,11 +1,12 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Language for MaxSite CMS
+ * MaxSite CMS
+ * Language file
  * (c) http://max-3000.com/
- * Author: (c) 
- * Author URL: 
- * Update URL: 
+ * Author: (c) Wave
+ * Author URL: http://wave.fantregata.com/
+ * Update URL: http://wave.fantregata.com/page/work-for-maxsite
  */
 
 $lang['Админ-доступ к «Плагинам»'] = 'Admin-access to «Plugins»';
