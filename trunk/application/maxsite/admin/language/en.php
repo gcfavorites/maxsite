@@ -278,6 +278,7 @@ $lang['Плагины расширяют стандартные возможно
 $lang['Другие плагины вы можете найти на форуме <a href="http://forum.max-3000.com/viewforum.php?f=6">MaxSite CMS</a>.'] = 'Other plugins you can find on forum <a href="http://forum.max-3000.com/viewforum.php?f=6">MaxSite CMS</a>.';
 $lang['Плагины'] = 'Plugins';
 $lang['Статус'] = 'Status';
+$lang['опции'] = 'options';
 
 
 # admin_sidebars
@@ -383,5 +384,14 @@ $lang['Настройка шаблона'] = 'Template options';
 
 
 # admin_plugin_options
+$lang['Вернуться на страницу плагинов'] = 'Return to page of plugins';
+$lang['Опции плагина'] = 'Plugin options';
+$lang['Укажите необходимые опции плагина.']  = 'Set needed plugin options.';
+$lang['Админ-доступ к редактированию опций плагинов'] = 'Admin-access to editing options of plugins';
+$lang['Настройка опций плагинов'] = 'Configuration of plugins options';
+$lang['Плагин не найден.'] = 'Plugin not found.';
+$lang['Для данного плагина настроек опций не предусмотрено.'] = 'For this plugin is no options.';
+$lang['Неверно указан плагин.'] = 'Plugin not found.';
+$lang['<p>Опции не определены.</p>'] = '<p>Options not setted.</p>';
 
-?>
+# End of file

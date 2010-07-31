@@ -63,6 +63,14 @@ $lang['Укажите номера комюзеров, которые прину
 # authors
 $lang['Авторы'] = 'Authors';
 
+#bbcode
+$lang['Настройки плагина bbcode'] = 'Options of bbcode plugin';
+$lang['Укажите необходимые опции.'] = 'Set needed options.';
+$lang['Где использовать'] = 'Where to use';
+$lang['Укажите, где должен работать плагин'] = 'Select, where plugin should to work';
+$lang['1||На страницах #2||В комментариях #3||На страницах и в комментариях'] = '1||In pages #2||In comments #3||In pages and comments';
+$lang['Конвертирует тэги BBCode в HTML. См.'] = 'Convert BBCode-tags to HTML. See';
+
 # calendar
 $lang['Календарь'] = 'Calendar';
 $lang['Январь'] = 'January';
