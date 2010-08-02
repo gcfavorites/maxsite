@@ -10,7 +10,7 @@
 
 <?php
 
-	echo mso_get_option('pre_contact', 'templates', '');
+	echo mso_get_option('prew_contact', 'templates', '');
 
 	$form_hide = false; //отобразить форму
 	$ok = true;
@@ -138,7 +138,7 @@
 			<td align="right"><label for="contact_mail"><?=t('E-mail')?><span class="reqtxt">*</span></label></td>
 			<td><input name="contact_mail" type="text" value="<?=( (isset($_POST['contact_mail'])?($_POST['contact_mail']):('')) );?>" id="contact_mail" style="width: 98%;<?=( ($err_email)?(' border-color: red;'):('') );?>"></td>
 		</tr>
-<?php if (mso_get_option('ask_phone', 'templates', '1')) { ?>
+<?php if (mso_get_option('ask_tel', 'templates', '1')) { ?>
 		<tr>
 			<td align="right"><label for="contact_phone"><?=t('Телефон (с кодом города)')?></label></td>
 			<td><input name="contact_phone" type="text" value="<?=( (isset($_POST['contact_phone'])?($_POST['contact_phone']):('')) );?>" id="contact_phone" style="width: 98%;"></td>
@@ -153,7 +153,7 @@
 		<tr>
 			<td align="right"><label for="contact_subject"><?=t('Тема')?><span class="reqtxt">*</span></label></td>
 			<td><?php
-$subj = trim(mso_get_option('subjects', 'templates', 'Пожелания по сайту_NR_Нашел ошибку на сайте_NR_Подскажите, пожалуйста_NR_Я вас люблю!_NR_Я вас ненавижу..._NR_Я вам пишу, чего же боле...'));
+$subj = trim(mso_get_option('subj', 'templates', 'Пожелания по сайту_NR_Нашел ошибку на сайте_NR_Подскажите, пожалуйста_NR_Я вас люблю!_NR_Я вас ненавижу..._NR_Я вам пишу, чего же боле...'));
 if (!$subj) echo '<input name="contact_subject" type="text" value="'.( (isset($_POST['contact_subject'])?($_POST['contact_subject']):('')) ).'" id="contact_url" style="width: 98%;'.( ($err_subject)?(' border-color: red;'):('') ).'">';
 else
 {
