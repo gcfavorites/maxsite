@@ -152,7 +152,7 @@ mso_cur_dir_lang('admin');
 				_mso_add_row(t('ICQ', 'admin'), 'f_icq', $row['users_icq']);
 				_mso_add_row(t('Сайт', 'admin'), 'f_url', $row['users_url']);
 				_mso_add_row(t('MSN', 'admin'), 'f_msn', $row['users_msn']);
-				_mso_add_row(t('Jaber', 'admin'), 'f_jaber', $row['users_jaber']);
+				_mso_add_row(t('Jabber', 'admin'), 'f_jaber', $row['users_jaber']);
 				_mso_add_row(t('Skype', 'admin'), 'f_skype', $row['users_skype']);
 				_mso_add_row(t('URL аватара', 'admin'), 'f_avatar_url', $row['users_avatar_url']);
 				
@@ -269,4 +269,5 @@ mso_cur_dir_lang('admin');
 	{
 		echo '<div class="error">' . t('Ошибочный запрос', 'admin') . '</div>';
 	}
-?>
+
+# End of file

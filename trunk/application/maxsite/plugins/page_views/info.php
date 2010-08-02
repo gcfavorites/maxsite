@@ -2,12 +2,11 @@
 
 $info = array(
 	'name' => 'Page views',
-	'description' => 'Виджет «Самое читаемое»',
-	'version' => '1.0',
+	'description' => t('Виджет «Самое читаемое»', 'plugins'),
+	'version' => '1.1',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );
 
-?>

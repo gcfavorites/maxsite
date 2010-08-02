@@ -146,7 +146,8 @@ $lang['Комментариев'] = 'Comments';
 $lang['Сайт'] = 'Site';
 $lang['ICQ'] = 'ICQ';
 $lang['MSN'] = 'MSN';
-$lang['Jaber'] = 'Jaber';
+$lang['Jaber'] = 'Jabber';
+$lang['Jabber'] = 'Jabber';
 $lang['Дата рождения'] = 'Birthday';
 $lang['О себе'] = 'About';
 $lang['Примечание админа'] = 'Admin notice';
@@ -155,4 +156,4 @@ $lang['Его последние комментарии'] = 'Last comments';
 $lang['Извините, пользователь с указанным номером не найден.'] = 'Sorry, user with such number not found.';
 $lang['Извините, на сайте пока нет зарегистрированных комментаторов.'] = 'Sorry, no commusers registered';
 
-?>
+# End of file

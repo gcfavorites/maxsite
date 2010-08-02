@@ -301,6 +301,7 @@ $lang['Сохранить изменения'] = 'Зберегти зміни';
 $lang['E-mail'] = 'E-mail';
 $lang['ICQ'] = 'ICQ';
 $lang['Jaber'] = 'Jabber';
+$lang['Jabber'] = 'Jabber';
 $lang['MSN'] = 'MSN';
 $lang['Skype'] = 'Skype';
 $lang['URL аватара'] = 'URL аватару';

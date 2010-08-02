@@ -2,7 +2,7 @@
 
 $info = array(
 	'name' => 'Last pages',
-	'description' => 'Вывод последних записей',
+	'description' => t('Вывод последних записей', 'plugins'),
 	'version' => '1.2',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',

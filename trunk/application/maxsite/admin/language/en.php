@@ -311,7 +311,8 @@ $lang['Сохранить изменения'] = 'Save changes';
 # admin_users
 $lang['E-mail'] = 'E-mail';
 $lang['ICQ'] = 'ICQ';
-$lang['Jaber'] = 'Jaber';
+$lang['Jaber'] = 'Jabber';
+$lang['Jabber'] = 'Jabber';
 $lang['MSN'] = 'MSN';
 $lang['Skype'] = 'Skype';
 $lang['URL аватара'] = 'URL of avatar';
