@@ -149,11 +149,13 @@ class Maxsite extends Controller
 		# возможно существует расширение 
 		# для этого подключим нужный файл если есть
 		
-		$fn = APPPATH . 'controllers/' . $this->data_def['uri_segment'][1] . EXT;
+		if (isset($this->data_def['uri_segment'][1])) // если есть первый сегмент
+			$fn = APPPATH . 'controllers/' . $this->data_def['uri_segment'][1] . EXT;
+		else $fn = false;
 		
-		if ( file_exists($fn) ) 
+		if ( $fn !== false and file_exists($fn) ) 
 			require($fn);
-		else 
+		elseif ($fn !== false) 
 		{
 			# проверим короткую ссылку - может быть это slug из page или category 
 			# если это так, то выставить тип вручную
@@ -203,6 +205,7 @@ class Maxsite extends Controller
 				}
 			}
 		}
+		else $this->_view_i('home'); // отсутствие первого сегмента подразумевает, что это home
 	}
 	
 	function index()

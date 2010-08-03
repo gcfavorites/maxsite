@@ -68,7 +68,7 @@ function feedcount_widget_form($num = 1)
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['format']) ) 
-		$options['format'] = '<strong>' . t('Сегодня:', 'plugins') . '</strong> [COUNT]<br/><strong>' . t('Вчера:', 'plugins') . '</strong> [COUNTOLD]';
+		$options['format'] = '<strong>' . t('Сегодня:', 'plugins') . '</strong> [COUNT]<br><strong>' . t('Вчера:', 'plugins') . '</strong> [COUNTOLD]';
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -106,7 +106,7 @@ function feedcount_widget_custom($options = array(), $num = 1)
 {
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['format']) ) 
-		$options['format'] = '<strong>' . t('Сегодня:', 'plugins') . '</strong> [COUNT]<br/><strong>' . t('Вчера:', 'plugins') . '</strong> [COUNTOLD]';
+		$options['format'] = '<strong>' . t('Сегодня:', 'plugins') . '</strong> [COUNT]<br><strong>' . t('Вчера:', 'plugins') . '</strong> [COUNTOLD]';
 	
 	$out = $options['format'];
 	

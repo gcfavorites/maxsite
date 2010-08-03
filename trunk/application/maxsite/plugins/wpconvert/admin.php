@@ -261,14 +261,14 @@
 							
 							if ($result['result']) 
 							{
-								$out .= '<span style="color:green">+ ' . $val['name'] . ' : ' . $result['description'] . '</span><br/>';
+								$out .= '<span style="color:green">+ ' . $val['name'] . ' : ' . $result['description'] . '</span><br>';
 							}
 							else // какая-то ошибка
 							{
-								$out .= '<span style="color:red">- ' . $val['name'] . ' : ' . $result['description'] . '</span><br/>';
+								$out .= '<span style="color:red">- ' . $val['name'] . ' : ' . $result['description'] . '</span><br>';
 							}
 						}
-						$out .= '<br/><hr/><br/>';
+						$out .= '<br><hr><br>';
 					}
 					
 					mso_flush_cache(); // сбросим кэш
@@ -364,12 +364,12 @@
 							{
 								$page_id = $result['result'][0];
 								$out .= '<span style="color:green">+ ' . $item['title'] . ' : ' . $result['description'] 
-										. ' (' . $page_id . ')</span><br/>';
+										. ' (' . $page_id . ')</span><br>';
 							}
 							else // какая-то ошибка
 							{
 								$page_id = 0;
-								$out .= '<span style="color:red">- ' . $item['title'] . ' : ' . $result['description'] . '</span><br/>';
+								$out .= '<span style="color:red">- ' . $item['title'] . ' : ' . $result['description'] . '</span><br>';
 							}
 							
 							

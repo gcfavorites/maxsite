@@ -14,6 +14,13 @@ mso_cur_dir_lang('admin');
 
 <?php
 
+	function _time_zone_current_time()
+	{
+		return '<br>' . t('Сейчас на сервере:') . date(' Y-m-d H:i:s');
+	}
+
+
+
 	$CI = & get_instance();
 	require_once( getinfo('common_dir') . 'inifile.php' ); // функции для работы с ini-файлом
 	

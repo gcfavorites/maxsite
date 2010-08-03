@@ -5,9 +5,8 @@ $info = array(
 	'description' => 'Редирект любого адреса сайта',
 	'version' => '1.2',
 	'author' => 'Максим, Андрей Бусел',
-	'plugin_url' => '',
+	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );
 
-?>

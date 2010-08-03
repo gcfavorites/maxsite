@@ -148,7 +148,7 @@ function category_widget_custom($options = array(), $num = 1)
 	if ( !isset($options['include']) ) $options['include'] = array();
 	if ( !isset($options['exclude']) ) $options['exclude'] = array();
 	if ( !isset($options['format']) ) $options['format'] = '[LINK][TITLE]<sup>[COUNT]</sup>[/LINK]<br>[DESCR]';
-	if ( !isset($options['format_current']) ) $options['format_current'] = '<span>[TITLE]<sup>[COUNT]</sup></span><br/>[DESCR]';
+	if ( !isset($options['format_current']) ) $options['format_current'] = '<span>[TITLE]<sup>[COUNT]</sup></span><br>[DESCR]';
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['hide_empty']) ) $options['hide_empty'] = 0;
 	if ( !isset($options['order']) ) $options['order'] = 'category_name';

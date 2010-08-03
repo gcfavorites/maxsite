@@ -35,5 +35,4 @@ $lang['Пароль:'] = 'Password:';
 $lang['Комментатор'] = 'Commuser';
 $lang['анонимно'] = 'anonim';
 
-
-?>
+# End of file

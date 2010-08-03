@@ -1169,7 +1169,7 @@ function _mso_sql_build_author($r, &$pag)
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 
 		$CI->db->where('page.page_id_autor', $id);
-		
+		$CI->db->group_by('page.page_id');
 		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 
 		$query = $CI->db->get();
@@ -1196,9 +1196,9 @@ function _mso_sql_build_author($r, &$pag)
 
 	// теперь сами страницы
 	if ($r['content'])
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, category.category_name, page.page_id_autor, users_description, users_login');
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, page_date_publish, page_status, users_nik, page_content, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, page_id_parent, users_avatar_url, page.page_id_autor, users_description, users_login');
 	else
-		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, category.category_name, page.page_id_autor, users_description, users_login', false);
+		$CI->db->select('page.page_id, page_type_name, page_slug, page_title, "" AS page_content, page_date_publish, page_status, users_nik, page_view_count, page_rating, page_rating_count, page_password, page_comment_allow, users_avatar_url, page.page_id_autor, users_description, users_login', false);
 
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
@@ -1218,9 +1218,6 @@ function _mso_sql_build_author($r, &$pag)
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 
-	$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
-	$CI->db->join('category', 'cat2obj.category_id = category.category_id');
-
 	$CI->db->where('page.page_id_autor', $id);
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
@@ -1230,7 +1227,7 @@ function _mso_sql_build_author($r, &$pag)
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
 			else $CI->db->limit($r['limit']);
 	}
-	
+
 	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
@@ -1573,55 +1570,60 @@ if ( !function_exists('get_total_days') )
 # http://forum.max-3000.com/viewtopic.php?f=6&t=129#p689
 function mso_page_view_count_first($unique = false, $name_cookies = 'maxsite-cms', $expire = 2592000)
 {
-   global $_COOKIE, $_SESSION;
-   
-   if ( !mso_get_option('page_view_enable', 'templates', '1') AND !$unique) return true; //если нет такой опции или не пришло в функцию, то выходим
-   if ( !$unique ) $unique = mso_get_option('page_view_enable', 'templates', '1');
-   
-   $slug = mso_segment(2);
-   $all_slug = array();
-   
-   if( $unique == 0 ) return false; // не вести подсчет
-   elseif ($unique == 1) //с помощью куки
-   {
-      if (isset($_COOKIE[$name_cookies]))   $all_slug = explode('|', $_COOKIE[$name_cookies]); // значения текущего кука
-      if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
-   }
-   elseif ($unique == 2) //с помощью сессии
-   {
-      session_start();
-      if (isset($_SESSION[$name_cookies]))   $all_slug = explode('|', $_SESSION[$name_cookies]); // значения текущей сессии
-      if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
-   }
+	global $_COOKIE, $_SESSION;
 
-   // нужно увеличить счетчик
-   $all_slug[] = $slug; // добавляем текущий slug
-   $all_slug = array_unique($all_slug); // удалим дубли на всякий пожарный
-   $all_slug = implode('|', $all_slug); // соединяем обратно в строку
-   $expire = time() + $expire;
-   
-   if ($unique == 1) @setcookie($name_cookies, $all_slug, $expire); // записали в кук
-   elseif ($unique == 2) $_SESSION[$name_cookies]=$all_slug; // записали в сессию
-   
-   // получим текущее значение page_view_count
-   // и увеличиваем значение на 1
-   $CI = & get_instance();
-   $CI->db->select('page_view_count');
-   $CI->db->where('page_slug', $slug);
-   $CI->db->limit(1);
-   $query = $CI->db->get('page');
+	if ( !mso_get_option('page_view_enable', 'templates', '1') AND !$unique) return true; //если нет такой опции или не пришло в функцию, то выходим
+	if ( !$unique ) $unique = mso_get_option('page_view_enable', 'templates', '1');
 
-   if ($query->num_rows() > 0)
-   {
-      $pages = $query->row_array();
-      $page_view_count = $pages['page_view_count'] + 1;
+	$slug = mso_segment(2);
+	$all_slug = array();
 
-      $CI->db->where('page_slug', $slug);
-      $CI->db->update('page', array('page_view_count'=>$page_view_count));
-      $CI->db->cache_delete('page', $slug);
+	if( $unique == 0 ) return false; // не вести подсчет
+	elseif ($unique == 1) //с помощью куки
+	{
+		if (isset($_COOKIE[$name_cookies]))	$all_slug = explode('|', $_COOKIE[$name_cookies]); // значения текущего кука
+		if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
+	}
+	elseif ($unique == 2) //с помощью сессии
+	{
+		session_start();
+		if (isset($_SESSION[$name_cookies]))	 $all_slug = explode('|', $_SESSION[$name_cookies]); // значения текущей сессии
+		if ( in_array($slug, $all_slug) ) return false; // уже есть текущий урл - не увеличиваем счетчик
+	}
 
-      return true;
-   }
+	// нужно увеличить счетчик
+	$all_slug[] = $slug; // добавляем текущий slug
+	$all_slug = array_unique($all_slug); // удалим дубли на всякий пожарный
+	$all_slug = implode('|', $all_slug); // соединяем обратно в строку
+	$expire = time() + $expire;
+
+	if ($unique == 1) @setcookie($name_cookies, $all_slug, $expire); // записали в кук
+	elseif ($unique == 2) $_SESSION[$name_cookies]=$all_slug; // записали в сессию
+
+	// получим текущее значение page_view_count
+	// и увеличиваем значение на 1
+	$CI = & get_instance();
+	$CI->db->select('page_view_count');
+	
+	if(is_numeric($slug)) // ссылка вида http://site.com/page/1 
+		$CI->db->where('page_id', $slug);
+	else
+		$CI->db->where('page_slug', $slug);
+
+	$CI->db->limit(1);
+	$query = $CI->db->get('page');
+
+	if ($query->num_rows() > 0)
+	{
+		$pages = $query->row_array();
+		$page_view_count = $pages['page_view_count'] + 1;
+
+		$CI->db->where('page_slug', $slug);
+		$CI->db->update('page', array('page_view_count'=>$page_view_count));
+		$CI->db->cache_delete('page', $slug);
+
+		return true;
+	}
 }
 
 

@@ -21,12 +21,23 @@ function theme_switch_init($args = array())
 {	
 	global $MSO;
 	
+	// если есть get ?theme=шаблон , то выставляем новую куку по этому значению
+	// идея nicothin (Николай Громов) - http://forum.max-3000.com/viewtopic.php?p=9943#p9943	
+	$get = mso_parse_url_get(mso_url_get());
+	$get = (isset($get['theme']) and $get['theme']) ? mso_xss_clean($get['theme']) : false;
+	
 	// проверяем есть ли post
-	if ( $post = mso_check_post(array('f_session_id', 'f_theme_switch_submit', 'theme_switch_radio')) )
+	if ( $post = mso_check_post(array('f_session_id', 'f_theme_switch_submit', 'theme_switch_radio')) or $get)
 	{
-		mso_checkreferer();
-		
-		$dir = $post['theme_switch_radio'][0]; // каталог шаблона
+		if (!$get)
+		{
+			mso_checkreferer();
+			$dir = $post['theme_switch_radio'][0]; // каталог шаблона
+		}
+		else
+		{
+			$dir = $get;
+		}
 		
 		// если он есть - проверяем, то пишем куку и редиректимся
 		if (file_exists( getinfo('templates_dir') . $dir . '/index.php' )) // есть
@@ -34,8 +45,8 @@ function theme_switch_init($args = array())
 			$opt = mso_get_option('theme_switch', 'plugins', array());
 			if ( isset($opt['templates'][$dir]) ) 
 			{ 
-				// 30 дней = 2592000 секунд
-				mso_add_to_cookie('theme_switch', $dir, time() + 60 * 60 * 24 * 30, true);
+				// 30 дней = 2592000 секунд 60 * 60 * 24 * 30
+				mso_add_to_cookie('theme_switch', $dir, time() + 2592000, true);
 			}
 		}
 	}
@@ -43,19 +54,23 @@ function theme_switch_init($args = array())
 	// проверяем существование куки theme_switch
 	if (isset($_COOKIE['theme_switch'])) 
 	{
-		$dir = $_COOKIE['theme_switch']; // значения текущего кука
+		$dir = $_COOKIE['theme_switch']; // значение текущего кука
+		
 		if (file_exists( getinfo('templates_dir') . $dir . '/index.php' )) 
 		{
 			$opt = mso_get_option('theme_switch', 'plugins', array());
 			if ( isset($opt['templates'][$dir]) ) 
 			{
 				$MSO->config['template'] = $dir;
+				
+				$functions_file = $MSO->config['templates_dir'] . $dir . '/functions.php';
+				if (file_exists($functions_file)) require_once($functions_file);
 			}
 			else @setcookie('theme_switch', '', time()); // сбросили куку
 		}
 		else @setcookie('theme_switch', '', time()); // сбросили куку
 	}
-
+	
 	return $args;
 }
 
@@ -89,6 +104,8 @@ function theme_switch_admin_init($args = array())
 		# будет идти обращение по адресу http://сайт/admin/theme_switch
 		mso_admin_url_hook ($this_plugin_url, 'theme_switch_admin_page');
 	}
+	
+	
 	
 	return $args;
 }

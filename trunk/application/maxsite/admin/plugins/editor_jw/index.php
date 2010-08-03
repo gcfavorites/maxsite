@@ -43,7 +43,14 @@ function editor_jw($args = array())
 	if (isset($args['height'])) $editor_config['height'] = (int) $args['action'];
 	else 
 	{
-		$editor_config['height'] = (int) mso_get_option('editor_height', 'general', 400);
+		$editor_options = mso_get_option('editor_options', 'admin', array());
+		
+		if (isset($editor_options['editor_height']))
+		{
+			$editor_config['height'] = (int) $editor_options['editor_height'];
+		}
+		else $editor_config['height'] = 400;
+		
 		if ($editor_config['height'] < 100) $editor_config['height'] = 400;
 	}
 		
@@ -54,4 +61,4 @@ function editor_jw($args = array())
 
 }
 
-?>
+# end file

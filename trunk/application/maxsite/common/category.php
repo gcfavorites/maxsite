@@ -166,7 +166,7 @@ function _get_child2($childs, $li_format = '', $checked_id = array(), $list = ''
 #                            ...
 #                          )
 
-function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false, $only_page_publish = false)
+function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false, $only_page_publish = false, $date_now = true)
 {
 	// если неверный тип, то возвратим пустой массив
 	if ( ($type != 'page') and ($type != 'links') ) return array();
@@ -182,10 +182,27 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
 	
+	$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
+	
+	// учитываем дату публикации - будущие записи не отображаются
+	if ($date_now)
+	{
+		$time_zone = getinfo('time_zone');
+		if ($time_zone < 10 and $time_zone > 0) $time_zone = '0' . $time_zone;
+		elseif ($time_zone > -10 and $time_zone < 0) 
+		{ 
+			$time_zone = '0' . $time_zone; 
+			$time_zone = str_replace('0-', '-0', $time_zone); 
+		}
+		else $time_zone = '00.00';
+		$time_zone = str_replace('.', ':', $time_zone);
+
+		$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $time_zone . '" HOUR_MINUTE)', false);
+	}
+	
 	# только опубликованные делаются только при условии скрытия пустых рубрик
 	if ($only_page_publish and $hide_empty)
 	{
-		$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
 		$CI->db->where('page_status', 'publish');
 	}
 	
@@ -210,7 +227,7 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 	{
 		$k = $row['category_id'];
 		$r[$k] = $row;
-		$ch = _get_child($type, $row['category_id'], $child_order, $child_asc, $in, $ex, $in_child, $hide_empty, $only_page_publish);
+		$ch = _get_child($type, $row['category_id'], $child_order, $child_asc, $in, $ex, $in_child, $hide_empty, $only_page_publish, $date_now );
 	
 		if ($ch) $r[$k]['childs'] = $ch;
 	}
@@ -219,17 +236,34 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 }
 
 # вспомогательная рекурсивная рубрика для получения всех потомков рубрики mso_cat_array
-function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false, $only_page_publish = false)
+function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $in = false, $ex = false, $in_child = false, $hide_empty = false, $only_page_publish = false, $date_now = true)
 {
 	$CI = & get_instance();
 	$CI->db->select('category.*, COUNT(cat2obj_id) AS pages_count');
 	$CI->db->where(array('category.category_type'=>$type, 'category.category_id_parent'=>$parent_id));
 	$CI->db->join('cat2obj', 'category.category_id = cat2obj.category_id', 'left');
 	
+	$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
+		
+	// учитываем дату публикации - будущие записи не отображаются
+	if ($date_now)
+	{
+		$time_zone = getinfo('time_zone');
+		if ($time_zone < 10 and $time_zone > 0) $time_zone = '0' . $time_zone;
+		elseif ($time_zone > -10 and $time_zone < 0) 
+		{ 
+			$time_zone = '0' . $time_zone; 
+			$time_zone = str_replace('0-', '-0', $time_zone); 
+		}
+		else $time_zone = '00.00';
+		$time_zone = str_replace('.', ':', $time_zone);
+
+		$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $time_zone . '" HOUR_MINUTE)', false);
+	}
+		
 	# только опубликованные делаются только при условии скрытия пустых рубрик
 	if ($only_page_publish and $hide_empty)
 	{
-		$CI->db->join('page', 'page.page_id = cat2obj.page_id', 'left');
 		$CI->db->where('page_status', 'publish');
 	}
 	

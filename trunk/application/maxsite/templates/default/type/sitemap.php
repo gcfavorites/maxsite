@@ -8,6 +8,7 @@
 	echo  '<h1>'. t('Карта сайта (архив)').'</h1>';
 	
 	if ( function_exists('sitemap') ) echo sitemap();
+	else echo mso_hook('sitemap');
 	
 	echo NR . '</div><!-- class="type type_sitemap" -->' . NR;
 	

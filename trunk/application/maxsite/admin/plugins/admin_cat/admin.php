@@ -104,7 +104,7 @@
 
 <?php
 	
-	$all = mso_cat_array('page', 0);
+	$all = mso_cat_array('page', 0, 'category_menu_order', 'asc', 'category_menu_order', 'asc', false, false, false, false, false, false);
 	//	<input title="Описание" name="f_category_desc[[ID]]" value="[DESCR]" maxlength="500" size="50" style="width: 250px;" type="text">
 
 	$format = '
@@ -123,7 +123,7 @@
 	<tr>
 	
 	<td class="alt"><strong title="' 
-	. t('Номер рубрики. В этой рубрике [COUNT] страниц', 'admin')
+	. t('Номер рубрики. Записей в этой рубрике: [COUNT]', 'admin')
 	. '">[ID]</strong><sub>[COUNT]</sub></td>
 	
 	<td><input title="' . t('Номер родителя', 'admin') 
@@ -206,4 +206,4 @@
 	</div>
 	</form>';
 	
-?>
+# end file

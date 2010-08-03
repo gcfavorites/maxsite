@@ -2372,7 +2372,12 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false, $pre
 	$CI->email->initialize($config);
 
 	$CI->email->to($email);
-	$CI->email->from($admin_email, getinfo('name_site'));
+	
+	if (isset($preferences['from_name']))
+		$CI->email->from($admin_email, $preferences['from_name']);
+	else	
+		$CI->email->from($admin_email, getinfo('name_site'));
+	
 	$CI->email->subject($subject);
 	$CI->email->message($message);
 	$CI->email->_safe_mode = true; # иначе CodeIgniter добавляет -f к mail - не будет работать в не safePHP

@@ -67,7 +67,7 @@ function last_pages_widget_form($num = 1)
 	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	$form .= '<p><div class="t150">' . t('Формат:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format', 'value'=>$options['format'] ) ) ;
 
-	$form .= '<br><div class="t150">&nbsp</div> %TITLE% %DATE% %TEXT% %TEXT_CUT% %COMMENTS%';
+	$form .= '<br><div class="t150">&nbsp</div> %TITLE% %DATE% %TEXT% %TEXT_CUT% %COMMENTS% %URL%';
 
 
 	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
@@ -211,6 +211,8 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 
 			$out = str_replace('%TITLE%',
 							mso_page_title(mso_slug($page['page_slug']), $page['page_title'], '', '', true, false), $out);
+
+			$out = str_replace('%URL%', getinfo('site_url') . 'page/' . mso_slug($page['page_slug']), $out);
 
 			$out = str_replace('%DATE%',
 							mso_page_date($page['page_date_publish'], $arg['date_format'], '', '', false), $out);

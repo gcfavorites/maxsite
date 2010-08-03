@@ -9,14 +9,21 @@
 # функция автоподключения плагина
 function cron_autoload()
 {
+	mso_hook_add('init', 'cron_custom', 0); # должен сработать последним, поэтому приоритет менее 10
+}
+
+# срабатывание крона при инициализации
+function cron_custom($args = array())
+{
 	$options = mso_get_option('plugin_cron', 'plugins', array());
 	if ( !isset($options['slug']) ) $options['slug'] = 'cron'; 
 	
 	if ( mso_segment(1) == $options['slug'] ) 
 	{
 		mso_hook('cron'); # это крон, выполняем его хук
-		die('Cron done');
+		die('Cron done'); # после крона всегда останавливаем выполнение
 	}
+	else return $args;
 }
 
 
@@ -57,4 +64,4 @@ GET ' . getinfo('siteurl') . $options['slug'] . '
 	);
 }
 
-?>
+# end file

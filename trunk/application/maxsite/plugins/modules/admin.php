@@ -113,7 +113,7 @@
 				' style="width: 650px;" onChange="newLink(\'' . $mod['id'] . '\', this.value)"') . '</label></p>';
 		
 		$v = isset($modules[$mod['id']]['php_code']) ? $modules[$mod['id']]['php_code'] : '';
-		$form .= NR . '<p><strong>' . t('PHP', __FILE__) . '</strong><br/>' . '<textarea name="fmoduless[' . $mod['id'] . '][php_code]" style="width: 700px;">' . htmlspecialchars($v) . '</textarea></p>';				
+		$form .= NR . '<p><strong>' . t('PHP', __FILE__) . '</strong><br>' . '<textarea name="fmoduless[' . $mod['id'] . '][php_code]" style="width: 700px;">' . htmlspecialchars($v) . '</textarea></p>';				
 		
 		
 		

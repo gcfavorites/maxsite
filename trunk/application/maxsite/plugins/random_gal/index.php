@@ -342,6 +342,7 @@ function random_gal_widget_custom($options = array(), $num = 1)
 				. '" class="lightbox"' . $title . '><img src="' 
 				. getinfo('uploads_url') . $val['dir'] . 'mini/' . $val['file'] 
 				. '" alt=""' . $options['style_img'] . '></a>' . NR;
+		//. '<div>' . $val['descritions'] . '</div>';
 	}
 	
 	if ($out)
@@ -368,37 +369,47 @@ function random_gal_mso_options()
 		array(
 			'on' => array(
 						'type' => 'checkbox', 
-						'name' => 'Включить галереи', 
-						'description' => '', 
+						'name' => t('Включить галереи', 'plugins'),
+						'description' => t('Если нужно организовать другой вывод галерей, то скопируйте файл <strong>gallery.php</strong> в каталог своего шаблона.', 'plugins'),
 						'default' => '0' // для чекбоксов только 1 и 0
-					),
+						),
 					
 			'slug_gallery' => array(
 							'type' => 'text', 
-							'name' => 'Короткая ссылка на вывод гелерей', 
-							'description' => 'Укажите ссылку по которой будут выводиться гелереи. Например: <strong>gallery</strong> -&gt; ' . getinfo('site_url') . '<u>gallery</u>', 
+							'name' => t('Короткая ссылка на вывод галерей', 'plugins'),
+							'description' => t('Укажите ссылку по которой будут выводиться галереи. Например:', 'plugins') . ' <strong>gallery</strong> -&gt; <a href="' . getinfo('site_url') . 'gallery">' . getinfo('site_url') . '<strong>gallery</strong></a>', 
 							'default' => 'gallery'
 						),
 						
+			'temp' => array(
+							'type' => 'info',
+							'title' => t('Определение галерей', 'plugins'),
+							'text' => t('<p>Галереи задаются по одной в одной строчке в формате:</p>', 'plugins') . NR .
+							t('<pre>короткая ссылка | заголовок | каталоги через % | сортировка | количество | фильтр</pre>', 'plugins') . '
+							
+							<br><p>Пример:</p>
+							<pre>first | Моя галерея | / % my | name_file | 100</pre>
+							
+							<br>Результат:<ul>
+							<li><strong>Адрес:</strong> </strong>' . getinfo('site_url') . 'gallery/<u>first</u>
+							<li><strong>Название:</strong> <u>Моя галерея</u>
+							<li><strong>Каталоги:</strong> <u>uploads</u> и <u>my</u> (если указать <u>#all</u>, то это все каталоги uploads)
+							<li><strong>Сортировка:</strong> <u>по имени файлов</u> (все варианты: <em>random, name_file, name_file_desc, description, description_desc, name_file_description, description_name_file, datefile, datefile_desc</em>)
+							<li><strong>Количество:</strong> <u>100</u>
+							<li><strong>Фильтр:</strong> <u>нет</u> (фильтр - это фраза, с которой должно начинаться хотя бы одно слово в описании файла).
+							</ul><br>
+							', 
+						),		
+							
 			'all' => array(
 						'type' => 'textarea', 
-						'name' => 'Список галерей', 
-						'description' => 'Укажите галереи. В одной строке - одна гелерея. Формат:
-						<br><strong>короткая ссылка | заголовок | каталоги через % | сортировка | количество | фильтр</strong>
-						<br>Например:
-						<br><strong>first | Моя галерея | / % my | name_file | 100</strong>
-						<br>Адрес: ' . getinfo('site_url') . 'gallery/first
-						<br>Название: Моя галерея
-						<br>Каталоги: uploads и my (если указать #all, то это все каталоги uploads)
-						<br>Сортировка: по имени файлов (все варианты: random, name_file, name_file_desc, description, description_desc, name_file_description, description_name_file, datefile, datefile_desc)
-						<br>Количество: 100
-						<br>Фильтр: нет
-						', 
+						'name' => t('Список галерей', 'plugins'),
+						'description' => t('Укажите галереи', 'plugins'),
 						'default' => ''
 					),
 			),
-		'Настройки галерей', // титул
-		'Укажите необходимые опции.'   // инфо
+		t('Настройки галерей', 'plugins'), // титул
+		t('Укажите необходимые опции.', 'plugins')   // инфо
 	);
 }
 
@@ -410,7 +421,11 @@ function random_gal_custom_page_404($args = array())
 	{
 		if ( mso_segment(1)==$options['slug_gallery'] ) 
 		{
-			require( getinfo('plugins_dir') . 'random_gal/gallery.php' ); // подключили свой файл вывода
+			if (file_exists(getinfo('template_dir') . 'gallery.php'))
+				require( getinfo('template_dir') . 'gallery.php' ); // подключили свой файл вывода в каталоге шаблона
+			else	
+				require( getinfo('plugins_dir') . 'random_gal/gallery.php' ); // подключили свой файл вывода в каталоге плагина
+				
 			return true; // выходим с true
 		}
 	}

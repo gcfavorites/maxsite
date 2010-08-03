@@ -21,10 +21,10 @@
 ?>
 <h1><?= t('Редиректы', 'plugins') ?></h1>
 <p class="info"><?= t('С помощью этого плагина вы можете организовать редиректы со своего сайта. Укажите исходный и конечный адрес через «|», например:', 'plugins') ?></p>
-<pre>http://mysite.com/about | http://newsite.com/hello</pre>
+<pre>http://mysite.com/about | http://newsite.com/hello</pre><br>
 <p class="info"><?= t('При переходе к странице вашего сайта «http://mysite.com/about» будет осуществлен автоматический редирект на указанный «http://newsite.com/hello».', 'plugins') ?></p>
 <p class="info"><?= t('Третьим параметром вы можете указать тип редиректа: 301 или 302.', 'plugins') ?></p>
-<pre>http://mysite.com/about | http://newsite.com/hello | 301</pre>
+<pre>http://mysite.com/about | http://newsite.com/hello | 301</pre><br>
 <p class="info"><?= t('Также можно использовать регулярные выражения.', 'plugins') ?></p>
 <pre>http://mysite.com/category/(.*) | http://newsite.com/$1 | 301</pre><br>
 

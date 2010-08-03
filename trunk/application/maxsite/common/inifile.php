@@ -24,7 +24,7 @@ function mso_check_post_ini()
 	{
 		# защита рефера
 		mso_checkreferer();
-		
+
 		$options = $post['f_options'];
 		
 		if ( isset($post['f_all_checkbox']) ) $all_checkbox = $post['f_all_checkbox'];
@@ -91,7 +91,9 @@ function mso_view_ini($all = false)
                     'row_alt_start'		  => '<tr class="alt">',
 					'cell_alt_start'	  => '<td class="alt">',
               );
-
+              
+	$CI->table->clear(); // очистим, если были старые данные
+	
 	$CI->table->set_template($tmpl); // шаблон таблицы
 	
 	// заголовки

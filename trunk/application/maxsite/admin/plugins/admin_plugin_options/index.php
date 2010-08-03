@@ -86,10 +86,11 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 {
 
 	if ($title)
-		echo '<h1>' . $title . '</h1>';
+		echo '<h1><a href="">' . t($title) . '</a></h1>';
 	else
-		echo '<h1>' . t('Опции плагина', 'admin') . '</h1>';
+		echo '<h1><a href="">' . t('Опции плагина', 'admin') . '</a></h1>';
 	
+
 	if ($info)
 		echo '<p class="info">' . $info . '</p>';
 	else
@@ -129,10 +130,15 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 			// теперь в $in все чекбоксы
 		}
 		
+		# перед проеркой удалим из $ar все типы info
+		$ar1 = $ar;
+		foreach($ar1 as $m => $val)
+			if ($val['type'] == 'info')	unset($ar1[$m]);
+		
 		# проверяем их с входящим $ar - ключи должны совпадать
 		# финт ушами: смотрим разность ключей массивов - красиво?
 		# если будет разность, значит неверные входящие данные, все рубим
-		if (array_diff(array_keys($ar), array_keys($in))) die('Error key. :-(');
+		if (array_diff(array_keys($ar1), array_keys($in))) die('Error key. :-(');
 		
 		$newoptions = array_merge($options, $in); // объединим
 		
@@ -152,6 +158,18 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 		
 		foreach($ar as $m => $val)
 		{
+			if ($val['type'] == 'info')
+			{
+				$form .= '<div class="admin_plugin_options_info">'; 
+				
+				if (isset($val['title'])) $form .= '<h2>' . $val['title'] . '</h2>'; 
+				if (isset($val['text'])) $form .= $val['text']; 
+				
+				$form .= '</div>'; 
+				
+				continue;
+			}
+			
 			if (!isset($options[$m])) $options[$m] = $val['default'];
 			
 			# пока используем только тип text и textarea
@@ -267,6 +285,14 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 							'values' => '0.00||Гринвич (0) # 1.00||что-то # 2.00||Киев (+2) # 3.00||Москва (+3)',  // правила для select как в ini-файлах
 							'default' => '2.00'
 						),	
+			
+			// заголовок группы опций - не передается как опция, случит только для визуального разделения
+			'temp' => array(
+							'type' => 'info', # такой тип
+							'title' => 'Тут какой-то Заголовок', 
+							'text' => 'Тут какой-то текст', 
+						),
+						
 			)
 	);
 	*/

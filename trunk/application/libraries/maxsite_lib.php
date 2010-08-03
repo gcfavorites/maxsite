@@ -7,7 +7,7 @@
 
 class Maxsite_lib 
 {
-	var $version = '0.402';
+	var $version = '0.405';
 	var $config = array();
 	var $data = array();
 	var $hooks = array();
@@ -77,4 +77,4 @@ if ( !isset($MSO) ) $MSO = new Maxsite_lib();
 
 require_once( $MSO->config['common_dir'] . 'common.php' );
 
-?>
+# end file
