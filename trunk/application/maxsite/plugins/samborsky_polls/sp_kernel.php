@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 	class sp_question{
 		
@@ -39,7 +39,7 @@
 				$CI->db->where('q_id',$this->id);
 			}
 			
-			$questions = $CI->db->get('sp_questions');			
+			$questions = $CI->db->get('sp_questions');
 			if( $questions->num_rows() > 0 ){
 				
 				$this->data = $questions->row();
@@ -91,7 +91,7 @@
 			$CI->table->add_row("<strong>Всего проголосовало:</strong>&nbsp;{$total}&nbsp;чел");
 			
 			if( mso_get_option('show_archives_link') )
-				$CI->table->add_row('<div align="center"><a href="'.mso_get_option('sp_archive_url').'">Архивы голосований</a></div>');
+				$CI->table->add_row('<div align="center"><a href="'.getinfo('siteurl').mso_get_option('sp_archive_url').'">Архивы голосований</a></div>');
 		
 			$out = $CI->table->generate();
 			
@@ -131,13 +131,13 @@
 			);
 			
 			if( mso_get_option('show_archives_link') )
-				$CI->table->add_row('&nbsp;','<a href="'.mso_get_option('sp_archive_url').'">Архивы голосований</a>');
+				$CI->table->add_row('&nbsp;','<a href="'.getinfo('siteurl').mso_get_option('sp_archive_url').'">Архивы голосований</a>');
 
-			// Генерируем таблицу и форму загрузки			
+			// Генерируем таблицу и форму загрузки
 			$out = $CI->table->generate() . 
 			"<div class=\"sp_polls_loader\" id=\"sp_polls_loader_{$this->id}\">
-				<img src=\"". getinfo('plugins_url') . 'samborsky_polls/ajax-loader.gif' ."\" alt=\"Идет загрузка...\">
-				<p>Идет загрузка...</p>
+				<img src=\"". getinfo('plugins_url') . 'samborsky_polls/ajax-loader.gif' ."\" alt=\"Идет загрузка…\">
+				<p>Идет загрузка…</p>
 			</div>";
 			
 			return $out;
@@ -243,7 +243,7 @@
 			
 					if( $query->num_rows() ){
 						
-						$this->last_error = 'Вы уже голосовали';	
+						$this->last_error = 'Вы уже голосовали';
 						return FALSE;
 					}
 					
@@ -264,7 +264,7 @@
 			if( !$this->id ) return false;
 			
 			$CI = &get_instance();
-			return $CI->db->where('q_id',$this->id)->limit(1)->update('sp_questions',array('q_active' => false));	
+			return $CI->db->where('q_id',$this->id)->limit(1)->update('sp_questions',array('q_active' => false));
 		}
 		
 		public function open(){
@@ -272,7 +272,7 @@
 			if( !$this->id ) return false;
 			
 			$CI = &get_instance();
-			return $CI->db->where('q_id',$this->id)->limit(1)->update('sp_questions',array('q_active' => true));	
+			return $CI->db->where('q_id',$this->id)->limit(1)->update('sp_questions',array('q_active' => true));
 		}
 	}
 	
@@ -406,12 +406,12 @@
 		function single($id){
 			
 			$question = new sp_question($id);
-			return $question->get_active_code();			
+			return $question->get_active_code();
 		}
 		
 		function archive(){
 			
-			$CI = &get_instance();			
+			$CI = &get_instance();
 			$CI->db->select('*');
 			$CI->db->order_by('q_id','desc');
 			
@@ -431,13 +431,13 @@
 				foreach( $query->result() as $row ){
 					
 					$CI->table->add_row(
-						'<a href="'. mso_get_option('sp_archive_url') . $row->q_id .'">' . stripslashes($row->q_question) . '</a>',
+						'<a href="'. getinfo('siteurl') . mso_get_option('sp_archive_url') .'/'. $row->q_id .'">' . stripslashes($row->q_question) . '</a>',
 						'<div align="right">' . number_format($row->q_totalvotes,0,' ',' ') . '</div>',
 						'<div align="right">' . number_format($row->q_totalvoters,0,' ',' ') . '</div>',
 						$row->q_active ? 'Активно' : 'Закрыто'
 					);
 				}
-				
+
 				return $CI->table->generate(); 
 			}
 			
@@ -450,7 +450,7 @@
 			
 			// Пустой параметр, выводим архив
 			if( empty($seg) ){
-				return $this->archive();				
+				return $this->archive();
 			}
 			// Чистовой параметр, значит ID
 			else if( is_numeric($seg) ){
@@ -461,4 +461,4 @@
 		}
 	}
 
-?>
+# End of file

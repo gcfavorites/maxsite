@@ -8,18 +8,17 @@
 
 # функция автоподключения плагина
 function samborsky_polls_autoload($args = array()){
-	global $MSO;
-	
 	if( is_type('admin') ){
 		// хук на админку
 		mso_hook_add('admin_init','samborsky_polls_init');
 	}
 	
 	// Ядро
-	require($MSO->config['plugins_dir'] . 'samborsky_polls/sp_kernel.php');
+	require(getinfo('plugins_dir') . 'samborsky_polls/sp_kernel.php');
 	
 	// Хук в <head></head>
 	mso_hook_add('head', 'samborsky_polls_head');
+	mso_hook_add('custom_page_404', 'samborsky_polls_archive_404'); # По какому адресу будем показывать архив
 	mso_register_widget('samborsky_polls_widget', t('Голосования', __FILE__)); # регистрируем виджет
 }
 
@@ -34,11 +33,9 @@ function samborsky_polls_head($args = array()){
 
 # функция выполняется при активации (вкл) плагина
 function samborsky_polls_activate($args = array()){
-	global $MSO;
-	
 	mso_create_allow('samborsky_polls_edit','Админ-доступ к samborsky_polls',__FILE__);
 	
-	require($MSO->config['plugins_dir'] . 'samborsky_polls/install.php');
+	require(getinfo('plugins_dir') . 'samborsky_polls/install.php');
 	sp_install();
 	sp_add_options();
 	
@@ -58,10 +55,10 @@ function samborsky_polls_uninstall($args = array()){
 	$CI->load->dbforge();
 	
 	// Удаляем таблицы
-	$CI->dbforge->drop_table('sp_questions');	
+	$CI->dbforge->drop_table('sp_questions');
 	$CI->dbforge->drop_table('sp_answers');
 	$CI->dbforge->drop_table('sp_logs');
-			
+
 	return $args;
 }
 
@@ -82,8 +79,6 @@ function samborsky_polls_init($args = array()){
 
 # функция вызываемая при хуке, указанном в mso_admin_url_hook
 function samborsky_polls_admin_page($args = array()){
-	global $MSO;
-	
 	# выносим админские функции отдельно в файл	
 	if( !mso_check_allow('samborsky_polls_edit') ){
 		echo t('Доступ запрещен', 'plugins');
@@ -93,7 +88,7 @@ function samborsky_polls_admin_page($args = array()){
 	mso_hook_add_dinamic('mso_admin_header',' return $args . "' . t('samborsky_polls', __FILE__) . '"; ' );
 	mso_hook_add_dinamic('admin_title',' return "' . t('samborsky_polls', __FILE__) . ' - " . $args; ' );
 	
-	require($MSO->config['plugins_dir'] . 'samborsky_polls/admin.php');
+	require(getinfo('plugins_dir') . 'samborsky_polls/admin.php');
 }
 
 /***
@@ -102,8 +97,6 @@ function samborsky_polls_admin_page($args = array()){
  * @param object $id[optional] - необязательный параметр, который выводит голосование с нужным ID
  */
 function samborsky_polls($id = 0){
-	global $MSO;
-	
 	$question = new sp_question($id);
 	return $question->get_active_code();
 }
@@ -113,11 +106,19 @@ function samborsky_polls($id = 0){
  * @return 
  */
 function samborsky_polls_archive(){
-	global $MSO;
-	
 	$archive = new sp_archive;
 	return $archive->get();
 }
+
+
+function samborsky_polls_archive_404(){
+	require_once(getinfo('template_dir') . 'main-start.php');
+	echo samborsky_polls_archive();
+	require_once(getinfo('template_dir').'main-end.php');
+	return true;
+}
+
+
 
 /*  добавил виджет MAX   */
 
@@ -158,7 +159,7 @@ function samborsky_polls_widget_form($num = 1)
 			form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 			
 	$form .= '<p><div class="t150">' . t('Номер голосования:', 'plugins') . '</div> ' . 
-			form_input( array( 'name'=>$widget . 'polls_id', 'value'=>$options['polls_id'] ) ) ;			
+			form_input( array( 'name'=>$widget . 'polls_id', 'value'=>$options['polls_id'] ) ) ;
 	
 	$form .= '<p><div class="t150">' . t('Текст после:', 'plugins') . '</div> ' . 
 			form_textarea( array( 'name'=>$widget . 'text_posle', 'value'=>$options['text_posle'], 'style'=>'height: 100px;' ) ) ;
@@ -198,8 +199,8 @@ function samborsky_polls_widget_custom($options = array(), $num = 1)
 	if($out and $options['header']) $out = $options['header'] . $out;
 	if ($out) $out .= $options['text_posle'];
 	
-	return $out;	
+	return $out;
 }
 
 
-?>
+# End of file

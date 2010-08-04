@@ -7,7 +7,7 @@
 		$data['q_question'] = addslashes(trim($_POST['question']));
 		
 		// Если вопрос не задан, выходим
-		if( empty($data['q_question']) ){			
+		if( empty($data['q_question']) ){
 			echo '<div class="samborsky_polls_error">Введите вопрос.</div>';
 			return false;
 		}
@@ -18,18 +18,18 @@
 		}
 		
 		// Дата начала голосования
-		if( isset($_POST['beginDate']) && preg_match('/(\d{2})\/(\d{2})\/(\d{4})/',$_POST['beginDate'],$out) ){			
+		if( isset($_POST['beginDate']) && preg_match('/(\d{2})\/(\d{2})\/(\d{4})/',$_POST['beginDate'],$out) ){
 			$data['q_timestamp'] = gmmktime(0,0,0,$out[1],$out[2],$out[3]);
 		}
 		else{			
 			$data['q_timestamp'] = gmmktime(0,0,0,date("m"),date("d"),date("Y"));
 		}
 		
-		// Это бессрочное голосование?		
-		if( !isset($_POST['noExpiry']) ){			
+		// Это бессрочное голосование?
+		if( !isset($_POST['noExpiry']) ){
 			// Дата окончания голосования
-			if( isset($_POST['expiryDate']) ){				
-				if( preg_match('/(\d{2})\/(\d{2})\/(\d{4})/',$_POST['expiryDate'],$out) ){					
+			if( isset($_POST['expiryDate']) ){
+				if( preg_match('/(\d{2})\/(\d{2})\/(\d{4})/',$_POST['expiryDate'],$out) ){
 					$data['q_expiry'] = gmmktime(0,0,0,$out[1],$out[2],$out[3]);
 				}
 			}
@@ -57,7 +57,7 @@
 			// Добавляем варианты ответов
 			foreach( $_POST as $key => $value ){
 				
-				if( preg_match('/sp_answer_(\d+)/',$key,$out) ){				
+				if( preg_match('/sp_answer_(\d+)/',$key,$out) ){
 					
 					$answer = addslashes(trim($_POST[$key]));
 					if( !empty($answer) ){
@@ -76,7 +76,7 @@
 			
 			$question->update(array('q_totalvotes' => $q_totalvotes));
 			
-			mso_redirect($MSO->config['site_url'] . 'admin/samborsky_polls/manage/' . $question->id);
+			mso_redirect(getinfo('site_url') . 'admin/samborsky_polls/manage/' . $question->id);
 			return true;		
 		}
 		else{
@@ -222,7 +222,7 @@
 					
 					foreach( $answer_array as $row ){
 						
-						$delete_url = $MSO->config['site_url'] . 'admin/samborsky_polls/manage/' . $question->id . '/delete/' . $row->a_id;
+						$delete_url = getinfo('site_url') . 'admin/samborsky_polls/manage/' . $question->id . '/delete/' . $row->a_id;
 
 						echo 
 						'<tr class="vote_content">	
@@ -251,7 +251,7 @@
 					</tr>';
 				}
 			?>	
-			</tbody>		
+			</tbody>
 		</table>
 		
 		<div style="padding: 5px; text-align: center;">

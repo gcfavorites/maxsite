@@ -184,8 +184,8 @@ function sp_install(){
 
 function sp_add_options(){
 	
-	mso_add_option('sp_archive_url','/polls-archive/');
-	mso_add_option('show_archives_link',TRUE);
+	mso_add_option('sp_archive_url', 'polls-archive', 'plugins');
+	mso_add_option('show_archives_link', TRUE, 'plugins');
 }
 
 ?>

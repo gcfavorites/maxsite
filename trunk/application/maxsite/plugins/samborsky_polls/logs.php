@@ -14,8 +14,8 @@
 		if( $query->num_rows() ){
 		
 			$row = $query->row();
-			$edit_url = $MSO->config['site_url'] . 'admin/samborsky_polls/manage/' . $q_id;
-						
+			$edit_url = getinfo('site_url') . 'admin/samborsky_polls/manage/' . $q_id;
+
 			echo '<h2>Голосование: <a href="',$edit_url,'">',$row->q_question,'</a></h2>';
 			
 			$CI->db->select('sp_logs.*,sp_answers.a_answer');

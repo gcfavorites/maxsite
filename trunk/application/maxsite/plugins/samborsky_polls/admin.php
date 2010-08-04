@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-	$plugin_url = $MSO->config['site_url'] . 'admin/samborsky_polls/';
+	$plugin_url = getinfo('site_url') . 'admin/samborsky_polls/';
 
 ?>
 
@@ -18,7 +18,7 @@
 <script src="<?= getinfo('plugins_url') ?>samborsky_polls/js/admin.js"></script>
 
 <div class="admin-h-menu">
-	<a href="<?= $plugin_url ?>" class="select">Управление голосованиями</a>&nbsp;|&nbsp;
+	<a href="<?= $plugin_url ?>list" class="select">Управление голосованиями</a>&nbsp;|&nbsp;
 	<a href="<?= $plugin_url ?>manage" class="select">Добавить новое</a>&nbsp;|&nbsp;
 	<a href="<?= $plugin_url ?>settings" class="select">Настройки</a>
 </div>
@@ -28,19 +28,19 @@
 	$seg = mso_segment(3);
 	
 	if( empty($seg) ){
-		require($MSO->config['plugins_dir'] . 'samborsky_polls/list.php');
+		require(getinfo('plugins_dir') . 'samborsky_polls/list.php');
 	}
 	else if( $seg == 'manage' ){
-		require($MSO->config['plugins_dir'] . 'samborsky_polls/manage.php');
+		require(getinfo('plugins_dir') . 'samborsky_polls/manage.php');
 	}
 	else if( $seg == 'list' ){
-		require($MSO->config['plugins_dir'] . 'samborsky_polls/list.php');
+		require(getinfo('plugins_dir') . 'samborsky_polls/list.php');
 	}
 	else if( $seg == 'logs' ){
-		require($MSO->config['plugins_dir'] . 'samborsky_polls/logs.php');
+		require(getinfo('plugins_dir') . 'samborsky_polls/logs.php');
 	}
 	else if( $seg == 'settings' ){
-		require($MSO->config['plugins_dir'] . 'samborsky_polls/settings.php');
+		require(getinfo('plugins_dir') . 'samborsky_polls/settings.php');
 	}
 
 	

@@ -19,7 +19,7 @@
 	// Пагинация
 	$CI->load->library('pagination');
 
-	$config['base_url'] = 	$MSO->config['site_url'] . 'admin/samborsky_polls/list/';
+	$config['base_url'] = 	getinfo('site_url') . 'admin/samborsky_polls/list/';
 	$config['total_rows'] = $CI->db->count_all('sp_questions');
 	$config['per_page'] = '50';
 
@@ -50,9 +50,9 @@
 		
 		foreach( $query->result() as $row ){
 			
-			$edit_url = $MSO->config['site_url'] . 'admin/samborsky_polls/manage/' . $row->q_id;
-			$delete_url = $MSO->config['site_url'] . 'admin/samborsky_polls/list/delete/' . $row->q_id;
-			$logs_url = $MSO->config['site_url'] . 'admin/samborsky_polls/logs/' . $row->q_id;
+			$edit_url = getinfo('site_url') . 'admin/samborsky_polls/manage/' . $row->q_id;
+			$delete_url = getinfo('site_url') . 'admin/samborsky_polls/list/delete/' . $row->q_id;
+			$logs_url = getinfo('site_url') . 'admin/samborsky_polls/logs/' . $row->q_id;
 			
 			$status = $row->q_active ? 'Активно' : 'Закрыто';
 			
