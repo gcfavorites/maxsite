@@ -90,8 +90,8 @@
 
 			$CI->table->add_row("<strong>Всего проголосовало:</strong>&nbsp;{$total}&nbsp;чел");
 			
-			if( mso_get_option('show_archives_link') )
-				$CI->table->add_row('<div align="center"><a href="'.getinfo('siteurl').mso_get_option('sp_archive_url').'">Архивы голосований</a></div>');
+			if( mso_get_option('show_archives_link', 'plugins') )
+				$CI->table->add_row('<div align="center"><a href="'.getinfo('siteurl').mso_get_option('sp_archive_url', 'plugins').'">Архивы голосований</a></div>');
 		
 			$out = $CI->table->generate();
 			
@@ -123,15 +123,15 @@
 			// Куда отправлять POST
 			$ajax_path = getinfo('ajax') . base64_encode('plugins/samborsky_polls/ajax-ajax.php');
 			
-			$results_link = mso_get_option('show_results_link') ? '&nbsp;&nbsp;<a href="javascript: void(0);" onclick="javascript:sp_polls_results('.$this->id.');" class="sp_polls_ajax_link">Результаты</a>' : '';
+			$results_link = mso_get_option('show_results_link', 'plugins') ? '&nbsp;&nbsp;<a href="javascript: void(0);" onclick="javascript:sp_polls_results('.$this->id.');" class="sp_polls_ajax_link">Результаты</a>' : '';
 			
 			$CI->table->add_row(
 				'<input type="hidden" id="sp_ajax_path_'.$this->id.'" value="'.$ajax_path.'">',
 				'<input type="button" value="Проголосовать" onclick="javascript:sp_polls_vote('.$this->id.');">' . $results_link
 			);
 			
-			if( mso_get_option('show_archives_link') )
-				$CI->table->add_row('&nbsp;','<a href="'.getinfo('siteurl').mso_get_option('sp_archive_url').'">Архивы голосований</a>');
+			if( mso_get_option('show_archives_link', 'plugins') )
+				$CI->table->add_row('&nbsp;','<a href="'.getinfo('siteurl').mso_get_option('sp_archive_url', 'plugins').'">Архивы голосований</a>');
 
 			// Генерируем таблицу и форму загрузки
 			$out = $CI->table->generate() . 
@@ -431,7 +431,7 @@
 				foreach( $query->result() as $row ){
 					
 					$CI->table->add_row(
-						'<a href="'. getinfo('siteurl') . mso_get_option('sp_archive_url') .'/'. $row->q_id .'">' . stripslashes($row->q_question) . '</a>',
+						'<a href="'. getinfo('siteurl') . mso_get_option('sp_archive_url', 'plugins') .'/'. $row->q_id .'">' . stripslashes($row->q_question) . '</a>',
 						'<div align="right">' . number_format($row->q_totalvotes,0,' ',' ') . '</div>',
 						'<div align="right">' . number_format($row->q_totalvoters,0,' ',' ') . '</div>',
 						$row->q_active ? 'Активно' : 'Закрыто'

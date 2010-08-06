@@ -21,11 +21,18 @@
 		$arr_ids = array(); // список всех где ON
 		foreach ($f_check_comusers as $id_com=>$val)
 			if ($val) $arr_ids[] = $id_com;
-
+			
 		$CI->db->where_in('comusers_id', $arr_ids);
 
 		if ( $CI->db->delete('comusers') )
 		{
+			// заменим в таблице _comments все комментарии удаленных на анонимов
+			$CI->db->where_in('comments_comusers_id', $arr_ids);
+			$CI->db->update('comments', array('comments_comusers_id' => 0) );		
+			
+			$CI->db->where_in('comments_comusers_id', $arr_ids);
+			$CI->db->update('comments', array('comments_author_name' => t('Аноним', 'admin')) );		
+						
 			mso_flush_cache();
 			echo '<div class="update">' . t('Удалено!') . '</div>';
 		}

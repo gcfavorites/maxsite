@@ -42,7 +42,7 @@
 		if (!$_POST['contact_name']) {
 			$err_name = true;
 			$ok = false;
-			$errors_msg .= '<li>'.t('Не введено имя').'</li>';
+			$errors_msg .= '<li>' . t('Не введено имя') . '</li>';
 		}
 
 		// проверяем мыло
@@ -50,14 +50,14 @@
 		if (!mso_valid_email($_POST['contact_mail'])) {
 			$err_email = true;
 			$ok = false;
-			$errors_msg .= '<li>'.t('Некорректный e-mail').'</li>';
+			$errors_msg .= '<li>' . t('Некорректный e-mail') . '</li>';
 		}
 
 		$_POST['contact_subject'] = trim(mso_xss_clean($_POST['contact_subject']));
 		if (!$_POST['contact_subject']) {
 			$err_subject = true;
 			$ok = false;
-			$errors_msg .= '<li>'.t('Не введена тема письма').'</li>';
+			$errors_msg .= '<li>' . t('Не введена тема письма') . '</li>';
 		}
 
 		// проверяем текст
@@ -65,7 +65,7 @@
 		if (!$_POST['contact_message']) {
 			$err_text = true;
 			$ok = false;
-			$errors_msg .= '<li>'.t('Не введен текст письма').'</li>';
+			$errors_msg .= '<li>' . t('Не введен текст письма') . '</li>';
 		}
 
 		// антиспам
@@ -77,7 +77,7 @@
 		{ // неверный код
 			$err_antispam = true;
 			$ok = false;
-			$errors_msg .= '<li>'.t('Поле «Антиспам» заполнено ошибочно').'</li>';
+			$errors_msg .= '<li>' . t('Поле «Антиспам» заполнено ошибочно') . '</li>';
 		}
 
 		if ($ok) // все ок, отправляем

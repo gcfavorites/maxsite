@@ -51,6 +51,7 @@ function page_views_widget_form($num = 1)
 	// вывод самой формы
 	$CI = & get_instance();
 	$CI->load->helper('form');
+	
 	$CI->db->select('page_type_id, page_type_name');
 	$query = $CI->db->get('mso_page_type');
 	$types = array(0 => ('Все типы'));
@@ -171,7 +172,7 @@ function page_views_widget_custom($options = array(), $num = 1)
 				$out1 = str_replace('[ALLCOUNT]', $page['page_view_count'], $out1);
 
 				$out1 = str_replace('[A]', $link . $page['page_slug']
-						. '" title="'.t('Просмотров в сутки: ') . $page['sutki'] . '">'
+						. '" title="' . t('Просмотров в сутки: ') . $page['sutki'] . '">'
 						, $out1);
 
 				$out1 = str_replace('[/A]', '</a>', $out1);

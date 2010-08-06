@@ -30,7 +30,7 @@
 		<table cellspacing="10">
 			<tr>
 				<td>
-					Ссылка на архив голосований
+					<a href="<?= getinfo('siteurl') . mso_get_option('sp_archive_url', 'plugins', 'polls-archive') ?>" target="_blank">Ссылка</a> на архив голосований (например «polls-archive»)
 					<input type="text" name="sp_archive_url" value="<?= mso_get_option('sp_archive_url', 'plugins', 'polls-archive') ?>" size="100%">
 				</td>
 			</tr>

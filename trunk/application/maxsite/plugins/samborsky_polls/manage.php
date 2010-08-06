@@ -76,7 +76,8 @@
 			
 			$question->update(array('q_totalvotes' => $q_totalvotes));
 			
-			mso_redirect(getinfo('site_url') . 'admin/samborsky_polls/manage/' . $question->id);
+			
+			mso_redirect(getinfo('site_url') . 'admin/samborsky_polls/manage/' . $question->id, true);
 			return true;		
 		}
 		else{
@@ -312,14 +313,15 @@
 		/* ]]> */	
 		</script>
 		
-		<div style="float: left;" id="dateRange" >	
+		
+		<div id="dateRange" >	
 			Начало: 
 			<input type="text" id="beginDate" name="beginDate" value="<?= isset($question) ? date('m/d/Y',$question->data->q_timestamp) : date('m/d/Y') ?>">&nbsp;&nbsp;&nbsp;
 			Окончание: 
 			<input type="text" id="expiryDate" name="expiryDate" value="<?= ( isset($question) && $question->data->q_expiry ) ? date('m/d/Y',$question->data->q_expiry) : date('m/d/Y') ?>">
-		</div>
+		<br><br></div>
 		
-		<div style="float:right;"><input type="checkbox" name="noExpiry" id="noExpiry" <? if( isset($question) && !$question->data->q_expiry ) echo 'checked="true"' ?>>&nbsp;Бессрочное голосование</div>
+		<div><label><input type="checkbox" name="noExpiry" id="noExpiry" <? if( isset($question) && !$question->data->q_expiry ) echo 'checked="true"' ?>>&nbsp;Бессрочное голосование</label></div>
 
 		<? endif ?>
 		

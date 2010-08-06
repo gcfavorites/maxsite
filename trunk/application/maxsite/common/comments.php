@@ -20,6 +20,7 @@ function mso_get_comments($page_id = 0, $r = array())
 	if ( !isset($r['tags_comusers']) )	$r['tags_comusers'] = '<a><p><img><strong><em><i><b><u><s><font><pre><code><blockquote>';
 	if ( !isset($r['anonim_comments']) )	$r['anonim_comments'] = array();
 	if ( !isset($r['anonim_title']) )	$r['anonim_title'] = '';// ' ('. t('анонимно'). ')'; // дописка к имени для анонимов
+	if ( !isset($r['anonim_no_name']) )	$r['anonim_no_name'] = t('Аноним', 'template');// Если не указано имя анонима
 	
 	// если аноним указывает имя с @, то это страница в твиттере - делаем ссылку
 	if ( !isset($r['anonim_twitter']) )	$r['anonim_twitter'] = true; 
@@ -123,6 +124,7 @@ function mso_get_comments($page_id = 0, $r = array())
 			//pr($comment);
 
 			$commentator = 3; // комментатор: 1-комюзер 2-автор 3-аноним
+			
 
 			if ($comment['comusers_id']) // это комюзер
 			{
@@ -145,8 +147,10 @@ function mso_get_comments($page_id = 0, $r = array())
 			}
 			else // просто аноним
 			{
+				if (!$comment['comments_author_name']) $comment['comments_author_name'] = $r['anonim_no_name'];
 				if ($r['anonim_twitter']) // разрешено проверять это твиттер-логин?
 				{
+					
 					if (strpos($comment['comments_author_name'], '@') === 0) // первый символ @
 					{	
 						$lt = substr($comment['comments_author_name'], 1); // вычленим @
@@ -234,7 +238,7 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 	
 	# рассылаем комментарий всем, кто на него подписан
 	mso_email_message_new_comment_subscribe($data);
-
+	
 	# После рассылки смотрим, какие уведомления мы хотим получать.
 	$level = mso_get_option('email_comments_level', 'general', 1);
 	$return = false; //А это потому, что пых не понимает return false; внутри кейсов.
@@ -1341,7 +1345,7 @@ function mso_email_message_new_comment_subscribe($data)
 	    -- [comments_author_ip] => 127.0.0.1 - ip - пока не используется
 	)
 	*/
-
+	
 	# Опция не рассылать подписку.
 	if (!mso_get_option('allow_comments_subscribe', 'general', 1)) return;
 
@@ -1388,7 +1392,7 @@ function mso_email_message_new_comment_subscribe($data)
 			{
 				$data = array_merge($data, array('subscription' => true));  //А здесь для smtp_mail важно знать, чтобы запретить сохранять мыло в файл.
 				$res = mso_mail($comuser['comusers_email'], $subject, $message, $from, $data);
-
+				
 				if (!$res) break; // ошибка отправки почты - рубим цикл
 			}
 		}
