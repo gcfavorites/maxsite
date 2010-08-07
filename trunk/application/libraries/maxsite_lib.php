@@ -7,7 +7,7 @@
 
 class Maxsite_lib 
 {
-	var $version = '0.406';
+	var $version = '0.40';
 	var $config = array();
 	var $data = array();
 	var $hooks = array();
@@ -24,8 +24,6 @@ class Maxsite_lib
 	function Maxsite_lib() 
 	{
 		$CI =& get_instance();
-		
-		
 		
 		$this->config['site_url'] = $CI->config->config['base_url'];
 		$this->config['application_url'] = $this->config['site_url'] . APPPATH;
