@@ -33,10 +33,6 @@ function admin_menu_menu($args = array())
 		$cur_url = implode('/', $cur_url);
 	
 		if (!$cur_url) $cur_url = 'home';
-	
-	# это нафига?
-	#	if ( !mso_hook_present('admin_url_' . $cur_url)) $cur_url = 'home';
-	
 	}
 	else  
 	{

@@ -131,28 +131,28 @@
 
 	<table border="0" width="99%" cellspacing="10">
 		<tr>
-			<td align="right"><label for="contact_name"><?=t('Ваше имя')?><span class="reqtxt">*</span></label></label></td>
-			<td><input name="contact_name" type="text" value="<?=( (isset($_POST['contact_name'])?($_POST['contact_name']):('')) );?>" id="contact_name" style="width: 98%;<?=( ($err_name)?(' border-color: red;'):('') );?>"></td>
+			<td align="right" class="t1"><label for="contact_name"><?=t('Ваше имя')?><span class="reqtxt">*</span></label></label></td>
+			<td class="t2 input-text"><input name="contact_name" type="text" value="<?=( (isset($_POST['contact_name'])?($_POST['contact_name']):('')) );?>" id="contact_name" style="width: 98%;<?=( ($err_name)?(' border-color: red;'):('') );?>"></td>
 		</tr>
 		<tr>
-			<td align="right"><label for="contact_mail"><?=t('E-mail')?><span class="reqtxt">*</span></label></td>
-			<td><input name="contact_mail" type="text" value="<?=( (isset($_POST['contact_mail'])?($_POST['contact_mail']):('')) );?>" id="contact_mail" style="width: 98%;<?=( ($err_email)?(' border-color: red;'):('') );?>"></td>
+			<td align="right" class="t1"><label for="contact_mail"><?=t('E-mail')?><span class="reqtxt">*</span></label></td>
+			<td class="t2 input-text"><input name="contact_mail" type="text" value="<?=( (isset($_POST['contact_mail'])?($_POST['contact_mail']):('')) );?>" id="contact_mail" style="width: 98%;<?=( ($err_email)?(' border-color: red;'):('') );?>"></td>
 		</tr>
 <?php if (mso_get_option('ask_tel', 'templates', '1')) { ?>
 		<tr>
-			<td align="right"><label for="contact_phone"><?=t('Телефон (с кодом города)')?></label></td>
-			<td><input name="contact_phone" type="text" value="<?=( (isset($_POST['contact_phone'])?($_POST['contact_phone']):('')) );?>" id="contact_phone" style="width: 98%;"></td>
+			<td align="right" class="t1"><label for="contact_phone"><?=t('Телефон (с кодом города)')?></label></td>
+			<td class="t2 input-text"><input name="contact_phone" type="text" value="<?=( (isset($_POST['contact_phone'])?($_POST['contact_phone']):('')) );?>" id="contact_phone" style="width: 98%;"></td>
 		</tr>
 <?php } ?>
 <?php if (mso_get_option('ask_site', 'templates', '1')) { ?>
 		<tr>
-			<td align="right"><label for="contact_url"><?=t('Адрес сайта')?></label></td>
-			<td><input name="contact_url" type="text" value="<?=( (isset($_POST['contact_url'])?($_POST['contact_url']):('')) );?>" id="contact_url" style="width: 98%;"></td>
+			<td align="right" class="t1"><label for="contact_url"><?=t('Адрес сайта')?></label></td>
+			<td class="t2 input-text"><input name="contact_url" type="text" value="<?=( (isset($_POST['contact_url'])?($_POST['contact_url']):('')) );?>" id="contact_url" style="width: 98%;"></td>
 		</tr>
 <?php } ?>
 		<tr>
-			<td align="right"><label for="contact_subject"><?=t('Тема')?><span class="reqtxt">*</span></label></td>
-			<td><?php
+			<td align="right" class="t1"><label for="contact_subject"><?=t('Тема')?><span class="reqtxt">*</span></label></td>
+			<td class="t2 input-select"><?php
 $subj = trim(mso_get_option('subj', 'templates', 'Пожелания по сайту_NR_Нашел ошибку на сайте_NR_Подскажите, пожалуйста_NR_Я вас люблю!_NR_Я вас ненавижу..._NR_Я вам пишу, чего же боле...'));
 if (!$subj) echo '<input name="contact_subject" type="text" value="'.( (isset($_POST['contact_subject'])?($_POST['contact_subject']):('')) ).'" id="contact_url" style="width: 98%;'.( ($err_subject)?(' border-color: red;'):('') ).'">';
 else
@@ -177,25 +177,25 @@ else
 ?></td>
 		</tr>
 		<tr>
-			<td align="right" valign="top"><label for="contact_message"><?=t('Сообщение')?><span class="reqtxt">*</span></label></td>
-			<td><textarea name="contact_message" style="width: 98%; height: 200px;<?=( ($err_text)?(' border-color: red;'):('') );?>"><?=( (isset($_POST['contact_message'])?($_POST['contact_message']):('')) );?></textarea></td>
+			<td align="right" valign="top" class="t1"><label for="contact_message"><?=t('Сообщение')?><span class="reqtxt">*</span></label></td>
+			<td class="t2 textarea"><textarea name="contact_message" style="width: 98%; height: 200px;<?=( ($err_text)?(' border-color: red;'):('') );?>"><?=( (isset($_POST['contact_message'])?($_POST['contact_message']):('')) );?></textarea></td>
 		</tr>
 		<tr>
-			<td align="right" valign="top"><label for="contact_antispam"><?=t('Антиспам')?>: <?= $antispam1; ?>+<?= $antispam2; ?>=</label></td>
-			<td><input name="contact_antispam" type="text" value="" id="contact_antispam" style="<?=( ($err_antispam)?('border-color: red;'):('') );?>"><br><?=t('Укажите свой ответ')?><span class="reqtxt">*</span></td>
+			<td align="right" valign="top" class="t1"><label for="contact_antispam"><?=t('Антиспам')?>: <?= $antispam1; ?>+<?= $antispam2; ?>=</label></td>
+			<td class="t2 input-text"><input name="contact_antispam" type="text" value="" id="contact_antispam" style="<?=( ($err_antispam)?('border-color: red;'):('') );?>"><span class="reqtxt-otvet"><?=t('Укажите свой ответ')?></span><span class="reqtxt">*</span></td>
 		</tr>
 <?php if (mso_get_option('ask_copy', 'templates', '1')) { ?>
 		<tr>
-			<td align="right"><?=t('Отправить копию письма на ваш e-mail?')?></td>
-			<td valign="top"><input name="subscribe" value="" <?=( (isset($_POST['subscribe'])?('checked="checked"'):('')) );?> type="checkbox">&nbsp;<?=t('Да')?></td>
+			<td align="right" class="t1"><?=t('Отправить копию письма на ваш e-mail?')?></td>
+			<td valign="top" class="t2 input-checkbox"><input name="subscribe" value="" <?=( (isset($_POST['subscribe'])?('checked="checked"'):('')) );?> type="checkbox">&nbsp;<?=t('Да')?></td>
 		</tr>
 <?php } ?>
 		<tr>
-			<td align="right" colspan="2"><?=t('Поля, помеченные символом <span class="reqtxt">*</span> обязательны для заполнения.')?></td>
+			<td align="right" colspan="2" class="t3"><?=t('Поля, помеченные символом <span class="reqtxt">*</span> обязательны для заполнения.')?></td>
 		</tr>
 		<tr>
-			<td align="right"><input name="submit" type="submit" value=" <?=t('Отправить')?> "></td>
-			<td><input name="clear" type="reset" value=" <?=t('Очистить форму')?> "></td>
+			<td align="right" class="t1 input-submit"><input name="submit" type="submit" value="<?=t('Отправить')?>"></td>
+			<td class="t2 input-clear"><input name="clear" type="reset" value="<?=t('Очистить форму')?>"></td>
 		</tr>
 	</table>
 </form>
