@@ -106,7 +106,7 @@
 			}
 
 			if ($form_hide) echo '<p class="comment-ok"><h2>'. t('Ваше сообщение отправлено!'). '</h2></p><p>'
-					. str_replace("\n", '<br>', htmlspecialchars($subject. "\n" . $message))
+					. str_replace("\n", '<br>', htmlspecialchars($subject. "\n" . $text_email))
 					. '</p>';
 			//$form_hide = true;
 		}

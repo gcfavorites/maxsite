@@ -53,7 +53,7 @@ function page_views_widget_form($num = 1)
 	$CI->load->helper('form');
 	
 	$CI->db->select('page_type_id, page_type_name');
-	$query = $CI->db->get('mso_page_type');
+	$query = $CI->db->get('page_type');
 	$types = array(0 => ('Все типы'));
 	if ($query->num_rows() > 0)
 	{

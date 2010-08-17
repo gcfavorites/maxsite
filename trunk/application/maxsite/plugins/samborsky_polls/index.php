@@ -111,11 +111,15 @@ function samborsky_polls_archive(){
 }
 
 
-function samborsky_polls_archive_404(){
-	require_once(getinfo('template_dir') . 'main-start.php');
-	echo samborsky_polls_archive();
-	require_once(getinfo('template_dir').'main-end.php');
-	return true;
+function samborsky_polls_archive_404($args = array())
+{
+	if (mso_segment(1) == mso_get_option('sp_archive_url', 'plugins', 'polls-archive'))
+	{
+		require_once(getinfo('template_dir') . 'main-start.php');
+		echo samborsky_polls_archive();
+		require_once(getinfo('template_dir').'main-end.php');
+	}
+	return $args;
 }
 
 
