@@ -7,8 +7,11 @@
  */
 
 # функция автоподключения плагина
-function samborsky_polls_autoload($args = array()){
-	if( is_type('admin') ){
+function samborsky_polls_autoload($args = array())
+{
+
+	if( is_type('admin') )
+	{
 		// хук на админку
 		mso_hook_add('admin_init','samborsky_polls_init');
 	}

@@ -11,6 +11,8 @@
 <?php
 
 	echo mso_get_option('prew_contact', 'templates', '');
+	
+	if ($f = mso_page_foreach('contact-do')) require($f); // подключаем кастомный вывод
 
 	$form_hide = false; //отобразить форму
 	$ok = true;
@@ -203,6 +205,8 @@ else
 <?php endif; //if ( !$form_hide )
 
 	echo mso_get_option('post_contact', 'templates', '');
+	
+	if ($f = mso_page_foreach('contact-posle')) require($f); // подключаем кастомный вывод
 
 echo NR . '</div><!-- class="type type_contact" -->' . NR;
 
