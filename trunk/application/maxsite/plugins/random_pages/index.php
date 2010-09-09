@@ -13,7 +13,7 @@ function random_pages_autoload($args = array())
 
 # функция выполняется при деинсталяции плагина
 function random_pages_uninstall($args = array())
-{	
+{
 	mso_delete_option_mask('random_pages_widget_', 'plugins'); // удалим созданные опции
 	return $args;
 }
@@ -45,6 +45,7 @@ function random_pages_widget_form($num = 1)
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['count']) ) $options['count'] = 3;
 	if ( !isset($options['page_type']) ) $options['page_type'] = 'blog';
+	if ( !isset($options['page_content']) ) $options['page_content'] = false;
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -55,6 +56,8 @@ function random_pages_widget_form($num = 1)
 	$form .= '<p><div class="t150">' . t('Количество:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'count', 'value'=>$options['count'] ) ) ;
 	
 	$form .= '<p><div class="t150">' . t('Тип страниц:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'page_type', 'value'=>$options['page_type'] ) ) ;
+	
+	$form .= '<p><div class="t150">' . t('Показывать содержимое:', 'plugins') . '</div> '. form_checkbox( array( 'name'=>$widget . 'page_content', 'checked'=>$options['page_content'], 'value'=>'page_content' ) ) ;
 	
 	return $form;
 }
@@ -73,6 +76,7 @@ function random_pages_widget_update($num = 1)
 	$newoptions['header'] = mso_widget_get_post($widget . 'header');
 	$newoptions['count'] = mso_widget_get_post($widget . 'count');
 	$newoptions['page_type'] = mso_widget_get_post($widget . 'page_type');
+	$newoptions['page_content'] = mso_widget_get_post($widget . 'page_content');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -85,10 +89,12 @@ function random_pages_widget_custom($options = array(), $num = 1)
 	if ( !isset($options['header']) ) $options['header'] = '';
 	if ( !isset($options['count']) ) $options['count'] = 3;
 	if ( !isset($options['page_type']) ) $options['page_type'] = 'blog';
+	if ( !isset($options['page_content']) ) $options['page_content'] = false;
 	
 	$CI = & get_instance();
 	
-	$CI->db->select('page_slug, page_title');
+	if (!$options['page_content']) $CI->db->select('page_slug, page_title');
+		else $CI->db->select('page_slug, page_content');
 	//$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
 	$CI->db->where('page_date_publish < ', 'NOW()', false);
 	$CI->db->where('page_status', 'publish');
@@ -104,18 +110,30 @@ function random_pages_widget_custom($options = array(), $num = 1)
 	{	
 		$pages = $query->result_array();
 		
-		$link = '<a href="' . getinfo('siteurl') . 'page/';
-		$out .= '<ul class="is_link random_pages">' . NR;
-		foreach ($pages as $page) 
+		if (!$options['page_content'])
 		{
-			$out .= '<li>' . $link . $page['page_slug'] . '">' . $page['page_title'] . '</a>' . '</li>' . NR;
+			$link = '<a href="' . getinfo('siteurl') . 'page/';
+			$out .= '<ul class="is_link random_pages">' . NR;
+			foreach ($pages as $page) 
+			{
+				$out .= '<li>' . $link . $page['page_slug'] . '">' . $page['page_title'] . '</a>' . '</li>' . NR;
+			}
+			$out .= '</ul>' . NR;
+		}
+		else
+		{
+			$out .= '<div class="random_pages">' . NR;
+			foreach ($pages as $page) 
+			{
+				$out .= '<div class="page_content">' . mso_hook('content', $page['page_content']) . '</div>' . NR;
+			}
+			$out .= '</div>' . NR;
 		}
 		
-		$out .= '</ul>' . NR;
 		if ($options['header']) $out = $options['header'] . $out;
 	}
 	
-	return $out;	
+	return $out;
 }
 
-?>
+# End of file

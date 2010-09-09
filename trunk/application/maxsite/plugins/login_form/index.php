@@ -46,6 +46,7 @@ function login_form_widget($num = 1)
 		$widget = 'login_form_widget_' . $num; // имя для опций = виджет + номер
 		$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 		// заменим заголовок, чтобы был в  h2 class="box"
+		if ( isset($options['after_form']) and $options['after_form'] ) $out = str_replace('</form>', $options['after_form'] . '</form>', $out);;
 		if ( isset($options['header']) and $options['header'] ) $out = '<h2 class="box"><span>' . $options['header'] . '</span></h2>' . $out;
 	}
 	
@@ -70,6 +71,10 @@ function login_form_widget_form($num = 1)
 	
 	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
+	$form .= '<p><div class="t150">' . t('После формы:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'after_form', 'value'=>$options['after_form'] ) ) ;
+	
+	$form .= '<p><div class="t150">&nbsp;</div> '. t('Например, ссылка на регистрацию', 'plugins') ;
+	
 	return $form;
 }
 
@@ -85,9 +90,10 @@ function login_form_widget_update($num = 1)
 	
 	# обрабатываем POST
 	$newoptions['header'] = mso_widget_get_post($widget . 'header');
+	$newoptions['after_form'] = mso_widget_get_post($widget . 'after_form');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
 }
 
-?>
+# End of file
