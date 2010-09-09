@@ -1264,12 +1264,13 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 	$all_cat = mso_cat_array_single();
 
 	$out = '';
+	if ($type) $type .= '/';
 	foreach ($cat as $id)
 	{
 		if ($link)
 			$out .=  '<a href="'
 					. $MSO->config['site_url']
-					. $type . '/'
+					. $type
 					. $all_cat[$id]['category_slug']
 					. '">'
 					. $all_cat[$id]['category_name']
@@ -1293,12 +1294,13 @@ function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', 
 	if (!$tags) return '';
 
 	$out = '';
+	if ($type) $type .= '/';
 	foreach ($tags as $tag)
 	{
 		if ($link)
 			$out .=  '<a href="'
 					. $MSO->config['site_url']
-					. $type . '/'
+					. $type
 					. urlencode($tag)
 					. '" rel="tag">'
 					. $tag
@@ -1352,8 +1354,9 @@ function mso_page_title($page_slug = '', $page_title = 'no title', $do = '<h1>',
 
 	if (!$page_slug) return '';
 
+	if ($type) $type .= '/';
 	if ($link)
-		$out = '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '" title="' . mso_strip($page_title) . '">' . $page_title . '</a>';
+		$out = '<a href="' . $MSO->config['site_url'] . $type . $page_slug . '" title="' . mso_strip($page_title) . '">' . $page_title . '</a>';
 	else
 		$out = $page_title;
 
@@ -1369,8 +1372,9 @@ function mso_page_feed($page_slug = '', $page_title = 'Подписаться', 
 
 	if (!$page_slug) return '';
 
+	if ($type) $type .= '/';
 	if ($link)
-		$out = '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '/feed">' . t($page_title) . '</a>';
+		$out = '<a href="' . $MSO->config['site_url'] . $type . $page_slug . '/feed">' . t($page_title) . '</a>';
 	else
 		$out = $page_title;
 
@@ -1456,7 +1460,8 @@ function mso_page_meta($meta = '', $page_meta = array(), $do = '', $posle = '', 
 function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $title = 'Обсудить', $do = '', $posle = '', $echo = true, $type = 'page')
 {
 	global $MSO;
-	
+	if ($type) $type .= '/';
+
 	if (is_array($page_comment_allow)) // первый элемент - массив, значит принимаем его значения - остальное игнорируем
 	{
 		$def = array(
@@ -1473,6 +1478,11 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		$r = array_merge($def, $page_comment_allow); // объединяем дефолт с входящим
 
 		if (!$r['page_slug']) return ''; // не указан slug - выходим
+		if ( isset($r['type']) )
+		{
+			if ($r['type']) $type = $r['type'] . '/';
+				else $type = false;
+		}
 
 		$out = '';
 
@@ -1480,7 +1490,7 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		{
 			if ( $r['page_count_comments'] ) // но если уже есть комментарии, то выводи строчку title_no_link
 			{
-				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
+				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type
 						. $r['page_slug'] . '#comments">' . $r['title_no_link'] . '</a>' . $r['posle'];
 			}
 		}
@@ -1492,13 +1502,13 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 				// если запрещены комментарии от всех, если их нет, не выводим ссылку ОБСУДИТЬ
 				if (mso_get_option('allow_comment_comusers', 'general', '1') or mso_get_option('allow_comment_anonim', 'general', '1') ) 
 				{
-					$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
+					$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type
 						. $r['page_slug'] . '#comments">' . t($r['title_no_comments']) . '</a>' . $r['posle'];
 				}
 			}
 			else
-				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type . '/'
-						. $r['page_slug'] . '#comments">' . t($r['title']) . '</a>' . $r['posle'];			
+				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type
+						. $r['page_slug'] . '#comments">' . t($r['title']) . '</a>' . $r['posle'];
 		}
 		
 		
@@ -1510,7 +1520,7 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		if (!$page_slug) return '';
 		if (!$page_comment_allow) return '';
 
-		$out = $do . '<a href="' . $MSO->config['site_url'] . $type . '/' . $page_slug . '#comments">' . t($title) . '</a>' . $posle;
+		$out = $do . '<a href="' . $MSO->config['site_url'] . $type . $page_slug . '#comments">' . t($title) . '</a>' . $posle;
 		if ($echo) echo $out;
 			else return $out;
 	}
@@ -1522,13 +1532,13 @@ function  mso_page_author_link($users_nik = '', $page_id_autor = '', $do = '', $
 	global $MSO;
 
 	if (!$users_nik or !$page_id_autor) return '';
-
+	if ($type) $type .= '/';
 	$out = '';
 
 	if ($link)
 		$out .=  '<a href="'
 				. $MSO->config['site_url']
-				. $type . '/'
+				. $type
 				. $page_id_autor
 				. '">'
 				. $users_nik
