@@ -17,6 +17,9 @@ global $page;
 function mso_get_pages($r = array(), &$pag)
 {
 	global $MSO;
+	
+	$CI = & get_instance();
+	
 	if ( !isset($r['limit']) )			$r['limit'] = 7; // сколько отдавать страниц
 	else
 	{
@@ -112,6 +115,27 @@ function mso_get_pages($r = array(), &$pag)
 		$r['time_zone'] = $time_zone;
 	}
 	
+	// если указано учитывать время публикации, то выполняем запрос в котором получаем
+	// все записи, которые будущие и которые следует исключить из выборки
+	// сей алгоритм связан с оптимизацией запросов к MySQL и значительным (очень!) ускорением
+	// сложного select без использования NOW()
+	if ($r['date_now'])
+	{
+		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
+		$CI->db->where('page_date_publish > ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		$query = $CI->db->get('page');
+		if ($query and $query->num_rows() > 0) 
+		{
+			$page_id_date_now = $query->result_array();
+			$r['page_id_date_now'] = '';
+			foreach ($page_id_date_now as $key=>$val)
+			{
+				$r['page_id_date_now'] .= $val['page_id'] . ',';
+			}
+		}
+		else $r['page_id_date_now'] = false; // нет записей
+	}
+	else $r['page_id_date_now'] = false; // не нужно учитывать время
 	
 	// учитывать ли опцию публикация RSS в странице -
 	// если true, то отдаются только те, которые отмечены с этой опцией, false - все
@@ -157,7 +181,7 @@ function mso_get_pages($r = array(), &$pag)
 	// $r_restore = $r; 
 	$r = mso_hook('mso_get_pages', $r);
 	
-	$CI = & get_instance();
+	
 
 	# для каждого типа страниц строится свой sql-запрос
 	# мы оформляем его в $CI, а здесь только выполняем $CI->db->get();
@@ -186,15 +210,22 @@ function mso_get_pages($r = array(), &$pag)
 	else return array();
 	
 	// сам запрос и его обработка
-	$query = $CI->db->get();
-
+	// $query = $CI->db->get();
+	
+	// нужно добавить SQL_BUFFER_RESULT
+	// поскольку CodeIgniteryt позволяет добавлять его явно, придется извращаться
+	
+	$query_sql = str_replace('SELECT ', 'SELECT SQL_BUFFER_RESULT ', $CI->db->_compile_select());
+	$query = $CI->db->query($query_sql);
+	$CI->db->_reset_select();
+	
 	// восстанавливать после запроса???
 	// $r = mso_hook('mso_get_pages_restore', $r_restore);
 
 	if ($query and $query->num_rows() > 0)
 	{
 		$pages = $query->result_array();
-
+	
 		if (is_type('page'))
 		{
 			// проверяем статус публикации - если page_status <> publish то смотрим автора и сравниваем с текущим юзером
@@ -364,7 +395,7 @@ function mso_get_pages($r = array(), &$pag)
 		if ($r['get_page_meta_tags'])
 		{
 			// по этому же принципу получаем все метки
-			$CI->db->select('meta_id_obj, meta_key, meta_value');
+			$CI->db->select('SQL_BUFFER_RESULT `meta_id_obj`, `meta_key`, `meta_value`', false);
 			$CI->db->where( array (	'meta_table' => 'page' ) );
 			$CI->db->where_in('meta_id_obj', $all_page_id);
 			$CI->db->order_by($r['meta_order'], $r['meta_order_asc']); // сортировка мета
@@ -383,7 +414,7 @@ function mso_get_pages($r = array(), &$pag)
 		// нужно получить колво комментариев к записям
 		if ($r['get_page_count_comments'])
 		{
-			$CI->db->select('comments_page_id, COUNT(comments_id) AS page_count_comments');
+			$CI->db->select('SQL_BUFFER_RESULT `comments_page_id`, COUNT(`comments_id`) AS `page_count_comments`', false);
 			$CI->db->where_in('comments_page_id', $all_page_id);
 			$CI->db->where('comments_approved', '1');
 			$CI->db->group_by('comments_page_id');
@@ -470,14 +501,16 @@ function _mso_sql_build_home($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('page.page_id');
+		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
 		$CI->db->from('page');
 
 		if ($r['page_status']) $CI->db->where('page.page_status', $r['page_status']);
 
-		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		// if ($r['date_now']) 
+		//	$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
+		if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+	
 		if ($r['type']) 
 		{
 			if (is_array($r['type'])) $CI->db->where_in('page_type.page_type_name', $r['type']);
@@ -560,9 +593,9 @@ function _mso_sql_build_home($r, &$pag)
 			else $CI->db->where('page_type_name', $r['type']);
 	}
 	
-	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
-			
+	// $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+	if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+	
 	if ($r['only_feed']) $CI->db->where('page_feed_allow', '1');
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
@@ -629,8 +662,8 @@ function _mso_sql_build_page($r, &$pag)
 
 	if (!is_login())
 	{
-		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 		
 	}
 	
@@ -684,7 +717,10 @@ function _mso_sql_build_category($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('page.page_id');
+		//$CI->db->select('page.page_id');
+		
+		$CI->db->select('SQL_BUFFER_RESULT ' . $CI->db->dbprefix('page') . '.`page_id`', false);
+		
 		$CI->db->from('page');
 
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
@@ -695,8 +731,9 @@ function _mso_sql_build_category($r, &$pag)
 				else $CI->db->where('page_type_name', $r['type']);
 		}
 
-		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		
+		if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
 		
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
@@ -750,8 +787,8 @@ function _mso_sql_build_category($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+	if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+	// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
 
@@ -821,12 +858,13 @@ function _mso_sql_build_tag($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('page.page_id');
+		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+		
+		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 
 		if ($r['type']) 
 		{
@@ -877,9 +915,9 @@ function _mso_sql_build_tag($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
-			
+	//if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+	if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+		
 	if ($r['type']) 
 	{
 		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
@@ -949,12 +987,12 @@ function _mso_sql_build_archive($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('page_id');
+		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
 			
 
 		if ($r['type']) 
@@ -1006,9 +1044,9 @@ function _mso_sql_build_archive($r, &$pag)
 
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
-	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
-
+	// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+	if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+	
 	if ($r['type']) 
 	{
 		if (is_array($r['type'])) $CI->db->where_in('page_type_name', $r['type']);
@@ -1051,7 +1089,7 @@ function _mso_sql_build_search($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('page_id');
+		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
@@ -1061,8 +1099,8 @@ function _mso_sql_build_search($r, &$pag)
 				else $CI->db->where('page_type_name', $r['type']);
 		}
 
-		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
 
 		if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
@@ -1103,9 +1141,9 @@ function _mso_sql_build_search($r, &$pag)
 
 	$CI->db->from('page');
 
-	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
-
+	// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+	if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+	
 	if ($r['page_id_autor']) $CI->db->where('page.page_id_autor', $r['page_id_autor']);
 
 	// like делаем свой
@@ -1157,7 +1195,7 @@ function _mso_sql_build_author($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('page.page_id');
+		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
 		$CI->db->from('page');
 
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
@@ -1168,9 +1206,9 @@ function _mso_sql_build_author($r, &$pag)
 				else $CI->db->where('page_type_name', $r['type']);
 		}
 
-		if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
-
+		// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+		if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+		
 		$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 
 		$CI->db->where('page.page_id_autor', $id);
@@ -1208,9 +1246,9 @@ function _mso_sql_build_author($r, &$pag)
 	$CI->db->from('page');
 	if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
-	if ($r['date_now']) 
-			$CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
-
+	// if ($r['date_now']) $CI->db->where('page_date_publish < ', 'DATE_ADD(NOW(), INTERVAL "' . $r['time_zone'] . '" HOUR_MINUTE)', false);
+	if ($r['date_now'] and $r['page_id_date_now']) $CI->db->where_not_in('page.page_id', $r['page_id_date_now']);
+	
 	if ($r['only_feed']) $CI->db->where('page.page_feed_allow', '1');
 
 
