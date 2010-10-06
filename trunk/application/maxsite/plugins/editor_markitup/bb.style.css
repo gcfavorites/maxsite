@@ -2,11 +2,7 @@
 // markItUp!
 // By Jay Salvat - http://markitup.jaysalvat.com/
 // ------------------------------------------------------------------*/
-.bbcode .bold a	{background-image:url(images/bold.png); }
-.bbcode .italic a {background-image:url(images/italic.png); }
-.bbcode .underline a {background-image:url(images/underline.png); }
 
-.bbcode .stroke a {background-image:url(images/stroke.png); }
 
 .bbcode .picture a {background-image:url(images/picture.png); }
 .bbcode .link a	{background-image:url(images/link.png); }
@@ -57,8 +53,18 @@
 .bbcode .h3 a { background-image:url(images/h3.png); }
 .bbcode .h4 a { background-image:url(images/h4.png); }
 .bbcode .h5 a { background-image:url(images/h5.png); }
+.bbcode .h6 a { background-image:url(images/h6.png); }
 .bbcode .cut a { background-image:url(images/cut.png); }
 .bbcode .flash a { background-image:url(images/flash.png); }
 .bbcode .audio a { background-image:url(images/audio.png); }
+
+.bbcode .separator a { background-image:url(images/separator.png); }
+.bbcode .paragraph a { background-image:url(images/paragraph.png); }
+
+.bbcode .bold a	{background-image:url(images/bold.png); }
+.bbcode .italic a {background-image:url(images/italic.png); }
+.bbcode .underline a {background-image:url(images/underline.png); }
+.bbcode .stroke a {background-image:url(images/stroke.png); }
+
 
 .bbcode .add a { background-image:url(images/add.png); }

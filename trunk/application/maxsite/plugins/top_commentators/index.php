@@ -110,7 +110,11 @@ function top_commentators_widget_custom($options = array(), $num = 1)
     $CI->db->from('mso_comments');
     $CI->db->join('mso_comusers', 'mso_comusers.comusers_id = mso_comments.comments_comusers_id');
     $CI->db->limit($options['commentators_cnt']);
+    
+    
     $CI->db->where('comments_date >', date('Y-m-d H:i:s',time()-$options['days']*24*60*60));
+    
+    
     $CI->db->where('comments_approved', '1');
     $CI->db->where('comusers_activate_string', 'comusers_activate_key',false);
     $CI->db->group_by('comusers_nik');

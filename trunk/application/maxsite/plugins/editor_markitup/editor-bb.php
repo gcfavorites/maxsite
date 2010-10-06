@@ -2,18 +2,14 @@
 
 <?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/bb.js"></script>'; ?>
 <?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/jquery.markitup.js"></script>'; ?>
-<?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/jquery.markitup.pack.js"></script>'; ?>
-
 <?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/style.css" />'; ?>
 <?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/bb.style.css" />'; ?>
 
 <script language="javascript">
-$(document).ready(function()	{
+$(document).ready(function() {
     $('#f_content').markItUp(myBbcodeSettings);
-
 });
 </script>
-
 
 <form method="post" <?= $editor_config['action'] ?> enctype="multipart/form-data">
 <?= $editor_config['do'] ?>

@@ -41,12 +41,12 @@ function editor_markitup($args = array())
 	}
 
 	# Приведение строк с <br> в первозданный вид
-	$editor_config['content'] = preg_replace('"&lt;br\s?/?&gt;"i',"\n",$editor_config['content']);
-	$editor_config['content'] = preg_replace('"&lt;br&gt;"i',"\n",$editor_config['content']);
+	$editor_config['content'] = preg_replace('"&lt;br\s?/?&gt;"i', "\n", $editor_config['content']);
+	$editor_config['content'] = preg_replace('"&lt;br&gt;"i', "\n", $editor_config['content']);
 
 	if (isset($options['editor']))
 		$editor_type = $options['editor'] == 'BB-CODE' ? 'editor-bb.php' : 'editor.php';
-	else $editor_type = 'editor.php';
+	else $editor_type = 'editor-bb.php';
 	
 	require($editor_config['dir'] . $editor_type);
 }
@@ -60,7 +60,7 @@ function editor_markitup_mso_options()
 							'name' => 'Редактор', 
 							'description' => 'Выберите тип редактора',
 							'values' => 'HTML # BB-CODE', 
-							'default' => 'HTML'
+							'default' => 'BB-CODE'
 						),	
 			)
 	);

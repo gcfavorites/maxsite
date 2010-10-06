@@ -1475,8 +1475,9 @@ function mso_page_meta($meta = '', $page_meta = array(), $do = '', $posle = '', 
 function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $title = 'Обсудить', $do = '', $posle = '', $echo = true, $type = 'page')
 {
 	global $MSO;
+	
 	if ($type) $type .= '/';
-
+	
 	if (is_array($page_comment_allow)) // первый элемент - массив, значит принимаем его значения - остальное игнорируем
 	{
 		$def = array(
@@ -1493,11 +1494,6 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		$r = array_merge($def, $page_comment_allow); // объединяем дефолт с входящим
 
 		if (!$r['page_slug']) return ''; // не указан slug - выходим
-		if ( isset($r['type']) )
-		{
-			if ($r['type']) $type = $r['type'] . '/';
-				else $type = false;
-		}
 
 		$out = '';
 
@@ -1522,8 +1518,8 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 				}
 			}
 			else
-				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type
-						. $r['page_slug'] . '#comments">' . t($r['title']) . '</a>' . $r['posle'];
+				$out = $r['do'] . '<a href="' . $MSO->config['site_url'] . $type 
+						. $r['page_slug'] . '#comments">' . t($r['title']) . '</a>' . $r['posle'];			
 		}
 		
 		
@@ -1547,10 +1543,13 @@ function  mso_page_author_link($users_nik = '', $page_id_autor = '', $do = '', $
 	global $MSO;
 
 	if (!$users_nik or !$page_id_autor) return '';
-	if ($type) $type .= '/';
+
 	$out = '';
 
 	if ($link)
+	{
+		if ($type) $type .= '/';
+		
 		$out .=  '<a href="'
 				. $MSO->config['site_url']
 				. $type
@@ -1558,6 +1557,7 @@ function  mso_page_author_link($users_nik = '', $page_id_autor = '', $do = '', $
 				. '">'
 				. $users_nik
 				. '</a>';
+	}
 	else
 		$out .= $users_nik;
 

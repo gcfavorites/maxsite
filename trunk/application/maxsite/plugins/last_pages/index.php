@@ -134,7 +134,8 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="last-pages"><ul class="is_link">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</ul></div>';
 
-/*
+
+
 	$cache_key = 'last_pages_widget'. serialize($arg) . $num;
 	$k = mso_get_cache($cache_key);
 	if ($k) // да есть в кэше
@@ -143,7 +144,8 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 		$k = str_replace( '<a href="' . $current_url . '">', '<a href="' . $current_url . '" class="current_url">', $k);
 		return $k;
 	}
-*/
+	
+
 	$arg['exclude_cat'] = mso_explode($arg['exclude_cat']); // рубрики из строки в массив
 	$arg['include_cat'] = mso_explode($arg['include_cat']); // рубрики из строки в массив
 
@@ -263,7 +265,7 @@ function last_pages_widget_custom($arg = array(), $num = 1)
 
 		$out = $arg['header'] . $arg['block_start'] . NR . $out . $arg['block_end'];
 
-//		mso_add_cache($cache_key, $out); // сразу в кэш добавим
+		mso_add_cache($cache_key, $out); // сразу в кэш добавим
 
 		// отметим текущую рубрику. Поскольку у нас к кэше должен быть весь список и не делать кэш для каждого url
 		// то мы просто перед отдачей заменяем текущий url на url с li.current_url

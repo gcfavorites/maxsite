@@ -121,8 +121,12 @@ function samborsky_polls_archive_404($args = array())
 		require_once(getinfo('template_dir') . 'main-start.php');
 		echo samborsky_polls_archive();
 		require_once(getinfo('template_dir').'main-end.php');
+		
+		# по хуку custom_page_404 нужно возвращать true, если не требуется обработка по page_404
+		return true; 
 	}
-	return $args;
+	
+	return $args; 
 }
 
 
