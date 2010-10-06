@@ -13,11 +13,21 @@ function login_form_autoload($args = array())
 	mso_register_widget('login_form_widget', t('Форма логина', 'plugins')); 
 }
 
+# функция выполняется при деинсталяции плагина
+function login_form_uninstall($args = array())
+{	
+	mso_delete_option_mask('login_form_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция, которая берет настройки из опций виджетов
 function login_form_widget($num = 1) 
 {
 	$out = '';
+	
+	$widget = 'login_form_widget_' . $num; // имя для опций = виджет + номер
+	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
+		
 	if (is_login())
 	{
 		$out = '<p><strong>' . t('Привет,', 'plugins') . ' ' . getinfo('users_nik') . '!</strong><br>
@@ -38,15 +48,15 @@ function login_form_widget($num = 1)
 	}
 	else
 	{
-		$out = mso_login_form(array( 'login'=>t('Логин (email):', 'plugins') . ' ', 'password'=> t('Пароль:', 'plugins') . ' ', 'submit'=>''), getinfo('siteurl') . mso_current_url(), false);
+		$after_form = (isset($options['after_form'])) ? $options['after_form'] : '';
+
+		$out = mso_login_form(array( 'login'=>t('Логин (email):', 'plugins') . ' ', 'password'=>t('Пароль:', 'plugins') . ' ', 'submit'=>'', 'form_end'=>$after_form ), getinfo('siteurl') . mso_current_url(), false);
 	}
 	
 	if ($out)
 	{
-		$widget = 'login_form_widget_' . $num; // имя для опций = виджет + номер
-		$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
-		// заменим заголовок, чтобы был в  h2 class="box"
-		if ( isset($options['after_form']) and $options['after_form'] ) $out = str_replace('</form>', $options['after_form'] . '</form>', $out);;
+		
+		
 		if ( isset($options['header']) and $options['header'] ) $out = '<h2 class="box"><span>' . $options['header'] . '</span></h2>' . $out;
 	}
 	
@@ -64,6 +74,7 @@ function login_form_widget_form($num = 1)
 	$options = mso_get_option($widget, 'plugins', array());
 	
 	if ( !isset($options['header']) ) $options['header'] = '';
+	if ( !isset($options['after_form']) ) $options['after_form'] = '';
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -71,7 +82,7 @@ function login_form_widget_form($num = 1)
 	
 	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
 	
-	$form .= '<p><div class="t150">' . t('После формы:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'after_form', 'value'=>$options['after_form'] ) ) ;
+	$form .= '<p><div class="t150">' . t('Текст после формы:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'after_form', 'value'=>$options['after_form'] ) ) ;
 	
 	$form .= '<p><div class="t150">&nbsp;</div> '. t('Например, ссылка на регистрацию', 'plugins') ;
 	

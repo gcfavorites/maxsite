@@ -585,6 +585,7 @@ function _mso_sql_build_home($r, &$pag)
 
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
+	$CI->db->group_by('page.page_id');
 
 	if (!$r['no_limit'])
 	{
@@ -648,7 +649,7 @@ function _mso_sql_build_page($r, &$pag)
 	$CI->db->join('users', 'users.users_id = page.page_id_autor');
 	$CI->db->join('page_type', 'page_type.page_type_id = page.page_type_id');
 	$CI->db->limit(1);
-	
+
 	if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 }
 
@@ -767,6 +768,7 @@ function _mso_sql_build_category($r, &$pag)
 
 	$CI->db->join('cat2obj', 'cat2obj.page_id = page.page_id');
 	$CI->db->join('category', 'cat2obj.category_id = category.category_id');
+	
 
 	if ($categories)
 	{
@@ -787,7 +789,10 @@ function _mso_sql_build_category($r, &$pag)
 			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
 
 	$CI->db->order_by($r['order'], $r['order_asc']);
+	$CI->db->group_by('page.page_id');
 
+	//_pr(_sql());
+	
 	if (!$r['no_limit'])
 	{
 		if ($pag and $offset) $CI->db->limit($r['limit'], $offset);
@@ -1264,10 +1269,12 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 	$all_cat = mso_cat_array_single();
 
 	$out = '';
-	if ($type) $type .= '/';
 	foreach ($cat as $id)
 	{
 		if ($link)
+		{
+			if ($type) $type .= '/';
+			
 			$out .=  '<a href="'
 					. $MSO->config['site_url']
 					. $type
@@ -1275,6 +1282,7 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 					. '">'
 					. $all_cat[$id]['category_name']
 					. '</a>   ';
+		}
 		else
 			$out .= $all_cat[$id]['category_name'] . '   ';
 	}
@@ -1294,10 +1302,12 @@ function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', 
 	if (!$tags) return '';
 
 	$out = '';
-	if ($type) $type .= '/';
 	foreach ($tags as $tag)
 	{
 		if ($link)
+		{
+			if ($type) $type .= '/';
+			
 			$out .=  '<a href="'
 					. $MSO->config['site_url']
 					. $type
@@ -1305,6 +1315,7 @@ function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', 
 					. '" rel="tag">'
 					. $tag
 					. '</a>   ';
+		}
 		else
 			$out .=  $tag . '   ';
 	}
@@ -1354,9 +1365,11 @@ function mso_page_title($page_slug = '', $page_title = 'no title', $do = '<h1>',
 
 	if (!$page_slug) return '';
 
-	if ($type) $type .= '/';
 	if ($link)
+	{
+		if ($type) $type .= '/';
 		$out = '<a href="' . $MSO->config['site_url'] . $type . $page_slug . '" title="' . mso_strip($page_title) . '">' . $page_title . '</a>';
+	}
 	else
 		$out = $page_title;
 
@@ -1372,9 +1385,11 @@ function mso_page_feed($page_slug = '', $page_title = 'Подписаться', 
 
 	if (!$page_slug) return '';
 
-	if ($type) $type .= '/';
 	if ($link)
+	{
+		if ($type) $type .= '/';
 		$out = '<a href="' . $MSO->config['site_url'] . $type . $page_slug . '/feed">' . t($page_title) . '</a>';
+	}
 	else
 		$out = $page_title;
 
@@ -1569,7 +1584,7 @@ if ( !function_exists('get_total_days') )
 
 
 # Функции которые выполняют роль подсчета количества прочтения записи
-# первая функция, проверяет из кука значение массива с текущим url
+# первая функция, проверяет из куки значение массива с текущим url
 # если номера не совпадают, то функция устанавливает значение прочтений больше на 1
 # если совпадают, значит запись уже была прочитана с этого компа
 # если нужно убрать уникальность и учитывать все хиты, то $unique = false
@@ -1677,7 +1692,7 @@ function mso_page_map($page_id = 0, $page_id_parent = 0)
 		$CI->db->where('page_id', $page_id);
 		$CI->db->where('page_id_parent', '0');
 		$CI->db->where('page_status', 'publish');
-		$CI->db->where('page_date_publish <', date('Y-m-d H:i:s'));
+		$CI->db->where('page_date_publish < ', date('Y-m-d H:i:s'));
 		// $CI->db->where('page_date_publish <', 'NOW');
 
 		$CI->db->or_where('page_id', $page_id_parent);

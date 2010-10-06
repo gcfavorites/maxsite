@@ -412,21 +412,28 @@
 
 
 	// получаем все страницы, для того чтобы отобразить их в паренте
-	$CI->db->select('page_id, page_title');
-	$CI->db->where('page_status', 'publish');
-	$CI->db->order_by('page_date_publish', 'desc');
-	$query = $CI->db->get('page');
+
 
 	$all_pages = NR . '<select name="f_page_parent"  style="margin-top: 5px; width: 99%;" >' . NR;
 	$all_pages .= NR . '<option value="0">' . t('Нет', 'admin') . '</option>';
-	if ($query->num_rows() > 0)
-	{
+	
+	// если отмечена опция отрображать блок
+	if (!isset($editor_options['page_all_parent']) or (isset($editor_options['page_all_parent']) and $editor_options['page_all_parent']))
+	{ 
+		$CI->db->select('page_id, page_title');
+		$CI->db->where('page_status', 'publish');
+		$CI->db->order_by('page_date_publish', 'desc');
+		$query = $CI->db->get('page');	
 		
-		foreach ($query->result_array() as $row)
+		if ($query->num_rows() > 0)
 		{
-			if ($row['page_id'] == $f_page_parent) $sel = ' selected="selected"';
-				else $sel = '';
-				$all_pages .= NR . '<option ' . $sel . 'value="' . $row['page_id'] . '">' . $row['page_id'] . ' - ' . $row['page_title'] . '</option>';
+			
+			foreach ($query->result_array() as $row)
+			{
+				if ($row['page_id'] == $f_page_parent) $sel = ' selected="selected"';
+					else $sel = '';
+					$all_pages .= NR . '<option ' . $sel . 'value="' . $row['page_id'] . '">' . $row['page_id'] . ' - ' . $row['page_title'] . '</option>';
+			}
 		}
 	}
 	

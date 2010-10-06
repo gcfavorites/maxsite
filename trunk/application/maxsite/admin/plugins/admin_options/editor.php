@@ -49,8 +49,94 @@
 							'name' => t('Высота визуального редактора'), 
 							'description' => t('Укажите высоту визуального редактора в пикселах. Значение по-умолчанияю 400'),
 							'default' => '400'
-						),				
-			
+						),			
+						
+			# скрывать ли блоки	
+			'temp' => array(
+							'type' => 'info',
+							'title' => t('Отображение блоков', 'plugins'),
+						),
+						
+			'page_status' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок статуса страницы', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_files' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать ссылку на Загрузки', 
+							'description' => '', 
+							'default' => '1'
+						),			
+			'page_meta' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок мета', 
+							'description' => '', 
+							'default' => '1'
+						),	
+			'page_all_cat' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок рубрик', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_tags' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок меток', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_slug' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок короткой ссылки', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_discus' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок обсуждения', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_date' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок выбора даты', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_post_type' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок типа страницы', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_password' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок пароля', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_menu_order' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок порядка страницы', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_all_parent' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок родительской страницы', 
+							'description' => '', 
+							'default' => '1'
+						),
+			'page_all_users' => array(
+							'type' => 'checkbox', 
+							'name' => 'Отображать блок выбора автора', 
+							'description' => '', 
+							'default' => '1'
+						),
+
+
 	);
 	
 	

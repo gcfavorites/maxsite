@@ -176,7 +176,7 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	
 	if ($page_number == 1)
 	{
-		$first_link = '%FIRST%' . $sep . '%PREV%' . $sep2;
+		$first_link = '<span class="pagination-first">%FIRST%</span>' . $sep . '<span class="pagination-prev">%PREV%</span>' . $sep2;
 		$first_dots = '';
 	} 
 	else 
@@ -196,7 +196,7 @@ function _pagination($max, $page_number, $base_url, $diappazon = 4, $url_first =
 	
 	if($page_number == $total_pages)
 	{
-		$last_link =  $sep2 . '%NEXT%' . $sep . '%LAST%';
+		$last_link =  $sep2 . '<span class="pagination-next">%NEXT%</span>' . $sep . '<span class="pagination-last">%LAST%</span>';
 		$last_dots = '';
 	} 
 	else 

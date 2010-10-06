@@ -10,4 +10,4 @@ $info = array(
 	'group' => 'template'
 );
 
-# End of file
+#end file

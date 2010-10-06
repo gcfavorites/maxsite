@@ -779,14 +779,14 @@ function mso_remove_hook($hook = '', $func = '')
 # динамическое создание функции на хук
 # тело функции дожно работать как нормальный php
 # функция принимает только один аргумент $args
-function mso_hook_add_dinamic( $hook = '', $func = '' )
+function mso_hook_add_dinamic( $hook = '', $func = '', $priory = 10)
 {
 	if ($hook == '') return false;
 	if ($func == '') return false;
 
 	$func_name = @create_function('$args', $func);
 
-	return mso_hook_add( $hook, $func_name);
+	return mso_hook_add( $hook, $func_name, $priory);
 }
 
 

@@ -221,6 +221,8 @@
 
 	$watermark_type = mso_get_option('watermark_type', 'general', 1);
 	
+	$mini_type = mso_get_option('image_mini_type', 'general', 1);
+	
 	// форма загрузки
 	echo '
 		<div class="upload_file">
@@ -243,13 +245,15 @@
 		<p><label><input type="checkbox" name="f_userfile_mini" checked="checked" value=""> ' . t('Для изображений сделать миниатюру размером', 'admin') . '</label>
 			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="' . $size_image_mini . '"> ' . t('px (по максимальной стороне).', 'admin') . ' <br><em>' . t('Примечание: миниатюра будет создана в каталоге', 'admin') . ' <strong>uploads/' . $current_dir . 'mini</strong></em></p>
 
+
 		<p>' . t('Миниатюру делать путем:', 'admin') . ' <select name="f_mini_type">
-		<option value="1">' . t('Пропорционального уменьшения', 'admin') . '</option>
-		<option value="2">' . t('Обрезки (crop) по центру', 'admin') . '</option>
-		<option value="3">' . t('Обрезки (crop) с левого верхнего края', 'admin') . '</option>
-		<option value="4">' . t('Обрезки (crop) с левого нижнего края', 'admin') . '</option>
-		<option value="5">' . t('Обрезки (crop) с правого верхнего края', 'admin') . '</option>
-		<option value="6">' . t('Обрезки (crop) с правого нижнего края', 'admin') . '</option>
+		<option value="1"'.(($mini_type == 1)?(' selected="selected"'):('')).'>' . t('Пропорционального уменьшения', 'admin') . '</option>
+		<option value="2"'.(($mini_type == 2)?(' selected="selected"'):('')).'>' . t('Обрезки (crop) по центру', 'admin') . '</option>
+		<option value="3"'.(($mini_type == 3)?(' selected="selected"'):('')).'>' . t('Обрезки (crop) с левого верхнего края', 'admin') . '</option>
+		<option value="4"'.(($mini_type == 4)?(' selected="selected"'):('')).'>' . t('Обрезки (crop) с левого нижнего края', 'admin') . '</option>
+		<option value="5"'.(($mini_type == 5)?(' selected="selected"'):('')).'>' . t('Обрезки (crop) с правого верхнего края', 'admin') . '</option>
+		<option value="6"'.(($mini_type == 6)?(' selected="selected"'):('')).'>' . t('Обрезки (crop) с правого нижнего края', 'admin') . '</option>
+		<option value="7"'.(($mini_type == 7)?(' selected="selected"'):('')).'>' . t('Уменьшения и обрезки (crop) в квадрат', 'admin') . '</option>
 		</select></p>
 
 		<p><label><input type="checkbox" name="f_userfile_water" value="" '.
@@ -318,11 +322,11 @@
 		if (isset($mso_descritions[$file]))
 		{
 			$title = $mso_descritions[$file];
-			if ($title) $title_f = '<br><em>' . $title . '</em>';
+			if ($title) $title_f = '<br><em>' . htmlspecialchars($title) . '</em>';
 		}
 
 		$sel = form_checkbox('f_check_files[]', $file, false,
-			'title="' . $title . '" id="' . mso_strip($file) . '" class="f_check_files"')
+			'title="' . htmlspecialchars($title) . '" id="' . mso_strip($file) . '" class="f_check_files"')
 			. '<label for="' . mso_strip($file)
 			. '"> '
 			. $file . $title_f . '</label>';
@@ -339,17 +343,37 @@
 
 		# $cod .= '<p><textarea style="width: 99%;">' . $cod1 . '</textarea>';
 
-
-
+		/*
 		//Если картинка - делаем ссылку превьюшкой, иначе титлом или именем файла.
 		if ( $ext == 'jpg' or $ext == 'jpeg' or $ext == 'gif' or $ext == 'png'  ) {
 			$cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . 'mini/' . $file . '"></a>') );
 		} else {
 			if ($title) $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $title . '</a>') );
 				else $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $file . '</a>') );
-		}
+		}*/
 
-		# $cod .= '<p><input type="text" style="width: 99%;" value="' . $cod2 . '">';
+		//Если картинка - делаем ссылку превьюшкой, иначе титлом или именем файла.
+		if ( $ext == 'jpg' or $ext == 'jpeg' or $ext == 'gif' or $ext == 'png'  ) 
+		{
+			$title_alt = str_replace('"', '&amp;quot;', $title);
+			$title_alt = str_replace('<', '&amp;lt;', $title_alt);
+			$title_alt = str_replace('>', '&amp;gt;', $title_alt);
+			$title_alt = str_replace('\'', '&amp;#039;', $title_alt);
+			
+			if ($title) 
+				$cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . 'mini/' . $file . '" alt="' . $title_alt . '" title="' . $title_alt . '"></a>') );
+			else 
+				$cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . 'mini/' . $file . '" alt=""></a>') );
+		}
+		else 
+		{
+			if ($title) 
+				$cod2 = stripslashes(htmlspecialchars( '<a title="' . $title_alt . '" href="' . $uploads_url . $file . '">' . $title . '</a>') );
+			else 
+				$cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $file . '</a>') );
+		}
+      
+      
 		$cod .= ' | <a href="#"
 			onClick = "jAlert(\'<textarea cols=60 rows=5>' . $cod2 . '</textarea>\', \'HTML-ссылка файла\'); return false;">HTML-ссылка</a>';
 
@@ -364,11 +388,8 @@
 			else $file_mini = '=' . $uploads_url . $file;
 
 
-			// $cod3 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '"><img src="' . $uploads_url . $file . '"></a>') );
-			//$cod .= '<p><input type="text" style="width: 99%;" value="' . $cod3 . '">';
-
 			if ($title)
-				$cod3 = stripslashes(htmlspecialchars( '[image' . $file_mini . ' ' . $title . ']' . $uploads_url . $file . '[/image]') );
+				$cod3 = stripslashes(htmlspecialchars( '[image' . $file_mini . ' ' . str_replace('\'', '&#039;', $title) . ']' . $uploads_url . $file . '[/image]') );
 			else
 				$cod3 = stripslashes(htmlspecialchars( '[image' . $file_mini . ']' . $uploads_url . $file . '[/image]') );
 
@@ -376,7 +397,7 @@
 			$cod .= ' | <a href="#"
 			onClick = "jAlert(\'<textarea cols=60 rows=6>' . $cod3 . '</textarea>\', \'Код [image] файла\'); return false;">Код [image]</a>';
 
-			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img class="file_img" alt="" src="' . $uploads_url . $_f . '"></a>';
+			$predpr = '<a class="lightbox" href="' . $uploads_url . $file . '" target="_blank" title="' . htmlspecialchars($title) . ' ('. $file . ')' . '"><img class="file_img" alt="" src="' . $uploads_url . $_f . '"></a>';
 
 		}
 		else
@@ -393,8 +414,6 @@
 			{
 				$predpr = '<a href="' . $uploads_url . $file . '" target="_blank" title="' . $title . ' ('. $file . ')' . '"><img class="file_img" alt="" src="' . getinfo('admin_url') . 'plugins/admin_files/document_plain.png"></a>';
 			}
-
-
 		}
 
 		// nicothin добавил:

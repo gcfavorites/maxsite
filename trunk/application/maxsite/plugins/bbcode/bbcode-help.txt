@@ -17,14 +17,17 @@
 [left]текст[/left]     => <div style="text-align: left;">текст</div> - выравнивание в блоке влево
 [right]текст[/right]   => <div style="text-align: right;">текст</div> - выравнивание в блоке вправо
 [center]текст[/center] => <div style="text-align: center;">текст</div> - выравнивание в блоке по центру
+[justify]текст[/justify] => <div style="text-align: justify;">текст</div> - выравнивание в блоке по ширине
 
 [left стиль]текст[/left]     => <div style="text-align: left; стиль">текст</div> - выравнивание в блоке влево
 [right стиль]текст[/right]   => <div style="text-align: right; стиль">текст</div> - выравнивание в блоке вправо
 [center стиль]текст[/center] => <div style="text-align: center; стиль">текст</div> - выравнивание в блоке по центру
+[justify стиль]текст[/justify] => <div style="text-align: justify; стиль">текст</div> - выравнивание в блоке по ширине
 
 [pleft]текст[/pleft]     => <p style="text-align: left;">текст</p> - выравнивание в абзаце влево
 [pright]текст[/pright]   => <p style="text-align: right;">текст</p> - выравнивание в абзаце вправо
 [pcenter]текст[/pcenter] => <p style="text-align: center;">текст</p> - выравнивание в абзаце по центру
+[pjustify]текст[/pjustify] => <p style="text-align: justify;">текст</p> - выравнивание в абзаце по ширине
 
 [br] => <br clear="all"> - принудительный перенос строки
 

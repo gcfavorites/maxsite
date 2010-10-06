@@ -97,10 +97,14 @@ function bbcode_custom($text = '')
 
 		'~\[center (.*?)\](.*?)\[\/center\]~si'   => '<div style="text-align: center; $1">$2</div>',
 		'~\[center\](.*?)\[\/center\]~si'   => '<div style="text-align: center;">$1</div>',
+		
+		'~\[justify (.*?)\](.*?)\[\/justify\]~si'   => '<div style="text-align: justify; $1">$2</div>',
+		'~\[justify\](.*?)\[\/justify\]~si'   => '<div style="text-align: justify;">$1</div>',		
 
 		'~\[pleft\](.*?)\[\/pleft\]~si'       => '<p style="text-align: left;">$1</p>',
 		'~\[pright\](.*?)\[\/pright\]~si'     => '<p style="text-align: right;">$1</p>',
 		'~\[pcenter\](.*?)\[\/pcenter\]~si'   => '<p style="text-align: center;">$1</p>',
+		'~\[pjustify\](.*?)\[\/pjustify\]~si'   => '<p style="text-align: justify;">$1</p>',
 
 		'~\[br\]~si'   => '<br clear="all">',
 		'~\[hr\]~si'   => '<hr>',
