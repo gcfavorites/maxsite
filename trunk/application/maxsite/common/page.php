@@ -381,6 +381,7 @@ function mso_get_pages($r = array(), &$pag)
 
 			if ($query = $CI->db->get()) $cat = $query->result_array();
 			else $cat = array();
+			
 
 			// переместим все в массив page_id[] = category_id
 			$page_cat = array();
@@ -501,7 +502,7 @@ function _mso_sql_build_home($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
+		$CI->db->select('SQL_BUFFER_RESULT ' . $CI->db->dbprefix('page') . '.`page_id`', false);
 		$CI->db->from('page');
 
 		if ($r['page_status']) $CI->db->where('page.page_status', $r['page_status']);
@@ -858,7 +859,7 @@ function _mso_sql_build_tag($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
+		$CI->db->select('SQL_BUFFER_RESULT ' . $CI->db->dbprefix('page') . '.`page_id`', false);
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
@@ -987,7 +988,7 @@ function _mso_sql_build_archive($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
+		$CI->db->select('SQL_BUFFER_RESULT ' . $CI->db->dbprefix('page') . '.`page_id`', false);
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
@@ -1089,7 +1090,7 @@ function _mso_sql_build_search($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
+		$CI->db->select('SQL_BUFFER_RESULT ' . $CI->db->dbprefix('page') . '.`page_id`', false);
 		$CI->db->from('page');
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
 
@@ -1195,7 +1196,7 @@ function _mso_sql_build_author($r, &$pag)
 		# для неё нужно при том же запросе указываем общее кол-во записей и кол-во на страницу
 		# сама пагинация выводится отдельным плагином
 		# запрос один в один, кроме limit и юзеров
-		$CI->db->select('SQL_BUFFER_RESULT `page_id`', false);
+		$CI->db->select('SQL_BUFFER_RESULT ' . $CI->db->dbprefix('page') . '.`page_id`', false);
 		$CI->db->from('page');
 
 		if ($r['page_status']) $CI->db->where('page_status', $r['page_status']);
