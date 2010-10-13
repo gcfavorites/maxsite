@@ -127,10 +127,10 @@ function mso_get_pages($r = array(), &$pag)
 		if ($query and $query->num_rows() > 0) 
 		{
 			$page_id_date_now = $query->result_array();
-			$r['page_id_date_now'] = '';
+			$r['page_id_date_now'] = array();
 			foreach ($page_id_date_now as $key=>$val)
 			{
-				$r['page_id_date_now'] .= $val['page_id'] . ',';
+				$r['page_id_date_now'][] = $val['page_id'];
 			}
 		}
 		else $r['page_id_date_now'] = false; // нет записей

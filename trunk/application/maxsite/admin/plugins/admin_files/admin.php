@@ -351,7 +351,12 @@
 			if ($title) $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $title . '</a>') );
 				else $cod2 = stripslashes(htmlspecialchars( '<a href="' . $uploads_url . $file . '">' . $file . '</a>') );
 		}*/
-
+		
+		$title_alt = str_replace('"', '&amp;quot;', $title);
+		$title_alt = str_replace('<', '&amp;lt;', $title_alt);
+		$title_alt = str_replace('>', '&amp;gt;', $title_alt);
+		$title_alt = str_replace('\'', '&amp;#039;', $title_alt);
+	
 		//Если картинка - делаем ссылку превьюшкой, иначе титлом или именем файла.
 		if ( $ext == 'jpg' or $ext == 'jpeg' or $ext == 'gif' or $ext == 'png'  ) 
 		{
