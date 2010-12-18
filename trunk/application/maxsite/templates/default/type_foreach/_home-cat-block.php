@@ -1,6 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 		
 			$par['cat_id'] = $cat_id;
+			
+			if ($f = mso_page_foreach('home-cat-block-mso-get-pages')) require($f); 
+			
 			$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 			
 			// и выводим как обычно на главной, только добавляем в начало блока заголовок из рубрик

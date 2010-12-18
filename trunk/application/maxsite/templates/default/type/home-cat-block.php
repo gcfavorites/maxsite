@@ -169,8 +169,10 @@ else
 			if ($pages) // есть страницы
 			{ 	
 				
-				echo '<h1 class="home-cat-block">' . $all_cats[$cat_id]['category_name'] . '</h1>';
-				
+				if ( mso_get_option('home_full_text', 'templates', '1') )
+					echo '<h1 class="home-cat-block">' . $all_cats[$cat_id]['category_name'] . '</h1>';
+				else
+					echo '<h1 class="home-cat-block home-cat-block-list">' . $all_cats[$cat_id]['category_name'] . '</h1>';
 				
 				// выводим полнные тексты или списком
 				if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="home-cat-block">';
@@ -239,6 +241,8 @@ else
 	mso_add_cache($key_home_cache, ob_get_flush());
 	
 } // if $k
+
+if ($f = mso_page_foreach('home-cat-block-posle')) require($f);
 
 echo NR . '</div><!-- class="type type_home_cat_block" -->' . NR;
 

@@ -56,11 +56,12 @@ function editor_markitup_mso_options()
 	mso_admin_plugin_options('editor_markitup', 'plugins', 
 		array(
 			'editor' => array(
-							'type' => 'select', 
+							'type' => 'radio', 
 							'name' => 'Редактор', 
 							'description' => 'Выберите тип редактора',
 							'values' => 'HTML # BB-CODE', 
-							'default' => 'BB-CODE'
+							'default' => 'BB-CODE',
+							'delimer' => '&nbsp;&nbsp;&nbsp;&nbsp;',
 						),	
 			)
 	);

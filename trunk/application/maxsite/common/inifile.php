@@ -216,8 +216,8 @@ function mso_view_ini($all = false)
 					if ($value == trim($val)) $checked = 'checked="checked"';
 						else $checked = '';
 						
-					$f .= '<input type="radio" name="' . $name_f . '" value="' . trim($val) . '" ' 
-							. $checked . '> ' . trim($val) . $delimer . NR;
+					$f .= '<label><input type="radio" name="' . $name_f . '" value="' . trim($val) . '" ' 
+							. $checked . '> ' . trim($val) . '<label>' . $delimer . NR;
 				}
 			}
 		}

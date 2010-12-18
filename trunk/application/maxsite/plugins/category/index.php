@@ -73,7 +73,7 @@ function category_widget_form($num = 1)
 
 	$form .= '<p><div class="t150">' . t('Формат текущей:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'format_current', 'value'=>$options['format_current'] ) ) 
 			. '<br><div class="t150">&nbsp;</div>' . t('Например:', 'plugins') . ' &lt;span&gt;[TITLE]&lt;sup&gt;[COUNT]&lt;/sup&gt;&lt;/span&gt;&lt;br&gt;[DESCR]'
-			. '<br><div class="t150">&nbsp;</div>' . t('Все варианты:', 'plugins') . ' [SLUG], [ID_PARENT], [ID], [MENU_ORDER], [TITLE], [COUNT], [DESCR], [LINK][/LINK]'
+			. '<br><div class="t150">&nbsp;</div>' . t('Все варианты:', 'plugins') . ' [SLUG], [ID_PARENT], [ID], [MENU_ORDER], [TITLE], [COUNT], [DESCR], [LINK][/LINK], [URL]'
 			
 			
 			;

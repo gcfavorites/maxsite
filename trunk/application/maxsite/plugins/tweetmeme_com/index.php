@@ -52,9 +52,14 @@ function tweetmeme_com_mso_options()
 						'name' => 'Отображение', 
 						'description' => 'Выводить ли блок только на одиночной странице',
 						'values' => '1||Отображать только на одиночной странице # 0||Везде',
-						'default' => '1'
+						'default' => '0'
+					),
+			'page_type' => array(
+						'type' => 'text', 
+						'name' => 'Тип страниц', 
+						'description' => 'Выводить блок только на указанных типах страниц (типы указывать через запятую).',
+						'default' => 'blog, static'
 					),		
-					
 					
 			),
 		'Настройки плагина tweetmeme.com', // титул
@@ -74,7 +79,15 @@ function tweetmeme_com_content($text = '')
 	// отображать только на одиночной странице
 	if (!isset($options['show_only_page'])) $options['show_only_page'] = 0; 
 	if ($options['show_only_page'] and !is_type('page')) return $text;
+	
+	if (is_type('page') and isset($options['page_type']) and $options['page_type'])
+	{
+		$p_type_name = mso_explode($options['page_type'], false);
 		
+		// нет у указанных типах страниц
+		if (!in_array($page['page_type_name'], $p_type_name)) return $text;
+	}
+	
 	if (!isset($options['style'])) $options['style'] = '';
 	if (!isset($options['align'])) $options['align'] = 'right';
 	if (!isset($options['tweetmeme_style'])) $options['tweetmeme_style'] = 'none';

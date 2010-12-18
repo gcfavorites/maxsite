@@ -3,7 +3,7 @@
 $info = array(
 	'name' => t('Блок tweetmeme.com', __FILE__),
 	'description' => t('Выводит блок <a href="http://tweetmeme.com/" target="_blank">tweetmeme.com</a>, в котором указывается количество поддержавших запись пользователей Twitter.com', __FILE__),
-	'version' => '1.1',
+	'version' => '1.3',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',

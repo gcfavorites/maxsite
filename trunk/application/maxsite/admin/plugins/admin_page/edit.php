@@ -411,16 +411,14 @@ mso_cur_dir_lang('admin');
 			
 		
 		# получаем список юзеров
-		$all_users = array();
-		$CI->db->select('users_id, users_login, users_nik');
-		$CI->db->from('users');
-		
 		if ( !mso_check_allow('edit_page_author') ) // если не разрешено менять автора
 		{
 			$CI->db->where('users_id', $f_user_id); // ставим только текущего автора
 		}
+		$CI->db->select('users_id, users_login, users_nik');
+		$query = $CI->db->get('users');
 		
-		$query = $CI->db->get();
+		$all_users = array();
 		
 		// если есть данные, то выводим
 		if ($query->num_rows() > 0)

@@ -130,7 +130,7 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 			// теперь в $in все чекбоксы
 		}
 		
-		# перед проеркой удалим из $ar все типы info
+		# перед проверкой удалим из $ar все типы info
 		$ar1 = $ar;
 		foreach($ar1 as $m => $val)
 			if ($val['type'] == 'info')	unset($ar1[$m]);
@@ -243,6 +243,37 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 				$form .= '</select><br><em>' 
 						. $val['description'] . '</em></div>' . NR;
 			}
+			elseif ($val['type'] == 'radio')
+			{
+				$form .= '<div class="admin_plugin_options"><strong>' 
+						. $val['name'] 
+						. '</strong><br>';
+						
+				if ( !isset($val['delimer']) ) $delimer = '<br>';
+					else $delimer = stripslashes($val['delimer']);
+							
+				// если есть values, то выводим - правила задания, как в ini-файлах
+				if (isset($val['values']))
+				{
+					$values = explode('#', $val['values']);
+					foreach( $values as $v ) 
+					{
+						$v = trim($v);
+						$v_t = $v;
+						
+						$ar = explode('||', $v);
+						if (isset($ar[0])) $v = trim($ar[0]);
+						if (isset($ar[1])) $v_t = trim($ar[1]);
+						
+						if (htmlspecialchars($options[$m]) == $v) $checked = 'checked="checked"';
+							else $checked = '';
+						
+						$form .= NR . '<label><input style="width: auto" type="radio" value="' . $v . '" ' . $checked . ' name="' . $key . '-' . $type . '[' . $m . ']' . '"> ' . $v_t . '</label>' . $delimer;
+					}
+				}
+				$form .= '<br><em>' 
+						. $val['description'] . '</em></div>' . NR;
+			}
 		}
 		
 		
@@ -257,45 +288,6 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 		echo t('<p>Опции не определены.</p>', 'admin') . NR;
 	}
 	
-	/*
-	mso_admin_plugin_options('my_plugin', 'plugins', 
-		array(
-			'f1' => array(
-							'type' => 'text', 
-							'name' => 'название', 
-							'description' => 'описание', 
-							'default' => ''
-						),
-			'f2' => array(
-							'type' => 'textarea', 
-							'name' => 'название', 
-							'description' => 'описание', 
-							'default' => ''
-						),					
-			'f3' => array(
-							'type' => 'checkbox', 
-							'name' => 'название', 
-							'description' => 'описание', 
-							'default' => '1' // для чекбоксов только 1 и 0
-						),						
-			'f4' => array(
-							'type' => 'select', 
-							'name' => 'название', 
-							'description' => 'описание',
-							'values' => '0.00||Гринвич (0) # 1.00||что-то # 2.00||Киев (+2) # 3.00||Москва (+3)',  // правила для select как в ini-файлах
-							'default' => '2.00'
-						),	
-			
-			// заголовок группы опций - не передается как опция, случит только для визуального разделения
-			'temp' => array(
-							'type' => 'info', # такой тип
-							'title' => 'Тут какой-то Заголовок', 
-							'text' => 'Тут какой-то текст', 
-						),
-						
-			)
-	);
-	*/
 }
 
-?>
+# end file

@@ -526,6 +526,12 @@ function mso_get_new_comment($args = array())
 			{
 				if ($post['comments_reg'] == 'reg') // нужно зарегистрировать или уже есть регистрация
 				{
+					
+					// проверим есть ли разршение на комментарии от комюзеров
+					// для случаев подделки post-запроса
+					if ( !mso_get_option('allow_comment_comusers', 'general', '1') )
+						return '<div class="' . $args['css_error']. '">'. t('Error allow_comment_comusers'). '</div>';
+						
 
 					if ( !isset($post['comments_email']) or !$post['comments_email'] )
 						return '<div class="' . $args['css_error']. '">'. t('Нужно указать Email'). '</div>';
@@ -668,7 +674,7 @@ function mso_get_new_comment($args = array())
 								
 								# ставим куку и редиректимся автоматом
 								mso_add_to_cookie($name_cookies, $value, $expire, 
-											mso_current_url() . '#comment-' . $id_comment_new);
+											mso_current_url(true) . '#comment-' . $id_comment_new);
 								exit;
 							}
 							
@@ -684,6 +690,11 @@ function mso_get_new_comment($args = array())
 				elseif  ($post['comments_reg'] == 'noreg')
 				{
 					// комментарий от анонима
+					
+					// проверим есть ли разрешение на комментарии от анонимов
+					// для случаев подделки post-запроса
+					if ( !mso_get_option('allow_comment_anonim', 'general', '1') )
+						return '<div class="' . $args['css_error']. '">'. t('Error allow_comment_anonim'). '</div>';
 
 					if ( isset($post['comments_author']) )
 					{

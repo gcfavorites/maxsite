@@ -346,14 +346,12 @@
 		else $f_ping_allow = '';	
 	
 	# получаем список юзеров
-	$CI->db->select('users_id, users_login, users_nik');
-	$CI->db->from('users');
 	if ( !mso_check_allow('edit_page_author') ) // если не разрешено менять автора
 	{
 		$CI->db->where('users_id', $f_user_id); // ставим только текущего автора
 	}
-		
-	$query = $CI->db->get();
+	$CI->db->select('users_id, users_login, users_nik');
+	$query = $CI->db->get('users');
 	
 	$all_users = array();
 	

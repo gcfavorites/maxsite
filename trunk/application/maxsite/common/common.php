@@ -8,7 +8,10 @@
 
 # подключаем библиотеку mbstring
 # какие функции отсутствуют определяется в этом файле
-require('mbstring.php');
+
+global $mso_install;
+if ($mso_install and !function_exists('mb_strlen') ) require('mbstring.php');
+
 
 define("NR", "\n");
 
@@ -2102,7 +2105,8 @@ function mso_get_permalink_cat_slug($slug = '', $prefix = 'category/')
 #  разделить строку из чисел, разделенных запятыми в массив
 # если $integer = true, то дополнительно преобразуется в числа
 # если $probel = true, то разделителем может быть пробел
-function mso_explode($s = '', $int = true, $probel = true )
+# если $unique = true, то убираем дубли
+function mso_explode($s = '', $int = true, $probel = true, $unique = true )
 {
 	//$s = trim( str_replace(',', ',', $s) );
 	$s = trim( str_replace(';', ',', $s) );
@@ -2116,7 +2120,9 @@ function mso_explode($s = '', $int = true, $probel = true )
 	}
 
 	$s = trim( str_replace(',,', ',', $s) );
-	$s = array_unique( explode(',', trim($s) ) );
+	
+	$s = explode(',', trim($s));
+	if ($unique) $s = array_unique($s);
 
 	$out = array();
 	foreach ( $s as $key => $val )
@@ -2131,7 +2137,7 @@ function mso_explode($s = '', $int = true, $probel = true )
 		}
 	}
 
-	$out = array_unique($out);
+	if ($unique) $out = array_unique($out);
 
 	return $out;
 }
@@ -2468,7 +2474,7 @@ function mso_load_jquery($plugin = '')
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.4.2.min.js"></script>' . NR;
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.4.4.min.js"></script>' . NR;
 	}
 }
 
@@ -2740,6 +2746,7 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 		$e = str_replace('[MENU_ORDER]', $menu_order, $e);
 		$e = str_replace('[ID_PARENT]', $id_parent, $e);
 		$e = str_replace('[COUNT]', $count, $e);
+		$e = str_replace('[URL]', $url, $e);
 
 		if ($options['function'] and function_exists($options['function']))
 		{

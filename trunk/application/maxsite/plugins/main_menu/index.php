@@ -12,6 +12,7 @@ function main_menu_autoload()
 	mso_create_allow('main_menu_edit', t('Админ-доступ к редактированию MainMenu', __FILE__));
 	mso_hook_add( 'main_menu', 'main_menu_custom');
 	mso_hook_add( 'head', 'main_menu_head');
+	mso_hook_add( 'admin_init', 'main_menu_admin_init'); # хук на админку
 }
 
 
@@ -104,4 +105,18 @@ function main_menu_custom($arg = array())
 	return $arg;
 }
 
-?>
+
+# подключим страницу опций, как отдельную ссылку
+function main_menu_admin_init($args = array()) 
+{
+	if ( mso_check_allow('main_menu_edit') ) 
+	{
+		$this_plugin_url = 'plugin_options/main_menu'; // url и hook
+		mso_admin_menu_add('plugins', $this_plugin_url, t('Меню (Main menu)', 'plugins'));
+		mso_admin_url_hook ($this_plugin_url, 'plugin_main_menu');
+	}
+	
+	return $args;
+}
+
+# end file

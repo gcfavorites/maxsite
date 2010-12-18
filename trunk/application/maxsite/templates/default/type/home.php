@@ -196,6 +196,8 @@ else
 	
 } // endif $pages
 
+if ($f = mso_page_foreach('home-posle')) require($f);
+
 echo NR . '</div><!-- class="type type_home" -->' . NR;
 
 # конечная часть шаблона
