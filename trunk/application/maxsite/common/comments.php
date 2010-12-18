@@ -1112,6 +1112,12 @@ function mso_comuser_lost($args = array())
 	if ( !isset($args['css_ok']) )		$args['css_ok'] = 'comment-ok';
 	if ( !isset($args['css_error']) )	$args['css_error'] = 'comment-error';
 	
+	// если нет опции password_recovery, значит восстанавливаем с учетом номера комюзера во втором сегмента адреса
+	// если опция есть, значит восстанавливаем без учета id комюзера
+	if (!isset($args['password_recovery'])) $password_recovery = false;
+	else $password_recovery = true;
+	
+	
 	# id комюзера, который в сессии - какой комюзер
 	# если комюзер залогинен, то будет $id_session
 	# если нет, то залогиненности нет
@@ -1127,13 +1133,16 @@ function mso_comuser_lost($args = array())
 		# защита сессии - если не нужно закомментировать строчку!
 		if ($MSO->data['session']['session_id'] != $post['f_session_id']) mso_redirect();
 
-		// получаем номер юзера id из f_submit[]
-		$id = (int) mso_array_get_key($post['f_submit']);
-		if (!$id) return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '!</div>';
+		if (!$password_recovery) // номер пользователя указан в f_submit - вычлиняем его
+		{
+			// получаем номер юзера id из f_submit[]
+			$id = (int) mso_array_get_key($post['f_submit']);
+			if (!$id) return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя'). '!</div>';
 
-		# проверяем id в сессии с сабмитом 
-		if ($id_session and $id != $id_session) 
-			return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя2'). '</div>';
+			# проверяем id в сессии с сабмитом 
+			if ($id_session and $id != $id_session) 
+				return '<div class="' . $args['css_error']. '">'. t('Ошибочный номер пользователя2'). '</div>';
+		}
 		
 		$comusers_email = trim($post['f_comusers_email']);
 		if (!$comusers_email) return '<div class="' . $args['css_error']. '">'. t('Нужно указать email'). '</div>';
@@ -1144,23 +1153,32 @@ function mso_comuser_lost($args = array())
 
 		// проверим есть ли вообще такой юзер
 		$CI->db->select('comusers_id');
-		$CI->db->where('comusers_id', $id);
+		
+		if (!$password_recovery) $CI->db->where('comusers_id', $id); // если явно указан id, то ищем по нему
+		
 		$CI->db->where('comusers_email', $comusers_email);
+		
 		$query = $CI->db->get('comusers');
 
-		if ($query->num_rows() == 0)
+		if ($query->num_rows() == 0) // нет такого комментатора
 			return '<div class="' . $args['css_error']. '">'. t('Неверный email или номер пользователя'). '!</div>';
-
+		
+		if ($password_recovery) // получаем id из последнего запроса
+		{
+			// получим id этого комюзера
+			$res = $query->result_array();
+			$id = $res[0]['comusers_id'];
+		}
 
 		$comusers_new_password = trim($post['f_comusers_password']);
 		$comusers_activate_key = trim($post['f_comusers_activate_key']);
 
 		if ($comusers_email and !$comusers_activate_key and !$comusers_new_password) // указан email без остального
 		{
+			// проверим есть ли активация
 			$CI->db->select('comusers_id, comusers_activate_key');
 			$CI->db->where('comusers_id', $id);
 			$CI->db->where('comusers_activate_string=comusers_activate_key', '', false);
-			// $CI->db->where('comusers_activate_key=comusers_activate_string');
 			
 			$CI->db->where('comusers_email', $comusers_email);
 			$CI->db->limit(1);
@@ -1176,8 +1194,9 @@ function mso_comuser_lost($args = array())
 				return '<div class="' . $args['css_ok']. '">'. t('Код активации отправлен на ваш email'). '!</div>';
 			}
 			else
+			{
 				return '<div class="' . $args['css_error']. '">'. t('Данный email не зарегистрирован или не активирован'). '</div>';
-
+			}
 		}
 		elseif ($comusers_email and $comusers_new_password and !$comusers_activate_key) // нет пароля, но есть код
 			return '<div class="' . $args['css_error']. '">'. t('Для установки нового пароля нужно заполнить все поля!'). '</div>';

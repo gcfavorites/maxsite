@@ -13,12 +13,15 @@
 function multipage_autoload($args = array())
 {
 	$options = mso_get_option('plugin_multipage', 'plugins', array() );
-	$options['pag_start'] = ( (isset($options['pag_start']))?($options['pag_start']):(0) );
-	$options['pag_end'] = ( (isset($options['pag_end']))?($options['pag_end']):(1) );
-	mso_hook_add( 'content_in', 'multipage_custom');
+	$options['pag_start'] = ( (isset($options['pag_start']))? ($options['pag_start']) : (0) );
+	$options['pag_end']   = ( (isset($options['pag_end']))  ? ($options['pag_end'])   : (1) );
+	$options['autoclose'] = ( (isset($options['autoclose']))? ($options['autoclose']) : (1) );
+	// Приоритет очень высокий затем, что сначала выпиливаем маленький кусок страницы, потом с ним работаем. Так экономней.
+	mso_hook_add( 'content_in', 'multipage_custom', 99);
 	if ($options['pag_start'] == 1) mso_hook_add( 'content_start', 'multipage_pagination');
-	if ($options['pag_end'] == 1) mso_hook_add( 'content_end',   'multipage_pagination');
+	if ($options['pag_end'] == 1)   mso_hook_add( 'content_end',   'multipage_pagination');
 	mso_hook_add( 'admin_init', 'multipage_admin_init');
+	//if (!function_exists('autoclose_tags_custom')) require_once (getinfo('plugins_dir') . 'autoclose_tags/index.php');
 }
 
 
@@ -74,6 +77,12 @@ function multipage_mso_options()
 							'values' => t('0||Не обрабатывать # 1||Удалять разделители # 2||Выводить до первого разделителя', __FILE__),
 							'default' => '0'
 						),
+			'autoclose' => array(
+							'type' => 'checkbox',
+							'name' => t('Автоматически закрывать теги на страницах', __FILE__),
+							'description' => t('Плагин сам закрывает те теги, которые разбивает разделитель, и тем самым спасает от глюков с сайдбарами и т.п.. Экономней делать это вручную, а опцию отключить.', __FILE__),
+							'default' => '1'
+						),
 			'admin_menu' => array(
 							'type' => 'checkbox',
 							'name' => t('Показывать меню настройки плагина в админке', __FILE__),
@@ -111,16 +120,63 @@ function multipage_mso_options()
 }
 
 
+# Для тех, кто не понимает, что такое теги и как их закрывать.
+function autoclose_tags_on_page($content = '')
+{
+	//if (is_type('page')) return $content;
+
+	preg_match_all("#<([a-z]+)( .*)?(?!/)>#iU", $content, $result);
+	$openedtags = $result[1];
+
+	preg_match_all("#</([a-z]+)>#iU", $content, $result);
+	$closedtags = $result[1];
+	$len_opened = count($openedtags);
+
+	if(count($closedtags) == $len_opened){
+		return $content;
+	}
+
+	$openedtags = array_reverse($openedtags);
+	for ($i=0; $i < $len_opened; $i++) {
+		if (!in_array($openedtags[$i], $closedtags)) {
+			$content .= '</'.$openedtags[$i].'>';
+		} else {
+			unset($closedtags[array_search($openedtags[$i],$closedtags)]);
+		}
+	}
+	return $content;
+
+}
+
 
 # функции плагина
 function multipage_custom($text = '')
 {
+/*
+// Как Макс борется с ограничениями на размер поста.
+	// Было
+	if ($r['cut'])
+		$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$1", $output);
+	else
+		$output = preg_replace('~(.*?)\[mso_xcut\](.*?)~s', "$2", $output);
+
+	// Стало
+	if (strpos($output, '[mso_xcut]') !== false)
+	{
+		$xcontent = explode('[mso_xcut]', $output);
+		if ($r['cut']) $output = $xcontent[0];
+			else $output = $xcontent[1];
+	}
+*/
 	global $multipage_pagination, $MSO;
 	$options          = mso_get_option('plugin_multipage', 'plugins', array() );
 	$pagebreak        = ( (isset($options['pagebreak']))?($options['pagebreak']):('[pagebreak]') );
+	$break_length     = strlen($pagebreak);
 	$next_url         = ( (isset($options['next_url']))?($options['next_url']):('next') );
 	$process_category = ( (isset($options['process_category']))?($options['process_category']):(0) );
 	$pattern          = '/^(.*?)' . preg_quote($pagebreak) . '(.*?)$/u';
+	$autoclose        = ( (isset($options['autoclose']))? ($options['autoclose']) : (1) );
+
 
 	if ( !is_type('page' ) )
 	{
@@ -148,9 +204,23 @@ function multipage_custom($text = '')
 		}
 		else $current_page = 1;                             //Текущая страница
 
-		$pat  = '/(.*?)' . preg_quote($pagebreak) . '/u';
-		$text = preg_replace($pat, '$2', $text, --$current_page);
-		$text = preg_replace($pattern, '$1', $text);
+		//$pat  = '/(.*?)' . preg_quote($pagebreak) . '/u';
+		//$text = preg_replace($pat, '$2', $text, --$current_page);
+		//$text = preg_replace($pattern, '$1', $text);
+		if ($current_page > 1)
+		{
+			for ($i = 1; $i < $current_page; $i++)
+			{
+				//if (!$i) continue;
+				$text = substr($text, strpos($text, $pagebreak) + $break_length);
+			}
+		}
+
+		// Если [уже или всего] первая страница, удаляем всё после первого pb. Вместе с ним
+		// Если она же и последняя, то даже и не трогаем.
+		if ($current_page < $pages_count) $text = substr($text, 0, strpos($text, $pagebreak));
+
+		if ($autoclose) autoclose_tags_on_page($text);
 
 		$multipage_pagination['maxcount'] = $pages_count;
 		$multipage_pagination['limit']    = 1;

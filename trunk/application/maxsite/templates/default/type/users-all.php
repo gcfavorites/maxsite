@@ -22,7 +22,7 @@ require(getinfo('template_dir') . 'main-start.php');
 echo NR . '<div class="type type_users_all">' . NR;
 
 if ($f = mso_page_foreach('users-all-do')) require($f); // подключаем кастомный вывод
-	else echo '<h1>'. t('Комментаторы'). '</h1><ul class="users-all">';
+	else echo '<h1>'. t('Комментаторы'). '</h1><p>' . t('Забыли кто вы?') . ' <a href="' . getinfo('siteurl') . 'password-recovery">'. t('Можно восстановить пароль.'). '</a></p><ul class="users-all">';
 	
 if ($comusers)
 {
