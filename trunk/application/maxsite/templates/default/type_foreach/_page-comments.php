@@ -30,9 +30,15 @@
 			
 			if ($grav_email)
 			{
+				if ($gravatar_type = mso_get_option('gravatar_type', 'templates', ''))
+					$d = '&amp;d=' . urlencode($gravatar_type);
+				else 
+					$d = '';
+				
 				$avatar_url = "http://www.gravatar.com/avatar.php?gravatar_id=" 
 						. md5($grav_email)
-						. "&amp;size=80";
+						. "&amp;size=80"
+						. $d;
 			}
 		}
 		

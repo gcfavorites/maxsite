@@ -80,6 +80,9 @@ function bbcode_custom($text = '')
 		'~\[b\](.*?)\[\/b\]~si'                 => '<strong>$1</strong>',
 		'~\[i\](.*?)\[\/i\]~si'                 => '<em>$1</em>',
 		'~\[u\](.*?)\[\/u\]~si'                 => '<u>$1</u>',
+		
+		'~\[p\](.*?)\[\/p\]~si'                 => '<p>$1</p>', // абзац
+		
 		'~\[color=(.*?)\](.*?)\[\/color\]~si'   => '<span style="color:$1">$2</span>',
 
 		'~\[size=(.*?)\](.*?)\[\/size\]~si'   => '<span style="font-size:$1">$2</span>',

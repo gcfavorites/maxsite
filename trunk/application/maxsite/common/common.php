@@ -63,7 +63,11 @@ function getinfo($info = '')
 		case 'rss_url' :
 				$out = $MSO->config['site_url'] . 'feed';
 				break;
-
+		
+		case 'rss_comments_url' :
+				$out = $MSO->config['site_url'] . 'comments/feed';
+				break;
+				
 		case 'feed' :
 				$out = $MSO->config['site_url'] . 'feed';
 				break;
@@ -73,7 +77,7 @@ function getinfo($info = '')
 				break;
 
 		case 'comments_rss2_url' :
-
+				$out = $MSO->config['site_url'] . 'comments/feed';
 				break;
 
 		case 'admin_url' :

@@ -9,6 +9,7 @@
 	if (mso_segment(3) == 'all') $f_all_comments = true; 
 	elseif (mso_segment(3) == 'moderation') $f_all_comments = false; 
 	
+	require_once( getinfo('common_dir') . 'comments.php' ); // функции комментариев
 	
 	# разрешить или запретить
 	if ( ( $post = mso_check_post(array('f_session_id', 'f_check_comments')) ) and 
@@ -31,6 +32,10 @@
 		if ($CI->db->update('comments', array('comments_approved'=>$action) ) )
 		{
 			mso_flush_cache();
+			
+			// синхронизация количества комментариев у комюзеров
+			mso_comuser_update_count_comment();
+			
 			echo '<div class="update">' . t('Обновлено!') . '</div>';
 		}
 		else 
@@ -56,6 +61,10 @@
 		if ( $CI->db->delete('comments') )
 		{
 			mso_flush_cache();
+			
+			// синхронизация количества комментариев у комюзеров
+			mso_comuser_update_count_comment();
+			
 			echo '<div class="update">' . t('Удалено!') . '</div>';
 		}
 		else 

@@ -31,36 +31,8 @@ function mso_get_comments($page_id = 0, $r = array())
 
 	$CI = & get_instance();
 	
-	// вначале получим список всех комюзеров, чтобы посчитать их количество комментариев
-	$cache_key = 'all_comusers';
-	$k = mso_get_cache($cache_key);
-	if (!$k) // нет в кэше
-	{
-		$CI->db->select('comusers_id, comusers_count_comments, COUNT(comments_comusers_id) as comusers_count_comment_real');
-		$CI->db->from('comusers');
-		$CI->db->where('comments.comments_approved', '1');
-		$CI->db->join('comments', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
-		$CI->db->group_by('comments_comusers_id');
-		$query = $CI->db->get();
-
-		$all_comusers = array();
-		if ($query->num_rows() > 0)
-		{
-			$comusers = $query->result_array();
-			foreach($comusers as $comuser)
-			{
-				$all_comusers[$comuser['comusers_id']] = $comuser['comusers_count_comment_real'];
-
-				// сразу сверим количество кмментариев
-				if ($comuser['comusers_count_comments'] != $comuser['comusers_count_comment_real']) // не равно
-					mso_comuser_set_count_comment($comuser['comusers_id'], $comuser['comusers_count_comment_real']);
-
-			}
-		}
-		mso_add_cache($cache_key, $all_comusers); // в кэше на 10 минут
-	}
-	else $all_comusers = $k;
-
+	// получим список всех комюзеров, где посдчитается количество их комментариев
+	$all_comusers = mso_comuser_update_count_comment();
 
 	$CI->db->select('page.page_id, page.page_slug, page.page_title, comments.*,
 	users.users_id, 
@@ -885,7 +857,7 @@ function mso_comuser_set_count_comment($id = 0, $count = -1)
 	if (!$id) return;
 	$CI = & get_instance();
 
-	if ($count == -1) // не указано кодичество - нужно его получить
+	if ($count == -1) // не указано количество - нужно его получить
 	{
 		$CI->db->select('COUNT(comments_comusers_id) as comusers_count_comment_real', false);
 		$CI->db->from('comusers');
@@ -907,6 +879,46 @@ function mso_comuser_set_count_comment($id = 0, $count = -1)
 	$CI->db->cache_delete_all();
 }
 
+// функция проверяет в цикле количество реальных комментариев
+// с тем, что указано в поле comusers_count_comments
+// если данные не совпадают, то выполняется обновление 
+// с помощью mso_comuser_set_count_comment()
+// функция возвращает $all_comusers - массив всех комюзеров
+function mso_comuser_update_count_comment()
+{
+	$cache_key = 'all_comusers';
+	$k = mso_get_cache($cache_key);
+	if (!$k) // нет в кэше
+	{
+		$CI = & get_instance();
+		
+		$CI->db->select('comusers_id, comusers_count_comments, COUNT(comments_comusers_id) as comusers_count_comment_real');
+		$CI->db->from('comusers');
+		$CI->db->where('comments.comments_approved', '1');
+		$CI->db->join('comments', 'comusers.comusers_id = comments.comments_comusers_id', 'left');
+		$CI->db->group_by('comments_comusers_id');
+		$query = $CI->db->get();
+
+		$all_comusers = array();
+		if ($query->num_rows() > 0)
+		{
+			$comusers = $query->result_array();
+			foreach($comusers as $comuser)
+			{
+				$all_comusers[$comuser['comusers_id']] = $comuser['comusers_count_comment_real'];
+
+				// сразу сверим количество кмментариев
+				if ($comuser['comusers_count_comments'] != $comuser['comusers_count_comment_real']) // не равно
+					mso_comuser_set_count_comment($comuser['comusers_id'], $comuser['comusers_count_comment_real']);
+			}
+		}
+
+		mso_add_cache($cache_key, $all_comusers); // в кэш
+	}
+	else $all_comusers = $k;
+
+	return $all_comusers;
+}
 
 # обработка POST из формы комюзера
 function mso_comuser_edit($args = array())

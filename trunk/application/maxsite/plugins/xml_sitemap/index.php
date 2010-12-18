@@ -181,6 +181,8 @@ function xml_sitemap_custom($args = array())
 		}
 	}
 	
+	$out .= mso_hook('xml_sitemap'); // хук, если нужно добавить свои данные
+	
 	$out .= NR . '</urlset>' . NR;
 	
 	$fn = getinfo('FCPATH') . 'sitemap.xml';
@@ -189,4 +191,4 @@ function xml_sitemap_custom($args = array())
 	return $args; // для обеспечения цепочки хуков
 }
 
-?>
+# end file

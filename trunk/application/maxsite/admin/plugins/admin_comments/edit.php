@@ -19,6 +19,8 @@ mso_cur_dir_lang('admin');
 
 	if ($id) // есть корректный сегмент
 	{
+		require_once( getinfo('common_dir') . 'comments.php' ); // функции комментариев
+		
 		# отредактировать комментарий
 		if ( $post = mso_check_post(array('f_session_id', 'f_submit', 'f_comments_content', 'f_comments_date', 'f_comments_author', 'f_comments_approved', 'f_comments_email_subscribe')) )
 		{
@@ -59,6 +61,9 @@ mso_cur_dir_lang('admin');
 				echo '<div class="error">' . t('Ошибка обновления') . '</div>';
 
 			$CI->db->cache_delete_all();
+			
+			// синхронизация количества комментариев у комюзеров
+			mso_comuser_update_count_comment();
 
 			if ($post['f_comments_email_subscribe']) // разослать подписчикам
 			{

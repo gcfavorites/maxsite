@@ -6,6 +6,8 @@
 Форум: http://forum.max-3000.com/
 Блог разработчика: http://maxsite.org/
 Поддержка: http://max-3000.com/page/support
+ЧАВО по MaxSite CMS для новичков: http://max-3000.com/page/faq
+
 (О наиболее частых проблемах см. в конце этого файла)
 
 ==================

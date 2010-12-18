@@ -3,11 +3,11 @@
 $info = array(
 	'name' => 'XML Sitemap (google-sitemap)',
 	'description' => 'Использование XML-Sitemap (карта сайта)',
-	'version' => '1.2',
+	'version' => '1.3',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );
 
-?>
+# end file
