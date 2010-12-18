@@ -29,7 +29,7 @@ myBbcodeSettings = {
 			{name:'Черный', openWith:'[color=black]', closeWith:'[/color]', className:"col3-3" }
 		]},
 
-		{name:'Размер', openWith:'[size=[![Text size]!]%]', closeWith:'[/size]', className:"fonts", dropMenu :[  
+		{name:'Размер', openWith:'[size=[![Text size]!]%]', closeWith:'[/size]', className:"text-smallcaps", dropMenu :[  
 			{name:'Большой', openWith:'[size=200%]', closeWith:'[/size]', className:"big" },
 			{name:'Нормальный', openWith:'[size=100%]', closeWith:'[/size]', className:"normal" },
 			{name:'Маленький', openWith:'[size=50%]', closeWith:'[/size]', className:"small" }  
@@ -42,25 +42,29 @@ myBbcodeSettings = {
 			{name:'Абзац вправо', openWith:'[pright]', closeWith:'[/pright]', className:"right" },
 			{name:'Абзац по формату', openWith:'[pjustify]', closeWith:'[/pjustify]', className:"justify" },
 			{separator:'---------------' },
-			{name:'Блок влево', openWith:'[left]', closeWith:'[/left]', className:"left"}, 
-			{name:'Блок по центру', openWith:'[center]', closeWith:'[/center]', className:"center"},       
-			{name:'Блок вправо', openWith:'[right]', closeWith:'[/right]', className:"right"}, 
-			{name:'Блок по формату', openWith:'[justify]', closeWith:'[/justify]', className:"justify"}, 
+			{name:'Блок влево', openWith:'[left]', closeWith:'[/left]', className:"text-padding-left"}, 
+			{name:'Блок по центру', openWith:'[center]', closeWith:'[/center]', className:"text-padding-center"},       
+			{name:'Блок вправо', openWith:'[right]', closeWith:'[/right]', className:"text-padding-right"}, 
+			{name:'Блок по формату', openWith:'[justify]', closeWith:'[/justify]', className:"text-padding-justify"}, 
 		]},
   
 		{separator:'---------------' },
 	  
 		{name:'Ссылка', key:'L', openWith:'[url=[![Адрес]!]]', closeWith:'[/url]', placeHolder:'текст ссылки', className:"link"},
 		{name:'Отрезать', replaceWith:'\n[cut]\n', className:"separator"}, 
-		{name:'Принудительный перенос', replaceWith:'\n[br]\n', className:"paragraph"},
+		{name:'Принудительный перенос', replaceWith:'\n[br]\n', className:"page-red"},
 		
-		{name:'Цитата', openWith:'[quote]\n', closeWith:'\n[/quote]', className:"add"}, 
+		{name:'Цитата', openWith:'[quote]\n', closeWith:'\n[/quote]', className:"quote"}, 
 		
-		{name:'Линия', openWith:'\n[hr]\n', className:"add"}, 
+		{name:'Линия', openWith:'\n[hr]\n', className:"hr"}, 
+		
+		{separator:'---------------' },
 		
 		{name:'Выполнить PHP-код', openWith:'[php]', closeWith:'[/php]', className:"php"}, 
-		{name:'Выполнить HTML-код', openWith:'[html]', closeWith:'[/html]', className:"add"}, 
-
+		{name:'Выполнить HTML-код', openWith:'[html]', closeWith:'[/html]', className:"html-code"}, 
+		
+		{separator:'---------------' },
+		
 		{name:'Код', openWith:'[pre]', closeWith:'[/pre]', className:"code", dropMenu: [
 			{name:'Текст', openWith:'[pre]', closeWith:'[/pre]', className:"text" },
 			{name:'PHP', openWith:'[pre lang=php]', closeWith:'[/pre]', className:"php" },
@@ -90,12 +94,12 @@ myBbcodeSettings = {
 			{name:'5 элементов', openWith:'\n[list]\n[*]\n[*]\n[*]\n[*]\n[*]\n', closeWith:'[/list]', className:"list-bullet"}, 
 		]},	  
 		
-		{name:'Таблица', openWith:'\n[table]\n', closeWith:'\n[/table]', className:"add", dropMenu: [
-			{name:'Таблица', openWith:'\n[table]\n', closeWith:'\n[/table]\n', className:"add"}, 
-			{name:'Строка', openWith:'[tr]\n', closeWith:'\n[/tr]', className:"add"}, 
-			{name:'Ячейка', openWith:'\n[td]', closeWith:'[/td]', className:"add"}, 
-			{name:'Заготовка1', openWith:'[table]\n[tr]\n[td] [/td]\n[td] [/td]\n[td] [/td]\n[/tr]\n[/table]', className:"add"}, 
-			{name:'Заготовка2', openWith:'\n[tr]\n[td] [/td]\n[td] [/td]\n[td] [/td]\n[/tr]', className:"add"}, 
+		{name:'Таблица', openWith:'\n[table]\n', closeWith:'\n[/table]', className:"table", dropMenu: [
+			{name:'Таблица', openWith:'\n[table]\n', closeWith:'\n[/table]\n', className:"table-add"}, 
+			{name:'Строка', openWith:'[tr]\n', closeWith:'\n[/tr]', className:"table-row-insert"}, 
+			{name:'Ячейка', openWith:'\n[td]', closeWith:'[/td]', className:"table-select"}, 
+			{name:'Заготовка1', openWith:'[table]\n[tr]\n[td] [/td]\n[td] [/td]\n[td] [/td]\n[/tr]\n[/table]', className:"table-go"}, 
+			{name:'Заготовка2', openWith:'\n[tr]\n[td] [/td]\n[td] [/td]\n[td] [/td]\n[/tr]', className:"table-go"}, 
 		]},	
 		
 		{name:'Изображение', replaceWith:'[img][![Адрес]!][/img]', className:"picture", dropMenu: [
@@ -107,11 +111,11 @@ myBbcodeSettings = {
 		
 		{name:'Медиа', className:"audio", dropMenu: [
 			{name:'Аудиоплеер', replaceWith:'[audio=[![Адрес]!]]', className:"audio"}, 
-			{name:'Flash (flv, mp4)', replaceWith:'[flash(640,480)][![Адрес]!][/flash]', className:"flash"}, 
-			{name:'Flowplayer (flv)', replaceWith:'[flowplayer=[![Адрес]!]', className:"flash"}, 
+			{name:'Flash (flv, mp4)', replaceWith:'[flash(640,480)][![Адрес]!][/flash]', className:"movies"}, 
+			{name:'Flowplayer (flv)', replaceWith:'[flowplayer=[![Адрес]!]', className:"movies"}, 
 		]},
 		
-		{name:'Прочее', className:"add", dropMenu: [
+		{name:'Прочее', className:"script-edit", dropMenu: [
 			{name:'div.class', openWith:'[div([![Css class]!])]', closeWith:'[/div]', className:"add"}, 
 			{name:'span.class', openWith:'[span([![Css class]!])]', closeWith:'[/span]', className:"add"}, 
 			{name:'div arrt', openWith:'[div [![Attribute]!]]', closeWith:'[/div]', className:"add"}, 

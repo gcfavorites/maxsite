@@ -1611,6 +1611,8 @@ function mso_slug($slug)
 	}
 	else $slug = mso_hook('slug', $slug);
 
+	$slug = mso_hook('slug_posle', $slug);
+	
 	return $slug;
 }
 

@@ -33,7 +33,6 @@
 		$category_menu_order = isset($data['category_menu_order']) ? (int) $data['category_menu_order'] : 0;
 		$category_name = isset($data['category_name']) ? trim($data['category_name']) : '';
 		$category_desc = isset($data['category_desc']) ? trim($data['category_desc']) : '';
-		$category_slug = isset($data['category_slug']) ? mso_slug($data['category_slug']) : '';
 
 		$ok = true;
 
@@ -41,10 +40,12 @@
 		if ($ok and ($category_id_parent < 0)) $ok = false;
 		if ($ok and ($category_menu_order < 0)) $ok = false;
 		if ($ok and ($category_name == '')) $ok = false;
-		if ($ok and ($category_slug == '')) $category_slug = mso_slug($category_name);
-
+		
 		if ($ok) // все ок - выполняем sql запрос
 		{
+			
+			$category_slug = (isset($data['category_slug']) and $data['category_slug']) ? mso_slug($data['category_slug']) : mso_slug($category_name);
+			
 			# проверим, чтобы category_id_parent был существующим, а также не был равен category_id
 			# то есть не ссылался сам на себя
 			if ($category_id_parent > 0)

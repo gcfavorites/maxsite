@@ -157,53 +157,58 @@ class Maxsite extends Controller
 			require($fn);
 		elseif ($fn !== false) 
 		{
-			# проверим короткую ссылку - может быть это slug из page или category 
-			# если это так, то выставить тип вручную
-			
-			$slug = $this->data_def['uri_segment'][1]; // первый сегмент
-
-			$this->db->select('page_id');
-			$this->db->where(array('page_slug'=>$slug));
-			$this->db->or_where(array('page_id'=>$slug));
-			$this->db->limit('1');
-			
-			$query = $this->db->get('page');
-			if ($query->num_rows() > 0) // есть страница
+			// если в конфиге стоит mso_permalink_no_slug == "no", то ничего не делаем - отдаем 404-страницу
+			if ($this->config->item('mso_permalink_no_slug') !== "no")
 			{
-				# добавим недостающий сегмент в uri_segment
-				array_unshift($this->data_def['uri_segment'], 'page');
+				# проверим короткую ссылку - может быть это slug из page или category 
+				# если это так, то выставить тип вручную
 				
-				// в этом массиве индексы начинаются с 1, а не 0 переделываем
-				$out = array();
+				$slug = $this->data_def['uri_segment'][1]; // первый сегмент
 
-				foreach ($this->data_def['uri_segment'] as $key => $val)
-						$out[$key + 1] = $val;
-
-				$this->data_def['uri_segment'] = $out;
+				$this->db->select('page_id');
+				$this->db->where(array('page_slug'=>$slug));
+				$this->db->or_where(array('page_id'=>$slug));
+				$this->db->limit('1');
 				
-				$this->_view_i('page');
-			}
-			else 
-			{
-				// теперь тоже самое, только с рубрикой
-				$this->db->select('category_id');
-				$this->db->where(array('category_slug'=>$slug));
-				$query = $this->db->get('category');
-				if ($query->num_rows() > 0) // есть рубрика
+				$query = $this->db->get('page');
+				if ($query->num_rows() > 0) // есть страница
 				{
-					array_unshift($this->data_def['uri_segment'], 'category');
+					# добавим недостающий сегмент в uri_segment
+					array_unshift($this->data_def['uri_segment'], 'page');
+					
+					// в этом массиве индексы начинаются с 1, а не 0 переделываем
 					$out = array();
+
 					foreach ($this->data_def['uri_segment'] as $key => $val)
 							$out[$key + 1] = $val;
 
 					$this->data_def['uri_segment'] = $out;
-					$this->_view_i('category');
+					
+					$this->_view_i('page');
 				}
 				else 
 				{
-					$this->_view_i('page_404');
+					// теперь тоже самое, только с рубрикой
+					$this->db->select('category_id');
+					$this->db->where(array('category_slug'=>$slug));
+					$query = $this->db->get('category');
+					if ($query->num_rows() > 0) // есть рубрика
+					{
+						array_unshift($this->data_def['uri_segment'], 'category');
+						$out = array();
+						foreach ($this->data_def['uri_segment'] as $key => $val)
+								$out[$key + 1] = $val;
+
+						$this->data_def['uri_segment'] = $out;
+						$this->_view_i('category');
+					}
+					else 
+					{
+						$this->_view_i('page_404');
+					}
 				}
 			}
+			else $this->_view_i('page_404');
 		}
 		else $this->_view_i('home'); // отсутствие первого сегмента подразумевает, что это home
 	}

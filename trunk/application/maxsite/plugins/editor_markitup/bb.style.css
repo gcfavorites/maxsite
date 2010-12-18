@@ -30,7 +30,7 @@
 .bbcode .list-numeric a	{ background-image:url(images/list-numeric.png); }
 .bbcode .list-item a	{ background-image:url(images/list-item.png); }
 
-.bbcode .code a	{ background-image:url(images/code.png); }
+.bbcode .code a	{ background-image:url(images/highlight.png); }
 
 .bbcode .clean a	{ background-image:url(images/clean.png); }
 .bbcode .preview a { background-image:url(images/preview.png); }
@@ -58,7 +58,7 @@
 .bbcode .flash a { background-image:url(images/flash.png); }
 .bbcode .audio a { background-image:url(images/audio.png); }
 
-.bbcode .separator a { background-image:url(images/separator.png); }
+.bbcode .separator a { background-image:url(images/document_break.png); }
 .bbcode .paragraph a { background-image:url(images/paragraph.png); }
 
 .bbcode .bold a	{background-image:url(images/bold.png); }
@@ -66,5 +66,27 @@
 .bbcode .underline a {background-image:url(images/underline.png); }
 .bbcode .stroke a {background-image:url(images/stroke.png); }
 
+.bbcode .quote a { background-image:url(images/document_quote.png); }
+.bbcode .hr a { background-image:url(images/hr-line.png); }
+.bbcode .html-code a { background-image:url(images/html.png); }
+.bbcode .table a { background-image:url(images/table.png); }
+.bbcode .table-add a { background-image:url(images/table_add.png); }
+.bbcode .table-row-insert a { background-image:url(images/table_row_insert.png); }
+.bbcode .table-select a { background-image:url(images/table_select.png); }
+.bbcode .table-go a { background-image:url(images/table_go.png); }
+
+
+.bbcode .text-padding-left a { background-image:url(images/text_padding_left.png); }
+.bbcode .text-padding-center a { background-image:url(images/text_padding_center.png); }
+.bbcode .text-padding-right a { background-image:url(images/text_padding_right.png); }
+.bbcode .text-padding-justify a { background-image:url(images/text_padding_justify.png); }
+
+.bbcode .text-smallcaps a { background-image:url(images/text_smallcaps.png); }
+
+.bbcode .movies a { background-image:url(images/movies.png); }
+
+.bbcode .page-red a { background-image:url(images/page_red.png); }
+
+.bbcode .script-edit a { background-image:url(images/script_edit.png); }
 
 .bbcode .add a { background-image:url(images/add.png); }

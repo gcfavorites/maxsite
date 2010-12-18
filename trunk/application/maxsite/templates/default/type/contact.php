@@ -133,7 +133,7 @@
 
 	<table border="0" width="99%" cellspacing="10">
 		<tr>
-			<td align="right" class="t1"><label for="contact_name"><?=t('Ваше имя')?><span class="reqtxt">*</span></label></label></td>
+			<td align="right" class="t1"><label for="contact_name"><?=t('Ваше имя')?><span class="reqtxt">*</span></label></td>
 			<td class="t2 input-text"><input name="contact_name" type="text" value="<?=( (isset($_POST['contact_name'])?($_POST['contact_name']):('')) );?>" id="contact_name" style="width: 98%;<?=( ($err_name)?(' border-color: red;'):('') );?>"></td>
 		</tr>
 		<tr>

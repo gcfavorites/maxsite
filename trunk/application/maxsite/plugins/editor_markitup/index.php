@@ -67,4 +67,4 @@ function editor_markitup_mso_options()
 
 }
 
-?>
+# end file

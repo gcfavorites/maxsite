@@ -1308,11 +1308,13 @@ function  mso_page_cat_link($cat = array(), $sep = ', ', $do = '', $posle = '', 
 	$all_cat = mso_cat_array_single();
 
 	$out = '';
+	
+	if ($type) $type .= '/';
+			
 	foreach ($cat as $id)
 	{
 		if ($link)
 		{
-			if ($type) $type .= '/';
 			
 			$out .=  '<a href="'
 					. $MSO->config['site_url']
@@ -1341,12 +1343,13 @@ function mso_page_tag_link($tags = array(), $sep = ', ', $do = '', $posle = '', 
 	if (!$tags) return '';
 
 	$out = '';
+	
+	if ($type) $type .= '/';
+	
 	foreach ($tags as $tag)
 	{
 		if ($link)
 		{
-			if ($type) $type .= '/';
-			
 			$out .=  '<a href="'
 					. $MSO->config['site_url']
 					. $type
@@ -1533,6 +1536,12 @@ function mso_page_comments_link($page_comment_allow = true, $page_slug = '', $ti
 		$r = array_merge($def, $page_comment_allow); // объединяем дефолт с входящим
 
 		if (!$r['page_slug']) return ''; // не указан slug - выходим
+		
+		if ( isset($r['type']) ) // если тип передан в массиве
+		{
+			if ($r['type']) $type = $r['type'] . '/';
+				else $type = false;
+		}
 
 		$out = '';
 

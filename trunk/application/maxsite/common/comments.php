@@ -1104,7 +1104,7 @@ function mso_comuser_edit($args = array())
 	} // обновление формы
 }
 
-# восстановление паролья комюзера
+# восстановление пароля комюзера
 function mso_comuser_lost($args = array())
 {
 	global $MSO;
