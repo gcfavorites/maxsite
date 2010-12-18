@@ -1,3 +1,5 @@
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');?>
+
 // ----------------------------------------------------------------------------
 // markItUp!
 // ----------------------------------------------------------------------------
@@ -28,7 +30,9 @@ myBbcodeSettings = {
 			{name:'Серый', openWith:'[color=gray]', closeWith:'[/color]', className:"col3-2" },
 			{name:'Черный', openWith:'[color=black]', closeWith:'[/color]', className:"col3-3" }
 		]},
-
+		
+		<?php if ($smiles) echo $smiles ?>
+		
 		{name:'Размер', openWith:'[size=[![Text size]!]%]', closeWith:'[/size]', className:"text-smallcaps", dropMenu :[  
 			{name:'Большой', openWith:'[size=200%]', closeWith:'[/size]', className:"big" },
 			{name:'Нормальный', openWith:'[size=100%]', closeWith:'[/size]', className:"normal" },
@@ -64,7 +68,7 @@ myBbcodeSettings = {
 		{name:'Выполнить HTML-код', openWith:'[html]', closeWith:'[/html]', className:"html-code"}, 
 		
 		{separator:'---------------' },
-		
+
 		{name:'Код', openWith:'[pre]', closeWith:'[/pre]', className:"code", dropMenu: [
 			{name:'Текст', openWith:'[pre]', closeWith:'[/pre]', className:"text" },
 			{name:'PHP', openWith:'[pre lang=php]', closeWith:'[/pre]', className:"php" },
@@ -75,7 +79,6 @@ myBbcodeSettings = {
 			{name:'C#', openWith:'[pre lang=csharp]', closeWith:'[/pre]', className:"csharp" },
 			{name:'XML', openWith:'[pre lang=xml]', closeWith:'[/pre]', className:"xml" }
 		]},
-		
 		
 		{name:'Заголовок', openWith:'[h1]', closeWith:'[/h1]', className:"h1", dropMenu: [
 			{name:'Заголовок 1', openWith:'[h1]', closeWith:'[/h1]', className:"h1"}, 
@@ -125,6 +128,9 @@ myBbcodeSettings = {
 		{separator:'---------------' },
      	  
 		{name:'Очистить выделенное от BB кодов', className:"clean", replaceWith:function(h) { return h.selection.replace(/\[(.*?)\]/g, "") }, className:"clean"},
+		
+		
+		<?php mso_hook('editor_markitup_bbcode') ?>
 		
 		/*{name:'Предпросмотр', className:"preview", call:'preview', className:"preview"}*/
    ]

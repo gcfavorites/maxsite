@@ -135,11 +135,17 @@ function bbcode_custom($text = '')
 
 		//headers
 		'~\[h1\](.*?)\[\/h1\]~si'           => '<h1>$1</h1>',
+		'~\[h1\((.[^ ]*?)\)\](.*?)\[\/h1\]~si'           => '<h1 class="$1">$2</h1>',
 		'~\[h2\](.*?)\[\/h2\]~si'           => '<h2>$1</h2>',
+		'~\[h2\((.[^ ]*?)\)\](.*?)\[\/h2\]~si'           => '<h2 class="$1">$2</h2>',
 		'~\[h3\](.*?)\[\/h3\]~si'           => '<h3>$1</h3>',
+		'~\[h3\((.[^ ]*?)\)\](.*?)\[\/h3\]~si'           => '<h3 class="$1">$2</h3>',
 		'~\[h4\](.*?)\[\/h4\]~si'           => '<h4>$1</h4>',
+		'~\[h4\((.[^ ]*?)\)\](.*?)\[\/h4\]~si'           => '<h4 class="$1">$2</h4>',
 		'~\[h5\](.*?)\[\/h5\]~si'           => '<h5>$1</h5>',
+		'~\[h5\((.[^ ]*?)\)\](.*?)\[\/h5\]~si'           => '<h5 class="$1">$2</h5>',
 		'~\[h6\](.*?)\[\/h6\]~si'           => '<h6>$1</h6>',
+		'~\[h6\((.[^ ]*?)\)\](.*?)\[\/h6\]~si'           => '<h6 class="$1">$2</h6>',
 
 		// [code=language][/code]
 		'~\[code\](.*?)\[\/code\]~si'       => '<code>$1</code>',
@@ -183,24 +189,33 @@ function bbcode_custom($text = '')
 		'~\[quote=(?:&quot;|"|\')?(.*?)["\']?(?:&quot;|"|\')?\](.*?)\[\/quote\]~si'   => '<blockquote><strong class="src">$1:</strong>$2</blockquote>',
 
 		# [div(class)]текст[/div]
-		'~\[div\((.[^ ]*?)\)\](.*?)\[\/div\]~si' => '<div class="$1">$2</div>',
+		'~\[div\((.*?)\)\](.*?)\[\/div\]~si' => '<div class="$1">$2</div>',
 
 		# [div style="color: red"]текст[/div] - произвольные атрибуты
 		'~\[div (.*?)\](.*?)\[\/div\]~si' => '<div $1>$2</div>',
 
 		# [span(class)]текст[/div]
-		'~\[span\((.[^ ]*?)\)\](.*?)\[\/span\]~si' => '<span class="$1">$2</span>',
+		'~\[span\((.*?)\)\](.*?)\[\/span\]~si' => '<span class="$1">$2</span>',
 
 		# [span style="color: red"]текст[/span] - произвольные атрибуты
 		'~\[span (.*?)\](.*?)\[\/span\]~si' => '<span $1>$2</span>',
 
-  );
+	);
 
-  $text = preg_replace(array_keys($preg), array_values($preg), $text);
+	if (strpos($text, '[text-demo]') !== false) // есть вхождение [text-demo]
+	{
+		if (file_exists(getinfo('plugins_dir') . 'bbcode/text-demo.txt') )
+		{
+			$text_demo = file(getinfo('plugins_dir') . 'bbcode/text-demo.txt');
+			$text_demo = implode("MSO_N", $text_demo);
+			$text = str_replace('[text-demo]', $text_demo, $text);
+		}
+	}
 
-
+	$text = preg_replace(array_keys($preg), array_values($preg), $text);
+	
   return $text;
 
 }
 
-?>
+# end file

@@ -1484,6 +1484,7 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace("<blockquote>\n<p>", "<blockquote>", $pee); 
 	
 	$pee = preg_replace('!<p><br(.*)></p>!', "<br$1>", $pee); # <br clear="all">
+	$pee = preg_replace('!<li>(.*)</p>\n!', "<li>$1</li>\n", $pee); # <li>...</p>
 
 	# преформатированный текст
 	if ($pre_special_chars)

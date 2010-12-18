@@ -147,8 +147,11 @@
 				var ul = $('<ul></ul>'), i = 0;
 				$('li:hover > ul', ul).css('display', 'block');
 				$.each(markupSet, function() {
-					var button = this, t = '', title, li, j;
+					var button = this, t = '', title, notitle/* MAX */, li, j;
 					title = (button.key) ? (button.name||'')+' [Ctrl+'+button.key+']' : (button.name||'');
+					
+					if (button.notitle) title = ''; /* MAX */
+					
 					key   = (button.key) ? 'accesskey="'+button.key+'"' : '';
 					if (button.separator) {
 						li = $('<li class="markItUpSeparator">'+(button.separator||'')+'</li>').appendTo(ul);

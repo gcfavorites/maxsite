@@ -73,9 +73,10 @@
 	# пересортируем элементы масива так чтобы активные плагины из 
 	# $MSO->active_plugins оказались вверху
 	$dirs = array_unique(array_merge($MSO->active_plugins, $dirs));
-	
 	foreach ($dirs as $dir)
 	{
+		if (!is_dir($plugins_dir . $dir)) continue; // если не каталог ничего не делаем
+		
 		$info_f = $plugins_dir . $dir . '/info.php';
 		
 		if (file_exists($info_f))

@@ -1,3 +1,5 @@
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');?>
+
 // ----------------------------------------------------------------------------
 // markItUp!
 // ----------------------------------------------------------------------------
@@ -30,6 +32,9 @@ myHtmlSettings = {
         {name:'Ссылка', key:'L', openWith:'<a href="[![Link:!:http://]!]"(!( title="[![Title]!]")!)>', closeWith:'</a>', placeHolder:'Your text to link...' },
         {separator:'---------------' },
         {name:'чистить выделенное от HTML кодов', replaceWith:function(h) { return h.selection.replace(/<(.*?)>/g, "") } },
+        
+        <?php mso_hook('editor_markitup_html') ?>
+        
         /*{name:'Preview', call:'preview', className:'preview' }*/
     ]
 }

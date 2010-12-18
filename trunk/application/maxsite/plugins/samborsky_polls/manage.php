@@ -4,7 +4,8 @@
 	
 	function sp_set_data(&$data){
 		
-		$data['q_question'] = addslashes(trim($_POST['question']));
+		// $data['q_question'] = addslashes(trim($_POST['question']));
+		$data['q_question'] = $_POST['question'];
 		
 		// Если вопрос не задан, выходим
 		if( empty($data['q_question']) ){
@@ -201,7 +202,8 @@
 
 	<fieldset>
 		<legend><strong>Вопрос</strong></legend>
-		<input type="text" name="question" size="60" value="<?= isset($question) ? stripslashes($question->data->q_question) : '' ?>">
+		<!--input type="text" name="question" size="100" value="<?= isset($question) ? htmlspecialchars($question->data->q_question) : '' ?>" -->
+		<textarea name="question"><?= isset($question) ? htmlspecialchars($question->data->q_question) : '' ?></textarea>
 	</fieldset>
 	
 	<fieldset>

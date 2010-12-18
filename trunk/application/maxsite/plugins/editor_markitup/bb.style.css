@@ -12,7 +12,7 @@
 	.bbcode .colors  li {border:1px solid white; width:25px;height:25px;overflow:hidden;padding:0; margin:0; float:left;}
 	.bbcode .colors ul a {width:25px; height:25px;}
 	.bbcode .colors ul a:hover {background-color:none;}
-	
+
 	.bbcode .colors .col1-1 a {background:yellow;}
 	.bbcode .colors .col1-2 a {background:orange;}
 	.bbcode .colors .col1-3 a {background:red}
@@ -24,6 +24,13 @@
 	.bbcode .colors .col3-1 a {background:white;}
 	.bbcode .colors .col3-2 a {background:gray;}
 	.bbcode .colors .col3-3 a {background:black;}
+	
+.bbcode .smiles a {background-image:url(images/grin.gif); }
+	.bbcode .smiles ul {width:420px; padding:1px;}
+	.bbcode .smiles  li {border: none; width:21px;height:21px;overflow:hidden;padding:0; margin:0; float:left;}
+	.bbcode .smiles ul a {width:21px; height:21px;}
+	.bbcode .smiles ul a:hover {background-color:none;}
+	.bbcode .smiles .col1-0 a {background:white; color: black; padding: 1px;}
 	
 .bbcode .fonts a	{ background-image:url(images/fonts.png); }
 .bbcode .list-bullet a	{ background-image:url(images/list-bullet.png); }

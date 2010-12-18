@@ -1,6 +1,11 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');?>
 
-<?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/html.js"></script>'; ?>
+<?php //echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/html.js"></script>'; ?>
+
+<script type="text/javascript">
+<?php require('html.js.php') ?>
+</script>
+
 <?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/jquery.markitup.js"></script>'; ?>
 <?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/jquery.markitup.pack.js"></script>'; ?>
 

@@ -3,7 +3,7 @@
 # функция автоподключения плагина
 function editor_markitup_autoload($args = array())
 {
-	mso_hook_add( 'editor_custom', 'editor_markitup'); # хук на подключение своего редактора
+	mso_hook_add('editor_custom', 'editor_markitup'); # хук на подключение своего редактора
 }
 
 # функция выполняется при деинсталяции плагина
@@ -44,6 +44,35 @@ function editor_markitup($args = array())
 	$editor_config['content'] = preg_replace('"&lt;br\s?/?&gt;"i', "\n", $editor_config['content']);
 	$editor_config['content'] = preg_replace('"&lt;br&gt;"i', "\n", $editor_config['content']);
 
+
+	// смайлы - код из comment_smiles
+	$image_url=getinfo('uploads_url').'smiles/';
+	$CI = & get_instance();
+	$CI->load->helper('smiley_helper');
+	$smileys=_get_smiley_array();
+	$used = array();
+	$smiles = '';
+	foreach ($smileys as $key => $val)
+	{
+		// Для того, чтобы для смайлов с одинаковыми картинками (например :-) и :))
+		// показывалась только одна кнопка
+		if (isset($used[$smileys[$key][0]]))
+		{
+		  continue;
+		}
+		
+		$im = "<img src='" . $image_url.$smileys[$key][0] . "' title='" . $key . "'>";
+		$smiles .= '{name:"' .  addcslashes($im, '"') . '", notitle: "1", replaceWith:"' . $key . '", className:"col1-0" },' . NR;
+		
+		$used[$smileys[$key][0]] = TRUE;
+	}
+	if ($smiles)
+	{
+		$smiles = NR . "{name:'Смайлы', openWith:':-)', closeWith:'', className:'smiles', dropMenu: [" 
+				. $smiles
+				. ']},';
+	}
+
 	if (isset($options['editor']))
 		$editor_type = $options['editor'] == 'BB-CODE' ? 'editor-bb.php' : 'editor.php';
 	else $editor_type = 'editor-bb.php';
@@ -58,7 +87,7 @@ function editor_markitup_mso_options()
 			'editor' => array(
 							'type' => 'radio', 
 							'name' => 'Редактор', 
-							'description' => 'Выберите тип редактора',
+							'description' => 'Выберите тип редактора. Для отображения BB-code на сайте требуется включить плагин <strong>BBCode</strong>',
 							'values' => 'HTML # BB-CODE', 
 							'default' => 'BB-CODE',
 							'delimer' => '&nbsp;&nbsp;&nbsp;&nbsp;',

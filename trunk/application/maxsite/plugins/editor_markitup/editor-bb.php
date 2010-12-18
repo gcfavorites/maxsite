@@ -1,6 +1,10 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');?>
 
-<?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/bb.js"></script>'; ?>
+<?php // echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/bb.js"></script>'; ?>
+<script type="text/javascript">
+<?php require('bb.js.php') ?>
+</script>
+
 <?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/jquery.markitup.js"></script>'; ?>
 <?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/style.css" />'; ?>
 <?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/bb.style.css" />'; ?>
