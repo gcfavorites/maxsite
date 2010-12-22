@@ -285,7 +285,8 @@ function mso_email_message_new_comment($id = 0, $data = array(), $page_title = '
 
 # функция отправляет новому комюзеру уведомление о новой регистрации
 # первый парметр id, второй данные
-function mso_email_message_new_comuser($comusers_id = 0, $ins_data = array() )
+# третий - если это автоматическая активация и подтверждение не требуется
+function mso_email_message_new_comuser($comusers_id = 0, $ins_data = array(), $comusers_activate_auto = false)
 {
 	$email = $ins_data['comusers_email']; // email куда приходят уведомления
 	if (!$email) return false;
@@ -294,15 +295,28 @@ function mso_email_message_new_comuser($comusers_id = 0, $ins_data = array() )
 	// comusers_activate_key
 
 	$subject = 'Регистрация на ' . getinfo('title');
-
-	$text = 'Вы или кто-то еще зарегистрировал ваш адрес на сайте "' . getinfo('name_site') . '" - ' . getinfo('siteurl') . NR ;
-	$text .= 'Если это действительно сделали вы, то вам нужно подтвердить эту регистрацию. Для этого следует пройти по ссылке: ' . NR;
-	$text .= getinfo('siteurl') . 'users/' . $comusers_id . NR . NR;
-	$text .= 'И ввести следующий код для активации: '. NR;
-	$text .= $ins_data['comusers_activate_key'] . NR. NR;
-	$text .= '(Сохраните это письмо, поскольку код активации может понадобиться для смены пароля.)' . NR . NR;
-	$text .= 'Если же эту регистрацию выполнили не вы, то просто удалите это письмо.' . NR;
-
+	if (!$comusers_activate_auto)
+	{
+		// текст нужна активация
+		$text = 'Вы или кто-то еще зарегистрировал ваш адрес на сайте "' . getinfo('name_site') . '" - ' . getinfo('siteurl') . NR ;
+		$text .= 'Если это действительно сделали вы, то вам нужно подтвердить эту регистрацию. Для этого следует пройти по ссылке: ' . NR;
+		$text .= getinfo('siteurl') . 'users/' . $comusers_id . NR . NR;
+		$text .= 'И ввести следующий код для активации: '. NR;
+		$text .= $ins_data['comusers_activate_key'] . NR. NR;
+		$text .= '(Сохраните это письмо, поскольку код активации может понадобиться для смены пароля.)' . NR . NR;
+		$text .= 'Если же регистрацию выполнили не вы, то просто удалите это письмо.' . NR;
+	}
+	else
+	{
+		// автоактивация
+		$text = 'Спасибо за регистрирацию на сайте "' . getinfo('name_site') . '" - ' . getinfo('siteurl') . NR ;
+		$text .= 'Ваша страница: ' . NR;
+		$text .= getinfo('siteurl') . 'users/' . $comusers_id . NR . NR;
+		$text .= 'Ваш код активации: '. NR;
+		$text .= $ins_data['comusers_activate_key'] . NR. NR;
+		$text .= 'Сохраните это письмо, поскольку код активации может понадобиться для смены пароля.' . NR . NR;
+	}
+	
 	return mso_mail($email, $subject, $text, $email); // поскольку это регистрация, то отправитель - тот же email
 }
 
@@ -556,13 +570,20 @@ function mso_get_new_comment($args = array())
 						$ins_data['comusers_date_registr'] = date('Y-m-d H:i:s');
 						$ins_data['comusers_last_visit'] = date('Y-m-d H:i:s');
 						$ins_data['comusers_ip_register'] = $_SERVER['REMOTE_ADDR'];
+						
+						// Автоматическая активация новых комюзеров
+						// если активация стоит автоматом, то сразу её и прописываем
+						if ( mso_get_option('comusers_activate_auto', 'general', '0') )
+							$ins_data['comusers_activate_string'] = $ins_data['comusers_activate_key'];
 
 						$res = ($CI->db->insert('comusers', $ins_data)) ? '1' : '0';
 
 						if ($res)
 						{
 							$comusers_id = $CI->db->insert_id(); // номер добавленной записи
-							mso_email_message_new_comuser($comusers_id, $ins_data); // отправляем ему уведомление с кодом активации
+							
+							// отправляем ему уведомление с кодом активации
+							mso_email_message_new_comuser($comusers_id, $ins_data, mso_get_option('comusers_activate_auto', 'general', '0')); 
 						}
 						else
 							return '<div class="' . $args['css_error']. '">'. t('Ошибка регистрации'). '</div>';

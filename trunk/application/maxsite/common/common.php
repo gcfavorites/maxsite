@@ -3137,7 +3137,7 @@ function _mso_login()
 					$CI->db->where('comusers_id', $comuser_info['comusers_id']);
 					$CI->db->update('comusers', array('comusers_last_visit'=>date('Y-m-d H:i:s')));
 					
-					$expire  = time() + 60 * 60 * 24 * 30; // 30 дней = 2592000 секунд
+					$expire  = time() + 60 * 60 * 24 * 365; // 365 дней
 					
 					$name_cookies = 'maxsite_comuser';
 					$value = serialize($comuser_info); 
@@ -3229,7 +3229,7 @@ function _mso_logout()
 	if ($comuser) 
 	{
 		$name_cookies = 'maxsite_comuser';
-		$expire  = time() - 2592100; // 30 дней = 2592000 секунд
+		$expire  = time() - (60 * 60 * 24 * 365); // 365 дней
 		$value = ''; 
 		
 		

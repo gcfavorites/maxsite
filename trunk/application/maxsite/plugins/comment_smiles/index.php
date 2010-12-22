@@ -34,7 +34,7 @@ function comment_smiles_custom($arg = array())
   $CI->load->helper('smiley_helper');
   $smileys=_get_smiley_array();
   
-  echo '<p style="padding-bottom:5px;">';
+  echo '<p style="padding-bottom:5px" class="comment_smiles">';
   
   //кусок кода из smiley_helper
   $used = array();

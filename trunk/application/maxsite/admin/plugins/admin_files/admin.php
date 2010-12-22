@@ -16,7 +16,7 @@
 	$CI->load->helper('form');
 
 	// разрешенные типы файлов
-	$allowed_types = 'mp3|gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|avi|wmv|flv|swf|wav|xls|7z|gz';
+	$allowed_types = 'mp3|gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|avi|wmv|flv|swf|wav|xls|7z|gz|bz2|tgz';
 
 
 	// по сегменту определяем текущий каталог в uploads
