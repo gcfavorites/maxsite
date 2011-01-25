@@ -1,5 +1,8 @@
-html, body {margin: 0; padding: 0;}
-body {font-family: Verdana; font-size: 9pt; background: white; line-height: 1.3em;}
+/* reset v1.0 | 2008-02-12 http://meyerweb.com/eric/tools/css/reset/ */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, lab1el, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent;}
+body {line-height: 1;}
+
+body {font-family: Verdana; font-size: 9pt; background: white;}
 
 a { color: #3182C0; text-decoration: none;}
 a:hover { color: #3182C0; text-decoration: underline; }
@@ -25,12 +28,15 @@ p.f-ch {clear: both; margin: 15px 0 0 155px; color: #3C5FB3;}
 p.mysubmit-ok {text-align: center;}
 
 label {cursor: pointer;}
-input[type='checkbox'] {cursor: pointer;}
+input[type='checkbox'] {cursor: pointer; margin-top: 2px; vertical-align: middle;}
 
 h1 {font-size: 1.7em; color: #404040; background: #D5D5E1; padding: 10px 0; font-weight: normal; margin: 0 0 20px; text-align: center;}
 h2 {font-size: 1.3em; color: #404040; margin: 20px 0;}
 h2.error {color: red; text-align: center;}
 h3 {font-size: 1.2em;}
+
+h2.res {color: green; margin: 20px 80px 20px 80px;}
+p.res {margin: 7px 80px 7px 80px;}
 
 div.proverka {padding: 5px 10px; margin: 20px 0 20px 0; border-top: 3px double #a0a0a0; border-bottom: 3px double #a0a0a0; font-size: 8pt;}
 div.proverka p {margin: 7px 0;}

@@ -23,35 +23,37 @@
 .html .markItUpButton7 a {
 	background-image:url(images/paragraph.png); 
 }
-
 .html .markItUpButton8 a {
-	background-image:url(images/bold.png);
+	background-image:url(images/document_quote.png); 
 }
 .html .markItUpButton9 a {
-	background-image:url(images/italic.png);
+	background-image:url(images/bold.png);
 }
 .html .markItUpButton10 a {
+	background-image:url(images/italic.png);
+}
+.html .markItUpButton11 a {
 	background-image:url(images/stroke.png);
 }
 
-.html .markItUpButton11 a {
+.html .markItUpButton12 a {
 	background-image:url(images/list-bullet.png);
 }
-.html .markItUpButton12 a {
+.html .markItUpButton13 a {
 	background-image:url(images/list-numeric.png);
 }
-.html .markItUpButton13 a {
+.html .markItUpButton14 a {
 	background-image:url(images/list-item.png);
 }
 
-.html .markItUpButton14 a {
+.html .markItUpButton15 a {
 	background-image:url(images/picture.png); 
 }
-.html .markItUpButton15 a {
+.html .markItUpButton16 a {
 	background-image:url(images/link.png);
 }
 
-.html .markItUpButton16 a {
+.html .markItUpButton17 a {
 	background-image:url(images/clean.png);
 }
 .html .preview a {

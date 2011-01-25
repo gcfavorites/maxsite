@@ -45,7 +45,9 @@ mso_cur_dir_lang('templates');
 				
 			
 					<span class="black"><?=t('Если вы уже зарегистрированы как комментатор или хотите зарегистрироваться, укажите пароль и свой действующий email. <br><em>(При регистрации на указанный адрес придет письмо с кодом активации и ссылкой на ваш персональный аккаунт, где вы сможете изменить свои данные, включая адрес сайта, ник, описание, контакты и т.д.)</em>')?></span></label><br>
-				
+					
+					<?php mso_hook('page-comment-form') ?>
+					
 				<label for="comments_email" class="comments_email"><?= t('E-mail') ?></label>
 				<input type="text" name="comments_email" id="comments_email" value="" class="text" onfocus="document.getElementById('comments_reg_2').checked = 'checked';"><br>
 

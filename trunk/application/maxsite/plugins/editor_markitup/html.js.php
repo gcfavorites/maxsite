@@ -19,6 +19,7 @@ myHtmlSettings = {
         {name:'Заголовок 5', key:'5', openWith:'<h5(!( class="[![Class]!]")!)>', closeWith:'</h5>', placeHolder:'Название сюда...' },
         {name:'Заголовок 6', key:'6', openWith:'<h6(!( class="[![Class]!]")!)>', closeWith:'</h6>', placeHolder:'Название сюда...' },
         {name:'Абзац', openWith:'<p(!( class="[![Class]!]")!)>', closeWith:'</p>'  },
+        {name:'Цитата', openWith:'<blockquote(!( class="[![Class]!]")!)>', closeWith:'</blockquote>'  },
         {separator:'---------------' },
         {name:'Жирный', key:'B', openWith:'<strong>', closeWith:'</strong>' },
         {name:'Курсив', key:'I', openWith:'<em>', closeWith:'</em>'  },

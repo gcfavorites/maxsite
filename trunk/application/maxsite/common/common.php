@@ -1288,6 +1288,8 @@ function mso_clean_pre_special_chars($matches)
 		$m = str_replace('&amp;lt;', '&lt;', $m);
 		$m = str_replace('&amp;gt;', '&gt;', $m);
 		
+		
+		
 		$text = "" . $matches[1] . $m . "</pre>\n";
 	}
 	else
@@ -1316,9 +1318,44 @@ function mso_clean_pre($matches)
 	$text = str_replace("<br />", "<br>", $text);
 	$text = str_replace("<br/>", "<br>", $text);
 	$text = str_replace("<br>", "MSO_N", $text);
-
+	
+	$text = str_replace('<', '&lt;', $text);
+	$text = str_replace('>', '&gt;', $text);
+	$text = str_replace('&lt;pre', '<pre', $text);
+	$text = str_replace('&lt;/pre', '</pre', $text);
+	$text = str_replace('pre&gt;', 'pre>', $text);
+	
 	return $text;
 }
+
+# pre, которое загоняется в [html_base64]
+function mso_clean_pre_do($matches)
+{
+	$text = trim($matches[2]);
+
+	$text = str_replace('<p>', '', $text);
+	$text = str_replace('</p>', '', $text);
+	$text = str_replace('[', '&#91;', $text);
+	$text = str_replace(']', '&#93;', $text);
+	$text = str_replace("<br>", "MSO_N", $text);
+	$text = str_replace("<br />", "<br>", $text);
+	$text = str_replace("<br/>", "<br>", $text);
+	$text = str_replace("<br>", "MSO_N", $text);
+	
+	$text = str_replace('<', '&lt;', $text);
+	$text = str_replace('>', '&gt;', $text);
+	$text = str_replace('&lt;pre', '<pre', $text);
+	$text = str_replace('&lt;/pre', '</pre', $text);
+	$text = str_replace('pre&gt;', 'pre>', $text);
+
+	
+	//pr($text);
+	$text = $matches[1] . '[html_base64]' . base64_encode($text) . '[/html_base64]'. $matches[3];
+
+	//_pr($text);
+	return $text;
+}
+
 
 # подчистка блоковых тэгов
 # удаляем в них <p>
@@ -1452,12 +1489,19 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	# все MSO_N это абзацы
 	$pee = str_replace('MSO_N', "\n", $pee); 
 	
+	
+	# преформатированный текст
+	$pee = preg_replace_callback('!(<pre.*?>)(.*?)(</pre>)!is', 'mso_clean_pre_do', $pee );
+	
+	
 	# удалим перед всеми закрывающими тэгами абзац
 	$pee = str_replace("\n</", "</", $pee); 
+
+	//_pr($pee, true);
 	
 	# отбивка некоторых блоков
-	$pee = str_replace("<pre>", "\n<pre>\n", $pee); 
-	$pee = str_replace("</pre>", "\n</pre>\n", $pee);
+	//$pee = str_replace("<pre>", "\n<pre>\n", $pee); 
+	//$pee = str_replace("</pre>", "\n</pre>\n", $pee);
 	
 	# расставим все абзацы по p
 	$pee = preg_replace('!(.*)\n!', "\n<p>$1</p>", $pee);
@@ -1489,7 +1533,8 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	
 	$pee = preg_replace('!<p><br(.*)></p>!', "<br$1>", $pee); # <br clear="all">
 	$pee = preg_replace('!<li>(.*)</p>\n!', "<li>$1</li>\n", $pee); # <li>...</p>
-
+	
+	/*
 	# преформатированный текст
 	if ($pre_special_chars)
 	{
@@ -1506,7 +1551,7 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	
 	$pee = str_replace("<pre>\n\n", "<pre>\n", $pee); 
 	$pee = str_replace("\n</pre>", "</pre>", $pee); 
-	
+	*/
 	
 	### подчистим некоторые блочные тэги удалим <p> внутри. MSO_N_BLOCK = </p>
 	
@@ -1522,12 +1567,16 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	# еще раз подчистка
 	$pee = str_replace('MSO_N', "\n", $pee); 
 	
+	# введём bb-код [br]
+	$pee = str_replace('[br]', '<br>', $pee);
+	
 	# завершим [html]
 	$pee = str_replace('<p>[html_base64]', '[html_base64]', $pee);
 	$pee = str_replace('[/html_base64]</p>', '[/html_base64]', $pee);
 	$pee = str_replace('[/html_base64] </p>', '[/html_base64]', $pee);
+	
 	$pee = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $pee );
-
+	
 	# перенос строки в конце текста
 	$pee = $pee . "\n";
 	
@@ -3058,7 +3107,6 @@ function _mso_login()
 		# защита сесии
 		if ($MSO->data['session']['session_id'] != $flogin_session_id) mso_redirect('loginform/error');
 		
-		
 		$flogin_redirect = urldecode($_POST['flogin_redirect']);
 		
 		
@@ -3071,7 +3119,7 @@ function _mso_login()
 		if ( ! mso_strip($flogin_user, true) or ! mso_strip($flogin_password, true) ) mso_redirect('loginform/error');
 		
 		$flogin_password = mso_md5($flogin_password);
-		
+
 		$CI = & get_instance();
 		
 		// если это комюзер, то логин = email 
@@ -3155,7 +3203,7 @@ function _mso_login()
 		}
 		else 
 		{
-			// это обчный автор
+			// это обычный автор
 			
 			$CI->db->from('users'); # таблица users
 			$CI->db->select('*'); # все поля

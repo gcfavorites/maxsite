@@ -146,9 +146,10 @@ function mso_get_comments($page_id = 0, $r = array())
 			
 			// защитим pre
 			$t = $comments_content;
+			$t = str_replace('&lt;/pre>', '</pre>', $t); // проставим pre - исправление ошибки CodeIgniter
 			
 			$t = preg_replace_callback('!<pre>(.*?)</pre>!is', 'mso_clean_html_do', $t);
-			
+
 			if ($commentator==1) $t = strip_tags($t, $r['tags_comusers']);
 			elseif ($commentator==2) $t = strip_tags($t, $r['tags_users']);
 			else $t = strip_tags($t, $r['tags']);
@@ -398,7 +399,6 @@ function mso_get_new_comment($args = array())
 			$t = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $t);
 			
 			$post['comments_content'] = $t; // сохраним как текст комментария
-			
 		}
 		
 		// если указано рубить коммент при обнаруженной xss-атаке 
@@ -418,6 +418,8 @@ function mso_get_new_comment($args = array())
 		if ($args['xss_clean'])
 		{
 			$post['comments_content'] =  mso_xss_clean($post['comments_content']);
+			// проставим pre исправление ошибки CodeIgniter
+			$post['comments_content'] = str_replace('&lt;/pre>', '</pre>', $post['comments_content']); 
 		}	
 		
 		$comments_author_ip = $_SERVER['REMOTE_ADDR'];

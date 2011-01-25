@@ -131,7 +131,7 @@
 			
 			if (file_exists( $MSO->config['base_dir'] . 'mso_config.php' )) 
 			{
-				echo '<p class="ok"><span>√</span> Файл «<em>application/maxsite/mso_config.php</em>» - OK!</p>';
+				echo '<p class="ok"><span>√</span> Файл «application/maxsite/mso_config.php» - OK!</p>';
 			}
 			else
 			{
@@ -241,10 +241,10 @@
 ?>
 	
 	<h1>Поздравляем! Всё готово!</h1>
-	<h2>Ваша информация:</h2>
+	<h2 class="res">Ваша информация</h2>
 	<?= $res ?>
-	<p><a href="<?= getinfo('siteurl') ?>">Переход к сайту</a></p>
-	<p>Не забудьте открыть файл «application/maxsite/mso_config.php» и измените на <em>$mso_install = true;</em></p>
+	<br><p class="res"><a href="<?= getinfo('siteurl') ?>">Переход к сайту</a></p>
+	<p class="res">Не забудьте открыть файл «application/maxsite/mso_config.php» и измените <em>$mso_install = true;</em></p>
 	<?php 
 		// поскольку это инсталяция, то отправитель - тот же email
 		@mso_mail($useremail, 'Новый сайт на MaxSite CMS', $text, $useremail); 

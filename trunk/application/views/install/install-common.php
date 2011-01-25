@@ -65,9 +65,9 @@ function mso_install_newsite($arg = array())
 		}
 	}
 	
-	$res = '<p><strong>Логин:</strong> ' . $arg['username'] . '</p>';
-	$res .= '<p><strong>Пароль:</strong> ' . $arg['userpassword_orig'] . '</p>';
-	$res .= '<p><strong>Email:</strong> ' . $arg['useremail'] . '</p>';
+	$res = '<p class="res"><strong>Логин:</strong> ' . $arg['username'] . '</p>';
+	$res .= '<p class="res"><strong>Пароль:</strong> ' . $arg['userpassword_orig'] . '</p>';
+	$res .= '<p class="res"><strong>Email:</strong> ' . $arg['useremail'] . '</p>';
 
 	return $res;
 }
