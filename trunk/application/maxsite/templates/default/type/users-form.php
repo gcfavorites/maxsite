@@ -42,7 +42,7 @@ if ($comuser_info)
 {
 	extract($comuser_info[0]);
 	
-	# pr($comuser_info[0]);
+	//pr($comuser_info[0]);
 	if ($f = mso_page_foreach('users-form')) require($f); // подключаем кастомный вывод
 	else
 	{

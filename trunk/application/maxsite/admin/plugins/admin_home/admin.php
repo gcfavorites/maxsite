@@ -8,8 +8,9 @@ mso_cur_dir_lang('admin');
 <ul>
 	<li><a href="http://max-3000.com/"><?= t('Официальный сайт') ?></a></li>
 	<li><a href="http://max-3000.com/help"><?= t('Центр помощи') ?></a></li>
+	<li><a href="http://max-3000.com/page/faq"><?= t('ЧАВО по MaxSite CMS для новичков') ?></a></li>
 	<li><a href="http://forum.max-3000.com/"><?= t('Форум поддержки') ?></a></li>
-	<li><a href="http://code.google.com/p/maxsite/issues/list"><?= t('Google Code (для тестеров)') ?></a></li>
+	<!-- li><a href="http://code.google.com/p/maxsite/issues/list"><?= t('Google Code (для тестеров)') ?></a></li-->
 </ul>
 <br>
 <p><?= t('Ваша версия <strong>MaxSite CMS</strong>') ?>: <?= getinfo('version') ?></p>

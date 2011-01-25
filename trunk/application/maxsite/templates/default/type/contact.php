@@ -188,8 +188,8 @@ else
 		</tr>
 <?php if (mso_get_option('ask_copy', 'templates', '1')) { ?>
 		<tr>
-			<td align="right" class="t1"><?=t('Отправить копию письма на ваш e-mail?')?></td>
-			<td valign="top" class="t2 input-checkbox"><input name="subscribe" value="" <?=( (isset($_POST['subscribe'])?('checked="checked"'):('')) );?> type="checkbox">&nbsp;<?=t('Да')?></td>
+			<td align="right" class="t1"><label for="subscribe"><?=t('Отправить копию письма на ваш e-mail?')?></label></td>
+			<td valign="top" class="t2 input-checkbox"><label><input name="subscribe" id="subscribe" value="" <?=( (isset($_POST['subscribe'])?('checked="checked"'):('')) );?> type="checkbox">&nbsp;<?=t('Да')?></label></td>
 		</tr>
 <?php } ?>
 		<tr>

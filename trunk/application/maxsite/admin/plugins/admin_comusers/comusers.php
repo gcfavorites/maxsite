@@ -33,6 +33,11 @@
 			$CI->db->where_in('comments_comusers_id', $arr_ids);
 			$CI->db->update('comments', array('comments_author_name' => t('Аноним', 'admin')) );		
 						
+			// удалим всю инфу о комюзере из мета
+			$CI->db->where('meta_table', 'comusers');
+			$CI->db->where_in('meta_id_obj', $arr_ids);
+			$CI->db->delete('meta');
+			
 			mso_flush_cache();
 			echo '<div class="update">' . t('Удалено!') . '</div>';
 		}

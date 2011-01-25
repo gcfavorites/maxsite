@@ -26,18 +26,12 @@ function bbcode_uninstall($args = array())
 
 function bbcode_pre_callback($matches)
 {
-	$m = $matches[1];
-
-//	$m = str_replace('<br>', NR, $m);
-//	$m = str_replace('<br />', NR, $m);
-
-//	$m = str_replace('<', '&lt;', $m);
-//	$m = str_replace('>', '&gt;', $m);
+	$m = $matches[2];
 
 	$m = str_replace('[', '&#91;', $m);
 	$m = str_replace(']', '&#93;', $m);
 
-	$m = '<pre>' . $m . '</pre>';
+	$m = '<pre' . $matches[1] . '>' . $m . '</pre>';
 
 	return $m;
 }
@@ -72,7 +66,7 @@ function bbcode_mso_options()
 function bbcode_custom($text = '')
 {
 
-	$text = preg_replace_callback('~\[pre\](.*?)\[\/pre\]~si', 'bbcode_pre_callback', $text );
+	$text = preg_replace_callback('~\[pre(.*?)\](.*?)\[\/pre\]~si', 'bbcode_pre_callback', $text );
 
     $preg = array(
 		// Text arrtibutes

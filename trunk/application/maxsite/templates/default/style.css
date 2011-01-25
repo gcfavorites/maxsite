@@ -63,7 +63,7 @@ blockquote p {width: 100%; margin: 0; }
 *+html #MainMenu {width: 660px;}
 div.header-searh {float: right; width: 240px; text-align: right; padding: 4px 4px 0 0;}
 
-#header2 {border-top: 6px solid #3C5FB3; border-bottom: 2px solid #B7BECE; height: 211px; background: #D5D5E1 url(images/h2.jpg) no-repeat;}
+#header2 {border-top: 6px solid #3C5FB3; border-bottom: 2px solid #B7BECE; height: 211px; background: #D5D5E1 url("images/h2.jpg") no-repeat;}
 #header2 h1 {font-size: 18pt; padding: 10px 0 0 10px; color: #51669F;}
 #header2 h1 a { color: #30407F;}
 #header2 h1 a:hover {text-decoration: underline; }
@@ -146,6 +146,7 @@ div.gallery img {border: 1px solid #7E7E82; margin: 0 4px; }
 div.gallery img:hover {border: 1px solid #922A35; }
 div.gallery div {text-align: left; font-weight: bold; margin: 0 0 3px 3px;}
 
+div.category_desc {margin: 0 0 20px 0; }
 
 /* LIST */
 ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; list-style-type: none; line-height: 1.5em;}

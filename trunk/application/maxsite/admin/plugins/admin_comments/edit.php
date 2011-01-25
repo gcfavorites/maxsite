@@ -5,7 +5,7 @@ mso_cur_dir_lang('admin');
 ?>
 
 <h1><?= t('Редактирование комментария') ?></h1>
-<p><a href="<?= $MSO->config['site_admin_url'] . 'comments' ?>"><?= t('К списку комментариев') ?></a></p>
+<p><a href="<?= getinfo('site_admin_url') . 'comments' ?>"><?= t('К списку комментариев') ?></a></p>
 
 <?php
 
@@ -88,6 +88,25 @@ mso_cur_dir_lang('admin');
 						'page_title' => $row['page_title']
 						));
 				}
+			}
+		}
+		elseif ($post = mso_check_post(array('f_session_id', 'f_submit_delete')))
+		{
+			// удалить комментарий
+			mso_checkreferer();
+
+			$CI->db->where_in('comments_id', $id);
+			if ( $CI->db->delete('comments') )
+			{
+				mso_flush_cache();
+				
+				// синхронизация количества комментариев у комюзеров
+				mso_comuser_update_count_comment();
+				mso_redirect('admin/comments');
+			}
+			else 
+			{
+				echo '<div class="error">' . t('Ошибка удаления') . '</div>';
 			}
 		}
 
@@ -192,8 +211,9 @@ mso_cur_dir_lang('admin');
 			echo '<p><input type="hidden" name="f_comments_email_subscribe" value="0"><label><input type="checkbox" name="f_comments_email_subscribe" value="1" ' . $checked2 . '> '
 				. t('Сразу разослать подписчикам')
 				. '</label></p>';
-			echo '<p class="br"><input type="submit" name="f_submit" value="' . t('Готово') . '">' .
-			'</p>';
+			echo '<p class="br"><input type="submit" name="f_submit" value="' . t('Готово') . '">' 
+				. ' <input type="submit" name="f_submit_delete" onClick="if(confirm(\'' . t('Уверены?') . '\')) {return true;} else {return false;}" value="' . t('Удалить комментарий') . '">'
+				. '</p>';
 
 
 

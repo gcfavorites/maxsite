@@ -37,7 +37,10 @@ if ($f = mso_page_foreach('category-do')) require($f); // подключаем �
 	else 
 	{
 		# выводим только если есть найденные страницы
-		if ($pages) echo '<h1 class="category">' . $title_page . '</h1>';
+		if ($pages) 
+		{
+			echo '<h1 class="category">' . $title_page . '</h1>';
+		}
 	}
 
 if ($pages) // есть страницы
@@ -47,9 +50,29 @@ if ($pages) // есть страницы
 	{
 		if ($f = mso_page_foreach('category-show-rss-text')) 
 			require($f); // подключаем кастомный вывод
-		else 
+		else
 			echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_segment(1) . '/' . mso_segment(2) . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a></h3>';
+			
 	}
+	
+	if ($f = mso_page_foreach('category-show-desc')) 
+			require($f); // подключаем кастомный вывод
+	else
+	{
+		if (isset($pages[0]['page_categories_detail']))
+		{
+			// описание рубрики
+			foreach ($pages[0]['page_categories_detail'] as $_cat)
+			{
+				if ($_cat['category_slug'] == mso_segment(2))
+				{
+					if ($_cat['category_desc']) echo '<div class="category_desc">' . $_cat['category_desc'] . '</div>';
+					break;
+				}
+			}
+		}
+	}
+	
 	
 	if (!$full_posts) echo '<ul class="category">';
 	

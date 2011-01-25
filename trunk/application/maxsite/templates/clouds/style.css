@@ -77,6 +77,8 @@ div.page_other_pages {margin: 20px 0 20px 0;}
 div.page_other_pages h3 {color: black; margin: 0 0 5px 0; background: #E8E8E8; padding: 3px;}
 div.page_other_pages ul {list-style-type: square;}
 
+div.category_desc {margin: 0 0 20px 0; }
+
 
 /* LIST */
 ul.is_link {margin: 0px 0px 10px 3px; padding: 0px; list-style-type: none; line-height: 1.5em;}

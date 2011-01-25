@@ -371,6 +371,7 @@ function maxsite_auth_custom($args = array())
 				$ins_data['comusers_date_registr'] = date('Y-m-d H:i:s');
 				$ins_data['comusers_last_visit'] = date('Y-m-d H:i:s');
 				$ins_data['comusers_ip_register'] = $_SERVER['REMOTE_ADDR'];
+				$ins_data['comusers_notify'] = 1; // сразу включаем подписку на уведомления
 				
 				// Автоматическая активация новых комюзеров
 				// если активация стоит автоматом, то сразу её и прописываем
@@ -383,6 +384,23 @@ function maxsite_auth_custom($args = array())
 				{
 					$comusers_id = $CI->db->insert_id(); // номер добавленной записи
 					
+					// нужно добавить опцию в мета «новые комментарии, где я участвую» subscribe_my_comments
+					// вначале грохаем если есть такой ключ
+					$CI->db->where('meta_table', 'comusers');
+					$CI->db->where('meta_id_obj', $comusers_id);
+					$CI->db->where('meta_key', 'subscribe_my_comments');
+					$CI->db->delete('meta');
+					
+					// теперь добавляем как новый
+					$ins_data = array(
+							'meta_table' => 'comusers',
+							'meta_id_obj' => $comusers_id,
+							'meta_key' => 'subscribe_my_comments',
+							'meta_value' => '1'
+							);
+					
+					$CI->db->insert('meta', $ins_data);
+							
 					// отправляем ему уведомление с кодом активации
 					require_once( getinfo('common_dir') . 'comments.php' ); // функции комментариев
 					mso_email_message_new_comuser($comusers_id, $ins_data, mso_get_option('comusers_activate_auto', 'general', '0'));

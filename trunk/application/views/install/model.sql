@@ -244,7 +244,7 @@ CREATE TABLE _PREFIX_comusers (
 	comusers_ip_register varchar(50) default '',
 	comusers_language varchar(5) default 'ru',
 	comusers_skins varchar(255) default '',
-	comusers_notify enum('0','1') NOT NULL default '0',
+	comusers_notify enum('0','1') NOT NULL default '1',
 	comusers_admin_note longtext,
 	comusers_activate_string varchar(255) default '',
 	comusers_activate_key varchar(255) default '',

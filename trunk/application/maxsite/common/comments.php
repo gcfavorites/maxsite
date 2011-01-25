@@ -572,6 +572,7 @@ function mso_get_new_comment($args = array())
 						$ins_data['comusers_date_registr'] = date('Y-m-d H:i:s');
 						$ins_data['comusers_last_visit'] = date('Y-m-d H:i:s');
 						$ins_data['comusers_ip_register'] = $_SERVER['REMOTE_ADDR'];
+						$ins_data['comusers_notify'] = '1'; // сразу включаем подписку на уведомления
 						
 						// Автоматическая активация новых комюзеров
 						// если активация стоит автоматом, то сразу её и прописываем
@@ -583,6 +584,27 @@ function mso_get_new_comment($args = array())
 						if ($res)
 						{
 							$comusers_id = $CI->db->insert_id(); // номер добавленной записи
+
+							// нужно добавить опцию в мета «новые комментарии, где я участвую» subscribe_my_comments
+							// вначале грохаем если есть такой ключ
+							$CI->db->where('meta_table', 'comusers');
+							$CI->db->where('meta_id_obj', $comusers_id);
+							$CI->db->where('meta_key', 'subscribe_my_comments');
+							$CI->db->delete('meta');
+							
+							// теперь добавляем как новый
+							$ins_data = array(
+									'meta_table' => 'comusers',
+									'meta_id_obj' => $comusers_id,
+									'meta_key' => 'subscribe_my_comments',
+									'meta_value' => '1'
+									);
+							
+							$CI->db->insert('meta', $ins_data);
+					
+							// почему CodeIgniter не может так?
+							// INSERT INTO table SET column = 1, id=1 ON DUPLICATE KEY UPDATE column = 2
+							
 							
 							// отправляем ему уведомление с кодом активации
 							mso_email_message_new_comuser($comusers_id, $ins_data, mso_get_option('comusers_activate_auto', 'general', '0')); 
@@ -825,12 +847,56 @@ function mso_get_comuser($id = 0, $args = array())
 			{
 				$comments_content = $comment['comments_content'];
 				
+				
+				/*
 				$comments_content = mso_xss_clean($comments_content);
 				
 				$comments_content = mso_auto_tag($comments_content, true);
 				$comments_content = strip_tags($comments_content, $args['tags']);
 				$comments_content = mso_balance_tags($comments_content);
 				$comments_content = mso_hook('comments_content', $comments_content);
+				*/
+				
+				$comments_content = $comment['comments_content'];
+				// защитим pre
+				$t = $comments_content;
+				$t = str_replace('&lt;/pre>', '</pre>', $t); // проставим pre - исправление ошибки CodeIgniter
+				
+				$t = preg_replace_callback('!<pre>(.*?)</pre>!is', 'mso_clean_html_do', $t);
+
+				$t = strip_tags($t, $args['tags']);
+				
+				$t = mso_xss_clean($t);
+
+				$t = str_replace('[html_base64]', '<pre>[html_base64]', $t); // проставим pre
+				$t = str_replace('[/html_base64]', '[/html_base64]</pre>', $t);
+				
+				// обратная замена
+				$t = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $t);
+				
+				$comments_content = $t; // сохраним как текст комментария
+				
+				$comments_content = mso_hook('comments_content', $comments_content);
+				
+				$comments_content = str_replace("\n", "<br>", $comments_content);
+		
+				$comments_content = str_replace('<p>', '&lt;p&gt;', $comments_content);
+				$comments_content = str_replace('</p>', '&lt;/p&gt;', $comments_content);
+				$comments_content = str_replace('<P>', '&lt;P&gt;', $comments_content);
+				$comments_content = str_replace('</P>', '&lt;/P&gt;', $comments_content);
+				
+				if (mso_hook_present('comments_content_custom'))
+				{
+					$comments_content = mso_hook('comments_content_custom', $comments_content);
+				}
+				else
+				{
+					$comments_content = mso_auto_tag($comments_content, true);
+					$comments_content = mso_hook('content_balance_tags', $comments_content);
+				}
+				
+				$comments_content = mso_hook('comments_content_out', $comments_content);
+
 				$comments[$key]['comments_content'] = $comments_content;
 			}
 
