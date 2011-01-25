@@ -99,7 +99,7 @@ if ($comuser_info)
 				echo '<p><strong>'. t('Аватарка (с http://, размер 80x80px)'). ':</strong> <input type="text" name="f_comusers_avatar_url" value="' . $comusers_avatar_url . '"></p><br>';
 				
 				echo '<p><strong>'. t('ICQ'). ':</strong> <input type="text" name="f_comusers_icq" value="' . $comusers_icq . '"></p>';
-				echo '<p><strong>'. t('MSN'). ':</strong> <input type="text" name="f_comusers_msn" value="' . $comusers_msn . '"></p>';
+				echo '<p><strong>'. t('Twitter'). ':</strong> <input type="text" name="f_comusers_msn" value="' . $comusers_msn . '"></p>';
 				echo '<p><strong>'. t('Jabber'). ':</strong> <input type="text" name="f_comusers_jaber" value="' . $comusers_jaber . '"></p>';
 				echo '<p><strong>'. t('Дата рождения'). ':</strong> <input type="text" name="f_comusers_date_birth" value="' . $comusers_date_birth . '"></p>';
 				

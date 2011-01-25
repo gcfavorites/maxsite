@@ -4,7 +4,7 @@
 $info = array(
 	'name' => 'Random_text',
 	'description' => 'Вывод случайных фраз (цитат, текстов). Виджет. Можно сделать ушку «randomtext», чтобы указать свои цитаты (построчно).',
-	'version' => '1.0',
+	'version' => '1.1',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
@@ -12,4 +12,4 @@ $info = array(
 );
 
 
-?>
+# end file

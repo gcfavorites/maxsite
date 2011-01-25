@@ -113,6 +113,7 @@ if ($pages) // есть страницы
 { 	
 	// выводим полнные тексты или списком
 	if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="category">';
+		else echo NR . '<div class="page_all">' . NR;
 		
 	foreach ($pages as $page) : // выводим в цикле
 
@@ -177,7 +178,9 @@ if ($pages) // есть страницы
 	endforeach;
 	
 	if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '</ul><!--ul class="category"-->';
-	
+		else echo '</div><!--div class="page_all"-->' . NR;
+
+	if ($f = mso_page_foreach('home-do-pagination')) require($f);
 	mso_hook('pagination', $pagination);
 
 }

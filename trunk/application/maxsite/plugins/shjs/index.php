@@ -144,6 +144,9 @@ function shjs_content($text = '')
 		$text = str_replace('<pre>', '<pre class="' . $options['default_lang'] . '">', $text);
 		$text = str_replace('[pre]', '[pre class="' . $options['default_lang'] . '"]', $text);
 		
+		// замены для совместимости с syntaxhighlighter
+		$text = str_replace('[pre lang=php]', '[pre class="sh_php"]', $text);
+		
 		return $text;
 	}
 

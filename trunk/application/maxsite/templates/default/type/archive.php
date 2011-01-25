@@ -101,6 +101,8 @@ else
 	}
 } // endif $pages
 
+if ($f = mso_page_foreach('archive-posle')) require($f);
+
 echo NR . '</div><!-- class="type type_archive" -->' . NR;
 
 # конечная часть шаблона

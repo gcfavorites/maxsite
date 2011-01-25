@@ -1,11 +1,11 @@
 <h1>Заголовок H1</h1>
 <p>Sed ullamcorper, tortor ac feugiat rhoncus, <u>lectus orci ornare massa</u>, in <s>fringilla lectus</s> odio a eros. Pellentesque volutpat, nunc quis pellentesque vehicula, <strong>turpis elit varius tortor</strong>, vel sollicitudin est orci ac urna? Cras et scelerisque metus. Mauris sit <sub>amet</sub> consequat <sup>nisl</sup>. Duis in arcu nisi, sed rutrum lectus. Duis <em>pulvinar suscipit lacus at scelerisque</em>. Nam vel tellus non dui laoreet fringilla et ac enim. Integer congue semper elementum.</p>
 
-<p>Sed purus dolor, interdum vel fermentum ut, gravida a elit. Praesent sed magna ut lorem dignissim iaculis. In egestas bibendum volutpat? Suspendisse tortor massa, volutpat vel accumsan condimentum, molestie ut ligula. Cras nunc dui, condimentum in vestibulum sit amet, dignissim ac sem. Nulla aliquet urna ut magna tempor dapibus.</p>
+<p>Sed purus dolor, interdum vel fermentum ut, gravida a elit. :-) Praesent sed magna ut lorem dignissim iaculis. In egestas bibendum volutpat? Suspendisse tortor massa, volutpat vel accumsan condimentum, molestie ut ligula. Cras nunc dui, condimentum in vestibulum sit amet, dignissim ac sem. Nulla aliquet :cheese: urna ut magna tempor dapibus.</p>
 
 [h2(first)]Заголовок H2.first[/h2]
 
-<p>Aenean venenatis lobortis convallis. Aliquam in magna tortor, at elementum tellus. Sed rhoncus consequat mauris. In at tortor eros, quis tincidunt risus. Donec dictum, purus in lacinia hendrerit; lectus sapien sagittis sem, vitae molestie orci nunc ut lectus? Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. </p>
+<p>Aenean venenatis lobortis convallis. Aliquam in magna tortor, at elementum tellus. Sed rhoncus consequat mauris. In at tortor eros, quis tincidunt risus. Donec dictum, purus in lacinia :smirk: hendrerit; lectus sapien sagittis sem, vitae molestie orci nunc ut lectus? Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. </p>
 
 <h2>Заголовок H2</h2>
 

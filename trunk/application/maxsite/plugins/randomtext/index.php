@@ -29,13 +29,11 @@ function randomtext_widget_form($num = 1)
 
 
 # основная функция
-function randomtext_widget_custom($args = array(), $num = 1)
+function randomtext_widget_custom($arg = array(), $num = 1)
 {
-
-	if ( isset($arg['header']) and $arg['header'] ) 
-		$arg['header'] = '<h2 class="box"><span>' . $arg['header'] . '</span></h2>';
-	else $arg['header'] = '<h2 class="box"><span>' . t('Цитата', 'plugins') . '</span></h2>';
-	
+	if ( !isset($arg['header'])) $arg['header'] = '<h2 class="box"><span>' . t('Цитата', 'plugins') . '</span></h2>';
+		else $arg['header'] = '<h2 class="box"><span>' . $arg['header'] . '</span></h2>';
+		
 	if ( !isset($arg['block_start']) ) $arg['block_start'] = '<div class="random-text">';
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</div>';
 	
@@ -106,4 +104,4 @@ function randomtext_widget_custom($args = array(), $num = 1)
 }
 
 
-?>
+# end file

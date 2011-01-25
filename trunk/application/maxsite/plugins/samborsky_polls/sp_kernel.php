@@ -428,10 +428,10 @@
 				$CI->table->set_heading('Название голосования','<div align="right">Сумма голосов</div>','<div align="right">Проголосовало чел.</div>','Статус');
 	
 					
-				foreach( $query->result() as $row ){
-					
+				foreach( $query->result() as $row )
+				{
 					$CI->table->add_row(
-						'<a href="'. getinfo('siteurl') . mso_get_option('sp_archive_url', 'plugins') .'/'. $row->q_id .'">' . stripslashes($row->q_question) . '</a>',
+						($row->q_active) ? '<a href="'. getinfo('siteurl') . mso_get_option('sp_archive_url', 'plugins') .'/'. $row->q_id .'">' . stripslashes($row->q_question) . '</a>' : stripslashes($row->q_question),
 						'<div align="right">' . number_format($row->q_totalvotes,0,' ',' ') . '</div>',
 						'<div align="right">' . number_format($row->q_totalvoters,0,' ',' ') . '</div>',
 						$row->q_active ? 'Активно' : 'Закрыто'

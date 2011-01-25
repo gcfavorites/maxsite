@@ -53,12 +53,48 @@
 				echo '<p><strong>'. t('Аватарка (с http://, размер 80x80px)'). ':</strong> <input type="text" name="f_comusers_avatar_url" value="' . $comusers_avatar_url . '"></p><br>';
 				
 				echo '<p><strong>'. t('ICQ'). ':</strong> <input type="text" name="f_comusers_icq" value="' . $comusers_icq . '"></p>';
-				echo '<p><strong>'. t('MSN'). ':</strong> <input type="text" name="f_comusers_msn" value="' . $comusers_msn . '"></p>';
+				echo '<p><strong>'. t('Twitter'). ':</strong> <input type="text" name="f_comusers_msn" value="' . $comusers_msn . '"></p>';
 				echo '<p><strong>'. t('Jabber'). ':</strong> <input type="text" name="f_comusers_jaber" value="' . $comusers_jaber . '"></p>';
 				echo '<p><strong>'. t('Дата рождения'). ':</strong> <input type="text" name="f_comusers_date_birth" value="' . $comusers_date_birth . '"></p>';
 				
 				echo '<p><strong>'. t('Уведомления'). ':</strong>' . form_dropdown('f_comusers_notify', array('0'=>t('Без уведомлений'), '1'=>t('Подписаться')), $comusers_notify, '');
 				
+				
+				// поскольку чекбоксы не передаются, если они не отмечены, 
+				// то передаем скрытно их дефолтные значения
+
+				echo '<input type="hidden" value="0" name="f_comusers_meta[subscribe_my_comments]">';
+				
+				$check = (isset($comusers_meta['subscribe_my_comments']) and $comusers_meta['subscribe_my_comments']=='1');
+				echo '<br><strong>&nbsp;</strong><label>' 
+					. form_checkbox('f_comusers_meta[subscribe_my_comments]', '1', $check) 
+					. ' '. t('новые комментарии, где я участвую') . '</label>';
+				
+				
+				echo '<input type="hidden" value="0" name="f_comusers_meta[subscribe_other_comments]">';
+				$check = (isset($comusers_meta['subscribe_other_comments']) and $comusers_meta['subscribe_other_comments']=='1');
+				echo '<br><strong>&nbsp;</strong><label>' 
+					. form_checkbox('f_comusers_meta[subscribe_other_comments]', '1', $check) 
+					. ' '. t('новые комментарии, где я не участвую') . '</label>';
+				
+				
+				echo '<input type="hidden" value="0" name="f_comusers_meta[subscribe_new_pages]">';
+				$check = (isset($comusers_meta['subscribe_new_pages']) and $comusers_meta['subscribe_new_pages']=='1');
+				echo '<br><strong>&nbsp;</strong><label>' 
+					. form_checkbox('f_comusers_meta[subscribe_new_pages]', '1', $check) 
+					. ' '. t('новые записи сайта') . '</label>';
+					
+					
+				echo '<input type="hidden" value="0" name="f_comusers_meta[subscribe_admin]">';
+				$check = (isset($comusers_meta['subscribe_admin']) and $comusers_meta['subscribe_admin']=='1');
+				echo '<br><strong>&nbsp;</strong><label>' 
+					. form_checkbox('f_comusers_meta[subscribe_admin]', '1', $check) 
+					. ' '. t('рассылка администратора') . '</label>';
+					
+
+				
+
+
 				echo '<p><strong>'. t('О себе'). ' <br>('. t('HTML удаляется'). '):</strong> <textarea name="f_comusers_description">'. NR 
 					. htmlspecialchars(strip_tags($comusers_description)) . '</textarea></p>';
 			

@@ -427,6 +427,9 @@ function mso_get_new_comment($args = array())
 
 		$comments_content = mso_hook('new_comments_content', $post['comments_content']);
 
+		// есть дли родитель у комментария
+		$comments_parent_id = isset($post['comments_parent_id']) ? $post['comments_parent_id'] : '0'; 
+		
 		// провека на спам - проверим через хук new_comments_check_spam
 		$comments_check_spam = mso_hook('new_comments_check_spam',
 										array(
@@ -435,6 +438,7 @@ function mso_get_new_comment($args = array())
 											'comments_author_ip' => $comments_author_ip,
 											'comments_page_id' => $comments_page_id,
 											'comments_server' => $_SERVER,
+											'comments_parent_id' => $comments_parent_id,
 										), false);
 
 		// если есть спам, то возвращается что-то отличное от comments_content
@@ -492,6 +496,7 @@ function mso_get_new_comment($args = array())
 				'comments_author_ip' => $comments_author_ip,
 				'comments_date' => $comments_date,
 				'comments_content' => $comments_content,
+				'comments_parent_id' => $comments_parent_id,
 				'comments_approved' => 1 // авторы могут сразу публиковать комменты без модерации
 				);
 
@@ -641,7 +646,8 @@ function mso_get_new_comment($args = array())
 							'comments_author_ip' => $comments_author_ip,
 							'comments_date' => $comments_date,
 							'comments_content' => $comments_content,
-							'comments_approved' => $comments_com_approved
+							'comments_approved' => $comments_com_approved,
+							'comments_parent_id' => $comments_parent_id,
 							);
 
 						$res = ($CI->db->insert('comments', $ins_data)) ? '1' : '0';
@@ -736,7 +742,8 @@ function mso_get_new_comment($args = array())
 						'comments_author_ip' => $comments_author_ip,
 						'comments_date' => $comments_date,
 						'comments_content' => $comments_content,
-						'comments_approved' => $comments_approved
+						'comments_approved' => $comments_approved,
+						'comments_parent_id' => $comments_parent_id,
 						);
 
 					$res = ($CI->db->insert('comments', $ins_data)) ? '1' : '0';
@@ -931,6 +938,15 @@ function mso_get_comuser($id = 0, $args = array())
 		{
 			$comuser[0]['comusers_meta'] = array();
 		}
+		
+		// от вских гадостей
+		$comuser[0]['comusers_nik'] =  mso_xss_clean($comuser[0]['comusers_nik']);
+		$comuser[0]['comusers_icq'] =  mso_xss_clean($comuser[0]['comusers_icq']);
+		$comuser[0]['comusers_url'] =  mso_xss_clean($comuser[0]['comusers_url']);
+		$comuser[0]['comusers_msn'] =  mso_xss_clean($comuser[0]['comusers_msn']);
+		$comuser[0]['comusers_jaber'] =  mso_xss_clean($comuser[0]['comusers_jaber']);
+		$comuser[0]['comusers_skype'] =  mso_xss_clean($comuser[0]['comusers_skype']);
+		$comuser[0]['comusers_description'] =  mso_xss_clean($comuser[0]['comusers_description']);
 		
 		// pr($comuser);
 

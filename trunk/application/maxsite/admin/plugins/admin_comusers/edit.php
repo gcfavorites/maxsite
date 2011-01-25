@@ -119,7 +119,7 @@ mso_cur_dir_lang('admin');
 				_mso_add_row(t('E-mail', 'admin'), 'f_email', $row['comusers_email'] );
 				_mso_add_row(t('ICQ', 'admin'), 'f_icq', $row['comusers_icq']);
 				_mso_add_row(t('Сайт', 'admin'), 'f_url', $row['comusers_url']);
-				_mso_add_row(t('MSN', 'admin'), 'f_msn', $row['comusers_msn']);
+				_mso_add_row(t('Twitter', 'admin'), 'f_msn', $row['comusers_msn']);
 				_mso_add_row(t('Jabber', 'admin'), 'f_jaber', $row['comusers_jaber']);
 				_mso_add_row(t('Skype', 'admin'), 'f_skype', $row['comusers_skype']);
 				_mso_add_row(t('URL аватара', 'admin'), 'f_avatar_url', $row['comusers_avatar_url']);

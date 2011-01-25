@@ -12,8 +12,8 @@ function bbcode_autoload($args = array())
 	//mso_create_allow('bbcode_edit', t('Админ-доступ к настройкам', 'plugins') . ' ' . t('bbcode', 'plugins'));
 	$options = mso_get_option('plugin_bbcode', 'plugins', array());
 	if (!array_key_exists('bbcode_level', $options)) $options['bbcode_level'] = 1;
-	if ( ($options['bbcode_level'] == 1) or ($options['bbcode_level'] == 3) ) mso_hook_add( 'content', 'bbcode_custom'); # хук на вывод контента
-	if ( ($options['bbcode_level'] == 2) or ($options['bbcode_level'] == 3) ) mso_hook_add( 'comments_content', 'bbcode_custom');
+	if ( ($options['bbcode_level'] == 1) or ($options['bbcode_level'] == 3) ) mso_hook_add( 'content', 'bbcode_custom', 20); # хук на вывод контента
+	if ( ($options['bbcode_level'] == 2) or ($options['bbcode_level'] == 3) ) mso_hook_add( 'comments_content', 'bbcode_custom', 20);
 }
 
 # функция выполняется при деинсталяции плагина
