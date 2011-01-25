@@ -1754,8 +1754,8 @@ function mso_login_form($conf = array(), $redirect = '', $echo = true)
 	<form method="post" action="{$action}" name="flogin" id="flogin">
 		<input type="hidden" value="{$redirect}" name="flogin_redirect">
 		<input type="hidden" value="{$session_id}" name="flogin_session_id">
-		<span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user">
-		<span>{$password}</span><input type="password" value="" name="flogin_password" id="flogin_password">
+		<label class="flogin_user"><span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user"><label>
+		<label class="flogin_password"><span>{$password}</span><input type="password" value="" name="flogin_password" id="flogin_password"></label>
 		{$submit}<input type="submit" name="flogin_submit" id="flogin_submit" value="{$submit_value}">
 		{$form_end}
 	</form>
@@ -2423,9 +2423,9 @@ function mso_mail($email = '', $subject = '', $message = '', $from = false, $pre
 		
 	if ($from) $admin_email = $from;
 		else $admin_email = mso_get_option('admin_email_server', 'general', 'admin@site.com');
-
-	$config['wordwrap'] = TRUE;
-	$config['wrapchars'] = 90;
+	
+	$config['wordwrap'] = isset($preferences['wordwrap']) ? $preferences['wordwrap'] : TRUE;
+	$config['wrapchars'] = isset($preferences['wrapchars']) ? $preferences['wrapchars'] : 90;
 	
 	# можно отправлять письмо в html-формате
 	if (isset($preferences['mailtype']) and $preferences['mailtype'])

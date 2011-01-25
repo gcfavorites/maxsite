@@ -3,7 +3,8 @@
 	mso_cur_dir_lang('templates');
 	
 	# подготовка данных
-
+	$min_search_chars = 2; // минимульное кол-во симоволов при поиске
+	
 	$search = mso_segment(2);
 
 	$search = mso_strip(strip_tags($search));
@@ -12,26 +13,61 @@
 	if ($f = mso_page_foreach('search-head-meta')) require($f);
 	else
 	{ 
-		mso_head_meta('title', $search); //  meta title страницы
+		mso_head_meta('title', 'Поиск » ' . $search . ' » ' . getinfo('name_site')); //  meta title страницы
 	}
 	
+	$search_len = true; // поисковая фраза более 2 символов
+	
 	// параметры для получения страниц
-	if (!$search or (strlen(mso_slug($search)) <= 3) ) // нет запроса или он короткий
+	if (!$search or ($search_len = strlen(mso_slug($search)) <= $min_search_chars) ) // нет запроса или он короткий
 	{
 		$search = t('Поиск');
 		$pages = false; // нет страниц
+		$categories = false; // нет рубрик
+		$tags = false; // нет меток
 	}
 	else
 	{
-		$par = array( 'limit' => mso_get_option('limit_post', 'templates', '7'), 'cut'=>false, 'type'=>false ); 
+		$par = array( 'limit' => 15, 'cut'=>false, 'type'=>false ); 
 		
 		// подключаем кастомный вывод, где можно изменить массив параметров $par для своих задач
 		if ($f = mso_page_foreach('search-mso-get-pages')) require($f); 
 
 		$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
+		
+		
+		// рубрики
+		$categories = array();
+		
+		// параметры ($type = 'page', $order = 'category_name', $asc = 'ASC', $type_page = 'blog', $cache = true)
+		$all_categories = mso_cat_array_single(); // получаем все рубрики в один массив
+		
+		foreach($all_categories as $cat)
+		{
+			// сверяем названия рубрик с исходной фразой
+			$category_name = mb_strtolower($cat['category_name'], 'UTF8');
+			
+			// если нужно искать по части вхождения: плагин -> плагины, плагинюшки, плагинячки 
+			if ( strpos($category_name, $searh_to_text) !== false ) $categories[$cat['category_slug']] = $cat['category_name'];
+			
+		}
+		
+		
+		// метки
+		require_once( getinfo('common_dir') . 'meta.php' ); 
+		
+		$tags = array();
+		$all_tags = mso_get_all_tags_page(); // получаем все метки
+		
+		foreach($all_tags as $key => $val)
+		{
+			// сверяем метки с исходной фразой
+			$tag_name = mb_strtolower($key, 'UTF8');
+			if ( strpos($tag_name, $searh_to_text) !== false ) $tags[] = $key;
+		}
 	}
 	
-if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
+if (!$pages and !$categories and !$tags and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 
 # начальная часть шаблона
 require(getinfo('template_dir') . 'main-start.php');
@@ -39,76 +75,102 @@ require(getinfo('template_dir') . 'main-start.php');
 echo NR . '<div class="type type_search">' . NR;
 
 if ($f = mso_page_foreach('search-do')) require($f); // подключаем кастомный вывод
-	else echo '<h1 class="category">' . mb_strtoupper($search, 'UTF8') . '</h1>';
+else 
+{	
+	if ($pages or $categories or $tags) // есть страницы рубрики или метки
+	{
+		echo '<h1>' . t('Поиск') . '</h1>';
+		echo '<p>' . t('Результаты поиска по запросу') . ' <strong>«' . $search . '»</strong></p>';
+	}
+}
+
+
+if ($categories) // есть рубрики
+{
+	echo '<h2>' . t('Рубрики:') . '</h2><ul class="search-res">';
+	foreach ($categories as $key => $val)
+	{
+		echo '<li><a href="' . getinfo('siteurl') . 'category/' . $key . '">' . $val . '</a></li>';
+	}
+	echo '</ul>';
+}
+
+if ($tags) // есть метки
+{
+	echo '<h2>' . t('Метки:') . '</h2><ul class="search-res">';
+	foreach ($tags as $tag)
+	{
+		echo '<li><a href="' . getinfo('siteurl') . 'tag/' . urlencode($tag) . '">' . $tag . '</a></li>';
+	}
+	echo '</ul>';
+}
+
 
 if ($pages) // есть страницы
-{ 	
+{
+	$max_word_count_do = 3; // колво слов до
+	$max_word_count_posle = 7; // колво слов после
 	
-	$max_char_count = 150; // колво символов до и после
+	echo '<h2>' . t('Записи:') . '</h2>';
 	
-	echo '<ul class="category">';
+	// вывод найденных страниц
+	echo '<ul class="search-res">';
+
 	foreach ($pages as $page) : // выводим в цикле
 		
-
 		if ($f = mso_page_foreach('search')) 
 		{
 			require($f); // подключаем кастомный вывод
 			continue; // следующая итерация
 		}
-
-		
 		extract($page);
 		
-		mso_page_title($page_slug, $page_title, '<li>', '', true);
-		mso_page_date($page_date_publish, 'd/m/Y', ' - ', '');
+		mso_page_title($page_slug, $page_title, '<li><h3>', '</h3>', true);
 		
-		// разобъем тексты так, чтобы в середине оказались поисковые слова
-		$page_content = mb_strtolower(strip_tags($page_content), 'UTF8' );
-		$page_content = str_replace($searh_to_text, '_mso_split_' . $searh_to_text, $page_content);
+		$page_content = strip_tags($page_content);
 		
-		$arr = explode('_mso_split_', $page_content);
+		// удалим переносы и табуляторы 
+		$page_content = str_replace("\n", ' ', $page_content);
+		$page_content = str_replace("\t", ' ', $page_content);
+	
+		// разобъем текст в массив по словам
+		$arr = explode(' ', trim($page_content));
 		
-		$flag = true;
-		foreach($arr as $key=>$val)
+		// получим ключи всех вхождений
+		$all_key = array(); 
+		foreach ($arr as $key => $val)
 		{
-			if ( strpos( $val, $searh_to_text ) ) // есть сеарх
+			if ( mb_stripos(mb_strtolower($val, 'UTF8'), $searh_to_text, 0, 'UTF8') !== false ) // есть вхождение
 			{
-				if ($flag) // текст перед сеарх
-				{
-					$arr[$key] = ' &lt;...&gt; ' . mb_substr($val, -100, 100, 'UTF8') . ' ';
-					$flag = false;
-				}
-				else
-				{
-					$arr[$key] = ' ' . mb_substr($val, 0, $max_char_count, 'UTF8') . ' &lt;...&gt; <br> ';
-					$flag = true;
-				}
+				$all_key[] = $key;
 			}
-			else 
-			{
-				if (!$flag) // текст перед сеарх
-				{
-					$arr[$key] = ' ' . mb_substr($val, -$max_char_count, $max_char_count, 'UTF8') . ' ';
-					$flag = false;
-				}
-				else
-				{
-					$arr[$key] = ' ' . mb_substr($val, 0, $max_char_count, 'UTF8') . ' &lt;...&gt; ';
-					$flag = true;
-				}
-			}
-			// echo $arr[$key] . '<hr>';
+		}
+
+		$out = ''; // результат
+		
+		// пройдемся по всем найденным
+		// нужно сделать строки до вхождения и после на $max_word_count
+		foreach ($all_key as $key) 
+		{
+
+			$arr[$key] = '<span style="color: red; background: yellow;">' 
+						. str_replace($searh_to_text, '<strong>' . $searh_to_text . '</strong>', $arr[$key]) 
+						. '</span>';
+			
+			$key_start = $key - $max_word_count_do;
+			if ($key_start < 0) $key_start = 0;
+			
+			$a = array_slice($arr, $key_start, $max_word_count_posle + $max_word_count_do);
+			
+			// pr($a);
+			$out .= ' &lt;...&gt; ' . implode(' ', $a);
 		}
 		
-		$page_content = implode(' ', $arr); 
-		
-		// подсветим найденные
-		$page_content = str_replace($searh_to_text, '<span style="color: red; background: yellow;" class="search">' . $searh_to_text . '</span>', $page_content);
+		$page_content = $out;
+		$cou = count($all_key) + substr_count(mb_strtolower($page_title, 'UTF8'), $searh_to_text);
 		
 		// кол-во совпадений
-		$cou = substr_count($page_content, $searh_to_text) + substr_count(mb_strtolower($page_title, 'UTF8'), $searh_to_text);
-		
-		echo ' - '. t('Совпадений'). ': ' . $cou;
+		echo  '<p><em>' . t('Совпадений') . ': ' . $cou . '</em></p>';
 		echo '<p>' . $page_content . '</p>';
 
 		echo '</li>';
@@ -119,7 +181,8 @@ if ($pages) // есть страницы
 	
 	mso_hook('pagination', $pagination);
 }
-else 
+
+if (!$pages and !$categories and !$tags)
 {
 	if ($f = mso_page_foreach('pages-not-found')) 
 	{
@@ -127,11 +190,14 @@ else
 	}
 	else // стандартный вывод
 	{
-		echo '<h2>'. t('404. Ничего не найдено...'). '</h2>';
-		echo '<p>'. t('Извините, ничего не найдено, попробуйте повторить поиск.'). '</p>';
+		echo '<h1>'. t('404. Ничего не найдено...'). '</h1>';
+		
+		if ($search_len) echo '<p>'. t('Полисковая фраза должна быть не менее ' . $min_search_chars . ' символов.') . '</p>';
+		
+		echo '<p>'. t('Попробуйте повторить поиск.') . '</p>';
 
 		echo '
-		<p><br><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" class="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '">&nbsp;<input type="submit" class="submit" name="Submit" value="  '. t('Поиск'). '  "></form></p>';
+		<p><form name="f_search" action="" method="get" onsubmit="location.href=\'' . getinfo('siteurl') . 'search/\' + encodeURIComponent(this.s.value).replace(/%20/g, \'+\'); return false;">	<input type="text" class="text" name="s" size="20" onfocus="if (this.value == \''. t('что искать?'). '\') {this.value = \'\';}" onblur="if (this.value == \'\') {this.value = \''. t('что искать?'). '\';}" value="'. t('что искать?'). '">&nbsp;<input type="submit" class="submit" name="Submit" value="  '. t('Поиск'). '  "></form></p>';
 		
 		echo mso_hook('page_404');
 	}

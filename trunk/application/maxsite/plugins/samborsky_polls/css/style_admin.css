@@ -4,7 +4,6 @@ fieldset{
 }
 
 fieldset input{
-	font: 10pt Arial;
 	padding: 3px;
 }
 
@@ -17,7 +16,7 @@ fieldset input{
 }
 
 .sp_count{
-	font: 14pt "Arial Narrow", Arial;
+
 }
 
 .samborsky_polls_error{
@@ -43,7 +42,7 @@ fieldset input{
 }
 
 .samborsky_polls_table td{
-	border-bottom: 1px solid #c0c0c0;;
+	border-bottom: 1px solid #c0c0c0;
 	padding: 5px;
 }
 

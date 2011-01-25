@@ -112,12 +112,17 @@
 			$answers = new sp_answer();
 			$answers_array = $answers->get_array($this->id);
 				
-			foreach( $answers_array as $a ){
-			
+			foreach( $answers_array as $a )
+			{
+				$CI->table->add_row(
+				
+					"<label><input type=\"radio\" id=\"sp_answer_{$a->a_id}\" class=\"sp_question_{$this->id}\" name=\"sp_question_{$this->id}\" value=\"{$a->a_id}\"> {$a->a_answer}</label>");
+				/*
 				$CI->table->add_row(
 					"<input type=\"radio\" id=\"sp_answer_{$a->a_id}\" class=\"sp_question_{$this->id}\" name=\"sp_question_{$this->id}\" value=\"{$a->a_id}\">",
 					"<label for=\"sp_answer_{$a->a_id}\">{$a->a_answer}</label>"
 				);
+				*/
 			}
 			
 			// Куда отправлять POST
@@ -126,12 +131,12 @@
 			$results_link = mso_get_option('show_results_link', 'plugins') ? '&nbsp;&nbsp;<a href="javascript: void(0);" onclick="javascript:sp_polls_results('.$this->id.');" class="sp_polls_ajax_link">Результаты</a>' : '';
 			
 			$CI->table->add_row(
-				'<input type="hidden" id="sp_ajax_path_'.$this->id.'" value="'.$ajax_path.'">',
-				'<input type="button" value="Проголосовать" onclick="javascript:sp_polls_vote('.$this->id.');">' . $results_link
+				'<input type="hidden" id="sp_ajax_path_'.$this->id.'" value="'.$ajax_path.'">'
+				. '<input type="button" value="Проголосовать" onclick="javascript:sp_polls_vote('.$this->id.');">' . $results_link
 			);
 			
 			if( mso_get_option('show_archives_link', 'plugins') )
-				$CI->table->add_row('&nbsp;','<a href="'.getinfo('siteurl').mso_get_option('sp_archive_url', 'plugins').'">Архивы голосований</a>');
+				$CI->table->add_row('<a href="'.getinfo('siteurl').mso_get_option('sp_archive_url', 'plugins').'">Архивы голосований</a>');
 
 			// Генерируем таблицу и форму загрузки
 			$out = $CI->table->generate() . 

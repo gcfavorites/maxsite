@@ -11,12 +11,13 @@
 # функция автоподключения плагина
 function %%%_autoload()
 {
-	//mso_create_allow('%%%_edit', t('Админ-доступ к настройкам', 'plugins') . ' ' . t('%%%', __FILE__));
+
 }
 
 # функция выполняется при активации (вкл) плагина
 function %%%_activate($args = array())
 {	
+	//mso_create_allow('%%%_edit', t('Админ-доступ к настройкам', 'plugins') . ' ' . t('%%%', __FILE__));
 	return $args;
 }
 

@@ -29,18 +29,18 @@
  * Таблица результатов
  */
 
-.sp_results, .sp_polls{
+.sp_results, .sp_polls {
 	width: 100%;
-	border: 0;
-	font: 11px Arial;
+	border: none;
 }
 
-.sp_results strong, .sp_polls strong{
-	font: bold 13px Arial;	
+.sp_results strong, .sp_polls strong {
+	font-weight: bold;	
 }
 
-.sp_results td, .sp_polls td{
+.sp_results td, .sp_polls td {
 	padding: 2px 0 2px 0;
+	border: none;
 }
 
 .sp_results caption, .sp_polls caption{
