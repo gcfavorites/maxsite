@@ -75,6 +75,9 @@ function bbcode_custom($text = '')
 		'~\[i\](.*?)\[\/i\]~si'                 => '<em>$1</em>',
 		'~\[u\](.*?)\[\/u\]~si'                 => '<u>$1</u>',
 		
+		'~\[sub\](.*?)\[\/sub\]~si'                 => '<sub>$1</sub>',
+		'~\[sup\](.*?)\[\/sup\]~si'                 => '<sup>$1</sup>',
+		
 		'~\[p\](.*?)\[\/p\]~si'                 => '<p>$1</p>', // абзац
 		
 		'~\[color=(.*?)\](.*?)\[\/color\]~si'   => '<span style="color:$1">$2</span>',
@@ -94,7 +97,7 @@ function bbcode_custom($text = '')
 
 		'~\[center (.*?)\](.*?)\[\/center\]~si'   => '<div style="text-align: center; $1">$2</div>',
 		'~\[center\](.*?)\[\/center\]~si'   => '<div style="text-align: center;">$1</div>',
-		
+
 		'~\[justify (.*?)\](.*?)\[\/justify\]~si'   => '<div style="text-align: justify; $1">$2</div>',
 		'~\[justify\](.*?)\[\/justify\]~si'   => '<div style="text-align: justify;">$1</div>',		
 

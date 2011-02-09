@@ -35,10 +35,13 @@ function addzakl_content_end($args = array())
 	$link = '<a rel="nofollow" href="http://twitter.com/home/?status=' . urlencode (stripslashes(mb_substr($page['page_title'], 0, 139 - mb_strlen($post_link, 'UTF8'), 'UTF8') . ' ' . $post_link)) . '">';
 	$out .= $link . '<img border="0" title="Retweet twitter.com" alt="twitter.com" src="' . $path . $img_src  . '"' . $width_height . '></a>';	
 	
-	
 	$img_src = 'facebook.gif';
 	$link = '<a rel="nofollow" href="http://www.facebook.com/sharer.php?u=' . $post_link . '">';
 	$out .= $sep . $link . '<img border="0" title="facebook" alt="facebook" src="' . $path . $img_src  . '"' . $width_height . '></a>';		
+	
+	$img_src = 'vk16.png';
+	$link = '<a rel="nofollow" href="http://vkontakte.ru/share.php?url=' . $post_link . '&title=' . $post_title  . '">';
+	$out .= $sep . $link . '<img border="0" title="Вконтакте" alt="Вконтакте" src="' . $path . $img_src  . '"' . $width_height . '></a>';
 	
 	$img_src = 'buzz.png';
 	$link = '<a rel="nofollow" href="http://www.google.com/reader/link?url=' . $post_link . '&title=' . $post_title . '&srcURL=' . getinfo('siteurl') . '">';

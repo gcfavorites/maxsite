@@ -17,6 +17,8 @@ myBbcodeSettings = {
 			{name:'Курсив', openWith:'[i]', closeWith:'[/i]', className:"italic" },
 			{name:'Подчеркнутый', openWith:'[u]', closeWith:'[/u]', className:"underline" },
 			{name:'Зачеркнутый', openWith:'[s]', closeWith:'[/s]', className:"stroke" },
+			{name:'Верхний индекс', openWith:'[sup]', closeWith:'[/sup]', className:"sup" },
+			{name:'Нижний индекс', openWith:'[sub]', closeWith:'[/sub]', className:"sub" },
 		]},
       
 		{name:'Цвет', openWith:'[color=[![Color]!]]', closeWith:'[/color]', className:"colors", dropMenu: [

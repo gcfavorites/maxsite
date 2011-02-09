@@ -72,6 +72,8 @@
 .bbcode .italic a {background-image:url(images/italic.png); }
 .bbcode .underline a {background-image:url(images/underline.png); }
 .bbcode .stroke a {background-image:url(images/stroke.png); }
+.bbcode .sup a {background-image:url(images/sup.png); }
+.bbcode .sub a {background-image:url(images/sub.png); }
 
 .bbcode .quote a { background-image:url(images/document_quote.png); }
 .bbcode .hr a { background-image:url(images/hr-line.png); }

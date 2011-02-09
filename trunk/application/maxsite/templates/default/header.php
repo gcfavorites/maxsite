@@ -5,6 +5,7 @@
 	<meta name="generator" content="MaxSite CMS">
 	<meta name="description" content="<?= mso_head_meta('description') ?>">
 	<meta name="keywords" content="<?= mso_head_meta('keywords') ?>">
+	<?= mso_rss() ?>
 	<link rel="shortcut icon" href="<?= getinfo('stylesheet_url') ?>ico/favicon4.ico" type="image/x-icon">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>style.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>print.css" type="text/css" media="print">
@@ -15,8 +16,6 @@
 					.'" type="text/css" media="screen">';
 		}
 	?>
-
-	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?= getinfo('rss_url') ?>">
 	
 	<?= mso_load_jquery() ?>
 	<?= mso_load_jquery('ui/effects.core.packed.js') ?>

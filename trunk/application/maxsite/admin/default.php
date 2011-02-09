@@ -65,7 +65,7 @@ function mso_admin_plugins_default($args = array())
 	
 	foreach ($dirs as $dir)
 	{
-		mso_admin_plugin_load($dir);
+		if (is_dir($plugins_dir . $dir)) mso_admin_plugin_load($dir); // если это каталог
 	}
 	
 	# кастомная функция, если есть

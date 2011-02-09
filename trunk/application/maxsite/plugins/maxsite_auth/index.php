@@ -42,10 +42,10 @@ function maxsite_auth_admin_init($args = array())
 	return $args;
 }
 
-# подключим страницу опций, как отдельную ссылку
+# сообщение в форме комментариев
 function maxsite_auth_page_comment_form($args = array()) 
 {
-	echo '<span>Если у вас сайт на MaxSite CMS, то вы можете <a href="' . getinfo('siteurl') . 'maxsite-auth-form">авторизоваться с его помощью</a>.</span><br>';
+	echo '<span><a href="' . getinfo('siteurl') . 'maxsite-auth-form">Авторизация MaxSite CMS</a>.</span> ';
 	
 	return $args;
 }
@@ -318,118 +318,10 @@ function maxsite_auth_custom($args = array())
 			// pr($email . ' ' . $pass);
 			
 			
-			// имея email и пароль нужно проверить, чтобы такие были в базе
-			// вначале нужно проверить наличие такого email
-			// если есть, то сверяем и пароль
-			$CI->db->select('comusers_id, comusers_password, comusers_email, comusers_nik, comusers_url, comusers_avatar_url, comusers_last_visit');
-			$CI->db->where('comusers_email', $email);
-			$query = $CI->db->get('comusers');
+			require_once(getinfo('common_dir') . 'comments.php');
 			
-			if ($query->num_rows()) // есть такой комюзер
-			{
-				$comuser_info = $query->row_array(1); // вся инфа о комюзере
-				
-				// сверим пароль
-				if ($comuser_info['comusers_password'] == mso_md5($pass))
-				{
-					// пароли равны, можно логинить
-					
-					// сразу же обновим поле последнего входа
-					$CI->db->where('comusers_id', $comuser_info['comusers_id']);
-					$CI->db->update('comusers', array('comusers_last_visit'=>date('Y-m-d H:i:s')));
-					
-					$expire  = time() + 60 * 60 * 24 * 365; // 365 дней
-					
-					$name_cookies = 'maxsite_comuser';
-					$value = serialize($comuser_info); 
-					
-					mso_add_to_cookie($name_cookies, $value, $expire, $data_redirect); // в куку для всего сайта
-					
-					exit();
-				}
-				else
-				{
-					// email есть но пароль ошибочный
-					die(t('Переданный пароль является ошибочным для нашего сайта', 'plugins'));
-				}
-			}
-			else
-			{
-				// нет такого email, нужно регистрировать комюзера
-				
-				// но если запрещены регистрации, то все рубим
-				if ( !mso_get_option('allow_comment_comusers', 'general', '1') )
-						die(t('На сайте запрещена регистрация комюзеров...', 'plugins'));
-				
-				$ins_data = array (
-							'comusers_email' => $email,
-							'comusers_password' => mso_md5($pass)
-							);
-
-				// генерируем случайный ключ активации
-				$ins_data['comusers_activate_key'] = mso_md5(rand());
-				$ins_data['comusers_date_registr'] = date('Y-m-d H:i:s');
-				$ins_data['comusers_last_visit'] = date('Y-m-d H:i:s');
-				$ins_data['comusers_ip_register'] = $_SERVER['REMOTE_ADDR'];
-				$ins_data['comusers_notify'] = 1; // сразу включаем подписку на уведомления
-				
-				// Автоматическая активация новых комюзеров
-				// если активация стоит автоматом, то сразу её и прописываем
-				if ( mso_get_option('comusers_activate_auto', 'general', '0') )
-					$ins_data['comusers_activate_string'] = $ins_data['comusers_activate_key'];
-
-				$res = ($CI->db->insert('comusers', $ins_data)) ? '1' : '0';
-
-				if ($res)
-				{
-					$comusers_id = $CI->db->insert_id(); // номер добавленной записи
-					
-					// нужно добавить опцию в мета «новые комментарии, где я участвую» subscribe_my_comments
-					// вначале грохаем если есть такой ключ
-					$CI->db->where('meta_table', 'comusers');
-					$CI->db->where('meta_id_obj', $comusers_id);
-					$CI->db->where('meta_key', 'subscribe_my_comments');
-					$CI->db->delete('meta');
-					
-					// теперь добавляем как новый
-					$ins_data = array(
-							'meta_table' => 'comusers',
-							'meta_id_obj' => $comusers_id,
-							'meta_key' => 'subscribe_my_comments',
-							'meta_value' => '1'
-							);
-					
-					$CI->db->insert('meta', $ins_data);
-							
-					// отправляем ему уведомление с кодом активации
-					require_once( getinfo('common_dir') . 'comments.php' ); // функции комментариев
-					mso_email_message_new_comuser($comusers_id, $ins_data, mso_get_option('comusers_activate_auto', 'general', '0'));
-					
-					// после отправки можно сразу залогинить
-					$comuser_info = array(
-						'comusers_id' => $comusers_id, 
-						'comusers_password' => mso_md5($pass), 
-						'comusers_email' => $email,
-						'comusers_nik' => '',
-						'comusers_url' => '',
-						'comusers_avatar_url' => '', 
-						'comusers_last_visit' => '',
-					);
-					
-					$value = serialize($comuser_info);
-					 
-					$expire  = time() + 60 * 60 * 24 * 365; // 365 дней
-					$name_cookies = 'maxsite_comuser';
-					
-					mso_add_to_cookie($name_cookies, $value, $expire, $data_redirect); // в куку для всего сайта
-					
-					exit();
-				}
-				else
-				{
-					die(t('Произошла ошибка регистрациии', 'plugins'));
-				}
-			}
+			mso_comuser_auth(array('email'=>$email, 'password'=>$pass));
+			
 			die(); // выход ОК
 		}
 		else die('Ошибочные данные'); // нет POST

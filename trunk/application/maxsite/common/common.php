@@ -2531,7 +2531,8 @@ function mso_load_jquery($plugin = '')
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.4.4.min.js"></script>' . NR;
+			// jquery-1.4.4.min.js
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.5.min.js"></script>' . NR;
 	}
 }
 
@@ -3382,6 +3383,35 @@ function mso_sql_found_rows($limit = 20, $pagination_next_url = 'next')
 
 	$CI->db->cache_delete_all();
 	
+	return $out;
+}
+
+
+# формирование rss в <link rel...>
+# для страниц и рубрик добавляются свои RSS
+function mso_rss()
+{
+	$out = '<link rel="alternate" type="application/rss+xml" title="' 
+		. t('Все новые записи') . '" href="' 
+		. getinfo('rss_url') . '">' . NR;
+
+	$out .= '	<link rel="alternate" type="application/rss+xml" title="' 
+		. t('Все новые комментарии') . '" href="' 
+		. getinfo('rss_comments_url') . '">' . NR;
+
+	if (is_type('page'))
+	{
+		$out .= '	<link rel="alternate" type="application/rss+xml" title="' 
+				. t('Комментарии этой записи') . '" href="' 
+				. getinfo('site_url') . mso_segment(1) . '/' . mso_segment(2) . '/feed">' . NR;
+	}
+	elseif (is_type('category'))
+	{
+		$out .= '	<link rel="alternate" type="application/rss+xml" title="' 
+					. t('Записи этой рубрики') . '" href="' 
+					. getinfo('site_url') . mso_segment(1) . '/' . mso_segment(2) . '/feed">' . NR;
+	}
+
 	return $out;
 }
 

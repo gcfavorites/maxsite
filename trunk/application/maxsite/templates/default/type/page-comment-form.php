@@ -24,13 +24,13 @@ mso_cur_dir_lang('templates');
 						
 						<label for="comments_author" class="comments_author"><?=t('Ваше имя')?></label>
 						<input type="text" name="comments_author" id="comments_author" class="text" onfocus="document.getElementById('comments_reg_1').checked = 'checked';">
-						<p style="margin: 10px 0 0 0;"><span><?php
+						<p><span><em><?php
 							if (mso_get_option('new_comment_anonim_moderate', 'general', '1') )
 								echo t('Используйте нормальные имена. Ваш комментарий будет опубликован после проверки.');
 							else
 								echo t('Используйте нормальные имена.');
 								
-						?></span></p>
+						?></em></span></p>
 					</div>		
 				<?php } ?>
 			
@@ -44,11 +44,11 @@ mso_cur_dir_lang('templates');
 				<?php } ?>
 				
 			
-					<span class="black"><?=t('Если вы уже зарегистрированы как комментатор или хотите зарегистрироваться, укажите пароль и свой действующий email. <br><em>(При регистрации на указанный адрес придет письмо с кодом активации и ссылкой на ваш персональный аккаунт, где вы сможете изменить свои данные, включая адрес сайта, ник, описание, контакты и т.д.)</em>')?></span></label><br>
+					<span class="black"><?=t('Если вы уже зарегистрированы как комментатор или хотите зарегистрироваться, укажите пароль и свой действующий email.') ?></label><p><span><em><?= t('При регистрации на указанный адрес придет письмо с кодом активации и ссылкой на ваш персональный аккаунт, где вы сможете изменить свои данные, включая адрес сайта, ник, описание, контакты и т.д.)') ?></em></span></p>
 					
 					<?php mso_hook('page-comment-form') ?>
 					
-				<label for="comments_email" class="comments_email"><?= t('E-mail') ?></label>
+				<br><label for="comments_email" class="comments_email"><?= t('E-mail') ?></label>
 				<input type="text" name="comments_email" id="comments_email" value="" class="text" onfocus="document.getElementById('comments_reg_2').checked = 'checked';"><br>
 
 				<label for="comments_password" class="comments_password"><?= t('Пароль') ?></label>
