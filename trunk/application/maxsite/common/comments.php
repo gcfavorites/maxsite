@@ -1558,6 +1558,7 @@ function mso_comuser_auth($data)
 		
 	$pass = isset($data['password']) ? $data['password'] : false;
 	$comusers_nik = isset($data['comusers_nik']) ? $data['comusers_nik'] : '';
+	$redirect = isset($data['redirect']) ? $data['redirect'] : true;
 	
 	$CI = & get_instance();
 
@@ -1599,7 +1600,7 @@ function mso_comuser_auth($data)
 				$name_cookies = 'maxsite_comuser';
 				$value = serialize($comuser_info); 
 				
-				mso_add_to_cookie($name_cookies, $value, $expire, true); // в куку для всего сайта
+				mso_add_to_cookie($name_cookies, $value, $expire, $redirect); // в куку для всего сайта
 			}
 			else
 			{
@@ -1620,7 +1621,7 @@ function mso_comuser_auth($data)
 			$name_cookies = 'maxsite_comuser';
 			$value = serialize($comuser_info); 
 			
-			mso_add_to_cookie($name_cookies, $value, $expire, true); // в куку для всего сайта
+			mso_add_to_cookie($name_cookies, $value, $expire, $redirect); // в куку для всего сайта
 		}
 	}
 	else
@@ -1697,7 +1698,7 @@ function mso_comuser_auth($data)
 			$expire  = time() + 60 * 60 * 24 * 365; // 365 дней
 			$name_cookies = 'maxsite_comuser';
 			
-			mso_add_to_cookie($name_cookies, $value, $expire, true); // в куку для всего сайта
+			mso_add_to_cookie($name_cookies, $value, $expire, $redirect); // в куку для всего сайта
 			
 		}
 		else

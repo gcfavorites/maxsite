@@ -14,6 +14,7 @@ function fbauth_autoload()
 	{
 		mso_hook_add('init', 'fbauth_init');
 		mso_hook_add('page-comment-form', 'fbauth_page_comment_form');
+		mso_hook_add('login_form_auth', 'fbauth_login_form_auth'); # хук на форму логина
 	}
 	
 	mso_hook_add('admin_init', 'fbauth_admin_init'); # хук на админку
@@ -95,9 +96,16 @@ function fbauth_mso_options()
 # сообщение в форме комментариев
 function fbauth_page_comment_form($args = array()) 
 {
-	echo ' <span><a href="' . getinfo('siteurl') . 'maxsite-fbauth">Авторизация facebook.com</a></span> ';
+	echo ' <span><a href="' . getinfo('siteurl') . 'maxsite-fbauth">Авторизация Facebook</a></span> ';
 	
 	return $args;
+}
+
+# хук на форму логина
+function fbauth_login_form_auth($text = '') 
+{
+	$text .= '<a class="login-form-auth fbauth" title="' . t('Вход с помощью Facebook.com', 'plugins') . '" href="' . getinfo('siteurl') . 'maxsite-fbauth">Facebook</a>[end]';
+	return $text;
 }
 
 # запросы через curl
@@ -169,8 +177,7 @@ function fbauth_init($arg = array())
 
 		if (strpos($user0, '400 Bad Request') !== false)
 		{
-			echo("Ошибка авторизации (400 Bad Request)");
-			die;
+			die(t('Ошибка авторизации (400 Bad Request)', 'plugins'));
 		}
 		else
 		{
@@ -182,6 +189,11 @@ function fbauth_init($arg = array())
 				mso_comuser_auth(array('email'=>$user->email, 'comusers_nik'=>$user->name));
 				
 				// echo("Hello " . $user->name);
+			}
+			else
+			{
+				// ошибочный или отстутсвующий email
+				die(t('Не удалось авторизоваться с помощью Facebook. Возможно это связано с тем, что в ответ на запрос сервис не возвратил ваш e-mail', 'plugins'));
 			}
 			
 			die;

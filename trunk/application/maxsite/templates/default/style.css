@@ -109,8 +109,6 @@ div.w0 { padding: 0px; }
 div.w1 { padding: 5px; }
 div.w2 { }
 
-div.loginform {position: fixed; top: 20%; left: 50%; margin-top: 50px; margin-left: -150px; text-align: center;  padding: 20px 20px 20px 15px; border: 3px outset #D5DDF3; background: #F0F0FB; width: 300px;}
-* html div.loginform {position: absolute;}
 
 div.twitter {}
 div.twitter p {border-bottom: 1px solid #5368A1; padding: 0 0 10px 0;}
@@ -119,10 +117,17 @@ div.twitter a {font-weight: bold;}
 div.pagination {border-top: 1px solid #5368A1; border-bottom: 1px solid #5368A1; padding: 3px; font-size: 8pt; margin: 25px 0 10px 0; text-align: center;}
 div.pagination strong {background: #8591B7; padding: 2px;}
 
-#flogin span {display: block; font-weight: bold;}
-#flogin_user {width: 98%;}
-#flogin_password {width: 98%;}
-#flogin_submit { margin: 5px 0;}
+div.loginform {padding: 20px 20px 20px 15px; border: 1px solid #D5DDF3; background: #F0F0FB;  -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
+* html div.loginform {position: absolute;}
+
+div.loginform p.header {font-size: 1.2em; text-align: center; margin: 0 0 15px 0; background: #3C5FB3; color: white; padding: 3px;}
+
+form.flogin span {font-weight: bold;}
+form.flogin input.flogin_user {width: 98%;}
+form.flogin input.flogin_password {width: 98%;}
+form.flogin input.flogin_submit {margin: 5px 0;}
+form.flogin div.form-end {margin: 15px 0 0 0; text-align: right;}
+form.flogin div.login-form-auth {font-size: .9em;}
 
 div.page_content {margin-bottom: 20px;}
 div.info {margin: 0 0 10px 0; font-size: 8pt; color: gray; line-height: 1.4em; }
@@ -278,6 +283,7 @@ div.forms {background: #eeeeee; padding: 10px 5px 0 5px; border: #E0E0E0 1px sol
 div.forms div {margin: 5px 0 15px 0; }
 div.forms div.break {height: 0; padding: 0; margin: 0; clear: both; }
 div.forms span {display: block; float: left; text-align: right; width: 165px; padding: 0 10px 0 0;}
+div.forms div.tip {margin-left: 175px; font-style: italic; font-size: 0.8em;}
 div.forms input {width: 270px;}
 div.forms select {width: 270px;}
 div.forms textarea {height: 100px; width: 270px;}

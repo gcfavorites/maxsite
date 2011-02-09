@@ -39,23 +39,20 @@ mso_cur_dir_lang('admin');
 			{
 				$info1 = explode('|', $latest[0]);
 				
-				echo '<p>' . t('Текущая официальная версия') . ': <a href="' . $info1[2] . '">' . $info1[0] . '</a> (' . $info1[1] . ')</p>';
-
-				$info2 = explode('|', $latest[1]);
-
-				$vers_1 = floor($info2[0]);
-				$vers_2 = floor($info2[0] * 100);
-				$vers = $vers_1 . '.' . $vers_2;
+				echo '<p>' . t('Последняя опубликованная версия') . ': <a href="' . $info1[2] . '">' . $info1[0] . '</a> (' . $info1[1] . ')</p>';
 				
-				$build = str_replace($vers, '', $info2[0]);
-				
-				echo '<p>' . t('Latest-версия') . ': <a href="' . $info2[2] . '">' . $vers . ' build ' . $build . '</a> (' . $info2[1] . ')</p>';
-
 				if ( $info1[0] > getinfo('version') )
-					echo '<p style="margin: 10px 0; font-weight: bold;">' .
-							sprintf( t('Вы можете %sвыполнить обновление'), '<a href="' . $info1[2] . '">' ) . '</a>.</p>';
+				{
+					echo '<p style="margin: 10px 0; font-weight: bold;">';
+					echo sprintf( t('Вы можете %sвыполнить обновление'), '<a href="' . $info1[2] . '">' ) . '</a> ';
+					echo t('или настроить <a href="http://max-3000.com/page/update-maxsite-cms" target="_blank">автоматическое обновление</a>.');
+					
+					echo '</p>';
+				}
 				else
+				{
 					echo '<p style="margin: 10px 0; font-weight: bold;">' . t('Обновление не требуется.') . '</p>';
+				}
 			}
 		}
 	}
@@ -81,6 +78,39 @@ mso_cur_dir_lang('admin');
 
 		echo '</form>';
 	}
+	
+	# получать последние новости
+	$max_3000_news = mso_get_option('max_3000_news', 'general', 0);
+	
+	if ($max_3000_news)
+	{
+		
+		if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 24*60*60); // время кэширования MAGPIE - 1 сутки
+		require_once(getinfo('common_dir') . 'magpierss/rss_fetch.inc');
+		$rss = fetch_rss('http://max-3000.com/feed');
+		// $rss = fetch_rss('http://max-3000.com/feed-home-full');
+
+		if ($rss and isset($rss->items) and $rss->items)
+		{
+			$rss = $rss->items;
+			$rss = array_slice($rss, 0, 3); // последние три записи
+			
+			//pr($rss);
+			foreach ($rss as $item)
+			{
+				// title link category description date_timestamp pubdate
+				
+				echo '<div style="margin-top: 20px;">';
+				
+				echo '<h3 style="background: #CCC; padding: 3px;"><a href="' . $item['link'] . '">' . $item['title'] 
+						. '</a> | ' . $item['category'] . ' | ' . date('Y-m-d , H:i:s', $item['date_timestamp']) . '</h2>';
+				
+				echo '<div>' . $item['description'] . '</div>';
+				echo '</div>';
+			}
+		}
+	}
+	
 	
 	mso_hook('admin_home');
 	

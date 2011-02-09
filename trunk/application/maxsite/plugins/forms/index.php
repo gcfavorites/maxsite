@@ -210,9 +210,13 @@ function forms_show_form($f = array())
 		
 		$description = trim($val['description']);
 		
+		if (isset($val['tip']) and trim($val['tip']) ) $tip = '<div class="tip">'. trim($val['tip']) . '</div>';
+			else $tip = '';
+			
+			
 		if ($val['type'] == 'text')
 		{
-			$out .= '<div><label><span>' . $description . $require . '</span><input name="forms_fields[' . $key . ']" type="text" value=""></label></div><div class="break"></div>';
+			$out .= '<div><label><span>' . $description . $require . '</span><input name="forms_fields[' . $key . ']" type="text" value=""></label>' . $tip . '</div><div class="break"></div>';
 		}
 		elseif ($val['type'] == 'select')
 		{
@@ -232,12 +236,12 @@ function forms_show_form($f = array())
 				$out .= '<option' . $checked . '>' . $value . '</option>';
 			}
 			
-			$out .= '</select></label></div><div class="break"></div>';
+			$out .= '</select></label>' . $tip . '</div><div class="break"></div>';
 	
 		}
 		elseif ($val['type'] == 'textarea')
 		{
-			$out .= '<div><label><span>' . $description . $require . '</span><textarea name="forms_fields[' . $key . ']"></textarea></label></div><div class="break"></div>';
+			$out .= '<div><label><span>' . $description . $require . '</span><textarea name="forms_fields[' . $key . ']"></textarea></label>' . $tip . '</div><div class="break"></div>';
 		
 		}
 	}

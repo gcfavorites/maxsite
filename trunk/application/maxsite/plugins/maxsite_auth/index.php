@@ -12,6 +12,7 @@ function maxsite_auth_autoload()
 	mso_hook_add('init', 'maxsite_auth_custom');
 	mso_hook_add('page-comment-form', 'maxsite_auth_page_comment_form');
 	mso_hook_add('admin_init', 'maxsite_auth_admin_init'); # хук на админку
+	mso_hook_add('login_form_auth', 'maxsite_auth_login_form_auth'); # хук на форму логина
 }
 
 # функция выполняется при активации (вкл) плагина
@@ -48,6 +49,13 @@ function maxsite_auth_page_comment_form($args = array())
 	echo '<span><a href="' . getinfo('siteurl') . 'maxsite-auth-form">Авторизация MaxSite CMS</a>.</span> ';
 	
 	return $args;
+}
+
+# хук на форму логина
+function maxsite_auth_login_form_auth($text = '') 
+{
+	$text .= '<a class="login-form-auth maxsite_auth" title="' . t('Если у вас сайт на MaxSite CMS, то вы можете войти с его помощью', 'plugins') . '" href="' . getinfo('siteurl') . 'maxsite-auth-form">MaxSiteAuth</a>[end]';
+	return $text;
 }
 
 # функция отрабатывающая миниопции плагина (function плагин_mso_options)

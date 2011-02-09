@@ -401,6 +401,7 @@ div.block_page {
 	width: 500px;
 	margin: 2px 0 0;
 }
+div.admin-edit-widgets-form input[type='checkbox'] {width: auto;}
 
 div.t150, div.t200, div.t250 {width: 150px; clear: both; text-align: right; float: left; margin: 0 5px; font-weight: bold;}
 div.t200 {width: 200px;}

@@ -19,14 +19,14 @@
 		if (mso_segment(2) == 'error')
 			echo '<p><strong style="color: red;" class="loginform">'. t('Неверный логин/пароль'). '</strong></p>';
 		
-		echo '<p style="font-size: 1.2em;"><strong>'. t('Введите свой логин и пароль'). '</strong></p><br>';
+		echo '<p class="header">'. t('Введите свой логин и пароль'). '</p>';
 		
 		mso_login_form(array( 
 			'login'=>t('Логин'), 
 			'password'=>'<br>'. t('Пароль'), 
-			'submit'=>'<br><br>', 
+			'submit'=>'', 
 			'submit_value'=>t('Войти'), 
-			'form_end'=>'<br><br><a href="' . getinfo('siteurl') . '">'. t('Вернуться к сайту'). '</a>'
+			'form_end'=>'<div class="form-end"><a href="' . getinfo('siteurl') . '">'. t('Вернуться к сайту'). '</a></div>'
 			), 
 			$redirect_url);
 	}

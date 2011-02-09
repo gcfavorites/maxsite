@@ -113,6 +113,7 @@ div.admin-edit-widgets {margin-bottom: 30px; padding: 5px 10px 10px 10px; backgr
 div.admin-edit-widgets-form {border: #94A972 1px solid; margin: 10px 0 10px 0; padding: 1px 10px 10px 10px; background: white; -moz-border-radius: 10px; border-bottom: #807070 2px solid; border-right: #807070 2px solid;}
 div.admin-edit-widgets-form h3 {color: #0D419B;}
 div.admin-edit-widgets-form input {width: 500px; font: 10pt Courier New, mono;}
+div.admin-edit-widgets-form input[type='checkbox'] {width: auto;}
 div.admin-edit-widgets-form textarea {width: 500px;}
 div.admin-edit-widgets-form select {width: 500px;}
 

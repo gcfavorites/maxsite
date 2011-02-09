@@ -1735,6 +1735,7 @@ function mso_form_session($name_form = 'flogin_session_id')
 
 
 # вывод логин-формы
+# в login_form_auth_title для разделителей используется код [end] - нужен для того, чтобы перечислять через запятую
 function mso_login_form($conf = array(), $redirect = '', $echo = true)
 {
 	global $MSO;
@@ -1746,17 +1747,28 @@ function mso_login_form($conf = array(), $redirect = '', $echo = true)
 	$submit = (isset($conf['submit'])) ? $conf['submit'] : '';
 	$submit_value = (isset($conf['submit_value'])) ? $conf['submit_value'] : t('Войти');
 	$form_end = (isset($conf['form_end'])) ? $conf['form_end'] : '';
+	
+	$login_form_auth_title = (isset($conf['login_form_auth_title'])) ? $conf['login_form_auth_title'] : t('Вход через:') . ' ';
 
 	$action = $MSO->config['site_url'] . 'login';
 	$session_id = $MSO->data['session']['session_id'];
-
+	
+	$hook_login_form_auth = mso_hook_present('login_form_auth') ? '<span class="login-form-auth-title">' . $login_form_auth_title . '</span>' . mso_hook('login_form_auth') : '';
+	
+	if ($hook_login_form_auth)
+	{
+		$hook_login_form_auth = trim(str_replace('[end]', '     ', $hook_login_form_auth));
+		$hook_login_form_auth = '<div class="login-form-auth">' . str_replace('     ', ', ', $hook_login_form_auth) . '</div>';
+	}
+	
 	$out = <<<EOF
-	<form method="post" action="{$action}" name="flogin" id="flogin">
+	<form method="post" action="{$action}" name="flogin" class="flogin">
 		<input type="hidden" value="{$redirect}" name="flogin_redirect">
 		<input type="hidden" value="{$session_id}" name="flogin_session_id">
-		<label class="flogin_user"><span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user"></label>
-		<label class="flogin_password"><span>{$password}</span><input type="password" value="" name="flogin_password" id="flogin_password"></label>
-		{$submit}<input type="submit" name="flogin_submit" id="flogin_submit" value="{$submit_value}">
+		<label class="flogin_user"><span>{$login}</span><input type="text" value="" name="flogin_user" class="flogin_user"></label>
+		<label class="flogin_password"><span>{$password}</span><input type="password" value="" name="flogin_password" class="flogin_password"></label>
+		{$submit}<input type="submit" name="flogin_submit" class="flogin_submit" value="{$submit_value}">
+		{$hook_login_form_auth}
 		{$form_end}
 	</form>
 EOF;

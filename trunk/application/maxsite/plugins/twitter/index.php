@@ -46,8 +46,10 @@ function twitter_widget_form($num = 1)
 	if ( !isset($options['format']) ) $options['format'] = '<p><a href="%LINK%">%DATE%</a><br>%TITLE%</p>';
 	if ( !isset($options['format_date']) ) $options['format_date'] = 'd/m/Y H:i:s';
 	if ( !isset($options['footer']) ) $options['footer'] = '';
-
 	
+	// http://d51x.ru/page/modifikacija-plagina-twitter
+    if ( !isset($options['show_nick']))  $options['show_nick'] = true;
+
 	// вывод самой формы
 	$CI = & get_instance();
 	$CI->load->helper('form');
@@ -69,6 +71,8 @@ function twitter_widget_form($num = 1)
 	$form .= '<div class="t150">' . t('Количество слов:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_max_word_description', 'value'=>$options['max_word_description'] ) ) ;
 	
 	$form .= '<div class="t150">' . t('Текст в конце блока:', 'plugins') . '</div><p>'. form_input( array( 'name'=>$widget . '_footer', 'value'=>$options['footer'] ) ) ;
+
+	$form .= '<div class="t150">' . t('Отображать ник:', 'plugins') . '</div><p>'. form_checkbox( array( 'name'=>$widget . '_show_nick', 'value'=> 'show_nick', 'checked' =>  $options['show_nick']) ) ;
 	
 	return $form;
 }
@@ -94,6 +98,9 @@ function twitter_widget_update($num = 1)
 	$newoptions['format_date'] = mso_widget_get_post($widget . '_format_date');
 	$newoptions['footer'] = mso_widget_get_post($widget . '_footer');
 	
+	
+	$newoptions['show_nick'] =  mso_widget_get_post($widget . '_show_nick');
+		
 	if ( $options != $newoptions ) mso_add_option($widget, $newoptions, 'plugins');
 }
 
@@ -114,8 +121,9 @@ function twitter_widget_custom($arg, $num)
 	if ( !isset($arg['block_end']) ) $arg['block_end'] = '</div>';
 	
 	if ( !isset($arg['footer']) ) $arg['footer'] = '';
+	if ( !isset($arg['show_nick']) ) $arg['show_nick'] = true;
 
-	$rss = @twitter_go($arg['url'], $arg['count'], $arg['format'], $arg['format_date'], $arg['max_word_description']);
+	$rss = @twitter_go($arg['url'], $arg['count'], $arg['format'], $arg['format_date'], $arg['max_word_description'], $arg['show_nick']);
 	if ($rss) 
 	{	
 		//$rss = str_replace('maxsite:', '<strong>MaxSite:</strong>', $rss);
@@ -124,7 +132,7 @@ function twitter_widget_custom($arg, $num)
 }
 
 
-function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</strong><br>%TITLE% <a href="%LINK%">&gt;&gt;&gt;</a></p>', $format_date = 'd/m/Y H:i:s', $max_word_description = false)
+function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</strong><br>%TITLE% <a href="%LINK%">&gt;&gt;&gt;</a></p>', $format_date = 'd/m/Y H:i:s', $max_word_description = false, $show_nick = true)
 {	
 	if (!$url) return false;
 	
@@ -144,8 +152,10 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 	{ 
 		$out .= $format;
 		
-		// выделим ник: 
-		$item['title'] = preg_replace('|(\S+): (.*)|si', '<strong>\\1:</strong> \\2', $item['title']);
+		if ( $show_nick )
+			$item['title'] = preg_replace('|(\S+): (.*)|si', '<strong>\\1:</strong> \\2', $item['title']); // выделим ник: 
+		else
+			$item['title'] = preg_replace('|(\S+): (.*)|si', '\\2', $item['title']);
 		
 		// подсветим ссылки
 		$item['title'] = preg_replace('|(http:\/\/)(\S+)|si', '<a href="http://\\2" target="_blank">\\2</a>', $item['title']);
@@ -170,4 +180,4 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 	return $out;
 }
 
-?>
+# end file

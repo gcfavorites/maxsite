@@ -33,13 +33,13 @@ a:hover {color: #c40;}
 
 #entry {color: #818284; font-size: 10pt; margin: 25px 0 10px 0;}
 
-#flogin {color: #808080; font-weight: bold;}
-#flogin span {display: block;}
-#flogin_user, #flogin_password {width: 330px; padding: 3px; border: 1px solid #dce0e7;}
-#flogin_user:focus, #flogin_password:focus {border: 1px solid #D6AE9C; background: #F9F2EF; }
-#flogin_user {margin: 0 0 10px 0; }
-#flogin_submit {float: right; margin: 20px 0 0 0; border: 1px solid #808080; padding: 3px;}
-#flogin_submit:hover {border: 1px solid #D6AE9C; background: #F9F2EF; color: #E77844;}
+form.flogin {color: #808080; font-weight: bold;}
+form.flogin input. span {display: block;}
+form.flogin input.flogin_user, form.flogin input.flogin_password {width: 330px; padding: 3px; border: 1px solid #dce0e7;}
+form.flogin input.flogin_user:focus, form.flogin input.flogin_password:focus {border: 1px solid #D6AE9C; background: #F9F2EF; }
+form.flogin input.flogin_user {margin: 0 0 10px 0; }
+form.flogin input.flogin_submit {float: right; margin: 20px 0 0 0; border: 1px solid #808080; padding: 3px;}
+form.flogin input.flogin_submit:hover {border: 1px solid #D6AE9C; background: #F9F2EF; color: #E77844;}
 
 #cms {color: #717274; font-size: 9pt; margin: 20px 0 0px 0;}
 
@@ -55,6 +55,8 @@ a:hover {color: #c40;}
 	if (!is_login())
 	{
 		$redirect_url = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getinfo('siteurl') . mso_current_url();
+		
+		mso_remove_hook('login_form_auth'); # удалим все хуки для авторизации
 		
 		mso_login_form(array( 
 			'login'=>t('Логин'), 

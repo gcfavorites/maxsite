@@ -12,14 +12,14 @@
         description = Выберите специалиста
         values = Иванов # Петров # Сидоров
         default = Иванов
+        tip = Подсказка к полю
     [/field]
 
     [field]
         require = 0   
-        type = select
-        description = Обращались ли вы к нам раньше?
-        values = Нет # Да
-        default = Нет
+        type = text
+        description = Ваш город
+        tip = Укахывайте вместе со страной
     [/field]
 
     [field]
@@ -38,6 +38,7 @@ div.forms {background: #eeeeee; padding: 10px 5px 0 5px; border: #E0E0E0 1px sol
 div.forms div {margin: 5px 0 15px 0; }
 div.forms div.break {height: 0; padding: 0; margin: 0; clear: both; }
 div.forms span {display: block; float: left; text-align: right; width: 240px; padding: 0 10px 0 0;}
+div.forms div.tip {margin-left: 250px; font-style: italic; font-size: 0.8em;}
 div.forms input {width: 320px;}
 div.forms select {width: 320px;}
 div.forms textarea {width: 320px; height: 100px;}
