@@ -9,32 +9,90 @@
 	
 	# Форма - работает совместно с edit и new
 	
-	
-	# загрузки
-	/*
-	
-	загрузки пока убираю. фигня получилась.
-	
-	ob_start();	
-	require($MSO->config['admin_plugins_dir'] . 'admin_page/files.php');
-	$page_files = ob_get_contents();
-	ob_end_clean();
-		
-	$page_admin_files = '<p>' . t('Скопируйте код в редактор.', 'admin') . ' (<a href="'. $MSO->config['site_admin_url'] . 'files" target="_blank">' . t('Страница «Загрузки»', 'admin') . '</a>)</p>';
-	*/
 	$page_files = '';
 	$page_admin_files = '';
 	
 	# до 
 	$do = '
+	<script>
+	$(function(){
+	
+		function shsh()
+		{
+			if ($("input.f_header").attr("sh") == 0)
+			{
+				$("input.f_header").attr("sh", 1);
+				$("input.f_header").attr("title", "' . t('Для перехода в полноэкранный режим нажмите F2') . '");
+				
+				$("td.page_info").show();
+				$("div.block_page").show();
+				$("div.admin-menu").show();
+				$("div.admin-header").show();
+				$("div.admin-footer").show();
+				$("h1").show();
+				$("p.ret-to-pages").show();
+				$("div.update").show();
+				$("div.error").show();
+				
+				$("div.admin-content").css("margin-left", $("div.admin-content").attr("sh-margin-left"));
+				$("div.admin-content").css("background", $("div.admin-content").attr("sh-background"));
+				$("div.admin-content").css("border-left", $("div.admin-content").attr("sh-border-left"));
+				
+			}
+			else
+			{
+				$("input.f_header").attr("sh", 0);
+				
+				$("input.f_header").attr("title", "' . t('Для возврата в обычный режим нажмите F2') . '");
+				
+				$("td.page_info").hide();
+				$("div.block_page").hide();
+				$("div.admin-menu").hide();
+				$("div.admin-header").hide();
+				$("div.admin-footer").hide();
+				$("h1").hide();
+				$("p.ret-to-pages").hide();
+				$("div.update").hide();
+				$("div.error").hide();
+				
+				$("div.admin-content").attr("sh-margin-left", $("div.admin-content").css("margin-left"));
+				$("div.admin-content").css("margin-left", "0");
+				
+				$("div.admin-content").attr("sh-background", $("div.admin-content").css("background"));
+				$("div.admin-content").css("background", "white");
+				
+				$("div.admin-content").attr("sh-border-left", $("div.admin-content").css("border-left"));
+				$("div.admin-content").css("border-left", "none");
+			}
+		
+		}
+		
+		$("form textarea").keydown(function(eventObject)
+		{
+			if (eventObject.which == 113) // F2
+			{
+				shsh();
+			}
+		});
+		
+		$("input.f_header").keydown(function(eventObject)
+		{
+			if (eventObject.which == 113) // F2
+			{
+				shsh();
+			}
+		});
+		
+	});
+	</script>
+	
 	<table class="new_or_edit">
 	<tr>
 		<td class="editor_and_meta">
-		<input type="text" value="' . $f_header . '" name="f_header" class="f_header">' . $fses;
+		<input type="text" value="' . $f_header . '" name="f_header" class="f_header" title="' . t('Для перехода в полноэкранный режим нажмите F2') . '">' . $fses;
 	
 	# после
 	$posle = '
-
 			<div class="page_status">
 				
 				<a style="display: block; float: right;" href="'. $MSO->config['site_admin_url'] 

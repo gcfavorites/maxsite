@@ -1754,7 +1754,7 @@ function mso_login_form($conf = array(), $redirect = '', $echo = true)
 	<form method="post" action="{$action}" name="flogin" id="flogin">
 		<input type="hidden" value="{$redirect}" name="flogin_redirect">
 		<input type="hidden" value="{$session_id}" name="flogin_session_id">
-		<label class="flogin_user"><span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user"><label>
+		<label class="flogin_user"><span>{$login}</span><input type="text" value="" name="flogin_user" id="flogin_user"></label>
 		<label class="flogin_password"><span>{$password}</span><input type="password" value="" name="flogin_password" id="flogin_password"></label>
 		{$submit}<input type="submit" name="flogin_submit" id="flogin_submit" value="{$submit_value}">
 		{$form_end}
@@ -2003,14 +2003,17 @@ function mso_check_allow($act = '', $user_id = false, $cache = true)
 # mso_segment(3) -> edit
 # номер считается от home-сайта
 # если в сегменте находится XSS и $die = true, то рубим все
-function mso_segment($segment = 2, $die = true)
+# можно проверить сегмент в своём массиве $my_segments
+function mso_segment($segment = 2, $die = true, $my_segments = false)
 {
 	global $MSO;
 	
 	$CI = & get_instance();
 	
-	if ( count($MSO->data['uri_segment']) > ($segment - 1) )
-		$seg = $MSO->data['uri_segment'][$segment];
+	if ($my_segments === false) $my_segments = $MSO->data['uri_segment'];
+	
+	if ( count($my_segments) > ($segment - 1) )
+		$seg = $my_segments[$segment];
 	else $seg = '';
 	
 	$seg = urldecode($seg);

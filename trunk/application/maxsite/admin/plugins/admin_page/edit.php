@@ -4,8 +4,8 @@ mso_cur_dir_lang('admin');
 
 ?>
 
-<h1>Редактирование страницы</h1>
-<p><a href="<?= $MSO->config['site_admin_url'] . 'page' ?>">Вернуться к списку страниц</a>	
+<h1><?= t('Редактирование страницы') ?></h1>
+<p class="ret-to-pages"><a href="<?= $MSO->config['site_admin_url'] . 'page' ?>">Вернуться к списку страниц</a>
 
 <?php
 	
@@ -387,10 +387,12 @@ mso_cur_dir_lang('admin');
 		{
 			if ($f_page_type == $row['page_type_id']) $che = 'checked="checked"';
 				else $che = '';
-				
+			
+			$page_type_desc = $row['page_type_desc'] ? ' <em>(' . $row['page_type_desc'] . ')</em>' : '';
+			
 			$all_post_types .= '<p><label><input name="f_page_type[]" type="radio" ' . $che 
 									. ' value="' . $row['page_type_id'] . '"> ' 
-									. $row['page_type_name'] . '</label></p>';
+									. $row['page_type_name'] . $page_type_desc . '</label></p>';
 		}
 		
 		

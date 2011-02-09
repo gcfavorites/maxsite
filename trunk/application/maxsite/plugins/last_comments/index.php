@@ -176,6 +176,7 @@ function last_comments_widget_custom($options = array(), $num = 1)
 						else $out .= t('Комментатор', 'plugins') . ' ' . $comusers_id;
 				}
 				elseif ($comments_author_name) $out .= $comments_author_name; // аноним . ' (анонимно)'
+				else $out .= ' ' . t('Аноним');
 				
 				$comments_content_1 = strip_tags($comments_content); // удалим тэги
 				$comments_content = mso_str_word($comments_content_1, $options['words']); // ограничение на количество слов

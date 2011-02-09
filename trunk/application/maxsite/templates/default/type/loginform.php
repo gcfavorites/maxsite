@@ -9,8 +9,6 @@
 	
 	echo NR . '<div class="type type_loginform">' . NR;
 	
-	echo '&nbsp';
-	
 	echo '<div class="loginform">';
 	
 	if (!is_login())

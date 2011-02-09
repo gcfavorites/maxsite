@@ -968,37 +968,81 @@ function _mso_sql_build_tag($r, &$pag)
 # архивы по датам
 function _mso_sql_build_archive($r, &$pag)
 {
+	global $MSO;
+	
 	$CI = & get_instance();
 
-	$offset = 0;
-
-	$year = (int) mso_segment(2);
-	if ($year>date('Y', mktime()) or $year<2006) $year = date('Y', mktime());
-
-	$month = (int) mso_segment(3);
-	if ($month>12 or $month<1) $month = date('m', mktime());
-
-	$day = (int) mso_segment(4);
-
-	if ($day)
+	// [1]=>archive [2]=>Y [3]=>M [4]=>D [5]=>next
+	$seg = $MSO->data['uri_segment'];
+	
+	
+	// если есть пагинация, то отсекаем её
+	$in_next = array_search($r['pagination_next_url'], $seg);
+	
+	if ($in_next !== false)
+	{	
+		// есть вхождение - отсекаем
+		// эти операции, чтобы начать счёт в массиве с 1, как в $MSO->data['uri_segment'])
+		$seg = array_merge(array(0), array_slice($seg, 0, $in_next-1));
+		unset($seg[0]);
+	}
+	
+	$count_segment = count($seg) - 1;
+	
+	$year = (int) mso_segment(2, true, $seg); // используем свой массив сегментов
+	if ($year > date('Y', mktime()) or $year < 2006) $year = date('Y', mktime());
+	
+	$month = (int) mso_segment(3, true, $seg);
+	$day = (int) mso_segment(4, true, $seg);
+	
+	if ($count_segment >= 3) // [2]=>Y [3]=>M [4]=>D
 	{
-		if ($day>31 or $day<1) $day = 1;
-
+		// указаны год-месяц-дата
+		
+		if ($month > 12 or $month < 1) $month = 1;
+		
 		$dmax = get_total_days($month, $year);
-		if ( $day>$dmax ) $day = $dmax;
+		
+		if ($day == 0) $day = 1;
+		if ($day > $dmax) $day = $dmax;
+		
+		$date_in = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-' . $day . ' 00:00:00', false);
+		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-' . $day . ' 23:59:59',false);
+		
+		
 	}
-
-	if ($day)
+	elseif ($count_segment == 2) // [2]=>Y [3]=>M
 	{
-		$date_in = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-' . $day . ' 00:00:00', -1);
-		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-' . $day . ' 23:59:59', -1);
+		// указано год-месяц
+		
+		if ($month > 12 or $month < 1) $month = 1;
+		
+		$dmax = get_total_days($month, $year);
+		
+		$date_in = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-1 00:00:00', false);
+		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-' . $dmax . ' 23:59:59',false);
 	}
-	else
+	elseif ($count_segment == 1) // [2]=>Y
 	{
-		$date_in = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-1 00:00:00', -1);
-		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-' . $month. '-31 23:59:59', -1);
+		// указан только год
+		
+		$date_in = mso_date_convert('Y-m-d H:i:s', $year . '-01-01 00:00:00', false);
+		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-12-31 23:59:59', false);
 	}
-
+	else 
+	{
+		// ничего не указано - выводим архив за все время
+		
+		$year = date('Y', mktime());
+		$date_in = mso_date_convert('Y-m-d H:i:s', '2006-01-01 00:00:00', false);
+		$date_in_59 = mso_date_convert('Y-m-d H:i:s', $year . '-12-31 23:59:59', false);
+	}
+	
+	//pr($date_in);
+	//pr($date_in_59);
+	
+	$offset = 0;
+	
 	if ($r['pagination'])
 	{
 		# пагинация

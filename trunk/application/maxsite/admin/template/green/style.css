@@ -39,7 +39,7 @@ h6 {font-size: 7pt; margin: 3px 0;}
 div.admin-header {background: #10330F url(images/bg-header.jpg) repeat-x; color: white; padding: 10px; border-bottom: 1px #668D61 solid;}
 div.admin-header a {color: white;}
 
-div.admin-content {min-heig1ht: 250px; margin: 0 0 0 250px; padding: 10px; border-left: 2px #235826 solid; }
+div.admin-content {margin: 0 0 0 250px; padding: 10px; border-left: 2px #235826 solid; }
 
 div.admin-menu {width: 250px; background: #D7E7C8; color: #10330F; float: left; border-right: 2px #235826 solid;}
 div.admin-menu div.r { padding: 10px 0 10px 0;}

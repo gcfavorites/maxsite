@@ -146,6 +146,10 @@ function shjs_content($text = '')
 		
 		// замены для совместимости с syntaxhighlighter
 		$text = str_replace('[pre lang=php]', '[pre class="sh_php"]', $text);
+		$text = str_replace('[pre lang=css]', '[pre class="sh_css"]', $text);
+		$text = str_replace('[pre lang=js]', '[pre class="sh_javascript"]', $text);
+		$text = str_replace('[pre lang=javascript]', '[pre class="sh_javascript"]', $text);
+		$text = str_replace('[pre lang=html]', '[pre class="sh_html"]', $text);
 		
 		return $text;
 	}

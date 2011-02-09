@@ -308,9 +308,11 @@
 		if ($f_page_type == $row['page_type_id']) $che = 'checked="checked"';
 			else $che = '';
 			
+		$page_type_desc = $row['page_type_desc'] ? ' <em>(' . $row['page_type_desc'] . ')</em>' : '';
+			
 		$all_post_types .= '<p><label><input name="f_page_type[]" type="radio" ' . $che 
 								. ' value="' . $row['page_type_id'] . '"> ' 
-								. $row['page_type_name'] . '</label></p>';
+								. $row['page_type_name'] . $page_type_desc . '</label></p>';
 	}
 	
 	
