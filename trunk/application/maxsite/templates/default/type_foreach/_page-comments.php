@@ -9,8 +9,8 @@
 		
 		$comments_date = mso_date_convert('Y-m-d в H:i:s', $comments_date);
 		
-		echo NR . '<li style="clear: both;"' . $class . '><span><a href="#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $comments_date . '</a>';
-		echo ' | ' . $comments_url;
+		echo NR . '<li style="clear: both"' . $class . '><span class="date"><a href="#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $comments_date . '</a></span>';
+		echo ' | <span class="url">' . $comments_url . '</span>';
 		
 		if ($edit_link) echo ' | <a href="' . $edit_link . $comments_id . '">edit</a>';
 		
@@ -45,8 +45,9 @@
 		if ($avatar_url) 
 			$avatar_url = '<span style="display: none"><![CDATA[<noindex>]]></span><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar"><span style="display: none"><![CDATA[</noindex>]]></span>';
 		
-		echo '</span><br>' . $avatar_url;
+		echo '<div class="comments_content">' . $avatar_url;
 		echo mso_comments_content($comments_content);
+		echo '</div>';
 		
 		echo '</li>'; 
 	

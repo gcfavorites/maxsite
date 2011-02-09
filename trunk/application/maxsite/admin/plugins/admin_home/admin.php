@@ -87,7 +87,7 @@ mso_cur_dir_lang('admin');
 		
 		if (!defined('MAGPIE_CACHE_AGE'))	define('MAGPIE_CACHE_AGE', 24*60*60); // время кэширования MAGPIE - 1 сутки
 		require_once(getinfo('common_dir') . 'magpierss/rss_fetch.inc');
-		$rss = fetch_rss('http://max-3000.com/feed');
+		$rss = @fetch_rss('http://max-3000.com/feed');
 		// $rss = fetch_rss('http://max-3000.com/feed-home-full');
 
 		if ($rss and isset($rss->items) and $rss->items)

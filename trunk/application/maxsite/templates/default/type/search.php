@@ -192,7 +192,7 @@ if (!$pages and !$categories and !$tags)
 	{
 		echo '<h1>'. t('404. Ничего не найдено...'). '</h1>';
 		
-		if ($search_len) echo '<p>'. t('Полисковая фраза должна быть не менее ' . $min_search_chars . ' символов.') . '</p>';
+		if ($search_len) echo '<p>'. t('Поисковая фраза должна быть не менее ' . $min_search_chars . ' символов.') . '</p>';
 		
 		echo '<p>'. t('Попробуйте повторить поиск.') . '</p>';
 

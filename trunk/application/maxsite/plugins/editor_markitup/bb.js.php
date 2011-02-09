@@ -74,6 +74,7 @@ myBbcodeSettings = {
 		{name:'Код', openWith:'[pre]', closeWith:'[/pre]', className:"code", dropMenu: [
 			{name:'Текст', openWith:'[pre]', closeWith:'[/pre]', className:"text" },
 			{name:'PHP', openWith:'[pre lang=php]', closeWith:'[/pre]', className:"php" },
+			{name:'HTML', openWith:'[pre lang=html]', closeWith:'[/pre]', className:"html-pre" },
 			{name:'CSS', openWith:'[pre lang=css]', closeWith:'[/pre]', className:"css" },
 			{name:'JavaScript', openWith:'[pre lang=js]', closeWith:'[/pre]', className:"js" },
 			{name:'Delphi', openWith:'[pre lang=delphi]', closeWith:'[/pre]', className:"delphi" },
@@ -112,6 +113,10 @@ myBbcodeSettings = {
 			{name:'Влево', openWith:'[imgleft [![Описание]!]][![Адрес]!][/imgleft]', className:"picture"}, 
 			{name:'Вправо', openWith:'[imgright [![Описание]!]][![Адрес]!][/imgright]', className:"picture"},
 			{name:'Центр', openWith:'[imgcenter [![Описание]!]][![Адрес]!][/imgcenter]', className:"picture"},
+			{separator:'---------------' },
+			{name:'[image]', openWith:'[image][![Адрес]!][/image]', className:"image_add"},
+			{name:'[image(left)]', openWith:'[image(left)][![Адрес]!][/image]', className:"image_add"},
+			{name:'[image(right)]', openWith:'[image(right)][![Адрес]!][/image]', className:"image_add"},
 		]},
 		
 		{name:'Медиа', className:"audio", dropMenu: [

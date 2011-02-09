@@ -5,6 +5,7 @@
 
 
 .bbcode .picture a {background-image:url(images/picture.png); }
+.bbcode .image_add a {background-image:url(images/image_add.png); }
 .bbcode .link a	{background-image:url(images/link.png); }
 
 .bbcode .colors a {background-image:url(images/colors.png); }
@@ -44,6 +45,7 @@
 .bbcode .php a { background-image:url(images/php.png); }
 .bbcode .csharp a { background-image:url(images/csharp.png); }
 .bbcode .text a { background-image:url(images/text.png); }
+.bbcode .html-pre a { background-image:url(images/html-pre.png); }
 .bbcode .css a { background-image:url(images/css.png); }
 .bbcode .delphi a { background-image:url(images/delphi.png); }
 .bbcode .js a { background-image:url(images/js.png); }
