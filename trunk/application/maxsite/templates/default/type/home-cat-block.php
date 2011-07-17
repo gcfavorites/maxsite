@@ -197,7 +197,8 @@ else
 						. '<a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' 
 						. $all_cats[$cat_id]['category_name'] . '</a>'
 						. mso_get_val('home_full_text_cat_end', '</h1>');
-						
+				
+				if ($f = mso_page_foreach('home-cat-block-out-pages-do')) require($f); 	
 				
 				// выводим полнные тексты или списком
 				if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="home-cat-block">';
@@ -266,9 +267,16 @@ else
 					}
 					else // списком
 					{
-						mso_page_title($page_slug, $page_title, '<li>', '', true);
-						mso_page_date($page_date_publish, 'd/m/Y', ' - ', '');
-						echo '</li>';
+						if ($f = mso_page_foreach('home-cat-block-out-pages-list')) 
+						{
+							require($f); // подключаем кастомный вывод
+						}
+						else
+						{
+							mso_page_title($page_slug, $page_title, '<li>', '', true);
+							mso_page_date($page_date_publish, 'd/m/Y', ' - ', '');
+							echo '</li>';
+						}
 					}
 					
 				endforeach;

@@ -29,7 +29,7 @@ function admin_plugins_admin_init($args = array())
 		# Четвертый - номер в меню
 		
 		
-		mso_admin_menu_add('options', $this_plugin_url, t('Плагины', 'admin'), 3);
+		mso_admin_menu_add('options', $this_plugin_url, t('Плагины', 'admin'));
 
 		# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 		# связанную функцию именно она будет вызываться, когда 

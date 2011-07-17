@@ -32,10 +32,16 @@ function mso_check_post_ini()
 		
 		// добавим к $options $all_checkbox если их нет
 		// и сразу заменим on на 1
+		
+		// pr($options);
 		foreach ($all_checkbox as $key=>$val)
 		{
 			if (!isset($options[$key])) $options[$key] = '0';
-				else $options[$key] = '1';
+			else
+			{
+				if (!is_array($options[$key])) $options[$key] = '1';
+				else $options[$key] = array_map('trim', $options[$key]);
+			}
 		}
 		
 		// pr($options);
@@ -81,7 +87,7 @@ function _mso_ini_check_php_callback($matches)
 function mso_view_ini($all = false) 
 {
 	if (!$all) return '';
-	//pr($all);
+	// pr($all);
 	$CI = & get_instance();
 	
 	$CI->load->library('table');
@@ -101,6 +107,7 @@ function mso_view_ini($all = false)
 	
 	$out = '';
 	
+	$nav = ''; // блок навигации
 	
 	// сформируем массив всех опций - ключей
 	$k_where = array();
@@ -117,7 +124,8 @@ function mso_view_ini($all = false)
 		$all_options = $query->result_array();
 	else 
 		$all_options = array();
-		
+	
+	//pr($all_options);	
 	
 	foreach ($all as $key=>$row)
 	{
@@ -187,6 +195,56 @@ function mso_view_ini($all = false)
 			
 			$f .= '<input type="hidden" name="f_all_checkbox[' . $options_key . '_m_s_o_' . $options_type . ']">' . NR;
 		}
+		elseif ($type == 'multicheckbox')
+		{
+			
+			$mr = $value; // отмеченные пункты - массив в виде стандартного option
+			
+			if ($mr) // если $mr == 0, значит ни один пункт не отмечен
+			{
+				// служебные замены
+				$mr = str_replace('&amp;','&', $mr);
+				$mr = str_replace('&quot;','"', $mr);
+				if (preg_match( '|_serialize_|A', $mr))
+				{
+					$mr = preg_replace( '|_serialize_|A', '', $mr, 1);
+					$mr = @unserialize($mr);
+				}
+			}
+			else
+			{
+				$mr = array();
+			}
+			
+			// $mr теперь массив!
+			
+			$values = explode('#', $values);
+			
+			if ($values) // есть что-то
+			{
+				foreach($values as $val) 
+				{
+					$ar = explode('||', $val);
+					if (isset($ar[0])) $mr1 = trim($ar[0]); // ключ чекбокса
+					if (isset($ar[1])) $mr2 = trim($ar[1]); // если есть название
+						else $mr2 = $mr1;
+
+					if (in_array($mr1, $mr)) $checked = 'checked="checked"';
+						else $checked = '';
+						
+					//для каждого чекбокса свой ключ!
+					$mkey = $options_key . '_' . mso_slug($mr1) . '_m_s_o_' . $options_type;
+					$name_f1 = 'f_options[' . $mkey . ']';
+					
+					$f .= '<label><input type="checkbox" name="' . $name_f . '[]" value="' . $mr1 . '" ' 
+							. $checked . '> ' . $mr2 . '</label>' . $delimer . NR;
+				}
+				
+				$f .= '<input type="hidden" name="f_all_checkbox[' . $options_key . '_m_s_o_' . $options_type . ']">' . NR;
+				
+			}
+			
+		}
 		elseif ($type == 'radio')
 		{
 			$values = explode('#', $values); // все значения разделены #
@@ -199,7 +257,7 @@ function mso_view_ini($all = false)
 						else $checked = '';
 						
 					$f .= '<label><input type="radio" name="' . $name_f . '" value="' . trim($val) . '" ' 
-							. $checked . '> ' . trim($val) . '<label>' . $delimer . NR;
+							. $checked . '> ' . trim($val) . '</label>' . $delimer . NR;
 				}
 			}
 		}
@@ -240,19 +298,22 @@ function mso_view_ini($all = false)
 		if (isset($row['section']))
 		{
 			if (isset($row['section_description']))
-				$CI->table->add_row('<div class="section"><h2>' . t($row['section']) . '</h2></div>', '<div class="section">' . t($row['section_description']) . '</div>');
+				$CI->table->add_row('<a id="a-' . mso_slug($row['section']) . '"></a><div class="section"><h2>' . t($row['section']) . '</h2></div>', '<div class="section">' . t($row['section_description']) . '<div style="width: 30px; float: right;"><a href="#atop">&#x25B2;</a> <a href="#abottom">&#x25BC;</a></div></div>');
 			else
-				$CI->table->add_row('<div class="section"><h2>' . t($row['section']) . '</h2></div>', '<div class="section"><h2>&nbsp;</h2></div>');
+				$CI->table->add_row('<a id="a-' . mso_slug($row['section']) . '"></a><div class="section"><h2>' . t($row['section']) . '</h2></div>', '<div class="section"><div style="text-align: right;"><a href="#atop">&#x25B2;</a> <a href="#abottom">&#x25BC;</a></div></div>');
+			
+			$nav .= '<a href="#a-' . mso_slug($row['section']) . '">' . t($row['section']) . '</a>    ';
 				
 		}
 		
 		$CI->table->add_row($key, $f);
 	}
 	
-	$out .= '<form action="" method="post">' . mso_form_session('f_session_id');
-	$out .= '<input type="hidden" value="1" name="f_ini">'; // доп. поле - индикатор, что это ini-форма
+	$out .= '<form action="' . mso_current_url(true) . '" method="post">' . mso_form_session('f_session_id');
+	$out .= '<a id="atop"></a><input type="hidden" value="1" name="f_ini">'; // доп. поле - индикатор, что это ini-форма
+	if ($nav) $out .= '<p>' . str_replace('    ', ' | ', trim($nav)) . '</p>';
 	$out .= $CI->table->generate(); // вывод подготовленной таблицы
-	$out .= NR . '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить') . '"></p>';
+	$out .= NR . '<p class="br"><a id="abottom"></a><input type="submit" name="f_submit" value="' . t('Сохранить') . '"></p>';
 	$out .= '</form>';
 	
 	return $out;

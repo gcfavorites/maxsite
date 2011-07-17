@@ -43,16 +43,23 @@ function sitemap($arg = array())
 	$k = mso_get_cache($cache_key);
 	if ($k) return $k; // да есть в кэше
 	
+	$options = mso_get_option('plugin_sitemap', 'plugins', array() ); // получаем опции
+	if (!isset($options['limit'])) $options['limit'] = 30;
+		else $options['limit'] = (int) $options['limit'];
+		
+	if ($options['limit'] < 2) $options['limit'] = 30;
+	
+	
 	$out = '';
 	// параметры для получения страниц
 	$par = array( 
 			//'no_limit' => true,
-			 'limit'=>30,
+			 'limit' => $options['limit'],
 			// 'type'=> false, 
-			'custom_type'=> 'home', 
-			'content'=> false,
-			'cat_order'=>'category_id_parent', 
-			'cat_order_asc'=>'asc',
+			'custom_type' => 'home', 
+			'content' => false,
+			'cat_order' => 'category_id_parent', 
+			'cat_order_asc' => 'asc',
 			//'order_asc'=> 'desc',
 			); 
 	if ($f = mso_page_foreach('sitemap-mso-get-pages')) require($f); 
@@ -115,6 +122,24 @@ function sitemap($arg = array())
 	mso_add_cache($cache_key, $out); // сразу в кэш добавим
 	
 	return $out;
+}
+
+
+function sitemap_mso_options() 
+{
+	mso_admin_plugin_options('plugin_sitemap', 'plugins', 
+		array(
+			'limit' => array(
+							'type' => 'text', 
+							'name' => t('Количество записей на одной странице', __FILE__), 
+							'description' => '', 
+							'default' => '30'
+						),
+			),
+		'Настройки плагины Sitemap - архив записей', // титул
+		'Укажите необходимые опции.'   // инфо
+	);
+
 }
 
 

@@ -192,22 +192,22 @@ function mso_get_pages($r = array(), &$pag)
 	elseif ($r['custom_type']) // указан какой-то свой тип данных - аналог is_type
 	{
 		$custom_type = $r['custom_type'];
-		if ( $custom_type == 'home' ) _mso_sql_build_home($r, &$pag);
-		elseif ( $custom_type == 'page' ) _mso_sql_build_page($r, &$pag);
-		elseif ( $custom_type == 'category' ) _mso_sql_build_category($r, &$pag);
-		elseif ( $custom_type == 'tag' ) _mso_sql_build_tag($r, &$pag);
-		elseif ( $custom_type == 'archive' ) _mso_sql_build_archive($r, &$pag);
-		elseif ( $custom_type == 'search' ) _mso_sql_build_search($r, &$pag);
-		elseif ( $custom_type == 'author' ) _mso_sql_build_author($r, &$pag);
+		if ( $custom_type == 'home' ) _mso_sql_build_home($r, $pag);
+		elseif ( $custom_type == 'page' ) _mso_sql_build_page($r, $pag);
+		elseif ( $custom_type == 'category' ) _mso_sql_build_category($r, $pag);
+		elseif ( $custom_type == 'tag' ) _mso_sql_build_tag($r, $pag);
+		elseif ( $custom_type == 'archive' ) _mso_sql_build_archive($r, $pag);
+		elseif ( $custom_type == 'search' ) _mso_sql_build_search($r, $pag);
+		elseif ( $custom_type == 'author' ) _mso_sql_build_author($r, $pag);
 		else return array();
 	}
-	elseif ( is_type('home') ) _mso_sql_build_home($r, &$pag);
-	elseif ( is_type('page') ) _mso_sql_build_page($r, &$pag);
-	elseif ( is_type('category') ) _mso_sql_build_category($r, &$pag);
-	elseif ( is_type('tag') ) _mso_sql_build_tag($r, &$pag);
-	elseif ( is_type('archive') ) _mso_sql_build_archive($r, &$pag);
-	elseif ( is_type('search') ) _mso_sql_build_search($r, &$pag);
-	elseif ( is_type('author') ) _mso_sql_build_author($r, &$pag);
+	elseif ( is_type('home') ) _mso_sql_build_home($r, $pag);
+	elseif ( is_type('page') ) _mso_sql_build_page($r, $pag);
+	elseif ( is_type('category') ) _mso_sql_build_category($r, $pag);
+	elseif ( is_type('tag') ) _mso_sql_build_tag($r, $pag);
+	elseif ( is_type('archive') ) _mso_sql_build_archive($r, $pag);
+	elseif ( is_type('search') ) _mso_sql_build_search($r, $pag);
+	elseif ( is_type('author') ) _mso_sql_build_author($r, $pag);
 	else return array();
 	
 	// сам запрос и его обработка
@@ -619,8 +619,10 @@ function _mso_sql_build_home($r, &$pag)
 	if ($exclude_page_id)
 			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
 
-
-	$CI->db->order_by($r['order'], $r['order_asc']);
+	
+	if ($r['page_id']) $CI->db->order_by('Field(page_id,' . implode(',', $r['page_id']) . ')');
+			else $CI->db->order_by($r['order'], $r['order_asc']);
+	
 	$CI->db->group_by('page.page_id');
 
 	if (!$r['no_limit'])

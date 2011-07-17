@@ -61,6 +61,7 @@ function category_widget_form($num = 1)
 	if ( !isset($options['order']) ) $options['order'] = 'category_name';
 	if ( !isset($options['order_asc']) ) $options['order_asc'] = 'ASC';
 	if ( !isset($options['include_child']) ) $options['include_child'] = '0';
+	if ( !isset($options['nofollow']) ) $options['nofollow'] = 0;
 	
 	// вывод самой формы
 	$CI = & get_instance();
@@ -111,7 +112,14 @@ function category_widget_form($num = 1)
 				array( 
 				'0'=>t('Всегда', 'plugins'), 
 				'1'=>t('Только если явно указана рубрика', 'plugins')
-				), $options['include_child']);	
+				), $options['include_child']);
+	
+	$form .= '<p><div class="t150">' . t('Ссылки рубрик:', 'plugins') . '</div> '. 
+			form_dropdown( $widget . 'nofollow', 
+				array( 
+				'0'=>t('Обычные', 'plugins'), 
+				'1'=>t('Устанавливать как nofollow (неиндексируемые поисковиками)', 'plugins')
+				), $options['nofollow']);
 	
 	return $form;
 }
@@ -137,6 +145,7 @@ function category_widget_update($num = 1)
 	$newoptions['order'] = mso_widget_get_post($widget . 'order');
 	$newoptions['order_asc'] = mso_widget_get_post($widget . 'order_asc');
 	$newoptions['include_child'] = mso_widget_get_post($widget . 'include_child');
+	$newoptions['nofollow'] = mso_widget_get_post($widget . 'nofollow');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -154,6 +163,7 @@ function category_widget_custom($options = array(), $num = 1)
 	if ( !isset($options['order']) ) $options['order'] = 'category_name';
 	if ( !isset($options['order_asc']) ) $options['order_asc'] = 'ASC';
 	if ( !isset($options['include_child']) ) $options['include_child'] = 0;
+	if ( !isset($options['nofollow']) ) $options['nofollow'] = false;
 	
 	$cache_key = 'category_widget' . serialize($options) . $num;
 	
@@ -172,7 +182,7 @@ function category_widget_custom($options = array(), $num = 1)
 	
 	// $type = 'page', $parent_id = 0, $order = 'category_menu_order', $asc = 'asc', $child_order = 'category_menu_order', $child_asc = 'asc', $ex = false, $in = false, $in_child = false $hide_empty = false
 	
-	$out = mso_create_list($all, array('childs'=>'childs', 'format'=>$options['format'], 'format_current'=>$options['format_current'], 'class_ul'=>'is_link', 'title'=>'category_name', 'link'=>'category_slug', 'current_id'=>false, 'prefix'=>'category/', 'count'=>'pages_count', 'slug'=>'category_slug', 'id'=>'category_id', 'menu_order'=>'category_menu_order', 'id_parent'=>'category_id_parent' ) );
+	$out = mso_create_list($all, array('childs'=>'childs', 'format'=>$options['format'], 'format_current'=>$options['format_current'], 'class_ul'=>'is_link', 'title'=>'category_name', 'link'=>'category_slug', 'current_id'=>false, 'prefix'=>'category/', 'count'=>'pages_count', 'slug'=>'category_slug', 'id'=>'category_id', 'menu_order'=>'category_menu_order', 'id_parent'=>'category_id_parent', 'nofollow'=>$options['nofollow'] ) );
 	
 	if ($out and $options['header']) $out = $options['header'] . $out;
 	

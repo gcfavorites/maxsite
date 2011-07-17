@@ -21,7 +21,7 @@ function mso_admin_init($args = array())
 }
 
 # добавляет пункт меню админки
-function mso_admin_menu_add($group = '', $url = '', $name = '', $sort = 0)
+function mso_admin_menu_add($group = '', $url = '', $name = '', $sort = 10)
 {
 	global $admin_menu;
 	

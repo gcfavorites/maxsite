@@ -18,7 +18,7 @@ select    -  выпадающий список
 checkbox  - отметка 
 radio     - радиобоксы - выбор одного варианта из нескольких
 textarea  - текстовое поле многострочное
-
+multicheckbox - несколько checkbox в одной опции. Результат опции - массив
 
 values = 1 # 2 # 3 - варианты выбора для select и radio
 
@@ -39,7 +39,8 @@ delimer = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 В описании можно использовать параметры section и section_description, которые выводятся отдельной строкой перед этой секцией в таблице вывода. Поле section выводится в первой ячейке таблицы (ключ, название), section_description - второй (описание).
 
-Пример использования см. application/maxsite/admin/plugins/admin_options/general.ini
+
+
 
 Примеры:
 
@@ -83,4 +84,12 @@ delimer = "<br>"
 values = "0-9 # 10-19 # 20+"
 default = "10-19"
 description = "описание"
+
+[Дополнительные профили]
+options_type = templates
+options_key = default_profiles
+type = multicheckbox
+description = "Отметьте дополнительные профили, которые вы хотите подключить к шаблону."
+values = "1||Первый # 2||Второй # 3||Третий"
+delimer = "<br>"
 

@@ -37,11 +37,11 @@ function main_menu_mso_options()
 	# ключ, тип, ключи массива
 	mso_admin_plugin_options('plugin_main_menu', 'plugins', 
 		array(
-			'menu' => array(
-							'type' => 'textarea', 
-							'name' => 'Пункты меню', 
-							'description' => 'Укажите полные адреса в меню и через | название ссылки. Каждый пункт в одной строчке.<br>Пример: http://maxsite.org/ | Блог Макса<br> Для группы меню используйте [ для открытия и ] для закрытия группы выпадающих пунктов. Например:<pre>[<br># | Медиа<br>audio | Аудио<br>video | Видео<br>photo | Фото<br>]</pre>', 
-							'default' => ''
+			'menu_default' => array(
+							'type' => 'checkbox', 
+							'name' => 'Пункты меню задаются в «Настройках шаблона»', 
+							'description' => 'В этом случае пункты меню ниже не будут учитываться.', 
+							'default' => '1'
 						),
 			'menu_admin' => array(
 							'type' => 'checkbox', 
@@ -49,6 +49,14 @@ function main_menu_mso_options()
 							'description' => 'Нужно ли добавлять пункт Admin в конце меню, если вы вошли в систему', 
 							'default' => '1'
 						),
+		
+			'menu' => array(
+							'type' => 'textarea', 
+							'name' => 'Пункты меню', 
+							'description' => 'Укажите полные адреса в меню и через | название ссылки. Каждый пункт в одной строчке.<br>Пример: http://maxsite.org/ | Блог Макса<br> Для группы меню используйте [ для открытия и ] для закрытия группы выпадающих пунктов. Например:<pre>[<br># | Медиа<br>audio | Аудио<br>video | Видео<br>photo | Фото<br>]</pre>', 
+							'default' => ''
+						),
+			
 			),
 		'Настройки плагина Main menu', // титул
 		'Укажите необходимые опции.'   // инфо
@@ -81,8 +89,17 @@ function main_menu_custom($arg = array())
 
 	$options = mso_get_option('plugin_main_menu', 'plugins', array());
 	
+	 
+	if (!isset($options['menu_default'])) $options['menu_default'] = false;
 	if (!isset($options['menu'])) $options['menu'] = '';
 	if (!isset($options['menu_admin'])) $options['menu_admin'] = true;
+	
+	// используются пункты из настроек шаблона
+	if ($options['menu_default'])
+	{
+		$menu_default = mso_get_option('top_menu', 'templates', '');
+		if ($menu_default) $options['menu'] = $menu_default;
+	}
 	
 	if (!$options['menu']) return $arg;
 	

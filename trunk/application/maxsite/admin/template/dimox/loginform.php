@@ -12,9 +12,10 @@
  
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head>
-<title><?= 'MaxSite CMS &ndash; ' . t('Вход в админ-панель') ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title><?= 'MaxSite CMS &ndash; ' . t('Вход в админ-панель') ?></title>
 <link rel="shortcut icon" href="<?=getinfo('siteurl')?>favicon.ico"type="image/x-icon">
+<meta name="generator" content="MaxSite CMS">
 
 <style type="text/css">
 html, body, div, span, p, a, form {margin: 0; padding: 0; border: none;}

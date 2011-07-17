@@ -48,10 +48,15 @@
 	if (file_exists(getinfo('template_dir') . 'meta.ini')) 
 	{
 		$meta_templ = mso_get_ini_file( getinfo('template_dir') . 'meta.ini' );
-		//pr($meta_templ);
 		if ($meta_templ) $all = array_merge($all, $meta_templ);
 	}
-
+	
+	if (file_exists(getinfo('template_dir') . 'custom/my_meta.ini')) 
+	{
+		$meta_templ = mso_get_ini_file( getinfo('template_dir') . 'custom/my_meta.ini' );
+		if ($meta_templ) $all = array_merge($all, $meta_templ);
+	}
+	
 	// pr($all);
 
 	// проходимся по всем ini-опциям
@@ -102,13 +107,14 @@
 		if ($type == 'textfield')
 		{
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			//$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 			$f .= '<input type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 		}
 		elseif ($type == 'textarea')
 		{
-			//$f .= '<textarea style="width: 99%;" name="' . $name_f . '">'. $value . '</textarea>' . NR;
-			$f .= '<textarea name="' . $name_f . '">'. $value . '</textarea>' . NR;
+			if ( !isset($row['rows']) ) $rr = '';
+				else $rr = 'rows="' . (int) $row['rows'] . '" ';
+				
+			$f .= '<textarea ' . $rr . 'name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}
 		elseif ($type == 'radio')
 		{

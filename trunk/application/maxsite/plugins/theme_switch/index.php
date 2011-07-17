@@ -9,9 +9,9 @@
 # функция автоподключения плагина
 function theme_switch_autoload($args = array())
 {
-	mso_create_allow('theme_switch_edit', t('Админ-доступ к редактированию Theme switch', __FILE__));
+	mso_create_allow('theme_switch_edit', t('Админ-доступ к редактированию Theme switch', 'plugins'));
 	mso_hook_add( 'admin_init', 'theme_switch_admin_init'); # хук на админку
-	mso_register_widget('theme_switch_widget', t('Theme switch', __FILE__)); # регистрируем виджет
+	mso_register_widget('theme_switch_widget', t('Theme switch', 'plugins')); # регистрируем виджет
 	mso_hook_add( 'init', 'theme_switch_init'); # хук на init
 }
 
@@ -121,8 +121,8 @@ function theme_switch_admin_page($args = array())
 		return $args;
 	}
 	# выносим админские функции отдельно в файл
-	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Theme switch', __FILE__) . '"; ' );
-	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Theme switch', __FILE__) . ' - " . $args; ' );
+	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Theme switch', 'plugins') . '"; ' );
+	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Theme switch', 'plugins') . ' - " . $args; ' );
 	require(getinfo('plugins_dir') . 'theme_switch/admin.php');
 }
 
@@ -202,8 +202,8 @@ function theme_switch_widget_custom($options = array(), $num = 1)
 		if ( $key == $current_template ) $checked = 'checked="checked"';
 			else $checked = '';
 					
-		$out .= '<input type="radio" name="theme_switch_radio[]" value="' . $key . '" id="theme_switch_radio_' . $key . '" ' 
-				. $checked . '/> <label for="theme_switch_radio_' . $key . '" title="' . $key . '">' . $val . '</label><br>';
+		$out .= '<label><input type="radio" name="theme_switch_radio[]" value="' . $key . '" id="theme_switch_radio_' . $key . '" ' 
+				. $checked . '> ' . $val . '</label><br>' . NR;
 	}
 	
 	if ($out) 
@@ -217,4 +217,4 @@ function theme_switch_widget_custom($options = array(), $num = 1)
 }
 
 
-?>
+# end file

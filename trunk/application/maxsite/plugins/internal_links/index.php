@@ -62,12 +62,12 @@ function internal_links_mso_options()
 			'max_count' => array(
 							'type' => 'text', 
 							'name' => t('Максимальное количество ссылок одной фразы в тексте', 'plugins'), 
-							'description' => t('Если указать «0», то выделены будут все вхождения.', 'plugins'), 
+							'description' => t('Если указать «0», то будут выделены все вхождения.', 'plugins'), 
 							'default' => '1'
 						),			
 			),
 		t('Настройки плагина «Внутренние ссылки»', 'plugins'), 
-		t('Плагин позволяет выполнить автоматическую замену указанных слов на ссылки. Если фраза сопровождается в тексте символами «&gt;» или «"»,- то она не будет оформлена как ссылка.', 'plugins')
+		t('Плагин позволяет выполнить автоматическую замену указанных слов на ссылки.', 'plugins')
 	);
 	
 }
@@ -95,20 +95,19 @@ function internal_links_custom($text = '')
 	if (!isset($options['default_class'])) $options['default_class'] = '';
 	if (!isset($options['max_count'])) $options['max_count'] = 1;
 		else $options['max_count'] = (int) $options['max_count'];
-	if ($options['max_count'] === 0) $options['max_count'] = -1; // замена для preg_replace_callback
+	if ($options['max_count'] === 0) $options['max_count'] = -1; // замена для preg_replace
 	
 	$links = explode("\n", str_replace("\r", '', trim($options['links']))); // все ссылки в массив
 	
 	if (!isset($a_link) or !$a_link)
 	{
 		$a_link = array();
-		foreach ($links as $link)
+		foreach ($links as $key => $link)
 		{
 			$l1 = explode('|', $link);
 			
 			if ( isset($l1[0]) and isset($l1[1]) ) // фраза | ссылка
 			{
-				$key = trim($l1[0]);
 				$a_link[$key]['word'] = trim($l1[0]);
 				$a_link[$key]['link'] = trim($l1[1]);
 				
@@ -128,67 +127,34 @@ function internal_links_custom($text = '')
 	}
 	
 	$current_url = getinfo('siteurl') . mso_current_url(false);
+
+	$limit = $options['max_count'];
 	
 	foreach ($a_link as $key)
 	{
-		if (strpos($text, $key['word']) === false) continue; // нет вхождения
+		$word = $key['word'];
+		$link = $key['link'];
 		
-		if ($key['link'] == $current_url) continue; // ссылка на себя 
+		if ($link == $current_url) continue; // ссылка на себя 
+		
+		if (mb_stripos($text, $word, 0, 'UTF8') === false) continue; // нет вхождения
 		
 		if ($key['class']) $class = ' class="' . $key['class']. '"';
 			else $class = '';
 		
-		/*
-		// параметры для lambda функции
-		$fs = '$matches, $ar=array(\'' . $key['link'] . '\', \'' . $class . '\')';
-		$fr = 'return $matches[1] . \'<a href="\' . $ar[0] . \'"\' . $ar[1] . \'>\' . $matches[2] . \'</a>\';';
+		$regexp = '/(?!(?:[^<\[]+[>\]]|[^>\]]+<\/a>))(' . preg_quote($word, '/') . ')/usUi';
 		
-		$text = preg_replace_callback(
-			//'~([^">])(' . preg_quote($key['word']) . ')([^"<])~siu', 
-			'~([^">])(' . preg_quote($key['word']) . ')~siu', 
-			create_function($fs, $fr),
-			$text, 
-			$options['max_count']);
-		*/	
+		$replace = "<a href=\"" . $link . "\"" . $class . ">\$0</a>";
 		
-		$_internal_links['class'] = $class;
-		$_internal_links['link'] = $key['link'];
-		
-		$text = preg_replace_callback(
-			'~([^">])(' . preg_quote($key['word']) . ')~siu', 
-			//'~([^">])(' . preg_quote($key['word']) . ')([^"<])~siu', 
-			
-			// '~(?<!title=")(' . preg_quote($key['word']) . ')~siu',
-			
-			'internal_links_custom_callback',
-			$text, 
-			$options['max_count']);	
-
+		$text = preg_replace($regexp, $replace , $text, $limit);
 
 	}
 	
 	
-	//pr($text,1);
+	// pr($text,1);
 	return $text;
 }
 
-
-function internal_links_custom_callback($matches)
-{
-	global $_internal_links;
-	
-	// pr($matches, 1);
-	// pr($matches[2],1);
-	
-	$out = 
-		  $matches[1] 
-		. '<a href="' . $_internal_links['link'] . '"' . $_internal_links['class'] . '>' 
-		. $matches[2] 
-		. '</a>';
-		//. $matches[3]; 
-	
-	return $out;
-}
 
 
 # end file

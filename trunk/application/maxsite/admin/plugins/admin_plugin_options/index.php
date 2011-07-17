@@ -30,14 +30,14 @@ function admin_plugin_options_admin_init($args = array())
 		# Четвертый - номер в меню
 		
 		// в меню не нужно
-		//	mso_admin_menu_add('options', $this_plugin_url, t('Опции плагинов', 'admin'), 3);
+		// mso_admin_menu_add('plugins', $this_plugin_url, t('Опции плагинов', 'admin'), 3);
 
 		# прописываем для указаного admin_url_ + $this_plugin_url - (он будет в url) 
 		# связанную функцию именно она будет вызываться, когда 
 		# будет идти обращение по адресу http://сайт/admin/admin_plugin_options
 		mso_admin_url_hook ($this_plugin_url, 'admin_plugin_options_admin');
 	}
-		
+	
 	return $args;
 }
 
@@ -146,6 +146,7 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 		{
 			mso_add_option($key, $newoptions, $type); // обновим
 			$options = $newoptions; // сразу обновим переменную на новые опции
+			mso_flush_cache(); // сбросим кэш
 		}
 		
 		echo '<div class="update">' . t('Обновлено!', 'admin') . '</div>';

@@ -1,9 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 $info = array(
-	'name' => t('Внутренние ссылки', __FILE__),
-	'description' => t('Плагин создаёт ссылки для указанных слов', __FILE__),
-	'version' => '1.0',
+	'name' => t('Внутренние ссылки', 'plugins'),
+	'description' => t('Плагин создаёт ссылки для указанных слов', 'plugins'),
+	'version' => '1.1',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',

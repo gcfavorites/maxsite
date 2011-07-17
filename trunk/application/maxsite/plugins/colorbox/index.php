@@ -87,23 +87,23 @@ function colorbox_content($text = '')
 		'~\[gallery\](.*?)\[\/gallery\]~si' => '<div class="gallery">$1</div>',
 		'~\[slideshow\](.*?)\[\/slideshow\]~si' => '<div class="slideshow">$1</div>',
 		
-		'~\[gal=(.[^\s]*?) (.*?)\](.*?)\[\/gal\]~si' => '<a href="$3" title="$2"><img src="$1" alt="$2" /></a>',
-		'~\[slide=(.[^\s]*?) (.*?)\](.*?)\[\/slide\]~si' => '<a href="$3" title="$2"><img src="$1" alt="$2" /></a>',
+		'~\[gal=(.[^\s]*?) (.*?)\](.*?)\[\/gal\]~si' => '<a href="$3" title="$2"><img src="$1" alt="$2"></a>',
+		'~\[slide=(.[^\s]*?) (.*?)\](.*?)\[\/slide\]~si' => '<a href="$3" title="$2"><img src="$1" alt="$2"></a>',
 		
-		'~\[gal=(.*?)\](.*?)\[\/gal\]~si' => '<a href="$2"><img src="$1" alt="" /></a>',
-		'~\[slide=(.*?)\](.*?)\[\/slide\]~si' => '<a href="$2"><img src="$1" alt="" /></a>',
+		'~\[gal=(.*?)\](.*?)\[\/gal\]~si' => '<a href="$2"><img src="$1" alt=""></a>',
+		'~\[slide=(.*?)\](.*?)\[\/slide\]~si' => '<a href="$2"><img src="$1" alt=""></a>',
 		
-		'~\[image\](.*?)\[\/image\]~si' => '<a href="$1" class="lightbox"><img src="$1" alt="" /></a>',
+		'~\[image\](.*?)\[\/image\]~si' => '<a href="$1" class="lightbox"><img src="$1" alt=""></a>',
 	
-		'~\[image=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox" title="$2"><img src="$1" alt="$2" /></a>',
+		'~\[image=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox" title="$2"><img src="$1" alt="$2"></a>',
 		
 		'~\[image=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$1" alt="" /></a>',
 		
-		'~\[image\((.[^\s]*?)\)=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$4" class="lightbox" title="$3"><img src="$2" alt="$3" class="$1" /></a>',
+		'~\[image\((.[^\s]*?)\)=(.[^\s]*?) (.*?)\](.*?)\[\/image\]~si' => '<a href="$4" class="lightbox" title="$3"><img src="$2" alt="$3" class="$1"></a>',
 		
-		'~\[image\((.[^ ]*?)\)=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox"><img src="$2" alt="" class="$1" /></a>',
+		'~\[image\((.[^ ]*?)\)=(.[^ ]*?)\](.*?)\[\/image\]~si' => '<a href="$3" class="lightbox"><img src="$2" alt="" class="$1"></a>',
 
-		'~\[image\((.[^ ]*?)\)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$2" alt="" class="$1" /></a>',
+		'~\[image\((.[^ ]*?)\)\](.*?)\[\/image\]~si' => '<a href="$2" class="lightbox"><img src="$2" alt="" class="$1"></a>',
 		
 		'~\[galname\](.*?)\[\/galname\]~si' => '<div>$1</div>',
 		'~\[slidename\](.*?)\[\/slidename\]~si' => '<div>$1</div>',

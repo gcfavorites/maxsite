@@ -603,8 +603,10 @@ $(function()
 			if (this.checked)
 			{
 				t = this.title;
-				if (!t) { t = this.value; }
-				codegal = codegal + '[gal={$up}mini/' + this.value + ' ' + t + ']{$up}'+ this.value +'[\/gal]{$n}';
+				if (!t) { t = ''; }
+				else { t = ' ' + t; }
+				
+				codegal = codegal + '[gal={$up}mini/' + this.value + t + ']{$up}'+ this.value +'[\/gal]{$n}';
 			}
 		});
 

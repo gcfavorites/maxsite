@@ -13,7 +13,9 @@ global $mso_install;
 if ($mso_install and !function_exists('mb_strlen') ) require('mbstring.php');
 
 
-define("NR", "\n");
+define("NR", "\n"); // перенос строки
+define("TAB", "\t"); // табулятор
+define("NT", "\n\t"); // перенос + табулятор
 
 
 # получение нужного значения
@@ -2429,10 +2431,10 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '', $e
 					$en = str_replace('[SB]', $sidebar, $en);
 					
 					// обрамим содержимое виджета в div.widget-content
-					if (stripos($temp, '</span></h2>') !== false)
+					if (stripos($temp, mso_get_val('widget_header_end', '</span></h2>')) !== false)
 					{
 						// есть вхождение заголовка виджета <h2>
-						$temp = str_replace('</span></h2>', '</span></h2><div class="widget-content">', $temp);
+						$temp = str_replace(mso_get_val('widget_header_end', '</span></h2>'), mso_get_val('widget_header_end', '</span></h2>') . '<div class="widget-content">', $temp);
 						$en = '</div>' . $en;
 					}
 					else
@@ -2588,10 +2590,20 @@ function mso_load_jquery($plugin = '')
 	if ( !isset($MSO->js['jquery'][$plugin]) ) // еще нет включения этого плагина
 	{
 		$MSO->js['jquery'][$plugin] = '1';
+	
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.6.min.js"></script>' . NR;
+		{
+			$jquery_type = mso_get_option('jquery_type', 'general', 'self');
+			
+			if ($jquery_type == 'google') $url = 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'; // Google Ajax API CDN 
+			elseif ($jquery_type == 'microsoft') $url = 'http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.1.min.js'; // Microsoft CDN
+			elseif ($jquery_type == 'jquery') $url = 'http://code.jquery.com/jquery-1.6.1.min.js'; //jQuery CDN
+			else $url = getinfo('common_url') . 'jquery/jquery-1.6.1.min.js';
+			
+			return '<script type="text/javascript" src="' . $url . '"></script>' . NR;
+		}
 	}
 }
 
@@ -2821,6 +2833,11 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 	# функция, которая сработает на [FUNCTION]
 	# эта функция получает в качестве параметра текущий массив $elem
 	if (!isset($options['function'])) $options['function'] = false;
+	
+	
+	if (!isset($options['nofollow']) or !$options['nofollow']) $options['nofollow'] = ''; // можно указать rel="nofollow" для ссылок
+		else $options['nofollow'] = ' rel="nofollow"';
+		
 
 	$class_child = $class_child_style = $class_ul = $class_ul_style = '';
 	$class_current = $class_current_style = $class_li = $class_li_style = '';
@@ -2855,7 +2872,7 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 		$title = $elem[$options['title']];
 		$url = getinfo('siteurl') . $options['prefix'] . $elem[$options['link']];
 
-		$link = '<a href="' . $url . '" title="' . mso_strip($title) . '">';
+		$link = '<a' . $options['nofollow'] . ' href="' . $url . '" title="' . mso_strip($title) . '">';
 
 		if (isset($elem[$options['descr']])) $descr = $elem[$options['descr']];
 		else $descr = '';
@@ -3552,7 +3569,7 @@ function mso_rss()
 
 # Функция использует глобальный одномерный массив
 # который используется для получения значения указанного ключа $key
-# Если в массиве клю не определён, то используется значение $default
+# Если в массиве ключ не определён, то используется значение $default
 function mso_get_val($key = '', $default = '')
 {
 	global $MSO;
@@ -3581,6 +3598,53 @@ function mso_set_val($key, $val)
 	
 	// записали значение
 	$MSO->key_options[$key] = $val;
+}
+
+# функция формирует <link rel="$REL" $ADD>
+# $rel - тип rel. Если он равен canonical, то формируется канонизация
+# http://www.google.com/support/webmasters/bin/answer.py?answer=139066&hl=ru
+# <link rel="canonical" href="http://www.example.com/page/about">
+function mso_link_rel($rel = 'canonical', $add = '')
+{
+	if (!$rel) return; // пустой тип
+	if ($rel == 'canonical')
+	{
+		if ($add)
+		{
+			echo '<link rel="canonical" ' . $add . '>';
+		
+		}
+		else
+		{
+			// для разных типов данных формируем разный канонический адрес
+			// он напрямую зависит от типа
+			
+			$url = '';
+			
+			if (is_type('page') or is_type('category') or is_type('tag') or is_type('author'))
+			{
+				$url = getinfo('site_url') . mso_segment(1) . '/' . mso_segment(2);
+			}
+			elseif (is_type('home'))
+			{
+				$url = getinfo('site_url');
+			}
+
+			if ($url) 
+			{			
+				echo '<link rel="canonical" href="' . $url . '">' . NR;
+			}
+		}
+		
+	}
+	else
+	{
+		if ($add)
+		{
+			echo '<link rel="' . $rel . '" ' . $add . '>';
+		}
+	}
+	
 }
 
 # end file

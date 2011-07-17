@@ -1,242 +1,250 @@
 =====================
-УСТАНОВКА MaxSite CMS
+INSTALLATION MaxSite CMS
 =====================
-Официальный сайт: http://max-3000.com/
-Центр помощи: http://max-3000.com/help
-Форум: http://forum.max-3000.com/
-Блог разработчика: http://maxsite.org/
-Поддержка: http://max-3000.com/page/support
-ЧАВО по MaxSite CMS для новичков: http://max-3000.com/page/faq
+Offizielle Website: http://max-3000.com/
+Hilfe: http://max-3000.com/help
+Forum: http://forum.max-3000.com/
+Entwickler-Blog: http://maxsite.org/
+Support: http://max-3000.com/page/support
+FAQ für Anfänger: http://max-3000.com/page/faq
 
-(О наиболее частых проблемах см. в конце этого файла)
+(Lösung der häufigsten Probleme, finden Sie am Ende dieser Datei)
 
 ==================
-ТРЕБОВАНИЯ СИСТЕМЫ
+SYSTEMANFORDERUNGEN
 ==================
-1. Возможность работы с .htaccess и включенный mod_rewrite.
-2. MySQL > 4.1. Работа в UTF8. Тип базы MyISAM.
-3. Наличие включенной библиотеки mbstring.
+1. Fähigkeit zur Arbeit mit .htaccess und aktiven mod_rewrite.
+2. MySQL > 4.1. Arbeit mit UTF8. Datenbank Typ MyISAM.
+3. Aktive bibliothek mbstring.
 4. PHP > 5.1.6.
 
 
 =========
-УСТАНОВКА
+INSTALLATION
 =========
 
-Установка системы происходит очень быстро. Перед началом работы нужно будет 
-указать в конфигурационных файлах параметры доступа к БД. После этого система 
-сама выполнит инсталяцию. 
+Die Installation des Systems erfolgt sehr schnell. Bevor Sie beginnen, müssen
+die Parameter in den Konfigurationsdateien von Datenbank-Zugriff eingeben. Das System
+wird dann die Installation selbst durchzuführen.
 
-Просто следуйте этой инструкции и всё у вас получится! :-)
+Folgen Sie einfach dieser Anleitung und es wird alles klappen! :-)
 
-	| Поскольку все файлы используют кодировку UTF8, то вносить изменения лучше
-	| не в Блокноте, который глючит в этом режиме, а с помощью нормальных 
-	| программ, например Notepad2: http://www.flos-freeware.ch/
+	| Da alle Dateien in UTF8 codiert sind, ändern Sie am besten die Datein
+	| nicht mit Notepad, der Probleme hat mit diesem Modus, sondern mit hilfe normale
+	| Software, z.B. Notepad2: http://www.flos-freeware.ch/
 
 ________________________________________________________________________________
 
-1. Откройте Notepad2 файл «application/config/database.php-distr». В нем 
-	необходимо указать параметры вашей базы данных. После этого загрузите файл 
-	на сервер с именем database.php.
+1. Öffnen Sie die Datei «application/config/database.php-distr» in Notepad2. In dieser 
+    Datei, müssen Sie die Parameter der Datenbank angeben. Danach laden Sie die
+    Datei auf dem Server mit dem Namen database.php hoch.
 ________________________________________________________________________________
 
-2. Откройте файл «application/maxsite/mso_config.php-distr». 
+2. Öffnen Sie die Datei «application/maxsite/mso_config.php-distr». 
 	
-	В этом файле введите свою секретную фразу. Она используется при 
-	шифровании. Учтите, что сменив эту фразу после инсталяции ваш пароль 
-	окажется недействителен. Если вы оставите эту строчку пустой, то
-	в качестве секретной фразы будет использован адрес сайта. Если вы 
-	планируете позже переносить сайт на другой адрес, то секретную
-	фразу лучше указать сразу.
+    Geben Sie in dieser Datei Ihre Geheimwort ein. Sie wird bei
+    der Verschlüsselung verwendet. Bitte beachten Sie, dass eine Änderung der 
+    Geheimwort nach der Installation Ihr Passwort ungültig macht.
+    Wenn Sie nichts eingeben, dann wird als Geheimwort die URL der Webseite verwendet.
+    Wenn Sie später einen Umzug auf andere URL plannen, dann sollen Sie
+    ein Geheimwort am besten gleich eingeben.
+
+    Danach laden Sie die Datei auf dem Server mit dem Namen mso_config.php hoch.
+________________________________________________________________________________
+
+3. Benennen Sie die Datei «.htaccess-distr» in «.htaccess» um.
+
+    Wenn Ihre Webseite nicht in Rootverzeichnes liegt, sondern in einen unterordner
+    z.B. http://www.your-site.com/blog/, dann Öffnen Sie die Datei
+    .htaccess-subdir und ersetzen Sie in diese Datei alle #subdir# mit dem Name
+    ihren Unterordner (in unseren Bsp. "blog" - ohne anführungszeichen!).
+
+    Danach laden Sie die Datei auf dem Server mit dem Namen .htaccess hoch.
+    (Beachten Sie das ein Punkt "." vor den Beginn der Dateiname stehen muss)
 	
-	После изменений загрузите файл на сервер с именем «mso_config.php».
+	Schauen Sie genau so «Wenn PHP als FastCGI».
 ________________________________________________________________________________
 
-3. Переименуйте файл «.htaccess-distr» в «.htaccess».
-
-	Если вы располагаете сайт НЕ в корне домена, а в его подкаталоге, например
-	«http://www.your-site.com/blog/», то откройте Notepad2 файл 
-	«.htaccess-subdir» и замените в нем все «#subdir#» на имя вашего 
-	подкаталога (в нашем случае - «blog» - без кавычек!). Сохраните файл с 
-	именем «.htaccess».
-	
-	Так же см. ниже «Если PHP как FastCGI».
+4. Setzten Sie die Rechte für den Ordner /application/cache/ auf 777, sowie
+    auf unterordner "html" und "rss", die für Cache verwendet werden.
 ________________________________________________________________________________
 
-4. Установите на каталог /application/cache/ права на запись (обычно 777). Там же 
-	установите права на подкаталоги «html» и «rss», который могут 
-	использоваться для кэширования.
+5. Setzten Sie die Rechte für die Datei sitemap.xml auf 666. Die Datei wird
+    bei dem Plugin "XML Sitemap (google-sitemap)" und dient für bessere
+    Indizierung durch Suchmaschinen.
 ________________________________________________________________________________
 
-5. Установите на файл sitemap.xml права на запись (обычно 666). Данный файл 
-	используется плагином «XML Sitemap (google-sitemap)» и служит для лучшей 
-	индексации сайта поисковиками.
+6. Setzten Sie die Rechte für den Ordner /uploads/ auf 777, sowie auf unterordner
+   "_mso_float", "_mso_i" и "mini".
 ________________________________________________________________________________
 
-6. Установите на каталог /uploads/ права на запись (обычно 777). Желательно  
-	установить права 777 на вложенные каталоги «_mso_float», «_mso_i» и «mini».
+7. Starten Sie in einem Browser «http://ihre_webseite/» und folgen Sie den Anweisungen.
 ________________________________________________________________________________
 
-7. Запустите в браузере «http://ваш сайт/» и следуйте инструкциям.
-________________________________________________________________________________
-
-8. После установки системы, откройте файл «application/maxsite/mso_config.php»
-	и измените на
+8. Nach der Installation, Öffnen Sie die Datei «application/maxsite/mso_config.php»
+	und ändern Sie auf
 	
 		$mso_install = true; 
 
-	Это укажет системе, что база установлена и не нужно это проверять каждый раз.
+    Dies teilt das System mit, das eine Installation erfolgreicht durchgeführt wurde,
+    und das eine auf eine weitere Überprüfung verzichtet wird.
 ________________________________________________________________________________
 
-9. В файле «robots.txt-distr» в параметре Host укажите адрес главного зеркала 
-	сайта:
+9. In der Datei «robots.txt-distr» bei dem Parameter Host geben Sie die Url der Haupt Domain an:
 	
 		Host: site.com 
 
-	Сохраните и переименуйте файл как «robots.txt». Этот файл используется 
-	поисковыми системами при индексации вашего сайта. Учитывайте, что адреса
-	с www и без для поисковиков разные. Также желательно указать в .htaccess
-	автоматический редирект (см. ниже). 
+    Speichern Sie die Datei als "robots.txt" ab. Diese Datei wird verwendet
+    bei der Indexierung Ihrer Website durch die Suchmaschinen. Beachten Sie,
+    dass eine URL mit www und ohne www für die Suchmaschine zwei verschiedene
+    Seiten sind. Ich empfehle desweiteren in der Datei .htaccess, einen
+    automatischen redirect aktivieren (mehr dazu siehe unten).
 ________________________________________________________________________________
 
 
 
 =============
-НАЧАЛО РАБОТЫ
+BEGINN
 =============
 
-1. После входа в админ-панель, перейдите в раздел опций, чтобы сохранить их.
-2. Шаблон виджетный, поэтому есть смысл сразу включить плагины.
-3. Потом можно настроить сайдбары и виджеты.
-и т.д.
+1. Nach dem Einloggen in das Admin-Panel, gehen Sie auf Optionen, damit die gespeichert werden.
+2. Die Template besteht auf Widgets, deswegen empfehle ich die benötigte Plugins zu aktivieren.
+3. Danach soll man die Sidebar und Widgets Einstellen.
+usw.
 
 
 ==============================
-ОБНОВЛЕНИЕ С ПРЕДЫДУЩЕЙ ВЕРСИИ
+Upgrades von früheren Versionen
 ==============================
 
-Как правило, для обновления системы с любой версии достаточно загрузить новые
-файлы поверх старых. После этого нужно зайти в админ-панель и вручную сбросить кэш.
-Если на странице версии не указано особо, то вы можете использовать именно такой 
-способ обновления.
+In der Regel, muss man den neue Zip-Arhiv mit dem Aktuellen MaxSite CMS herunterladen,
+auf dem Server/Hosting hochladen und enpacken, alle bestehende Dateien muss man überschreiben.
+Danach muss man in Admin-Panel reingehen und den Cache der System zurücksetzen.
+Wenn keine besondere Updates sind, dann Funktioniert es immer.
 
-Если у вас версия менее 0.5, то делайте так:
+Wenn Ihre Version älter ist als 0.5, dann machen Sie so:
 
-	- Входим на сервер по FTP.
-	- Переименовываем каталог system например в system-old.
-	- Загружаем все файлы MaxSite CMS на сервер.
-	- Устанавливаем права 777 (разрешение на запись) на application/cache и все его подкаталоги.
-	- Через админ-панель нужно сбросить кэш.
-	- После проверки работы сайта, каталог system-old можно удалить.
+	- Logen Sie sich auf dem Server per FTP an.
+    - Benennen Sie die den Ordner "system" in "system-old" um.
+    - Laden alle Datei der MaxSite CMS auf dem Server hoch.
+    - Setzten die Rechte 777 auf "application/cache", sowie alle unterordner.
+    - In der Admin-Panel müssen den System Cache zurücksetzten.
+    - Wenn Sie alles Überpfrüft haben, und die Seite Funktionier perfekt,
+    dann können Sie den Ordner "system-old" entfernen.
+
+
 	
-Если вы хотите обновлять MaxSite CMS в автоматическом режиме, то воспользуйтесь
-инструкцией: http://max-3000.com/page/update-maxsite-cms
+Wenn Sie MaxSite CMS automatisch aktualisieren möchten, dann lesen Sie diese
+Anleitung durch (nur auf Russisch): http://max-3000.com/page/update-maxsite-cms
 
 
 ==========
-ДОПОЛНЕНИЯ
+ERGÄNZUNG
 ==========
 
-Автоматический редирект с www.site.com на site.com
+Automatische Weiterleitung von www.site.com zu site.com
 --------------------------------------------------
-Добавьте в .htaccess после «RewriteEngine on»:
+
+Fügen Sie in .htaccess nach «RewriteEngine on»:
 
 RewriteCond %{HTTP_HOST} ^www.site.com
 RewriteRule ^(.*)$ http://site.com/$1 [R=permanent,L]
 
+ein.
 
-Если PHP как FastCGI
+Wenn PHP als FastCGI
 --------------------
-В этом случае вам придется подобрать под свою конфигурацию параметры .htaccess. 
-В моем случае заработали настройки, указанные в .htaccess-fastcgi.
+In diesem Fall müssen Sie die passende Konfigurationseinstellungen finden für .htaccess.
+In meinen Bsp. hat es mit folgenden Einstellungen Funktioniert, 
+die ich in .htaccess-fastcgi eingefügt habe.
 
-На некотрых серверах вместо строчки:
+Bei manche Server statt der Zeile:
 
 	RewriteRule . /index.php [L]
 
-можно попробовать указать:
+kann man versuchen:
 
 	RewriteRule ^(.*)$ /index.php?/$1 [L,QSA]
 
-Кроме этого нужно подобрать в config.php значение "uri_protocol". У меня 
-получилось так:
+Desweiteren muss man in config.php den richtigen Wert für "uri_protocol" eintragen.
+Bei mir hat es so Funktioniert:
 
 	$config['uri_protocol']	= "REQUEST_URI";
 
-
-Вариант для Nginx с апачем в качестве надстройки
+Bei Bsp. mit Nginx mit Apache hat es so Funktioniert:
 -----------------------------------------------
 RewriteRule ^(.*)$ /index.php?$1 [L,QSA]
 
 
 ================
-ВОЗМОЖНЫЕ ОШИБКИ
+MÖGLICHE FEHLER
 ================
 
-	* В браузере выдается ошибка "Cannot modify header information - headers..."
-      
-      Можно сказать, что вы неверно преобразовали файл в кодировку UTF-8.
-      Ответ здесь: http://forum.maxsite.org/viewtopic.php?id=1075
+    * In Browser kommt die Fehler "Cannot modify header information - headers..."
+
+      Kann man sagen, das die Umwandlung in UTF-8 nicht richig Funktioniert.
+      Antwort gibt es hier (nur Russisch): http://forum.maxsite.org/viewtopic.php?id=1075
 
 
-	* При инсталяции при переходе ко второму шагу, происходит вывод первого.
+    * Bei der Installation, wenn man auf den zweiten Schritt kommt, wird wieder der
+      erste Schritt angezeigt.
+
+      Das heißt, das der "CPU" nicht richtig Funktioniert. Prüfen Sie die Einstellungen
+      bei der Datei .htaccess.
+
+
+    * Bei der Installation, wenn bei auf den Zweiten Schritt kommt, wird ein Fehler angezeigt
+      das der Ordner nicht existiert.
+
+      Das heißt, das der "CPU" nicht richtig Funktioniert. Prüfen Sie die Einstellungen
+      bei der Datei .htaccess.
 	
-	  Это означает, что у вас неверно настроен ЧПУ. Проверьте верный ли у 
-	  вас .htaccess.
+	* Auf der Seite «wird die Ganze Formatierung zerschossen» und in Title steht dann <?= . 
 
-
-	* При инсталяции при переходе ко второму шагу, выводится ошибка, что каталог
-	  не существует.
-	
-	  Это означает, что у вас неверно настроен ЧПУ. Проверьте верный ли у 
-	  вас .htaccess.
-	
-	* На сайте «слетает» оформление и в титле страниц указывается <?= . 
-	  
-	  Это означает, что на вашем сервере запрещены короткие тэги PHP. В php.ini
-	  укажите
+      Das heißt, das auf Ihren Server die kurz PHP Tags (short open tag) nicht erlaubt sind.
+      Geben Sie in php.ini:
 			
 			short_open_tag = On
-			
-	  либо обратитесь в службу поддержки вашего хостинга.
+
+      oder Sprechen Sie das Support Team ihrer Hosters an.
 	
-	* Если выскакивает ошибка Call-time pass-by-reference has been deprecated, 
-	  см. директивы .htaccess ниже.
+	* Wenn das Fehler Call-time pass-by-reference has been deprecated kommt, 
+	  siehe .htaccess weiter unten.
 	  
 
 
 ===================
-Директивы .htaccess
+Richtlinien für .htaccess
 ===================
-Если сервер возвращает ошибку 500, значит для вас запрещено выполнять какие-то
-директивы в .htaccess.
+Wenn der Server eine 500-Fehlermeldung ausgibt, bedeutet es dass Sie keine
+richtlinien ausführen können .htaccess.
 
 
 # 
 Options +FollowSymLinks
 
-# запрещает отображать список файлов в каталоге
+# verbietet die Anzeige der Liste der Dateien in einem Verzeichnis
 Options -Indexes
 
-# отключает register globals - ОБЯЗАТЕЛЬНО ВЫКЛЮЧАЙТЕ register globals
-# если директива отключена, то проверьте через phpinfo() её значение
-# если будет register_globals on - требуйте выключения у хостера
+# schaltet die register globals aus - SIE MÜSSEN IMMER AUS SEIN register globals
+# Wenn die Richtlinie aus ist, überprüfen Sie durch phpinfo() ihren Wert.
+# Wenn register_globals on steht, dann Sprechen Sie ihren Hoster an.
 php_flag register_globals off
 
-# просмотр индексных файлов
+# Anzeige der index Files
 DirectoryIndex index.php index.html
 
-# размер памяти для php-скриптов
+# Größe des Speichers für php-Skripte
 php_value memory_limit 16M
 
-# если выскакивает ошибка Call-time pass-by-reference has been deprecated 
+# Wenn die Fehler Call-time pass-by-reference has been deprecated kommt
 php_flag allow_call_time_pass_reference on
 
 
-# использует кодировку по умолчанию 
+# UTF-8 wird als Standart verwendet.
 AddDefaultCharset UTF-8
 
-# дополнительные директивы для кодировок
+# Weitere Richtlinien...
 CharsetDisable On
 CharsetDefault UTF-8
 CharsetSourceEnc UTF-8

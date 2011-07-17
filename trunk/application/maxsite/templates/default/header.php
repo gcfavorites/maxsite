@@ -6,6 +6,7 @@
 	<meta name="description" content="<?= mso_head_meta('description') ?>">
 	<meta name="keywords" content="<?= mso_head_meta('keywords') ?>">
 	<?= mso_rss() ?>
+	<!-- <?= mso_link_rel('canonical') ?> -->
 	<link rel="shortcut icon" href="<?= getinfo('stylesheet_url') ?>ico/favicon4.ico" type="image/x-icon">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>style.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>print.css" type="text/css" media="print">
