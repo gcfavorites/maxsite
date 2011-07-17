@@ -1713,7 +1713,7 @@ function mso_comuser_auth($data)
 		}
 		else
 		{
-			die(t('Произошла ошибка регистрациии', 'plugins'));
+			die(t('Произошла ошибка регистрации', 'plugins'));
 		}
 	}
 	

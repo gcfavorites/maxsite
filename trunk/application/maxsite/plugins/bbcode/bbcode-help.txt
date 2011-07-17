@@ -17,7 +17,7 @@
 
 [div=стиль]текст[/div]     => <div style="стиль">текст</div> - style для блока
 [p=стиль]текст[/p]         => <p style="стиль">текст</p> - style для абзаца
-[span=стиль]текст[/span\]  => <span style="стиль">текст</span> - style для текста
+[span=стиль]текст[/span]  => <span style="стиль">текст</span> - style для текста
 
 [left]текст[/left]     => <div style="text-align: left;">текст</div> - выравнивание в блоке влево
 [right]текст[/right]   => <div style="text-align: right;">текст</div> - выравнивание в блоке вправо
