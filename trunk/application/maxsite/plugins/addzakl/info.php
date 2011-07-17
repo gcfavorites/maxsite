@@ -3,11 +3,10 @@
 $info = array(
 	'name' => 'Закдадки на соц.сервисы',
 	'description' => 'Добавляет под каждую запись ссылки для разных соц.сервисов.',
-	'version' => '1.4',
-	'author' => 'Максим',
-	'plugin_url' => 'http://max-3000.com/',
+	'version' => '1.5',
+	'author' => 'Максим, Александр Шиллинг',
+	'plugin_url' => 'http://maxsite.thedignity.biz/',
 	'author_url' => 'http://maxsite.org/',
 	'group' => 'template'
 );
 
-?>

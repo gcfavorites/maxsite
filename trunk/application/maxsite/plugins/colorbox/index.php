@@ -53,7 +53,7 @@ function colorbox_head($args = array())
 	if ( !isset($options['height']) ) $options['height'] = '75%';
 	if ( !isset($options['slideshowspeed']) ) $options['slideshowspeed'] = '2500';
 	
-	echo '<link type="text/css" rel="stylesheet" href="'.$url.'style/'.$options['style'].'/colorbox.css" media="screen" />';
+	echo '<link type="text/css" rel="stylesheet" href="'.$url.'style/'.$options['style'].'/colorbox.css" media="screen">';
 	
 	$size = '';
 	if ($options['size'] == '1') $size = ',width:"'.$options['width'].'",height:"'.$options['height'].'"';

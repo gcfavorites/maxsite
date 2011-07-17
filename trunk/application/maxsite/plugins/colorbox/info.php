@@ -6,6 +6,8 @@ $info = array(
 	'author' => 'DRiVER',
 	'plugin_url' => 'http://DRiVERlab.ru/page/25',
 	'author_url' => 'http://DRiVERlab.ru',
-	'group' => 'template'
+	'group' => 'template',
+	'options_url' => getinfo('site_admin_url') . 'plugin_colorbox',
 );
-?>
+
+# end file

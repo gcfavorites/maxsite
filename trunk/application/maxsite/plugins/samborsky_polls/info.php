@@ -2,12 +2,14 @@
 
 $info = array(
 	'name' => 'samborsky_polls',
-	'description' => t('Голосования от Евгения Самборского. См.', __FILE__) . ' <a href="' . getinfo('plugins_url') . 'samborsky_polls/install.txt" target="_blank">install.txt</a>',
+	'description' => t('Голосования от Евгения Самборского', __FILE__),
 	'version' => '1.9',
 	'author' => 'Евгений Самборский',
 	'plugin_url' => 'http://www.samborsky.com/samborsky_polls/',
 	'author_url' => 'http://www.samborsky.com/',
-	'group' => 'template'
+	'group' => 'template',
+	'help' => getinfo('plugins_url') . 'samborsky_polls/install.txt',
+	'options_url' => getinfo('site_admin_url') . 'samborsky_polls',
 );
 
 # end file

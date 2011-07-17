@@ -165,12 +165,12 @@ function loginza_auth_login_form_auth($text = '')
 	
 	if ( $widget_type == 0) 
 	{
-		$text .= '<a href="' .  $auth_url . '" class="loginza loginza_auth">';
+		$text .= '<a rel="nofollow" href="' .  $auth_url . '" class="loginza loginza_auth">';
 		$text .= '<img src="http://loginza.ru/img/sign_in_button_gray.gif" alt="Войти через loginza"/></a>';
 		
 	} else if ($widget_type == 1) {
 	    //$text .= '<script src="http://s1.loginza.ru/js/widget.js" type="text/javascript"></script>';
-		$text .= '<a href="' .  $auth_url . '" class="loginza_auth">' . $options['auth_title_flogin'] . '</a>';
+		$text .= '<a rel="nofollow"  href="' .  $auth_url . '" class="loginza_auth">' . $options['auth_title_flogin'] . '</a>';
 	} else if ($widget_type ==2 ) {
 		$auth_url .= '&overlay=loginza';
 		$text .= '<iframe src="' . $auth_url . '" style="width:359px;height:300px;" scrolling="no" frameborder="no"></iframe>';
@@ -207,11 +207,11 @@ function loginza_auth_page_comment_form($args = array())
 	
 	if ( $widget_type == 0) 
 	{
-		echo '<span><a href="' .  $auth_url . '" class="loginza loginza_auth">';
+		echo '<span><a rel="nofollow" href="' .  $auth_url . '" class="loginza loginza_auth">';
 		echo '<img src="http://loginza.ru/img/sign_in_button_gray.gif" alt="Войти через loginza"/></a></span>';
 	} else {
 	    echo '<script src="http://s1.loginza.ru/js/widget.js" type="text/javascript"></script>';
-		echo '<span><a href="' .  $auth_url . '" class="loginza_auth">' . $auth_title . '</a></span>';
+		echo '<span><a rel="nofollow" href="' .  $auth_url . '" class="loginza_auth">' . $auth_title . '</a></span>';
 	}
 	return $args;
 }

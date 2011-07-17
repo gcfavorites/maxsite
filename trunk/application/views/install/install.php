@@ -128,6 +128,13 @@
 		// 
 		$show_button = true;
 		echo '<div class="proverka">';
+		
+		
+			if (version_compare(PHP_VERSION, '5.1.6', '<')) 
+				echo '<p class="error"><span>X</span> Старая версия PHP ' . PHP_VERSION . '</p>';
+			else
+				echo '<p class="ok"><span>√</span> Версия PHP ' . PHP_VERSION . ' - OK!</p>';
+
 			
 			if (file_exists( $MSO->config['base_dir'] . 'mso_config.php' )) 
 			{

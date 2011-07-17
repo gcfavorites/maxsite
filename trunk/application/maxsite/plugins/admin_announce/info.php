@@ -7,7 +7,8 @@ $info = array(
 	'author' => 'Wave',
 	'plugin_url' => 'http://wave.fantregata.com/page/work-for-maxsite',
 	'author_url' => 'http://wave.fantregata.com/',
-	'group' => 'admin'
+	'group' => 'admin',
+	'options_url' => getinfo('site_admin_url') . 'plugin_admin_announce',
 );
 
 ?>

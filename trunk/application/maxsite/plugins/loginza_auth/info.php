@@ -3,7 +3,7 @@
 $info = array(
 	'name' => t('Авторизация Loginza', __FILE__),
 	'description' => t('Авторизация через Loginza', __FILE__),
-	'version' => '1.1',
+	'version' => '1.2',
 	'author' => 'Максим, Dminty (d51x)',
 	'plugin_url' => 'http://d51x.ru/',
 	'author_url' => 'http://d51x.ru/',

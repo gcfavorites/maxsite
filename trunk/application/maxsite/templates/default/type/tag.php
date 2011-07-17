@@ -70,7 +70,7 @@ if ($pages) // есть страницы
 							'<span>', '</span>');
 				mso_page_cat_link($page_categories, ' | ', '<br><span>'. t('Рубрика'). ':</span> ', '');
 				mso_page_tag_link($page_tags, ' | ', '<br><span>'. t('Метки'). ':</span> ', '');
-				mso_page_edit_link($page_id, 'Edit page', '<br>-', '-');
+				mso_page_edit_link($page_id, 'Edit page', '<br>[', ']');
 				// mso_page_feed($page_slug, t('комментарии по RSS'), '<br><span>'. t('Подписаться на'). '</span> ', '', true);
 			echo '</div>';
 			

@@ -2,12 +2,13 @@
 
 $info = array(
 	'name' => 'Forms',
-	'description' => 'Формы для отправки на указанный email. Подробнее см. <a href="' . getinfo('plugins_url') . 'forms/readme.txt" target="_blank">readme.txt</a>',
+	'description' => 'Формы для отправки на указанный email',
 	'version' => '1.2',
 	'author' => 'Максим',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
-	'group' => 'template'
+	'group' => 'template',
+	'help' => getinfo('plugins_url') . 'forms/readme.txt',
 );
 
 # end file

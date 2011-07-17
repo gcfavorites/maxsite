@@ -93,6 +93,8 @@
 					[plugin_url] => http://maxsite.org/
 					[author_url] => http://maxsite.org/
 					[group] => template
+					[help] => ссылка на хелп
+					'options_url' => getinfo('site_admin_url') . 'plugin_XXX', // ссылка на страницу опций
 				*/
 				
 				$name = isset($info['name']) ? mso_strip($info['name']) : '';
@@ -101,9 +103,12 @@
 				$author = isset($info['author']) ? mso_strip($info['author']) : '';
 				$author_url = isset($info['author_url']) ? $info['author_url'] : false;
 				$plugin_url = isset($info['plugin_url']) ? $info['plugin_url'] : false;
+				$help = isset($info['help']) ? $info['help'] : false;
+				$options_url = isset($info['options_url']) ? $info['options_url'] : false;
 				
 				if ($author_url) $author = '<a href="' . $author_url . '">' . $author . '</a>';
 				if ($plugin_url) $name = '<a href="' . $plugin_url . '">' . $name . '</a>';
+				
 				
 				$act = '<input type="checkbox" name="f_check_submit[' . $dir . ']" id="f_check_submit_' . $dir . '">';
 				
@@ -120,6 +125,9 @@
 						$status = ' ';
 					
 					$dir = '<label for="f_check_submit_' . $dir . '"><span class="plugin_on">' . $dir . '</span></label>';
+					
+					if ($options_url) $status .= ' <a href="' . $options_url . '" title="' . t('Настройки плагина', 'admin') . '">' . t('опции', 'admin') . '</a>';
+					
 				}
 				else 
 				{
@@ -135,6 +143,7 @@
 					
 				}
 				
+				if ($help) $status .= ' <a href="' . $help . '" target="_blank" title="' . t('Помощь по плагину') . '">(?)</a>';
 				
 				$CI->table->add_row($act, $dir, $status, $name, $version, $author, $description);
 			}

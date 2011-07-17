@@ -55,15 +55,36 @@ function ushki_to_hook_mso_options()
 							'name' => t('Задайте хуки и ушки', __FILE__), 
 							'description' => t('
 							Например: 
-							<pre>    content_end | page_bottom</pre>
+							<pre>	content_end | page_bottom</pre>
 							- где <strong>«content_end»</strong> - хук по которому сработает ушка <strong>«page_bottom»</strong>.
 							
 							<br><br>Если необходимо задать приоритет хука, то он указывается третьим параметром (стандарт: 10, чем больше, тем раньше сработает хук), например: 
-							<pre>    content_end | page_bottom | 20</pre>
+							<pre>	content_end | page_bottom | 20</pre>
 							
-							<br>Стандартно этот плагин отдаёт ушку через <strong>echo</strong>. Если же необходимо отдавать функцию через <strong>return</strong>, то четвертым параметром указывается один из вариантов: <strong>echo</strong> или <strong>return</strong>:
-							 <pre>    content_contetn | my_page | 20 | return</pre>
-							<br>
+							<br>Указанная ушка используется только как исходный PHP-код, который сработает в динамически созданной функции указанного хука. В ушке следует выбрать тип «TEXT/HTML» (не используйте тип «PHP»!), но при этом не использовать открывающий <strong>&lt;?php</strong>, например
+			
+							<br><br><pre>	content_content | my_page | 20</pre>
+							 
+							<br>И ушка «my_page» (тип «TEXT/HTML»).
+							
+<br><br><pre>
+	$args = "Мой текст" . $args;
+	return $args;
+</pre>
+							
+							<br>В ушке будет доступна переменная $args, которая является первым параметром динамической функции. 
+							<br><br>
+							<hr>
+							<br><strong>Технические детали.</strong> Заданные хук и ушка преобразуются в функцию 
+<br><br><pre>
+	_ushki_to_hook_ХУК_УШКА($args = "")
+	{
+		ТЕКСТ УШКИ
+	}
+	
+	mso_hook_add(ХУК, _ushki_to_hook_ХУК_УШКА, ПРИОРИТЕТ);
+</pre>
+							<br>после чего этот код выполняется через <strong>eval()</strong>.
 							', __FILE__), 
 							'default' => ''
 						),
@@ -103,10 +124,10 @@ function ushki_to_hook_custom($args = array())
 			$hook = (isset($ar[0]) and trim($ar[0])) ? trim($ar[0]) : false; // хук 
 			$ushka = (isset($ar[1]) and trim($ar[1])) ? trim($ar[1]) : false; // ушка
 			$prior = (isset($ar[2]) and trim($ar[2])) ? (int) trim($ar[2]) : false; // приоритет хука
-			$echo_return = (isset($ar[3]) and trim($ar[3])) ? trim($ar[3]) : ''; // как выводить по return или echo
+		//	$echo_return = (isset($ar[3]) and trim($ar[3])) ? trim($ar[3]) : ''; // как выводить по return или echo
 			
 			
-			if ($echo_return != 'return' and $echo_return != 'echo' ) $echo_return = 'echo';
+		//	if ($echo_return != 'return' and $echo_return != 'echo' ) $echo_return = 'echo';
 			
 			if ($hook and $ushka) // указаны хук и ушка
 			{	
@@ -116,14 +137,11 @@ function ushki_to_hook_custom($args = array())
 				// если её еще не создали
 				if (!function_exists($fn)) 
 				{
-					eval(
-					' function '.$fn.'($args = "")
-					{
-						' . $echo_return . ' ushka("'.$ushka.'");
-						return $args;
-					}
-					'
-					);
+					//формируем текст функции
+					$tf = ' function '.$fn.'($args = ""){ ' . NR . ushka($ushka) . NR . ' } ';
+					
+					// выполним
+					eval($tf);
 				}
 				
 				// и регистрируем в хуке

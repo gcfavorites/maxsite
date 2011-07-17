@@ -7,6 +7,8 @@ $info = array(
 	'author' => 'Максим, Андрей Бусел',
 	'plugin_url' => 'http://max-3000.com/',
 	'author_url' => 'http://maxsite.org/',
-	'group' => 'template'
+	'group' => 'template',
+	'options_url' => getinfo('site_admin_url') . 'redirect',
 );
 
+# end file

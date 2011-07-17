@@ -7,7 +7,8 @@ $info = array(
 	'author' => 'Maxim, Wave',
 	'plugin_url' => 'http://wave.fantregata.com/page/work-for-maxsite',
 	'author_url' => 'http://maxsite.org/',
-	'group' => 'template'
+	'group' => 'template',
+	'options_url' => getinfo('site_admin_url') . 'perelinks',
 );
 
-?>
+# end file

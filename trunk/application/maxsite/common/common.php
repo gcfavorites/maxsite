@@ -406,7 +406,7 @@ function mso_initalizing()
 
 		$query = $CI->db->get();
 
-		if ($query->num_rows() == 0) # нет такого - возможно взлом
+		if (!$query or $query->num_rows() == 0) # нет такого - возможно взлом
 		{
 			$CI->session->sess_destroy(); // убиваем сессию
 			$CI->session->userdata['userlogged'] = 0; // отмечаем, что не залогинен
@@ -2562,7 +2562,7 @@ function mso_load_jquery($plugin = '')
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.5.1.min.js"></script>' . NR;
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.5.2.min.js"></script>' . NR;
 	}
 }
 

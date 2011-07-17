@@ -7,7 +7,8 @@ $info = array(
 	'author' => 'Евгений Самборский',
 	'plugin_url' => 'http://www.samborsky.com/max-3000/223/',
 	'author_url' => 'http://www.samborsky.com/',
-	'group' => 'template'
+	'group' => 'template',
+	'options_url' => getinfo('site_admin_url') . 'plugin_feedburner_count',
 );
 
 ?>

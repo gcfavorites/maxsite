@@ -61,13 +61,14 @@ if ($comments) // есть страницы
 		
 		$comments_date = mso_date_convert('Y-m-d в H:i:s', $comments_date);
 		
-		echo NR . '<li style="clear: both"' . $class . '><span class="date"><a href="#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $comments_date . '</a></span>';
+		echo NR . '<li style="clear: both"' . $class . '><div class="comment-info"><span class="date"><a href="#comment-' . $comments_id . '" name="comment-' . $comments_id . '">' . $comments_date . '</a></span>';
 		echo ' | <span class="url">' . $comments_url . '</span>';
 		
 		if ($edit_link) echo ' | <a href="' . $edit_link . $comments_id . '">edit</a>';
 		
 		if (!$comments_approved) echo ' | '. t('Ожидает модерации');
-
+		
+		echo '</div>';
 		
 		$avatar_url = '';
 		if ($comusers_avatar_url) $avatar_url = $comusers_avatar_url;
