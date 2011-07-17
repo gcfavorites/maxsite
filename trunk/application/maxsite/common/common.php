@@ -2599,6 +2599,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 	$group_num = 0; // номер группы
 	$group_work = false; // открытая группа?
 	$selected_present = false; // есть ли выделеный пункт?
+	$group_elem = 0; // элемент в группе
 	
 	foreach ($menu as $elem)
 	{
@@ -2655,7 +2656,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			}
 			else
 			{
-				if ( array_key_exists(($i), $menu) and (trim($menu[$i]) == ']') ) $class .= ' group-last';
+				if ($group_elem > 0 and array_key_exists($i, $menu) and (trim($menu[$i]) == ']') ) $class .= ' group-last';
 				
 				$out .= '<li class="' . trim($class) . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a></li>' . NR;
 			}
@@ -2674,6 +2675,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			*/
 
 			$i++;
+			$group_elem++;
 		}
 		else
 		{
@@ -2683,9 +2685,12 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			{
 				$group_in = true;
 				$group_work = true;
+				$group_elem = 0;
 			}
+			
 			if ($elem[0] == ']') 
 			{
+				$group_elem = 0;
 				$group_in = false;
 				$group_work = false;
 				$out .= '</ul>' . NR . '</li>' . NR;

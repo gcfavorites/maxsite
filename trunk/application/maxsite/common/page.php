@@ -539,6 +539,7 @@ function _mso_sql_build_home($r, &$pag)
 			$CI->db->where_not_in('page.page_id', $r['exclude_page_id']);
 
 		$CI->db->order_by('page_date_publish', 'desc');
+		$CI->db->group_by('page.page_id');
 		
 		if ($function_add_custom_sql = $r['function_add_custom_sql']) $function_add_custom_sql();
 		

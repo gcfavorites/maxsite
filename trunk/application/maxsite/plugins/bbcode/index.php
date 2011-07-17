@@ -184,6 +184,14 @@ function bbcode_custom($text = '')
 		'~\[img (.*?)\](.*?)\[\/img\]~si'              => '<img src="$2" title="$1" alt="$1">',
 		'~\[img\](.*?)\[\/img\]~si'              => '<img src="$1" title="" alt="">',
 
+		# [img(right)]http://localhost/uploads/2008-07-11-19-50-56.jpg[/img]
+		'~\[img\((.[^ ]*?)\)\](.*?)\[\/img\]~si' => '<img src="$2" alt="" class="$1">',
+		
+		
+		# [img(right) Описание файла]http://localhost/uploads/2008-07-11-19-50-56.jpg[/img]
+		'~\[img\((.[^ ]*?)\) (.*?)\](.*?)\[\/img\]~si' => '<img src="$3" alt="$2" title="$2" class="$1">',
+
+		
 		// quoting
 		'~\[quote\](.*?)\[\/quote\]~si'         => '<blockquote>$1</blockquote>',
 		'~\[quote=(?:&quot;|"|\')?(.*?)["\']?(?:&quot;|"|\')?\](.*?)\[\/quote\]~si'   => '<blockquote><strong class="src">$1:</strong>$2</blockquote>',

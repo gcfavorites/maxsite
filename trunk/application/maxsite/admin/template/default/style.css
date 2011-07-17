@@ -200,5 +200,5 @@ td sub {color: gray}
 
 div.float-parent div.cornerz div.wrap {overflow: auto;}
 div.admin_files_nav strong {font-size: 1.5em;}
-div.admin_files_nav span {margin: 0 7px 0 0;}
-div.admin_files_nav a {margin: 0 7px 0 0;}
+div.admin_files_nav span {}
+div.admin_files_nav a {}

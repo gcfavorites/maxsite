@@ -115,6 +115,8 @@
 							$post_date = $item['wp']['post_date'];
 							if ($post_date == '0000-00-00 00:00:00') $post_date = date('Y-m-d H:i:s');
 							
+							if (!isset($item['title'])) $item['title'] = 'no-title';
+							
 							$out .= '<li><h2>' . $item['title'] . '</h2>';
 							$out .= '<b>' . t('Статус:', 'plugins') . '</b> ' . $status;
 							$out .= '<br><b>' . t('Тип страницы:', 'plugins') . '</b> ' . $page_type_id;
@@ -322,6 +324,8 @@
 							{
 								$cat1[] = $mycategorys[$cat]['category_id'];
 							}
+							
+							if (!isset($item['title'])) $item['title'] = 'no-title';
 							
 							if (!isset($item['wp']['post_name'])) $slug = mso_slug($item['title']);
 								else $slug = urldecode($item['wp']['post_name']);

@@ -21,7 +21,7 @@ require_once ('admin-header.php');
 
 <table>
 <tr>
-<th><?php _e('Restrict Author:'); ?></th>
+<th>Автор:</th>
 <td>
 <select name="author">
 <option value="all" selected="selected"><?php _e('All'); ?></option>

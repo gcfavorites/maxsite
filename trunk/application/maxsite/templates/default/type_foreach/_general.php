@@ -29,10 +29,9 @@ if (
 		extract($page);
 		# pr($page);
 		echo NR . '<div class="page_only">' . NR;
-		
-		mso_page_title($page_slug, $page_title, '<h1>', '</h1>', is_type('home'));
 
 		echo '<div class="info">';
+			mso_page_title($page_slug, $page_title, '<h1>', '</h1>', is_type('home'));
 			mso_page_date($page_date_publish, 
 							array(	'format' => 'D, j F Y г.', // 'd/m/Y H:i:s'
 									'days' => t('Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье'),

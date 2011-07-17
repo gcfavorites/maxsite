@@ -26,7 +26,7 @@ function mso_prepare_files($field_userfile = 'f_userfile')
 	}
 	
 	// обнуляем $_FILES
-	unset($_FILES['f_userfile']);
+	unset($_FILES[$field_userfile]);
 	return $new_files;
 }
 
@@ -50,6 +50,10 @@ function mso_upload($config_library = array(), $field_userfile = 'f_userfile', $
 		$f_temp = str_replace('.', '__mso_t__', $f_temp);
 		$f_temp = mso_slug($f_temp); // остальное как обычно mso_slug
 		$f_temp = str_replace('__mso_t__', '.', $f_temp);
+
+		$ext = str_replace('.', '', strrchr($f_temp, '.')); // расширение файла
+		if ($f_temp == '.' . $ext) // имя файла состоит только из расширения «.jpg»
+					$f_temp = '1' . $f_temp; // добавляем к нему единицу
 
 		$_FILES[$field_userfile]['name'] = $f_temp;
 	}
@@ -211,276 +215,13 @@ function mso_upload($config_library = array(), $field_userfile = 'f_userfile', $
 						echo '<div class="error">' . t('Водяной знак:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
 				}
 			}
-
-			# получим новые размеры файла
-			$image_info = GetImageSize($up_data['full_path']);
-			$image_width = $image_info[0];
-			$image_height = $image_info[1];
-
-
-			# теперь нужно сделать миниатюру указанного размера в mini
-			if ($r['userfile_mini'] and $r['userfile_mini_size'])
-			{
-				$size = abs((int) $r['userfile_mini_size']);
-
-				($image_width >= $image_height) ? ($max = $image_width) : ($max = $image_height);
-				if ( $size > 1 and $size < $max ) // корректный размер
-				{
-					$r_conf = array(
-						'image_library' => 'gd2',
-						'source_image' => $up_data['full_path'],
-						'new_image' => $up_data['file_path'] . 'mini/' . $up_data['file_name'],
-						'maintain_ratio' => true,
-						'width' => $size,
-						'height' => $size,
-					);
-
-
-					$mini_type = $r['mini_type']; // тип миниатюры
-					/*
-					1 Пропорционального уменьшения
-					2 Обрезки (crop) по центру
-					3 Обрезки (crop) с левого верхнего края
-					4 Обрезки (crop) с левого нижнего края
-					5 Обрезки (crop) с правого верхнего края
-					6 Обрезки (crop) с правого нижнего края
-					7 Уменьшения и обрезки (crop) в квадрат
-					*/
-
-					if ($mini_type == 2) // Обрезки (crop) по центру
-					{
-						$r_conf['x_axis'] = round($image_width / 2 - $size / 2);
-						$r_conf['y_axis'] = round($image_height / 2 - $size / 2);
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->crop())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-					elseif ($mini_type == 3) // Обрезки (crop) с левого верхнего края
-					{
-						$r_conf['x_axis'] = 0;
-						$r_conf['y_axis'] = 0;
-
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->crop())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-					elseif ($mini_type == 4) // Обрезки (crop) с левого нижнего края
-					{
-						$r_conf['x_axis'] = 0;
-						$r_conf['y_axis'] = round($image_height - $size * $image_height/$image_width);
-
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->crop())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-					elseif ($mini_type == 5) // Обрезки (crop) с правого верхнего края
-					{
-						$r_conf['x_axis'] = $image_width - $size;
-						$r_conf['y_axis'] = 0;
-
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->crop())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-					elseif ($mini_type == 6) // Обрезки (crop) с правого нижнего края
-					{
-						$r_conf['x_axis'] = $image_width - $size;
-						$r_conf['y_axis'] = $image_height - $size;
-
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->crop())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-					elseif ($mini_type == 7) // Уменьшения и обрезки (crop) в квадрат
-					{
-						if ($image_width > $image_height) // Если ширина больше высоты
-						{
-							$resize = round($size * $image_width / $image_height); // Для ресайза по минимальной стороне
-							$r_conf['width'] = $resize;
-							
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->resize())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-							
-							$r_conf['x_axis'] = round(($resize - $size) / 2);
-							$r_conf['y_axis'] = 0;
-							$r_conf['width'] = $size;
-							$r_conf['maintain_ratio'] = false;
-							$r_conf['source_image'] = $r_conf['new_image'];
-							
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->crop())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-						elseif ($image_width < $image_height) // Если высота больше ширины
-						{
-							$resize = round($size * $image_height / $image_width);
-							$r_conf['height'] = $resize;
-							
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->resize())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-							
-							$r_conf['x_axis'] = 0;
-							$r_conf['y_axis'] = round(($resize - $size) / 2);
-							$r_conf['height'] = $size;
-							$r_conf['maintain_ratio'] = false;
-							$r_conf['source_image'] = $r_conf['new_image'];
-							
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->crop())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}
-						else // Равны
-						{
-							$CI->image_lib->initialize($r_conf );
-							if (!$CI->image_lib->resize())
-								echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						}					
-					}
-					else // ничего не указано - Пропорционального уменьшения
-					{
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->resize())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-				}
-				else
-				{
-					//Размер некорректный и миниатюру просто копируем из большого изображения.
-					copy($up_data['full_path'], $up_data['file_path']. 'mini/'. $up_data['file_name']);
-				}
-			}
-
-			# превью
-			# всегда делаем 100 на 100
-			# алгоритм тот же, что и у миниатюры
-			$size = $r['prev_size'];
+	
+			# делаем миниатюру
+			mso_upload_mini($up_data, $r);			
 			
-			if ($size > 0) // если нужно делать превьюху
-			{	
-				$r_conf = array(
-					'image_library' => 'gd2',
-					'source_image' => $up_data['full_path'],
-					'new_image' => $up_data['file_path'] . '_mso_i/' . $up_data['file_name'],
-					'maintain_ratio' => true,
-					'width' => $size,
-					'height' => $size,
-				);
-
-
-				$mini_type = $r['mini_type']; // тип миниатюры
-				/*
-				1 Пропорционального уменьшения
-				2 Обрезки (crop) по центру
-				3 Обрезки (crop) с левого верхнего края
-				4 Обрезки (crop) с левого нижнего края
-				5 Обрезки (crop) с правого верхнего края
-				6 Обрезки (crop) с правого нижнего края
-				7 Уменьшения и обрезки (crop) в квадрат
-				*/
-
-				if ($mini_type == 2) // Обрезки (crop) по центру
-				{
-					$r_conf['x_axis'] = round($image_width / 2 - $size / 2);
-					$r_conf['y_axis'] = round($image_height / 2 - $size / 2);
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 3) // Обрезки (crop) с левого верхнего края
-				{
-					$r_conf['x_axis'] = 0;
-					$r_conf['y_axis'] = 0;
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 4) // Обрезки (crop) с левого нижнего края
-				{
-					$r_conf['x_axis'] = 0;
-					$r_conf['y_axis'] = round($image_height - $size * $image_height/$image_width);
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 5) // Обрезки (crop) с правого верхнего края
-				{
-					$r_conf['x_axis'] = $image_width - $size;
-					$r_conf['y_axis'] = 0;
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 6) // Обрезки (crop) с правого нижнего края
-				{
-					$r_conf['x_axis'] = $image_width - $size;
-					$r_conf['y_axis'] = $image_height - $size;
-
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->crop())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-				elseif ($mini_type == 7) // Уменьшения и обрезки (crop) в квадрат
-				{
-					if ($image_width > $image_height) // Если ширина больше высоты
-					{
-						$resize = round($size * $image_width / $image_height); // Для ресайза по минимальной стороне
-						$r_conf['width'] = $resize;
-						
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->resize())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						
-						$r_conf['x_axis'] = round(($resize - $size) / 2);
-						$r_conf['y_axis'] = 0;
-						$r_conf['width'] = $size;
-						$r_conf['maintain_ratio'] = false;
-						$r_conf['source_image'] = $r_conf['new_image'];
-						
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->crop())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-					elseif ($image_width < $image_height) // Если высота больше ширины
-					{
-						$resize = round($size * $image_height / $image_width);
-						$r_conf['height'] = $resize;
-						
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->resize())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-						
-						$r_conf['x_axis'] = 0;
-						$r_conf['y_axis'] = round(($resize - $size) / 2);
-						$r_conf['height'] = $size;
-						$r_conf['maintain_ratio'] = false;
-						$r_conf['source_image'] = $r_conf['new_image'];
-						
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->crop())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}
-					else // Равны
-					{
-						$CI->image_lib->initialize($r_conf );
-						if (!$CI->image_lib->resize())
-							echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-					}					
-				}
-				else // ничего не указано - Пропорционального уменьшения
-				{
-					$CI->image_lib->initialize($r_conf );
-					if (!$CI->image_lib->resize())
-						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
-				}
-
-			}
-			
+			# превьюшка
+			mso_upload_prev($up_data, $r);
+		
 		}
 		return true;
 	}
@@ -493,5 +234,310 @@ function mso_upload($config_library = array(), $field_userfile = 'f_userfile', $
 		
 }
 
+# функция делает миниатюры
+# $up_data - массив данных из $CI->upload->data()
+# $r - параметры из mso_upload()
+function mso_upload_mini($up_data, $r = array())
+{
+	# получим размеры файла
+	$image_info = GetImageSize($up_data['full_path']);
+	
+	if (!$image_info) return; // это не изображение
+	
+	$image_width = $image_info[0];
+	$image_height = $image_info[1];
+
+	// нужно создать в этом каталоге mini если нет
+	if (!is_dir($up_data['file_path'] . 'mini')) @mkdir($up_data['file_path'] . 'mini', 0777); // нет каталога, пробуем создать
+	
+	//pr($up_data);
+	//pr($r);
+	
+	$CI = & get_instance();
+	$CI->load->library('image_lib');	
+	
+	# теперь нужно сделать миниатюру указанного размера в mini
+	if ($r['userfile_mini'] and $r['userfile_mini_size'])
+	{
+		$size = abs((int) $r['userfile_mini_size']);
+
+		($image_width >= $image_height) ? ($max = $image_width) : ($max = $image_height);
+		if ( $size > 1 and $size < $max ) // корректный размер
+		{
+			$r_conf = array(
+				'image_library' => 'gd2',
+				'source_image' => $up_data['full_path'],
+				'new_image' => $up_data['file_path'] . 'mini/' . $up_data['file_name'],
+				'maintain_ratio' => true,
+				'width' => $size,
+				'height' => $size,
+			);
 
 
+			$mini_type = $r['mini_type']; // тип миниатюры
+			/*
+			1 Пропорционального уменьшения
+			2 Обрезки (crop) по центру
+			3 Обрезки (crop) с левого верхнего края
+			4 Обрезки (crop) с левого нижнего края
+			5 Обрезки (crop) с правого верхнего края
+			6 Обрезки (crop) с правого нижнего края
+			7 Уменьшения и обрезки (crop) в квадрат
+			*/
+
+			if ($mini_type == 2) // Обрезки (crop) по центру
+			{
+				$r_conf['x_axis'] = round($image_width / 2 - $size / 2);
+				$r_conf['y_axis'] = round($image_height / 2 - $size / 2);
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->crop())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+			elseif ($mini_type == 3) // Обрезки (crop) с левого верхнего края
+			{
+				$r_conf['x_axis'] = 0;
+				$r_conf['y_axis'] = 0;
+
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->crop())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+			elseif ($mini_type == 4) // Обрезки (crop) с левого нижнего края
+			{
+				$r_conf['x_axis'] = 0;
+				$r_conf['y_axis'] = round($image_height - $size * $image_height/$image_width);
+
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->crop())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+			elseif ($mini_type == 5) // Обрезки (crop) с правого верхнего края
+			{
+				$r_conf['x_axis'] = $image_width - $size;
+				$r_conf['y_axis'] = 0;
+
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->crop())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+			elseif ($mini_type == 6) // Обрезки (crop) с правого нижнего края
+			{
+				$r_conf['x_axis'] = $image_width - $size;
+				$r_conf['y_axis'] = $image_height - $size;
+
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->crop())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+			elseif ($mini_type == 7) // Уменьшения и обрезки (crop) в квадрат
+			{
+				if ($image_width > $image_height) // Если ширина больше высоты
+				{
+					$resize = round($size * $image_width / $image_height); // Для ресайза по минимальной стороне
+					$r_conf['width'] = $resize;
+					
+					$CI->image_lib->initialize($r_conf );
+					if (!$CI->image_lib->resize())
+						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+					
+					$r_conf['x_axis'] = round(($resize - $size) / 2);
+					$r_conf['y_axis'] = 0;
+					$r_conf['width'] = $size;
+					$r_conf['maintain_ratio'] = false;
+					$r_conf['source_image'] = $r_conf['new_image'];
+					
+					$CI->image_lib->initialize($r_conf );
+					if (!$CI->image_lib->crop())
+						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+				}
+				elseif ($image_width < $image_height) // Если высота больше ширины
+				{
+					$resize = round($size * $image_height / $image_width);
+					$r_conf['height'] = $resize;
+					
+					$CI->image_lib->initialize($r_conf );
+					if (!$CI->image_lib->resize())
+						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+					
+					$r_conf['x_axis'] = 0;
+					$r_conf['y_axis'] = round(($resize - $size) / 2);
+					$r_conf['height'] = $size;
+					$r_conf['maintain_ratio'] = false;
+					$r_conf['source_image'] = $r_conf['new_image'];
+					
+					$CI->image_lib->initialize($r_conf );
+					if (!$CI->image_lib->crop())
+						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+				}
+				else // Равны
+				{
+					$CI->image_lib->initialize($r_conf );
+					if (!$CI->image_lib->resize())
+						echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+				}					
+			}
+			else // ничего не указано - Пропорционального уменьшения
+			{
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->resize())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+		}
+		else
+		{
+			//Размер некорректный и миниатюру просто копируем из большого изображения.
+			copy($up_data['full_path'], $up_data['file_path']. 'mini/'. $up_data['file_name']);
+		}
+	}
+}
+
+# функция делает превьюшку 100x100
+# $up_data - массив данных из $CI->upload->data()
+# $r - параметры из mso_upload()
+function mso_upload_prev($up_data, $r = array())
+{
+	# получим размеры файла
+	$image_info = GetImageSize($up_data['full_path']);
+	if (!$image_info) return; // это не изображение
+	
+	$image_width = $image_info[0];
+	$image_height = $image_info[1];
+	
+	// нужно создать в этом каталоге _mso_i если нет
+	if (!is_dir($up_data['file_path'] . '_mso_i')) @mkdir($up_data['file_path'] . '_mso_i', 0777); // нет каталога, пробуем создать
+	
+	
+	$CI = & get_instance();
+	$CI->load->library('image_lib');	
+	
+	# всегда делаем 100 на 100
+	# алгоритм тот же, что и у миниатюры
+	$size = $r['prev_size'];
+	
+	if ($size > 0) // если нужно делать превьюху
+	{	
+		$r_conf = array(
+			'image_library' => 'gd2',
+			'source_image' => $up_data['full_path'],
+			'new_image' => $up_data['file_path'] . '_mso_i/' . $up_data['file_name'],
+			'maintain_ratio' => true,
+			'width' => $size,
+			'height' => $size,
+		);
+
+
+		$mini_type = $r['mini_type']; // тип миниатюры
+		/*
+		1 Пропорционального уменьшения
+		2 Обрезки (crop) по центру
+		3 Обрезки (crop) с левого верхнего края
+		4 Обрезки (crop) с левого нижнего края
+		5 Обрезки (crop) с правого верхнего края
+		6 Обрезки (crop) с правого нижнего края
+		7 Уменьшения и обрезки (crop) в квадрат
+		*/
+
+		if ($mini_type == 2) // Обрезки (crop) по центру
+		{
+			$r_conf['x_axis'] = round($image_width / 2 - $size / 2);
+			$r_conf['y_axis'] = round($image_height / 2 - $size / 2);
+
+			$CI->image_lib->initialize($r_conf );
+			if (!$CI->image_lib->crop())
+				echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+		}
+		elseif ($mini_type == 3) // Обрезки (crop) с левого верхнего края
+		{
+			$r_conf['x_axis'] = 0;
+			$r_conf['y_axis'] = 0;
+
+			$CI->image_lib->initialize($r_conf );
+			if (!$CI->image_lib->crop())
+				echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+		}
+		elseif ($mini_type == 4) // Обрезки (crop) с левого нижнего края
+		{
+			$r_conf['x_axis'] = 0;
+			$r_conf['y_axis'] = round($image_height - $size * $image_height/$image_width);
+
+			$CI->image_lib->initialize($r_conf );
+			if (!$CI->image_lib->crop())
+				echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+		}
+		elseif ($mini_type == 5) // Обрезки (crop) с правого верхнего края
+		{
+			$r_conf['x_axis'] = $image_width - $size;
+			$r_conf['y_axis'] = 0;
+
+			$CI->image_lib->initialize($r_conf );
+			if (!$CI->image_lib->crop())
+				echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+		}
+		elseif ($mini_type == 6) // Обрезки (crop) с правого нижнего края
+		{
+			$r_conf['x_axis'] = $image_width - $size;
+			$r_conf['y_axis'] = $image_height - $size;
+
+			$CI->image_lib->initialize($r_conf );
+			if (!$CI->image_lib->crop())
+				echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+		}
+		elseif ($mini_type == 7) // Уменьшения и обрезки (crop) в квадрат
+		{
+			if ($image_width > $image_height) // Если ширина больше высоты
+			{
+				$resize = round($size * $image_width / $image_height); // Для ресайза по минимальной стороне
+				$r_conf['width'] = $resize;
+				
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->resize())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+				
+				$r_conf['x_axis'] = round(($resize - $size) / 2);
+				$r_conf['y_axis'] = 0;
+				$r_conf['width'] = $size;
+				$r_conf['maintain_ratio'] = false;
+				$r_conf['source_image'] = $r_conf['new_image'];
+				
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->crop())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+			elseif ($image_width < $image_height) // Если высота больше ширины
+			{
+				$resize = round($size * $image_height / $image_width);
+				$r_conf['height'] = $resize;
+				
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->resize())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+				
+				$r_conf['x_axis'] = 0;
+				$r_conf['y_axis'] = round(($resize - $size) / 2);
+				$r_conf['height'] = $size;
+				$r_conf['maintain_ratio'] = false;
+				$r_conf['source_image'] = $r_conf['new_image'];
+				
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->crop())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}
+			else // Равны
+			{
+				$CI->image_lib->initialize($r_conf );
+				if (!$CI->image_lib->resize())
+					echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+			}					
+		}
+		else // ничего не указано - Пропорционального уменьшения
+		{
+			$CI->image_lib->initialize($r_conf );
+			if (!$CI->image_lib->resize())
+				echo '<div class="error">' . t('Создание миниатюры:', 'admin') . ' ' . $CI->image_lib->display_errors() . '</div>';
+		}
+
+	}
+
+	
+	
+}

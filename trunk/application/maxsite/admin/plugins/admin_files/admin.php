@@ -16,8 +16,7 @@
 	$CI->load->helper('form');
 
 	// разрешенные типы файлов
-	$allowed_types = 'mp3|gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|avi|wmv|flv|swf|wav|xls|7z|gz|bz2|tgz';
-
+	$allowed_types = mso_get_option('allowed_types', 'general', 'mp3|gif|jpg|jpeg|png|zip|txt|rar|doc|rtf|pdf|html|htm|css|xml|odt|avi|wmv|flv|swf|wav|xls|7z|gz|bz2|tgz');
 
 	// по сегменту определяем текущий каталог в uploads
 	// если каталога нет, скидываем на дефолтный ''
@@ -78,19 +77,20 @@
 		if (is_dir( getinfo('uploads_dir') . $d) and $d != '_mso_float' and $d != 'mini' and $d != '_mso_i' and $d != 'smiles')
 		{
 			if (mso_segment(3) == $d)
-				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '"><strong>' . $d . '</strong></a> ';
+				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '"><strong>' . $d . '</strong></a> | ';
 			else
-				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '">' . $d . '</a> ';
+				$out .= '<a href="'. $MSO->config['site_admin_url'] . 'files/' . $d . '">' . $d . '</a> | ';
 		}
 	}
+	
 	if ($out)
 	{
 		if (!mso_segment(3))
-			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files"><strong>uploads</strong></a> ' . $out;
+			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files"><strong>uploads</strong></a> | ' . $out;
 		else
-			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files">uploads</a> ' . $out;
+			$out = '<a href="' . $MSO->config['site_admin_url'] . 'files">uploads</a> | ' . $out;
 
-		$out = '<div class="admin_files_nav"><span>' . t('Навигация:', 'admin') . '</span>' . $out . '</div>';
+		$out = '<div class="admin_files_nav"><span>' . t('Навигация:', 'admin') . '</span> ' . $out . '</div>';
 		echo $out;
 	}
 
@@ -148,6 +148,49 @@
 	}
 
 
+	# обновление всех миниатюр в каталоге
+	if ( $post = mso_check_post(array('f_session2_id', 'f_update_mini_submit')) )
+	{
+		mso_checkreferer();
+		
+		require_once( getinfo('common_dir') . 'uploads.php' ); // функции загрузки 
+
+		// получаем все файлы в каталоге
+		$uploads_dir = getinfo('uploads_dir') . $current_dir;
+
+		// все файлы в массиве $dirs
+		$dirs = directory_map($uploads_dir, true); // только в текущем каталоге
+		if (!$dirs) $dirs = array();
+
+		$allowed_ext = explode('|', $allowed_types);
+
+		foreach ($dirs as $file)
+		{
+			if (@is_dir($uploads_dir . $file)) continue; // это каталог
+			$ext = strtolower(str_replace('.', '', strrchr($file, '.'))); // расширение файла
+			if (!in_array($ext, $allowed_ext)) continue; // запрещенный тип файла
+			
+			if ($ext == 'jpg' or $ext == 'jpeg' or $ext == 'gif' or $ext == 'png')
+			{
+				$up_data = array();
+				$up_data['full_path'] = $uploads_dir . $file;
+				$up_data['file_path'] = $uploads_dir;
+				$up_data['file_name'] = $file;
+				
+				$r = array();
+				$r['userfile_mini'] = 1; // делать миниатюру
+				$r['userfile_mini_size'] = $post['f_userfile_mini_size'];
+				$r['mini_type'] = $post['f_mini_type'];
+				$r['prev_size'] = 100;
+				
+				mso_upload_mini($up_data, $r); // миниатюра 
+				mso_upload_prev($up_data, $r); // превьюшка
+			}
+		}
+
+		echo '<div class="update">' . t('Выполнено', 'admin') . '</div>';
+	}
+	
 	# загрузка нового файла
 	if ( $post = mso_check_post(array('f_session2_id', 'f_upload_submit')) )
 	{
@@ -178,6 +221,16 @@
 				
 			);
 		
+		// запомним указанные размеры и выставим их для полей формы вновь
+		$f_userfile_resize = isset($post['f_userfile_resize']);
+		$f_userfile_resize_size = $post['f_userfile_resize_size'];
+		$f_userfile_water = isset($post['f_userfile_water']);
+		$f_water_type = $post['f_water_type'];
+		$f_userfile_mini = isset($post['f_userfile_mini']);
+		$f_userfile_mini_size = $post['f_userfile_mini_size'];
+		$f_mini_type = $post['f_mini_type'];		
+		
+		
 		// подготовим массив $_FILES - у нас множественная загрузка
 		$new_files = mso_prepare_files('f_userfile');
 		
@@ -198,7 +251,7 @@
 		if (file_exists( $fn_mso_descritions )) // файла нет, нужно создать массив
 		{
 			// массив данных: fn => описание )
-			$mso_descritions = unserialize( read_file($fn_mso_descritions) ); // получим из файла все описания
+			$mso_descritions = unserialize(read_file($fn_mso_descritions)); // получим из файла все описания
 		}
 		else $mso_descritions = array();
 		
@@ -212,16 +265,56 @@
 		<input type="submit" name="f_newcat_submit" value="'. t('Создать', 'admin'). '" onClick="if(confirm(\'' . t('Создать каталог в uploads?', 'admin') . '\')) {return true;} else {return false;}" ></p>
 		</form></div>';
 
+	// размер
+	if (!isset($f_userfile_resize_size)) // это значение было введено при загрузке предудущего файла
+		$resize_images = (int) mso_get_option('resize_images', 'general', 600);
+	else
+		$resize_images = $f_userfile_resize_size;
 
-	$resize_images = (int) mso_get_option('resize_images', 'general', 600);
 	if ($resize_images < 1) $resize_images = 600;
 	
-	$size_image_mini = (int) mso_get_option('size_image_mini', 'general', 150);
-	if ($size_image_mini < 1) $size_image_mini = 150;
-
-	$watermark_type = mso_get_option('watermark_type', 'general', 1);
+	// менять размер?
+	if (!isset($f_userfile_resize) or $f_userfile_resize)
+		$f_userfile_resize = ' checked="checked"';
+	else 
+		$f_userfile_resize = '';
 	
-	$mini_type = mso_get_option('image_mini_type', 'general', 1);
+	// миниатюра
+	if (!isset($f_userfile_mini_size)) 
+		$size_image_mini = (int) mso_get_option('size_image_mini', 'general', 150);
+	else
+		$size_image_mini = $f_userfile_mini_size;
+	
+	if ($size_image_mini < 1) $size_image_mini = 150;
+	
+	
+	if (!isset($f_userfile_mini) or $f_userfile_mini) 
+		$f_userfile_mini = ' checked="checked"';
+	else
+		$f_userfile_mini = '';
+	
+	// водяной знак
+	if (!isset($f_water_type)) 
+		$watermark_type = mso_get_option('watermark_type', 'general', 1);
+	else
+		$watermark_type = $f_water_type;
+		
+	if (!isset($f_userfile_water)) 
+		$use_watermark = mso_get_option('use_watermark', 'general', 0);
+	else
+		$use_watermark = $f_userfile_water;
+	
+	// тип миниатюры
+	if (!isset($f_mini_type)) 
+		$mini_type = mso_get_option('image_mini_type', 'general', 1);
+	else 
+		$mini_type = $f_mini_type;
+	
+	$admin_files_field_count = (int) mso_get_option('admin_files_field_count', 'general', 3);
+	if ($admin_files_field_count < 1) $admin_files_field_count = 3;
+	if ($admin_files_field_count > 50) $admin_files_field_count = 50;
+	
+	
 	
 	// форма загрузки
 	echo '
@@ -229,20 +322,23 @@
 		<h2>' . t('Загрузка файлов', 'admin') . '</h2>
 		<p>' . t('Для загрузки файла нажмите кнопку «Обзор», выберите файл на своем компьютере. После этого нажмите кнопку «Загрузить». Размер файла не должен превышать', 'admin') . ' ' . ini_get ('post_max_size') . '.</p>
 		<form action="" method="post" enctype="multipart/form-data">' . mso_form_session('f_session2_id') .
-		'<p>
-		<input type="file" name="f_userfile[]" size="80"><br>
-		<input type="file" name="f_userfile[]" size="80"><br>
-		<input type="file" name="f_userfile[]" size="80"><br>
-		<input type="file" name="f_userfile[]" size="80"><br>
-		<input type="file" name="f_userfile[]" size="80">
-		
-		&nbsp;<input type="submit" name="f_upload_submit" value="' . t('Загрузить', 'admin') . '"></p>
+		'<p>';
+	
+	for ($i = 1; $i <= $admin_files_field_count; $i++)
+	{
+		echo '<input type="file" name="f_userfile[]" size="100">';
+		if ($i < $admin_files_field_count) echo '<br>';
+	}	
+	
+	
+	
+	echo '&nbsp;<input type="submit" name="f_upload_submit" value="' . t('Загрузить', 'admin') . '">&nbsp;<input type="reset" value="' . t('Сбросить', 'admin') . '"></p>
 		<p>' . t('Описание файла:', 'admin') . ' <input type="text" name="f_userfile_title" class="description_file" value=""></p>
 
-		<p><label><input type="checkbox" name="f_userfile_resize" checked="checked" value=""> ' . t('Для изображений изменить размер до', 'admin') . '</label>
+		<p><label><input type="checkbox" name="f_userfile_resize" ' . $f_userfile_resize . 'value=""> ' . t('Для изображений изменить размер до', 'admin') . '</label>
 			<input type="text" name="f_userfile_resize_size" style="width: 50px" maxlength="4" value="' . $resize_images . '"> ' . t('px (по максимальной стороне).', 'admin') . '</p>
 
-		<p><label><input type="checkbox" name="f_userfile_mini" checked="checked" value=""> ' . t('Для изображений сделать миниатюру размером', 'admin') . '</label>
+		<p><label><input type="checkbox" name="f_userfile_mini" ' . $f_userfile_mini . 'value=""> ' . t('Для изображений сделать миниатюру размером', 'admin') . '</label>
 			<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="' . $size_image_mini . '"> ' . t('px (по максимальной стороне).', 'admin') . ' <br><em>' . t('Примечание: миниатюра будет создана в каталоге', 'admin') . ' <strong>uploads/' . $current_dir . 'mini</strong></em></p>
 
 
@@ -254,12 +350,16 @@
 		<option value="5"'.(($mini_type == 5)?(' selected="selected"'):('')).'>' . t('Обрезки (crop) с правого верхнего края', 'admin') . '</option>
 		<option value="6"'.(($mini_type == 6)?(' selected="selected"'):('')).'>' . t('Обрезки (crop) с правого нижнего края', 'admin') . '</option>
 		<option value="7"'.(($mini_type == 7)?(' selected="selected"'):('')).'>' . t('Уменьшения и обрезки (crop) в квадрат', 'admin') . '</option>
-		</select></p>
+		</select>
+		
+		&nbsp;<input type="submit" name="f_update_mini_submit" value="' . t('Обновить миниатюры', 'admin') . '" onClick="if(confirm(\'' . t('Обновить старые миниатюры (создать для тех файлов, у которых их нет) для всех изображений каталога?', 'admin') . '\')) {return true;} else {return false;}" >
+		
+		</p>
 
-		<p><label><input type="checkbox" name="f_userfile_water" value="" '.
-			((file_exists(getinfo('uploads_dir') . 'watermark.png')) ? '' : ' disabled="disabled"') . 
-			((mso_get_option('use_watermark', 'general', 0)) ? (' checked="checked"') : ('')) .
-			'> ' . t('Для изображений установить водяной знак', 'admin') . '</label>
+		<p><label><input type="checkbox" name="f_userfile_water" value="" '
+			. ((file_exists(getinfo('uploads_dir') . 'watermark.png')) ? '' : ' disabled="disabled"') 
+			. ($use_watermark ? (' checked="checked"') : (''))
+			. '> ' . t('Для изображений установить водяной знак', 'admin') . '</label>
 			<br><em>' . t('Примечание: водяной знак должен быть файлом <strong>watermark.png</strong> и находиться в каталоге', 'admin') . ' <strong>uploads</strong></em></p>
 
 		<p>' . t('Водяной знак устанавливается:', 'admin') . ' <select name="f_water_type">
@@ -269,7 +369,6 @@
 		<option value="4"'.(($watermark_type == 4)?(' selected="selected"'):('')).'>' . t('В левом нижнем углу', 'admin') . '</option>
 		<option value="5"'.(($watermark_type == 5)?(' selected="selected"'):('')).'>' . t('В правом нижнем углу', 'admin') . '</option>
 		</select></p>
-
 		</form>
 		</div>
 		';
