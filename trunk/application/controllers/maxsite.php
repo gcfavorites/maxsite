@@ -251,8 +251,11 @@ class Maxsite extends Controller
 			 ( $this->data_def['uri_segment'][count($this->data_def['uri_segment'])] == '2' )
 			)
 			$step = 2;
-		else
-			$step = 1;
+		elseif ( ( count($this->data_def['uri_segment']) > 0 ) and 
+			 ( $this->data_def['uri_segment'][count($this->data_def['uri_segment'])] == '3' )
+			)
+			$step = 3;
+		else $step = 1;
 
 		$data = array('type'=>'install', 'url_css'=>$css, 'step'=>$step);
 		$MSO->data = array_merge($this->data_def, $data);

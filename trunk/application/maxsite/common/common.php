@@ -2596,6 +2596,9 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 	
 	$group_in = false;
 	$group_in_first = false;
+	$group_num = 0; // номер группы
+	$group_work = false; // открытая группа?
+	$selected_present = false; // есть ли выделеный пункт?
 	
 	foreach ($menu as $elem)
 	{
@@ -2618,12 +2621,16 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			}
 
 			# если текущий адрес совпал, значит мы на этой странице
-			if ($url == $current_url) $class = ' ' . $select_css;
-				else $class = '';
+			if ($url == $current_url)
+			{
+				$class = ' ' . $select_css;
+				$selected_present = true;
+			}
+			else $class = '';
 
 			# для первого элемента добавляем класс first
 			if ($i == 1) $class .= ' first';
-
+			
 			if ($group_in_first)
  			{
 				$class .= ' group-first';
@@ -2637,17 +2644,35 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			
 			if ($group_in) // открываем группу
 			{
+				$group_num++;
+				$class .= ' group-num-' . $group_num;
+				
 				$out .= '<li class="group' . $class . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a>' 
 						. NR . '<ul>' . NR;
+				
 				$group_in = false;
 				$group_in_first = true;
 			}
 			else
 			{
 				if ( array_key_exists(($i), $menu) and (trim($menu[$i]) == ']') ) $class .= ' group-last';
+				
 				$out .= '<li class="' . trim($class) . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a></li>' . NR;
 			}
 			
+			if ($url == $current_url and $group_work) // выделяем родителя группы, если в ней выделенный подпункт
+			{
+				$out = str_replace('group-num-' . $group_num, 'group-num-' . $group_num . ' group-selected', $out);	
+				$selected_present = true;
+			}
+			
+			/*
+			$aaa = $group_in_first ? ' group_in_first ' : ' NOgroup_in_first ';
+			$bbb = $group_in ? ' group_in ' : ' NOgroup_in ';
+			$ccc = $group_work ? ' group_work ' : ' NOgroup_work ';
+			$out .= $aaa . $bbb . $ccc . NR;	
+			*/
+
 			$i++;
 		}
 		else
@@ -2657,18 +2682,24 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			if ($elem[0] == '[') 
 			{
 				$group_in = true;
+				$group_work = true;
 			}
 			if ($elem[0] == ']') 
 			{
 				$group_in = false;
+				$group_work = false;
 				$out .= '</ul>' . NR . '</li>' . NR;
 			}
-			$i++;
 		}
 	}
 	
 	$out = str_replace('<li class="">', '<li>', $out);
 	
+	// если ничего не выделено, то для первой группы прописываем класс group-default
+	if (!$selected_present)
+		$out = str_replace('group-num-1', 'group-num-1 group-default', $out);
+	
+	//pr($out, 1);
 	return $out;
 }
 

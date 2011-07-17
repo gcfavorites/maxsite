@@ -8,8 +8,13 @@
 	global $MSO;
 	
 	$CI = & get_instance();	
-	
+
 	$step = $MSO->data['step'];
+	
+	// pr($step);
+	// pr($_SERVER);
+	//pr(mso_current_url());
+	//pr($MSO);
 	
 	$username = '';
 	$userpassword = '';
@@ -18,11 +23,11 @@
 	$demoposts = 0;
 	$error = false;
 	
-	if ( ($step == 2) and $_POST ) 
+	if ( ($step == 3) and $_POST ) 
 	{
 		mso_checkreferer(); // проверка на чужой реферер
 		
-		if ( $_POST['mysubmit'] ) 
+		if ($_POST['mysubmit']) 
 		{
 			$username = isset ($_POST['username']) ? mso_strip($_POST['username'], true) : false;
 			$userpassword = isset ($_POST['userpassword']) ? mso_strip($_POST['userpassword'], true) : false;
@@ -35,11 +40,11 @@
 			
 			if ( !$useremail or !$username or !$userpassword or !$namesite ) 
 			{
-				$step = 1;
+				$step = 2;
 				$error = '<h2 class="error">Ошибочные или неполные данные!</h2>';
 			}
 			
-			if ( $step === 2 ) 
+			if ( $step === 3 ) 
 			{
 				require_once ('install-common.php');
 				$res = mso_install_newsite( array('username'=>$username, 
@@ -54,7 +59,7 @@
 			}
 		}
 		else
-			$step == 1;
+			$step == 2;
 	}
 	
 	mso_nocache_headers();
@@ -69,7 +74,38 @@
 </head>
 <body>
 <div id="container">
-<?php if ( $step == 1 ) : // первый шаг ?>
+
+
+<?php 
+	if ( $step == 1) // первый шаг
+	{ 
+		echo '<h1>' . t('Добро пожаловать в программу установки <a href="http://max-3000.com/">MaxSite CMS</a>') . '</h1>';
+		
+		if (mso_current_url() == 'install/1' or mso_current_url() == '')
+		{
+			echo '<p>' . t('На первом шаге программа проверит верно ли у вас настроены ЧПУ («человекопонятный урл» - веб-адреса, удобные для восприятия человеком).') . '</p>';
+			echo '<p>' . t('При отстутствии ошибок, вам будет предложено указать начальные данные.') . '</p>';
+			
+			echo '<p><a href="' . getinfo('site_url') . 'install/2">' . t('Перейти к установке') . '</a></p>';
+		}
+		else
+		{
+			echo '<p class="error">' . t('Ошибка! Неверно настроены ЧПУ!') . '</p>';
+			
+			echo '<p>' . t('Данная ошибка означает, что у вас неверно настроен файл <strong>.htaccess</strong>. Прочтите <a href="') .  getinfo('site_url') . 'install-ru.txt">' . t('инструкцию</a> по установке.') . '</p>';
+			
+			echo '<p>' . t('После изменений вы можете <a href="') . getinfo('site_url') . 'install/2">' . t('попробовать снова') . '</a>.</p>';
+			
+			echo '<hr><p>' . t('Техническая информация о вашем сервере.') . '</p>';
+			echo '<ul>';
+			echo '<li><strong>SERVER_SOFTWARE:</strong> ' . $_SERVER['SERVER_SOFTWARE'] . '</li>';
+			echo '<li><strong>REQUEST_METHOD:</strong> ' . $_SERVER['REQUEST_METHOD'] . '</li>';
+			echo '</ul>';
+		}
+	}
+
+	if ( $step == 2 ) // второй шаг настройки
+	{  ?>
 	
 	<h1><?= t('Добро пожаловать в программу установки <a href="http://max-3000.com/">MaxSite CMS</a>') ?></h1>
 	<?= $error ?>
@@ -77,7 +113,7 @@
 		
 		$this->load->helper('form');
 
-		echo form_open('install/2', array('class' => 'myform', 'id' => 'myform'));
+		echo form_open('install/3', array('class' => 'myform', 'id' => 'myform'));
 		
 		echo '<p class="f-name"><label><span>' . t('Ник админа') . ':</span>' 
 			. form_input( array( 'name'=>'username', 
@@ -196,7 +232,7 @@
 			if (!file_exists($path))
 			{
 				echo '<p class="error">Файл «<em>' . $path . '</em>» - не найден!</p>';
-				$show_button = false;
+				//$show_button = false;
 			}
 			else
 			{
@@ -229,11 +265,12 @@
 		
 		echo form_close();
 
-	?>
+	} // конец первого шага
 	
-<?php 
-	endif; // конец первого шага
-	if ($step == 2 ) : // второй шаг
+	
+	// третий шаг
+	if ($step == 3) 
+	{
 	
 	$text = 'Ваш новый сайт создан: ' . getinfo('siteurl') . NR;
 	$text .= 'Для входа воспользуйтесь данными:' . NR;
@@ -263,7 +300,7 @@
 	}; // if (isset($res))
 	
 	?>
-<?php endif; // конец второго шага ?>
+<?php } // конец третьего шага ?>
 </div><!-- div id="container" -->
 </body>
 </html>
