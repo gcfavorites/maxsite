@@ -1,5 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
+/**
+ * MaxSite CMS
+ * (c) http://max-3000.com/
+ */
+
 # функция автоподключения плагина
 function editor_markitup_autoload($args = array())
 {
@@ -15,8 +20,17 @@ function editor_markitup_uninstall($args = array())
 
 function editor_markitup($args = array()) 
 {
-	
 	$options = mso_get_option('editor_markitup', 'plugins', array() ); // получаем опции
+	
+	if (!isset($options['preview'])) $options['preview'] = 'aftertext';
+	if (!isset($options['previewautorefresh'])) $options['previewautorefresh'] = 'no';
+	
+	if ($options['preview'] == 'aftertext') $editor_config['preview'] = 'previewInWindow: "",';
+		else $editor_config['preview'] = 'previewInWindow: "width=960, height=800, resizable=yes, scrollbars=yes",';
+	
+	if ($options['previewautorefresh'] == 'no') $editor_config['previewautorefresh'] = 'previewAutoRefresh: false,';
+	else $editor_config['previewautorefresh'] = 'previewAutoRefresh: true,';
+	
 	
 	$editor_config['url'] = getinfo('plugins_url') . 'editor_markitup/';
 	$editor_config['dir'] = getinfo('plugins_dir') . 'editor_markitup/';
@@ -72,18 +86,16 @@ function editor_markitup($args = array())
 				. $smiles
 				. ']},';
 	}
-
-	if (isset($options['editor']))
-		$editor_type = $options['editor'] == 'BB-CODE' ? 'editor-bb.php' : 'editor.php';
-	else $editor_type = 'editor-bb.php';
 	
-	require($editor_config['dir'] . $editor_type);
+	require($editor_config['dir'] . 'editor-bb.php');
 }
 
+# опции редактора
 function editor_markitup_mso_options() 
 {
 	mso_admin_plugin_options('editor_markitup', 'plugins', 
 		array(
+			/*
 			'editor' => array(
 							'type' => 'radio', 
 							'name' => 'Редактор', 
@@ -93,6 +105,28 @@ function editor_markitup_mso_options()
 							'delimer' => '&nbsp;&nbsp;&nbsp;&nbsp;',
 						),	
 			)
+			*/
+			'preview' => array(
+							'type' => 'radio', 
+							'name' => 'Режим предпросмотра текста', 
+							'description' => '',
+							'values' => 'aftertext||Под набираемым текстом # win||В отдельном окне', 
+							'default' => 'aftertext',
+							'delimer' => '&nbsp;&nbsp;&nbsp;&nbsp;',
+						),	
+			
+			'previewautorefresh' => array(
+							'type' => 'radio', 
+							'name' => 'Обновление предпросмотра', 
+							'values' => 'no||Обновлять предпросмотр вручную # yes||Использовать автообновление предпросмотра', 
+							'default' => 'no',
+							'delimer' => '&nbsp;&nbsp;&nbsp;&nbsp;',
+							'description' => '',
+						),	
+			
+			),
+			'Настройки текстового редактора markItUp', // титул
+			'Укажите необходимые опции.'   // инфо
 	);
 
 }

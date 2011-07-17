@@ -158,7 +158,7 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 			$item['title'] = preg_replace('|(\S+): (.*)|si', '\\2', $item['title']);
 		
 		// подсветим ссылки
-		$item['title'] = preg_replace('|(http:\/\/)(\S+)|si', '<a href="http://\\2" target="_blank">\\2</a>', $item['title']);
+		$item['title'] = preg_replace('|(http:\/\/)(\S+)|si', '<a rel="nofollow" href="http://\\2" target="_blank">\\2</a>', $item['title']);
 		
 		$out = str_replace('%TITLE%', $item['title'], $out); // [title] = [description] = [summary]
 		
@@ -168,7 +168,7 @@ function twitter_go($url = false, $count = 5, $format = '<p><strong>%DATE%</stro
 		}
 		
 		$item['description'] = preg_replace('|(\S+): (.*)|si', '<strong>\\1:</strong> \\2', $item['description']);
-		$item['description'] = preg_replace('|(http:\/\/)(\S+)|si', '<a href="http://\\2" target="_blank">\\2</a>', $item['description']);
+		$item['description'] = preg_replace('|(http:\/\/)(\S+)|si', '<a rel="nofollow" href="http://\\2" target="_blank">\\2</a>', $item['description']);
 		
 		$out = str_replace('%DESCRIPTION%', $item['description'], $out); // [title] = [description] = [summary]
 		$out = str_replace('%DATE%', date($format_date, (int) $item['date_timestamp']), $out); // [pubdate]

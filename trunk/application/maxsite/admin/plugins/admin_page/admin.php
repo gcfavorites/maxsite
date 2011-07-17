@@ -138,7 +138,7 @@
 		
 		echo '<p><strong>'
 				. t('Фильтр по рубрикам', 'admin') 
-				. ':</strong> <a href="' . getinfo('site_admin_url') . 'page/">'
+				. ':</strong> <a href="' . getinfo('site_admin_url') . 'page">'
 				. t('Без фильтра', 'admin') . '</a> ';
 		
 		require_once( getinfo('common_dir') . 'category.php' ); // функции рубрик
@@ -177,7 +177,7 @@
 		}
 		echo '<p><strong>'
 				. t('Фильтр по типам', 'admin')
-				. ':</strong> <a href="' . getinfo('site_admin_url') . 'page/">'
+				. ':</strong> <a href="' . getinfo('site_admin_url') . 'page">'
 				. t('Без фильтра', 'admin') . '</a> ';
 		
 		foreach ($query->result_array() as $nav) 
@@ -194,6 +194,22 @@
 		}
 		echo '</p>';
 	}
+	
+	echo '<p><strong>'
+				. t('Фильтр по статусу', 'admin')
+				. ':</strong> <a href="' . getinfo('site_admin_url') . 'page">'
+				. t('Без фильтра', 'admin') . '</a> ';
+	
+	$all_status = array('publish', 'draft', 'private');
+	foreach($all_status as $status)
+	{
+		if (mso_segment(4) == $status)
+			echo '| <a href="' . getinfo('site_admin_url') . 'page/status/' . $status . '"><strong>' . $status . '</strong></a> ';
+		else
+			echo '| <a href="' . getinfo('site_admin_url') . 'page/status/' . $status . '">' . $status . '</a> ';
+	}
+	echo '</p>';	
+				
 
 	if (mso_segment(3) == 'category') 
 	{
@@ -206,10 +222,18 @@
 	{
 		if (mso_segment(4) != '') 
 		{
-			$par['type'] = $type_segment_name;//abs(intval(mso_segment(4)));
+			$par['type'] = $type_segment_name;
 		}
 	}
-
+	elseif (mso_segment(3) == 'status') 
+	{
+		if (in_array(mso_segment(4), $all_status)) 
+		{
+			$par['page_status'] = mso_segment(4);
+		}
+	}
+	
+	
 	$pages = mso_get_pages($par, $pagination); // получим все - второй параметр нужен для сформированной пагинации
 	
 	$all_pages = array(); // сразу список всех страниц для формы удаления

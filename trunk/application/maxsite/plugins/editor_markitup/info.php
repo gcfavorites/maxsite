@@ -3,7 +3,7 @@
 $info = array(
 	'name' => 'Editor markItUp',
 	'description' => t('markItUp - красивый невизуальный редактор (HTML и BB-Code)', 'plugins'),
-	'version' => '1.0',
+	'version' => '1.1',
 	'author' => 'XperT',
 	'plugin_url' => 'http://forum.max-3000.com/viewtopic.php?f=6&t=2839',
 	'author_url' => 'http://zebroid.ru/',

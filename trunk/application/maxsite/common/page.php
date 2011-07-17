@@ -318,7 +318,7 @@ function mso_get_pages($r = array(), &$pag)
 					}
 					else
 					{
-						$output .= '<a name="cut"></a>' .  $content[1];
+						$output .= '<a id="cut"></a>' .  $content[1];
 					}
 
 					// $output = mso_balance_tags($output);

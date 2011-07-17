@@ -6,15 +6,21 @@
 // Copyright (C) 2008 Jay Salvat
 // http://markitup.jaysalvat.com/
 // ----------------------------------------------------------------------------
+
 myBbcodeSettings = {
-  nameSpace:          "bbcode", // Useful to prevent multi-instances CSS conflict
-  previewParserPath:  "~/sets/bbcode/preview.php",
-  markupSet: [
-  
-  
+	nameSpace:	"bbcode", // Useful to prevent multi-instances CSS conflict
+	
+	previewParserPath: "<?= getinfo('ajax') . base64_encode('plugins/editor_markitup/preview-ajax.php') ?>",
+	// previewInWindow: 'width=960, height=800, resizable=yes, scrollbars=yes',
+	
+	<?= $editor_config['preview'] ?>
+	<?= $editor_config['previewautorefresh'] ?>
+	
+	markupSet:	[
+
 		{name:'Шрифт', openWith:'[b]', closeWith:'[/b]', className:"fonts", dropMenu: [
-			{name:'Полужирный', openWith:'[b]', closeWith:'[/b]', className:"bold" },
-			{name:'Курсив', openWith:'[i]', closeWith:'[/i]', className:"italic" },
+			{name:'Полужирный', openWith:'[b]', closeWith:'[/b]', className:"bold", key:"B" },
+			{name:'Курсив', openWith:'[i]', closeWith:'[/i]', className:"italic", key:"I" },
 			{name:'Подчеркнутый', openWith:'[u]', closeWith:'[/u]', className:"underline" },
 			{name:'Зачеркнутый', openWith:'[s]', closeWith:'[/s]', className:"stroke" },
 			{name:'Верхний индекс', openWith:'[sup]', closeWith:'[/sup]', className:"sup" },
@@ -53,12 +59,12 @@ myBbcodeSettings = {
 			{name:'Блок вправо', openWith:'[right]', closeWith:'[/right]', className:"text-padding-right"}, 
 			{name:'Блок по формату', openWith:'[justify]', closeWith:'[/justify]', className:"text-padding-justify"}, 
 		]},
-  
+
 		{separator:'---------------' },
-	  
+	
 		{name:'Ссылка', key:'L', openWith:'[url=[![Адрес]!]]', closeWith:'[/url]', placeHolder:'текст ссылки', className:"link"},
-		{name:'Отрезать', replaceWith:'\n[cut]\n', className:"separator"}, 
-		{name:'Принудительный перенос', replaceWith:'\n[br]\n', className:"page-red"},
+		{name:'Отрезать', replaceWith:'[cut]\n', className:"separator"}, 
+		{name:'Принудительный перенос', replaceWith:'[br]\n', className:"page-red"},
 		
 		{name:'Цитата', openWith:'[quote]\n', closeWith:'\n[/quote]', className:"quote"}, 
 		
@@ -134,12 +140,30 @@ myBbcodeSettings = {
 		]},
 		
 		{separator:'---------------' },
-     	  
-		{name:'Очистить выделенное от BB кодов', className:"clean", replaceWith:function(h) { return h.selection.replace(/\[(.*?)\]/g, "") }, className:"clean"},
+		{name:'Очистить выделенный текст от BB кодов', className:"clean", replaceWith:function(h) { return h.selection.replace(/\[(.*?)\]/g, "") }, className:"clean"},
+		{separator:'---------------' },
 		
+		{name:'Быстрое сохранение текста', className:'qsave', key:"S", beforeInsert:function(markItUp) { miu.save(markItUp) }},
+		{name:'Полноэкранный режим редактора (F2)', className:'fullscreen', beforeInsert:function(){shsh();} },
+		{name:'Предпросмотр', className:'preview', call:'preview', key:"E"},
 		
 		<?php mso_hook('editor_markitup_bbcode') ?>
-		
-		/*{name:'Предпросмотр', className:"preview", call:'preview', className:"preview"}*/
-   ]
+
+	]
 }
+
+miu = {
+	save: function(markItUp) 
+	{
+		data = markItUp.textarea.value;
+		$.post(autosaveurl, {"text": data, "id": autosaveid}, 
+			function(response) 
+			{
+				var dd = new Date();
+				$('span.autosave-editor').html('<a target="_blank" href="' + response + '">Сохранено в ' + dd.toLocaleTimeString() + '</a>');
+				alert("Сохранено!");
+				
+			});
+	}
+}
+

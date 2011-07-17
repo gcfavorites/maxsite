@@ -614,7 +614,8 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 			// название рубрики
 			if ( isset($args[0]['category_name']) ) 
 			{
-				$category_name = htmlspecialchars($args[0]['category_name']);
+				//$category_name = htmlspecialchars($args[0]['category_name']);
+				$category_name = $args[0]['category_name'];
 				
 				// по названию рубрики ищем её описание в $args[0]['page_categories_detail'][$id]['category_desc']
 				if (isset($args[0]['page_categories_detail']))
@@ -1537,32 +1538,15 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = preg_replace('!<p>&nbsp;(<' . $allblocks . '[^>]*>)!', "\n$1", $pee); # <p>&nbsp;<tag> 
 	
 	# если был cut, то уберем с ссылки абзац
-	$pee = str_replace('<p><a name="cut"></a></p>', '<a name="cut"></a>', $pee); 
+	$pee = str_replace('<p><a id="cut"></a></p>', '<a id="cut"></a>', $pee); 
 	
 	# специфичные ошибки
 	$pee = str_replace("<blockquote>\n<p>", "<blockquote>", $pee); 
-	
-	$pee = preg_replace('!<p><br(.*)></p>!', "<br$1>", $pee); # <br clear="all">
 	$pee = preg_replace('!<li>(.*)</p>\n!', "<li>$1</li>\n", $pee); # <li>...</p>
 	
-	/*
-	# преформатированный текст
-	if ($pre_special_chars)
-	{
-		if ( strpos($pee, '<pre') !== false ) 
-			$pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre_special_chars', $pee );
-		else $pee = str_replace("\n\n", "\n", $pee);
-	}
-	else
-	{
-		if ( strpos($pee, '<pre') !== false) 
-			$pee = preg_replace_callback('!(<pre.*?>)(.*?)</pre>!is', 'mso_clean_pre', $pee );
-		else $pee = str_replace("\n\n", "\n", $pee);
-	}
 	
-	$pee = str_replace("<pre>\n\n", "<pre>\n", $pee); 
-	$pee = str_replace("\n</pre>", "</pre>", $pee); 
-	*/
+	$pee = preg_replace('!<p><a id="(.*)"></a></p>\n!', "<a id=\"$1\"></a>\n", $pee); # <li>...</p>
+	
 	
 	### подчистим некоторые блочные тэги удалим <p> внутри. MSO_N_BLOCK = </p>
 	
@@ -1580,7 +1564,11 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	
 	# введём bb-код [br]
 	$pee = str_replace('[br]', '<br>', $pee);
+
+	$pee = preg_replace('!<p><br(.*)></p>!', "<br$1>", $pee); # <br clear="all">
+	$pee = preg_replace('!<p><br></p>!', "<br>", $pee); # <br clear="all">
 	
+		
 	# завершим [html]
 	$pee = str_replace('<p>[html_base64]', '[html_base64]', $pee);
 	$pee = str_replace('[/html_base64]</p>', '[/html_base64]', $pee);
@@ -2594,6 +2582,13 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 
 	# в массив
 	$menu = explode("\n", trim($menu));
+	
+	# обработаем меню на предмет пустых строк, корректности и подсчитаем кол-во элементов
+	$count_menu = 0;
+	foreach ($menu as $elem)
+	{
+		if (strlen(trim($elem)) > 1) $count_menu++;
+	}
 
 	# определим текущий url
 	$http = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https://" : "http://";
@@ -2601,7 +2596,9 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 
 	$out = '';
 	# обходим в цикле
-	$i = 1;
+	
+	$i = 1; // номер пункта
+	$n = 0; // номер итерации цикла 
 	
 	$group_in = false;
 	$group_in_first = false;
@@ -2648,11 +2645,10 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			}
  				
 			# для последнего элемента добавляем класс last
-			if ($i == count($menu)) $class .= ' last';
+			if ($i == $count_menu) $class .= ' last';
 
 			if ($class == ' ') $class = '';
 			
-
 			if ($group_in) // открываем группу
 			{
 				$group_num++;
@@ -2666,10 +2662,11 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			}
 			else
 			{
-				if ($group_elem > 0 and array_key_exists($i, $menu) and (trim($menu[$i]) == ']') ) $class .= ' group-last';
+				if ($group_elem > 0 and array_key_exists($i, $menu) and isset($menu[$n+1]) and trim($menu[$n+1]) == ']' ) $class .= ' group-last';
 				
 				$out .= '<li class="' . trim($class) . '"><a href="' . $url . '"' . $title . '><span>' . $name . '</span></a></li>' . NR;
 			}
+			
 			
 			if ($url == $current_url and $group_work) // выделяем родителя группы, если в ней выделенный подпункт
 			{
@@ -2677,13 +2674,6 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 				$selected_present = true;
 			}
 			
-			/*
-			$aaa = $group_in_first ? ' group_in_first ' : ' NOgroup_in_first ';
-			$bbb = $group_in ? ' group_in ' : ' NOgroup_in ';
-			$ccc = $group_work ? ' group_work ' : ' NOgroup_work ';
-			$out .= $aaa . $bbb . $ccc . NR;	
-			*/
-
 			$i++;
 			$group_elem++;
 		}
@@ -2708,6 +2698,8 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 			}
 			
 		}
+		
+		$n++;
 	}
 	
 	$out = str_replace('<li class="">', '<li>', $out);
@@ -2876,7 +2868,9 @@ function mso_create_list($a = array(), $options = array(), $child = false)
 		$e = str_replace('[LINK]', $link, $e);
 		$e = str_replace('[/LINK]', '</a>', $e);
 		$e = str_replace('[TITLE]', $title, $e);
+		$e = str_replace('[TITLE_HTML]', htmlspecialchars($title), $e);
 		$e = str_replace('[DESCR]', $descr, $e);
+		$e = str_replace('[DESCR_HTML]', htmlspecialchars($descr), $e);
 		$e = str_replace('[ID]', $id, $e);
 		$e = str_replace('[SLUG]', $slug, $e);
 		$e = str_replace('[MENU_ORDER]', $menu_order, $e);
@@ -3160,7 +3154,10 @@ function mso_page_foreach($type_foreach_file = false)
 	// описание см. default/type_foreach/_general.php
 	if (file_exists(getinfo('template_dir') . 'type_foreach/general.php'))
 		include(getinfo('template_dir') . 'type_foreach/general.php'); 
-
+	
+	// можно поменять type_foreach-файл через хук
+	$type_foreach_file = mso_hook('type-foreach-file-general', $type_foreach_file);
+	
 	if ($type_foreach_file)
 	{
 		if ($files === false)
@@ -3170,8 +3167,25 @@ function mso_page_foreach($type_foreach_file = false)
 			$files = directory_map(getinfo('template_dir') . 'type_foreach/', true); // только в type_foreach
 			if (!$files) $files = array();
 		}
-		if (in_array($type_foreach_file . '.php', $files)) return getinfo('template_dir') . 'type_foreach/' . $type_foreach_file . '.php';
-			else return false;
+
+		if (in_array($type_foreach_file . '.php', $files)) // есть файл в шаблоне
+			return getinfo('template_dir') . 'type_foreach/' . $type_foreach_file . '.php';
+		else 
+		{	
+			// файла нет
+			// если есть хук type-foreach-file
+			if (mso_hook_present('type-foreach-file'))
+			{
+				// получим его значение
+				// он должен возвращать либо полный путь к файлу, либо false
+				if ($out = mso_hook('type-foreach-file', $type_foreach_file)) 
+					return $out; // указан путь
+				else 
+					return false; // вернул false
+			}
+			else // нет хука type-foreach-file
+				return false;
+		}
 	}
 	
 	return false;

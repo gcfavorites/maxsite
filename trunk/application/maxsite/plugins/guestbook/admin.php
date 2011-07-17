@@ -91,7 +91,7 @@
 		if ( !isset($options['email']) ) $options['email'] = mso_get_option('admin_email', 'general', '');
 		if ( !isset($options['moderation']) ) $options['moderation'] = 1; // модерация
 
-		if ( !isset($options['format']) ) $options['format'] = '<tr><td colspan="2" class="header"><a name="guestbook-[id]"></a>[date]</td></tr>
+		if ( !isset($options['format']) ) $options['format'] = '<tr><td colspan="2" class="header"><a id="guestbook-[id]"></a>[date]</td></tr>
 <tr><td class="t1"><b>Имя:</b></td><td class="t2">[name]</td></tr>
 <tr><td class="t1"><b>Текст:</b></td><td class="t2">[text]</td></tr>
 <tr><td colspan="2" class="space">&nbsp;</td></tr>'; 

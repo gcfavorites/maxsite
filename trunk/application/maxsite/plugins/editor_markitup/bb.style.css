@@ -100,4 +100,9 @@
 
 .bbcode .script-edit a { background-image:url(images/script_edit.png); }
 
+
+.bbcode .qsave a { background-image:url(images/qsave.png); }
+.bbcode .fullscreen a { background-image:url(images/fullscreen.png); }
+
+
 .bbcode .add a { background-image:url(images/add.png); }

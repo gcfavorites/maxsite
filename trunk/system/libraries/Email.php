@@ -363,7 +363,14 @@ class CI_Email {
 	 */
 	public function subject($subject)
 	{
-		$subject = $this->_prep_q_encoding($subject);
+		// $subject = $this->_prep_q_encoding($subject);
+		
+		# MaxSite CMS
+		$subject = preg_replace("/(\r\n)|(\r)|(\n)/", "", $subject);
+		$subject = preg_replace("/(\t)/", " ", $subject);
+		$subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+		# / MaxSite CMS
+		
 		$this->_set_header('Subject', $subject);
 		return $this;
 	}

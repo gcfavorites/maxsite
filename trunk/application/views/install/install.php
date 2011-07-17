@@ -79,14 +79,15 @@
 <?php 
 	if ( $step == 1) // первый шаг
 	{ 
-		echo '<h1>' . t('Добро пожаловать в программу установки <a href="http://max-3000.com/">MaxSite CMS</a>') . '</h1>';
+		echo '<h1>' . t('Добро пожаловать в программу установки') . ' <a href="http://max-3000.com/">MaxSite CMS</a></h1>';
 		
 		if (mso_current_url() == 'install/1' or mso_current_url() == '')
 		{
 			echo '<p>' . t('На первом шаге программа проверит верно ли у вас настроены ЧПУ («человекопонятный урл» - веб-адреса, удобные для восприятия человеком).') . '</p>';
-			echo '<p>' . t('При отстутствии ошибок, вам будет предложено указать начальные данные.') . '</p>';
+			echo '<p>' . t('При отстутствии ошибок вам будет предложено указать начальные данные.') . '</p>';
 			
-			echo '<p><a href="' . getinfo('site_url') . 'install/2">' . t('Перейти к установке') . '</a></p>';
+			echo '<p><a href="' . getinfo('site_url') . 'install/2">' . t('Перейти к установке') . '</a>';
+			echo ' | <a target="_blank" href="' . getinfo('site_url') . 'install-ru.txt">' . t('Инструкция по установке') . '</a></p>';
 		}
 		else
 		{
@@ -115,14 +116,14 @@
 
 		echo form_open('install/3', array('class' => 'myform', 'id' => 'myform'));
 		
-		echo '<p class="f-name"><label><span>' . t('Ник админа') . ':</span>' 
+		echo '<p class="f-name"><label><span>' . t('Логин админа') . ':</span>' 
 			. form_input( array( 'name'=>'username', 
 								'id'=>'username', 
 								'value'=>$username,
 								'maxlength'=>'100',
 								'size'=>'50',
 								'style'=>'float: left;'))
-			. '</label></p><p class="f-desc">' . t('По-английски, без пробелов') .  '</p>';
+			. '</label></p><p class="f-desc">' . t('Английские буквы, цифры, без пробелов') .  '</p>';
 	
 		echo '<p class="f-name"><label><span>' . t('Пароль') . ':</span>' 
 			. form_input( array( 'name'=>'userpassword', 
@@ -131,7 +132,7 @@
 								'maxlength'=>'100',
 								'size'=>'50',
 								'style'=>'float: left;'))
-			. '</label></p><p class="f-desc">' . t('По-английски, без пробелов, минимум 6 символов') .  '</p>';					
+			. '</label></p><p class="f-desc">' . t('Английские буквы, цифры, без пробелов. Минимум 6 символов') .  '</p>';					
 	
 		echo '<p class="f-name"><label><span>' . t('E-mail') . ':</span>' 
 			. form_input( array( 'name'=>'useremail', 

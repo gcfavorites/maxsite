@@ -1,4 +1,4 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');?><!DOCTYPE HTML>
 <html><head>
 	<title><?= mso_head_meta('title') ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

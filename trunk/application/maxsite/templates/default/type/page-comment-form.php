@@ -5,7 +5,7 @@ mso_cur_dir_lang('templates');
 ?>
 
 <div class="comment-form">
-	<form action="" method="post">
+	<form method="post">
 		<input type="hidden" name="comments_page_id" value="<?= $page_id ?>">
 		<?= mso_form_session('comments_session') ?>
 		
@@ -27,19 +27,18 @@ mso_cur_dir_lang('templates');
 						<input type="hidden" name="comments_reg" value="noreg">
 					<?php } ?>
 						
-						<p>
 							<table class="no-border"><tr class="r1">
 								<td class="t1"><label for="comments_author"><?=t('Ваше имя')?></label></td>
 								<td class="t2"><input type="text" name="comments_author" id="comments_author" onfocus="document.getElementById('comments_reg_1').checked = 'checked';"></td>
 							</tr></table>
-							
+						
 							<p class="hint"><?php
 								if (mso_get_option('new_comment_anonim_moderate', 'general', '1') )
 									echo mso_get_option('form_comment_anonim_moderate', 'general', t('Используйте нормальные имена. Ваш комментарий будет опубликован после проверки.'));
 								else
 									echo mso_get_option('form_comment_anonim_no_moderate', 'general', t('Используйте нормальные имена.'));
 							?></p>
-						</p>
+						
 						
 					</div><!-- div class="comments-noreg" -->	
 				<?php } ?>

@@ -162,7 +162,7 @@ function tweetmeme_com_content($text = '')
 			$js = '';
 		
 		// $text = '<span style="display: none"><![CDATA[<noindex>]]></span><div class="tweetmeme_com"' . $style . '>' . $js . '<script type="text/javascript" src="' . getinfo('plugins_url'). 'tweetmeme_com/button.js"></script></div><span style="display: none"><![CDATA[</noindex>]]></span>' . $text;
-		$text = '<span style="display: none"><![CDATA[<noindex>]]></span><div class="tweetmeme_com"' . $style . '>' . $js . '<script type="text/javascript" src="http://tweetmeme.com/i/scripts/button.js"></script></div><span style="display: none"><![CDATA[</noindex>]]></span>' . $text;
+		$text = '<div class="tweetmeme_com"' . $style . '>' . $js . '<script type="text/javascript" src="http://tweetmeme.com/i/scripts/button.js"></script></div>' . $text;
 	
 	}
 	else 
@@ -185,14 +185,14 @@ function tweetmeme_com_content($text = '')
 		if ($options['twitter_data-via']) $options['twitter_data-via'] = ' data-via="' . $options['twitter_data-via'] . '" ';
 		
 		
-		$text = '<span style="display: none"><![CDATA[<noindex>]]></span><div class="tweetmeme_com"' . $style . '>' 
+		$text = '<div class="tweetmeme_com"' . $style . '>' 
 		. '<a href="http://twitter.com/share" class="twitter-share-button" data-url="' . $url . '"' 
 		. $options['twitter_data-count'] 
 		. ' data-text="' . $page['page_title'] . '" '
 		. $options['twitter_data-via']
 		. '>Tweet</a>
 		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>' 
-		. '</div><span style="display: none"><![CDATA[</noindex>]]></span>' . $text;
+		. '</div>' . $text;
 		
 	}
 	

@@ -14,8 +14,8 @@
 	
 	# до 
 	$do = '
-	<script>
-	$(function(){
+	<script type="text/javascript">
+	//$(function(){
 	
 		function shsh()
 		{
@@ -67,6 +67,7 @@
 		
 		}
 		
+	$(function(){	
 		$("form textarea").keydown(function(eventObject)
 		{
 			if (eventObject.which == 113) // F2

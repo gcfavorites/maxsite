@@ -75,7 +75,7 @@
 		// Получаем результаты голосования
 		$('.sp_question_' + q_id).each(function(i){
 			
-			if( true == $(this).attr('checked') ){
+			if( true == $(this).prop('checked') ){
 				
 				data += '&a_id[]=' + $(this).val();
 			}

@@ -186,9 +186,9 @@ else
 			{ 	
 				
 				if ( mso_get_option('home_full_text', 'templates', '1') )
-					echo '<h1 class="home-cat-block"><a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' . $all_cats[$cat_id]['category_name'] . '</a></h1>';
+					echo NR . '<h1 class="home-cat-block"><a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' . $all_cats[$cat_id]['category_name'] . '</a></h1>';
 				else
-					echo '<h1 class="home-cat-block home-cat-block-list"><a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' . $all_cats[$cat_id]['category_name'] . '</h1>';
+					echo NR . '<h1 class="home-cat-block home-cat-block-list"><a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' . $all_cats[$cat_id]['category_name'] . '</a></h1>';
 				
 				// выводим полнные тексты или списком
 				if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="home-cat-block">';
@@ -215,7 +215,7 @@ else
 							}
 							else
 							{
-								echo '<div class="info info-top">';
+								echo NR . '<div class="info info-top">';
 									mso_page_title($page_slug, $page_title, '<h1>', '</h1>');
 									
 									mso_page_date($page_date_publish, 
@@ -233,7 +233,7 @@ else
 								echo '</div>';
 							}
 							
-							echo '<div class="page_content type_home">';
+							echo NR . '<div class="page_content type_home">';
 							
 								mso_page_content($page_content);
 								if ($f = mso_page_foreach('info-bottom')) require($f); // подключаем кастомный вывод

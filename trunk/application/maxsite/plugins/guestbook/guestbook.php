@@ -32,7 +32,7 @@ if ( !isset($options['limit']) ) $options['limit'] = 10; // отзывов на 
 if ( !isset($options['email']) ) $options['email'] = false; // отправка на email
 if ( !isset($options['moderation']) ) $options['moderation'] = 1; // модерация
 // формат вывода
-if ( !isset($options['format']) ) $options['format'] = '<tr><td colspan="2" class="header"><a name="guestbook-[id]"></a>[date]</td></tr>
+if ( !isset($options['format']) ) $options['format'] = '<tr><td colspan="2" class="header"><a id="guestbook-[id]"></a>[date]</td></tr>
 <tr><td class="t1"><b>Имя:</b></td><td class="t2">[name]</td></tr>
 <tr><td class="t1"><b>Текст:</b></td><td class="t2">[text]</td></tr>
 <tr><td colspan="2" class="space">&nbsp;</td></tr>'; 
@@ -200,8 +200,13 @@ if ($query->num_rows() > 0)
 	$out = '';
 	foreach ($books as $book) 
 	{
+		if (is_login()) 
+			$tl = '<br><a href="' . getinfo('siteurl') . 'admin/guestbook/editone/' . $book['guestbook_id'] . '">'
+				. t('Редактировать', __FILE__) . '</a>';
+		else $tl = '';
+
 		// pr($book);
-		$out .= '<a name="guestbook-' . $book['guestbook_id'] . '"></a>';
+		$out .= '<a id="guestbook-' . $book['guestbook_id'] . '"></a>';
 		$out .= str_replace( 
 			array(
 				'[id]', 
@@ -226,7 +231,7 @@ if ($query->num_rows() > 0)
 				$book['guestbook_browser'],
 				mso_date_convert('Y-m-d H:i:s', $book['guestbook_date']),
 				htmlspecialchars($book['guestbook_name']),
-				str_replace("\n", "<br>", htmlspecialchars($book['guestbook_text'])),
+				str_replace("\n", "<br>", htmlspecialchars($book['guestbook_text']) . $tl),
 				htmlspecialchars($book['guestbook_title']),
 				htmlspecialchars($book['guestbook_email']),
 				htmlspecialchars($book['guestbook_icq']),

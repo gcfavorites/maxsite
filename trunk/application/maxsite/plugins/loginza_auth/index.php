@@ -157,10 +157,10 @@ function loginza_auth_login_form_auth($text = '')
 	$auth_url = "https://loginza.ru/api/widget?token_url=" .  urlencode( $current_url );
 	if ( !empty($providers_set) ) {
 		$providers_set = str_replace(' ', '', $providers_set);
-		$auth_url .= '&providers_set=' . $providers_set;
+		$auth_url .= '&amp;providers_set=' . $providers_set;
 	} else {
 		// пока что так
-		$auth_url .= '&providers_set=' . 'google,yandex,facebook,twitter,loginza,myopenid,webmoney,openid';
+		$auth_url .= '&amp;providers_set=' . 'google,yandex,facebook,twitter,loginza,myopenid,webmoney,openid';
 	}	
 	
 	if ( $widget_type == 0) 
@@ -170,10 +170,10 @@ function loginza_auth_login_form_auth($text = '')
 		
 	} else if ($widget_type == 1) {
 	    //$text .= '<script src="http://s1.loginza.ru/js/widget.js" type="text/javascript"></script>';
-		$text .= '<a rel="nofollow"  href="' .  $auth_url . '" class="loginza_auth">' . $options['auth_title_flogin'] . '</a>';
+		$text .= '<a rel="nofollow" href="' .  $auth_url . '" class="loginza_auth">' . $options['auth_title_flogin'] . '</a>';
 	} else if ($widget_type ==2 ) {
 		$auth_url .= '&overlay=loginza';
-		$text .= '<iframe src="' . $auth_url . '" style="width:359px;height:300px;" scrolling="no" frameborder="no"></iframe>';
+		$text .= '<iframe src="' . $auth_url . '" style="width:359px; height:300px;" scrolling="no" frameborder="no"></iframe>';
 
 	}
 	$text .= '[end]';
@@ -199,10 +199,10 @@ function loginza_auth_page_comment_form($args = array())
 	$auth_url = "https://loginza.ru/api/widget?token_url=" .  urlencode( $current_url . '#comments') ;
 	if ( !empty($providers_set) ) {
 		$providers_set = str_replace(' ', '', $providers_set);
-		$auth_url .= '&providers_set=' . $providers_set;
+		$auth_url .= '&amp;providers_set=' . $providers_set;
 	} else {
 		// пока что так
-		$auth_url .= '&providers_set=' . 'google,yandex,facebook,twitter,loginza,myopenid,webmoney,openid';
+		$auth_url .= '&amp;providers_set=' . 'google,yandex,facebook,twitter,loginza,myopenid,webmoney,openid';
 	}	
 	
 	if ( $widget_type == 0) 

@@ -129,9 +129,9 @@
 	<td><input title="' . t('Номер родителя', 'admin') 
 	. '" name="f_category_id_parent[[ID]]" value="[ID_PARENT]" maxlength="50" type="text"></td>
 	
-	<td><input title="' . t('Название', 'admin') . '" name="f_category_name[[ID]]" value="[TITLE]" maxlength="500" type="text"></td>
+	<td><input title="' . t('Название', 'admin') . '" name="f_category_name[[ID]]" value="[TITLE_HTML]" maxlength="500" type="text"></td>
 	
-	<td><textarea title="' . t('Описание', 'admin') . '" name="f_category_desc[[ID]]">[DESCR]</textarea></td>
+	<td><textarea title="' . t('Описание', 'admin') . '" name="f_category_desc[[ID]]">[DESCR_HTML]</textarea></td>
 	
 	<td><input title="' . t('Короткая ссылка', 'admin') . '" name="f_category_slug[[ID]]" value="[SLUG]" maxlength="500" type="text"></td>
 	

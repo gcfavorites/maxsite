@@ -186,7 +186,7 @@ function forms_show_form($f = array())
 	$antispam1 = rand(1, 10);
 	$antispam2 = rand(1, 10);
 	
-	$out .= NR . '<div class="forms"><form action="" method="post">' . mso_form_session('forms_session');
+	$out .= NR . '<div class="forms"><form method="post">' . mso_form_session('forms_session');
 	
 	$out .= '<input type="hidden" name="forms_antispam1" value="' . $antispam1 * 984 . '">';
 	$out .= '<input type="hidden" name="forms_antispam2" value="' . $antispam2 * 765 . '">';

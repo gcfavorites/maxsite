@@ -106,7 +106,8 @@ function bbcode_custom($text = '')
 		'~\[pcenter\](.*?)\[\/pcenter\]~si'   => '<p style="text-align: center;">$1</p>',
 		'~\[pjustify\](.*?)\[\/pjustify\]~si'   => '<p style="text-align: justify;">$1</p>',
 
-		'~\[br\]~si'   => '<br clear="all">',
+		// '~\[br\]~si'   => '<br clear="all">',
+		
 		'~\[hr\]~si'   => '<hr>',
 		'~\[line\]~si'   => '<hr>',
 

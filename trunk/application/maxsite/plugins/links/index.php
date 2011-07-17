@@ -135,16 +135,20 @@ function links_widget_custom($options = array(), $num = 1)
 					
 					if ( isset($ar_link[3]) and trim($ar_link[3]) )// если есть noindex 
 					{	
-						$noindex1 = '<noindex>'; 
-						$noindex2 = '</noindex>';
-						$nofollow = 'rel="nofollow"';
+						//$noindex1 = '<noindex>'; 
+						//$noindex2 = '</noindex>';
+						
+						$noindex1 = ''; 
+						$noindex2 = '';
+						
+						$nofollow = ' rel="nofollow"';
 					}	
 					else 
 					{
 						$noindex1 = $noindex2 = $nofollow = '';
 					}
 					
-					if ( isset($ar_link[4]) and trim($ar_link[4]) ) $blank = 'target="_blank"'; // если есть _blank
+					if ( isset($ar_link[4]) and trim($ar_link[4]) ) $blank = ' target="_blank"'; // если есть _blank
 						else $blank = '';
 					
 					if (!$options['screenshot'])

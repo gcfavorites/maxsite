@@ -1,18 +1,27 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');?>
 
-<?php // echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/bb.js"></script>'; ?>
 <script type="text/javascript">
 <?php require('bb.js.php') ?>
 </script>
 
 <?php echo '<script type="text/javascript" src="'. getinfo('plugins_url') . 'editor_markitup/jquery.markitup.js"></script>'; ?>
-<?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/style.css" />'; ?>
-<?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/bb.style.css" />'; ?>
+<?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/style.css">'; ?>
+<?php echo '<link rel="stylesheet" type="text/css" href="'. getinfo('plugins_url') . 'editor_markitup/bb.style.css">'; ?>
 
+<?php
+	$auto_id = mso_segment(3); // номер страницы по сегменту url
+	// проверим, чтобы это было число
+	if (!is_numeric($auto_id)) $auto_id = 0; // ошибочный id
+?>
+	
 <script language="javascript">
-$(document).ready(function() {
-    $('#f_content').markItUp(myBbcodeSettings);
-});
+	autosaveurl = '<?= getinfo('ajax') . base64_encode('plugins/editor_markitup/autosave-post-ajax.php') ?>';
+	autosaveid = '<?= $auto_id ?>';
+
+	$(document).ready(function() 
+	{
+		$('#f_content').markItUp(myBbcodeSettings);
+	});
 </script>
 
 <form method="post" <?= $editor_config['action'] ?> enctype="multipart/form-data">

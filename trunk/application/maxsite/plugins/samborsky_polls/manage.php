@@ -306,10 +306,10 @@
 				});
 				
 				$('#noExpiry').click(function(){					
-					$('#noExpiry').attr('checked') ? $('#dateRange').hide() : $('#dateRange').show();
+					$('#noExpiry').prop('checked') ? $('#dateRange').hide() : $('#dateRange').show();
 				});
 				
-				$('#noExpiry').attr('checked') ? $('#dateRange').hide() : $('#dateRange').show();
+				$('#noExpiry').prop('checked') ? $('#dateRange').hide() : $('#dateRange').show();
 			});
 			
 		/* ]]> */	

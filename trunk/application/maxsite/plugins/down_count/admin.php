@@ -91,7 +91,7 @@
 				foreach($data as $url => $aaa)
 				{
 					$CI->table->add_row(
-										'<strong>' . htmlspecialchars($CI->input->xss_clean($url)) . '</strong>',
+										'<strong>' . htmlspecialchars(mso_xss_clean($url)) . '</strong>',
 										$data[$url]['count']
 										);
 				}
@@ -100,4 +100,4 @@
 			// pr($data);
 		}
 
-?>
+# end file
