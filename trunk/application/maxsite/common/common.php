@@ -425,10 +425,25 @@ function mso_initalizing()
 			// сразу выставим группу
 			$MSO->data['session']['users_groups_id'] = $row->users_groups_id;
 
-			# сразу обновляем время последней активности сессии
-			$CI->session->set_userdata('last_activity', time());
+			
 		}
 	}
+	
+	# сразу обновляем время последней активности сессии
+	# раньше было только для users, теперь делаем для всех
+	# при этом сохраняем предыдущее значение
+	# это значение позволяет отследить периодичность действий посетителя
+	if (isset($CI->session->userdata['last_activity']))
+	{
+		$CI->session->set_userdata('last_activity_prev', $CI->session->userdata['last_activity']);
+		$CI->session->set_userdata('last_activity', time());
+	}
+	else
+	{
+		$CI->session->set_userdata('last_activity_prev', time());
+		$CI->session->set_userdata('last_activity', $CI->session->userdata['last_activity_prev']);
+	}
+
 
 	// аналогично проверяем и комюзера, только данные из куки
 	// но при этом сразу сохраняем все данные комюзера, чтобы потом не обращаться к БД
@@ -644,9 +659,17 @@ function mso_head_meta($info = 'title', $args = '', $format = '%page_title%', $s
 
 				if ( $info!='title') $title = $page_title;
 			}
-
+			else
+			{
+				// для страницы если не указаны свои keywords, попробуем указать из меток
+				if ($info == 'keywords' and is_type('page') and isset($args[0]['page_meta']['tags']) and $args[0]['page_meta']['tags'] ) 
+				{
+					$page_title = implode(', ', $args[0]['page_meta']['tags']); // разбиваем массив меток в строку
+				}
+			}
+			
 			$arr_key = array( '%title%', '%page_title%',  '%category_name%', '%category_desc%', '%users_nik%', '|' );
-			$arr_val = array( htmlspecialchars($title),  htmlspecialchars($page_title), htmlspecialchars($category_name), $category_desc, htmlspecialchars($users_nik), $sep );
+			$arr_val = array( htmlspecialchars($title), htmlspecialchars($page_title), htmlspecialchars($category_name), $category_desc, htmlspecialchars($users_nik), $sep );
 			//$arr_val = array( $title ,  $page_title, $category_name, $category_desc, $users_nik, $sep );
 			
 			$out = str_replace($arr_key, $arr_val, $format);
@@ -1543,6 +1566,8 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	# специфичные ошибки
 	$pee = str_replace("<blockquote>\n<p>", "<blockquote>", $pee); 
 	$pee = preg_replace('!<li>(.*)</p>\n!', "<li>$1</li>\n", $pee); # <li>...</p>
+	$pee = str_replace("<ul>\n\n<li>", "<ul><li>", $pee); 
+	$pee = str_replace("</li>\n\n<li>", "</li>\n<li>", $pee); 
 	
 	
 	$pee = preg_replace('!<p><a id="(.*)"></a></p>\n!', "<a id=\"$1\"></a>\n", $pee); # <li>...</p>
@@ -1562,11 +1587,11 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	# еще раз подчистка
 	$pee = str_replace('MSO_N', "\n", $pee); 
 	
-	# введём bb-код [br]
-	$pee = str_replace('[br]', '<br>', $pee);
+
 
 	$pee = preg_replace('!<p><br(.*)></p>!', "<br$1>", $pee); # <br clear="all">
 	$pee = preg_replace('!<p><br></p>!', "<br>", $pee); # <br clear="all">
+	
 	
 		
 	# завершим [html]
@@ -1575,6 +1600,14 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace('[/html_base64] </p>', '[/html_base64]', $pee);
 	
 	$pee = preg_replace_callback('!\[html_base64\](.*?)\[\/html_base64\]!is', 'mso_clean_html_posle', $pee );
+	
+	
+	# введём bb-код [br]
+	$pee = str_replace('[br]', '<br>', $pee);
+	
+	# принудительный пробел
+	$pee = str_replace('[nbsp]', '&nbsp;', $pee);
+	
 	
 	# перенос строки в конце текста
 	$pee = $pee . "\n";

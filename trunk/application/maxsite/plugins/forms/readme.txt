@@ -19,7 +19,7 @@
         require = 0   
         type = text
         description = Ваш город
-        tip = Укахывайте вместе со страной
+        tip = Указывайте вместе со страной
     [/field]
 
     [field]
@@ -33,19 +33,16 @@
 Для оформления можно использовать стили в шаблоном css, например:
 
 /* plugin FORMS */
-
-div.forms {background: #eeeeee; padding: 10px 5px 0 5px; border: #E0E0E0 1px solid;}
+div.forms {margin: 10px 0;}
 div.forms div {margin: 5px 0 15px 0; }
 div.forms div.break {height: 0; padding: 0; margin: 0; clear: both; }
-div.forms span {display: block; float: left; text-align: right; width: 240px; padding: 0 10px 0 0;}
-div.forms div.tip {margin-left: 250px; font-style: italic; font-size: 0.8em;}
-div.forms input {width: 320px;}
-div.forms select {width: 320px;}
-div.forms textarea {width: 320px; height: 100px;}
+div.forms span {display: block; float: left; text-align: right; width: 120px; padding: 0 10px 0 0;}
+div.forms div.tip {margin-left: 130px; font-style: italic; font-size: 0.8em;}
+div.forms input, div.forms select, div.forms textarea {width: 300px;}
+div.forms textarea {height: 100px;}
 div.forms input.forms_checkbox {width: auto;}
 div.forms input.forms_submit {width: auto;}
 div.forms input.forms_reset {width: auto;}
-div.forms label {cursor: pointer;}
 div.forms-post h2 {color: red; font-size: 18pt; margin: 20px 0;}
 
 

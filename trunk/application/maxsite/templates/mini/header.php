@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');?><!DOCTYPE HTML>
 <html><head>
-	<title><?= mso_head_meta('title') ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title><?= mso_head_meta('title') ?></title>
 	<meta name="generator" content="MaxSite CMS">
 	<meta name="description" content="<?= mso_head_meta('description') ?>">
 	<meta name="keywords" content="<?= mso_head_meta('keywords') ?>">

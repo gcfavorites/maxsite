@@ -21,7 +21,7 @@ $title_page = mso_head_meta('title', $pages, '%category_name%'); // заголо
 if ($f = mso_page_foreach('category-head-meta')) require($f);
 else
 { 
-	mso_head_meta('title', $pages, '%category_name%|%title%', ' » '); //  meta title страницы
+	mso_head_meta('title', $pages, '%category_name%'); //  meta title страницы
 	mso_head_meta('description', $pages, '%category_desc%'); // meta description страницы
 	mso_head_meta('keywords', $pages, '%category_name%'); // meta keywords страницы
 }
@@ -141,6 +141,7 @@ if ($pages) // есть страницы
 			echo NR . '</div><!--div class="page_only"-->' . NR;
 		}
 		
+		if ($f = mso_page_foreach('category-page-only-end')) require($f);
 		
 	endforeach;
 	

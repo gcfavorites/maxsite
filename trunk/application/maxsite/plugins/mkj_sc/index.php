@@ -139,7 +139,7 @@ function mkj_sc_show($args = array())
 	{
 		// Выводим картинки в виде кнопок.
 		for($i = 1; $i <= $options['imagescount']; $i++)
-			{ echo('<input name="comments_submit" value="' . $imgarray[$i] . '" style="background: url(' . $options['images'] . $imgarray[$i] . $options['imgex'] . ') no-repeat" type="submit" value="" class="var"> '); }
+			{ echo('<input name="comments_submit" value="' . $imgarray[$i] . '" style="background: url(' . $options['images'] . $imgarray[$i] . $options['imgex'] . ') no-repeat" type="submit" class="var"> '); }
 	}
 	else
 	{

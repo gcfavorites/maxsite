@@ -105,7 +105,39 @@ function bbcode_custom($text = '')
 		'~\[pright\](.*?)\[\/pright\]~si'     => '<p style="text-align: right;">$1</p>',
 		'~\[pcenter\](.*?)\[\/pcenter\]~si'   => '<p style="text-align: center;">$1</p>',
 		'~\[pjustify\](.*?)\[\/pjustify\]~si'   => '<p style="text-align: justify;">$1</p>',
+		
+		
+		'~\[abbr\](.*?)\[\/abbr\]~si'   => '<abbr>$1</abbr>',
+		'~\[abbr (.*?)\](.*?)\[\/abbr\]~si' => '<abbr title="$1">$2</abbr>',
+		
+		'~\[q\](.*?)\[\/q\]~si'   => '<q>$1</q>',
+		'~\[q (.*?)\](.*?)\[\/q\]~si' => '<q $1">$2</q>',
+		
+		'~\[cite\](.*?)\[\/cite\]~si'   => '<cite>$1</cite>',
+		'~\[cite (.*?)\](.*?)\[\/cite\]~si' => '<cite $1">$2</cite>',
+		
+		'~\[address\](.*?)\[\/address\]~si'   => '<address>$1</address>',
+		'~\[address (.*?)\](.*?)\[\/address\]~si' => '<address $1">$2</address>',
+		
+		'~\[dfn\](.*?)\[\/dfn\]~si'   => '<dfn>$1</dfn>',
+		'~\[dfn (.*?)\](.*?)\[\/dfn\]~si' => '<dfn $1">$2</dfn>',
 
+		'~\[dl\](.*?)\[\/dl\]~si'   => '<dl>$1</dl>',
+		'~\[dl (.*?)\](.*?)\[\/dl\]~si' => '<dl $1">$2</dl>',
+		
+		'~\[dt\](.*?)\[\/dt\]~si'   => '<dt>$1</dt>',
+		'~\[dt (.*?)\](.*?)\[\/dt\]~si' => '<dt $1">$2</dt>',
+		
+		'~\[dd\](.*?)\[\/dd\]~si'   => '<dd>$1</dd>',
+		'~\[dd (.*?)\](.*?)\[\/dd\]~si' => '<dd $1">$2</dd>',		
+		
+		'~\[del\](.*?)\[\/del\]~si'   => '<del>$1</del>',
+		'~\[del (.*?)\](.*?)\[\/del\]~si' => '<del $1">$2</del>',	
+		
+		'~\[ins\](.*?)\[\/ins\]~si'   => '<ins>$1</ins>',
+		'~\[ins (.*?)\](.*?)\[\/ins\]~si' => '<ins $1">$2</ins>',
+				
+		
 		// '~\[br\]~si'   => '<br clear="all">',
 		
 		'~\[hr\]~si'   => '<hr>',

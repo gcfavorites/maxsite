@@ -32,27 +32,8 @@
 				echo '<div class="page_nav">' . $page_nav . '</div>';
 			}
 			
-			// выводить ли блок "Еще записи этой рубрики"
-			if ($bl_title = mso_get_option('page_other_pages', 'templates', t('Еще записи по теме', '')))
-			{
-				$bl_pages = mso_get_pages(
-									array(  'type'=> false, 'content'=> false, 'pagination'=>false, 
-											'custom_type'=> 'category', 'categories'=>$page_categories, 
-											'exclude_page_id'=>array($page_id), 
-											'content'=>false,
-											'limit'=> mso_get_option('page_other_pages_limit', 'templates', 7), 
-											'order'=>mso_get_option('page_other_pages_order', 'templates', 'page_date_publish'),
-											'order_asc'=>mso_get_option('page_other_pages_order_asc', 'templates', 'random')
-											),
-											$_temp);
-				if ($bl_pages)
-				{
-					echo '<div class="page_other_pages"><h3>' . $bl_title . '</h3><ul>';
-					foreach ($bl_pages as $bl_page)
-						mso_page_title($bl_page['page_slug'], $bl_page['page_title'], '<li>', '</li>', true);
-					echo '</ul></div>';
-				}
-			}
+			// блок "Еще записи этой рубрики"
+			mso_page_other_pages($page_id, $page_categories);
 			
 		echo '</div>';
 		

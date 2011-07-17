@@ -1,6 +1,8 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 	mso_cur_dir_lang('templates');
+	
+	mso_head_meta('title', t('Обратная связь') . '. ' . getinfo('title') ); //  meta title страницы
 
 	require(getinfo('template_dir') . 'main-start.php');
 	echo NR . '<div class="type type_contact">' . NR;

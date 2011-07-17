@@ -11,7 +11,7 @@ $comuser_info = mso_get_comuser(mso_segment(2)); // получим всю инф
 if ($f = mso_page_foreach('users-head-meta')) require($f);
 else
 {
-	mso_head_meta('title', t('Комментаторы') . ' » ' . getinfo('title')); // meta title страницы
+	mso_head_meta('title', t('Комментаторы') . '. ' . getinfo('title')); // meta title страницы
 }
 
 if (!$comuser_info and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
@@ -39,9 +39,9 @@ if ($comuser_info)
 		if ($comusers_date_registr) echo '<p><strong>'. t('Дата регистрации'). ':</strong> ' . $comusers_date_registr . '</p>';
 		if ($comusers_nik) echo '<p><strong>'. t('Ник'). ':</strong> ' . $comusers_nik . '</p>';
 		if ($comusers_count_comments) echo '<p><strong>'. t('Комментариев'). ':</strong> ' . $comusers_count_comments . '</p>';
-		if ($comusers_url) echo '<p><strong>'. t('Сайт'). ':</strong> <noindex><a rel="nofollow" href="' . $comusers_url . '">' . $comusers_url . '</a></noindex></p>';
+		if ($comusers_url) echo '<p><strong>'. t('Сайт'). ':</strong> <a rel="nofollow" href="' . $comusers_url . '">' . $comusers_url . '</a></p>';
 		if ($comusers_icq) echo '<p><strong>'. t('ICQ'). ':</strong> ' . $comusers_icq . '</p>';
-		if ($comusers_msn) echo '<p><strong>'. t('Twitter'). ':</strong> <noindex><a rel="nofollow" href="http://twitter.com/' . $comusers_msn . '">@' . $comusers_msn . '</a></noindex></p>';
+		if ($comusers_msn) echo '<p><strong>'. t('Twitter'). ':</strong> <a rel="nofollow" href="http://twitter.com/' . $comusers_msn . '">@' . $comusers_msn . '</a></p>';
 		if ($comusers_jaber) echo '<p><strong>'. t('Jabber'). ':</strong> ' . $comusers_jaber . '</p>';
 		if ($comusers_date_birth and $comusers_date_birth!='1970-01-01 00:00:00' and $comusers_date_birth!='0000-00-00 00:00:00'   ) 
 				echo '<p><strong>'. t('Дата рождения'). ':</strong> ' . $comusers_date_birth . '</p>';

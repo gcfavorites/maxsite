@@ -16,7 +16,9 @@ mso_cur_dir_lang('admin');
 
 	function _time_zone_current_time()
 	{
-		return '<br>' . t('Сейчас на сервере:') . date(' Y-m-d H:i:s');
+		return 
+			  '<br>' . t('Время сервера:') . ' <strong>' . date('H:i:s Y-m-d') . '</strong>'
+			. '<br>' . t('С учётом поправки:') . ' <strong>' . mso_date_convert('H:i:s Y-m-d', date('Y-m-d H:i:s')) . '</strong>';
 	}
 
 

@@ -65,7 +65,7 @@
 }
 .markItUpHeader ul .markItUpDropMenu {
 	background:transparent url(images/menu.png) no-repeat 115% 50%;
-	margin-right:5px;
+	margin-right:10px;
 	z-index: 100;
 	position: relative;
 }
@@ -73,7 +73,7 @@
 	margin-right:0px;
 }
 .markItUpHeader ul .markItUpSeparator {
-	margin:0 10px;
+	margin:0 10px 0 0;
 	width:1px;
 	height:16px;
 	overflow:hidden;
@@ -119,7 +119,7 @@
 	display:block;
 	padding-left:0px;
 	text-indent:0;
-	width:120px; 
+	width:180px; 
 	padding:5px 5px 5px 25px;
 	background-position:2px 50%;
 }

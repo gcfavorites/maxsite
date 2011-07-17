@@ -9,7 +9,7 @@ if ( function_exists('last_comments_widget_custom') )
 	if ($f = mso_page_foreach('comments-head-meta')) require($f);
 	else
 	{ 
-		mso_head_meta('title', t('Последние комментарии').' » ' . getinfo('title') ); //  meta title страницы
+		mso_head_meta('title', t('Последние комментарии') . '. ' . getinfo('title') ); //  meta title страницы
 	}
 	
 	require(getinfo('template_dir') . 'main-start.php');

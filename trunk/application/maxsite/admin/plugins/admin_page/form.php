@@ -136,7 +136,7 @@
 			
 			<div class="block_page page_tags">
 				<h3>' . t('Метки (через запятую)', 'admin') . '</h3>
-				<p><input type="text" value="' . $f_tags . '" name="f_tags" id="f_tags" style="width: 99%;"></p>
+				<p><textarea name="f_tags" id="f_tags" style="width: 99%;">' . $f_tags . '</textarea></p>
 				' . $f_all_tags . '
 			</div>
 			

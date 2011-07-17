@@ -115,10 +115,10 @@ if ($page_comment_allow)
 {
 	// если запрещены комментарии и от анонимов и от комюзеров, то выходим
 	if ( mso_get_option('allow_comment_anonim', 'general', '1') 
-		or mso_get_option('allow_comment_comusers', 'general', '1') ) 
+		or mso_get_option('allow_comment_comusers', 'general', '1') )  
 	{
 		if ($f = mso_page_foreach('page-comment-form-do')) require($f); // подключаем кастомный вывод
-		else echo '<div class="break"></div><h3 class="comments">'. t('Оставьте комментарий!'). '</h3>';
+		else echo '<div class="break"></div><h3 class="comments">' . mso_get_option('leave_a_comment', 'templates', t('Оставьте комментарий!')). '</h3>';
 		
 		if ($f = mso_page_foreach('page-comment-form')) 
 		{

@@ -10,6 +10,6 @@
  */
 
 $lang['Автозакрытие тегов перед «катом»'] = 'Autoschließung vor den Tag «cut»';
-$lang['Плагин закрывает незакрытые перед катом теги и тем самым спасает от глюков с сайдбарами и т.п. на главной, в категориях и т.п..'] = 'Plugin schließt alle Tags vor «cut» und sorgt dafür, dass alles richtig Angezeigt wird';
+$lang['Плагин закрывает незакрытые теги.'] = 'Plugin schließt alle Tags vor «cut» und sorgt dafür, dass alles richtig Angezeigt wird';
 
 ?>

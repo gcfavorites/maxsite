@@ -13,7 +13,7 @@
 	if ($f = mso_page_foreach('search-head-meta')) require($f);
 	else
 	{ 
-		mso_head_meta('title', 'Поиск » ' . $search . ' » ' . getinfo('name_site')); //  meta title страницы
+		mso_head_meta('title', $search); //  meta title страницы
 	}
 	
 	$search_len = true; // поисковая фраза более 2 символов

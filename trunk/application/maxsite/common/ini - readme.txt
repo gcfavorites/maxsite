@@ -32,6 +32,7 @@ delimer = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 Если скрипт выдает ошибку парсинга, значит нужно заключать все значения в кавычки ""
 
 Для типа textarea можно указать перенос строки в виде _NR_ - он автоматически пербразуется в перенос строки \n
+Для типа textarea можно указать количество строк в виде «rows = N». По-умолчанию отображается 7 строк.
 
 Для типа textfield можно указать кавычку (") в виде _QUOT_ - он автоматически пербразуется в &quot; 
 
@@ -40,7 +41,7 @@ delimer = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 Пример использования см. application/maxsite/admin/plugins/admin_options/general.ini
 
-
+Примеры:
 
 [Титул]
 options_key = title
@@ -51,29 +52,21 @@ default = ""
 section = "Сайт"
 section_description = "Задайте базовое описание сайта"
 
-
 [Описание сайта]
 options_key = description
 options_type = general
-type = textfield
+type = teatarea
+rows = 2
 description = "Кратко опишите свой сайт. Это описание будет использовано в meta description вашего сайта."
 default = ""
-
-[Ключевые слова]
-options_key = keywords
-options_type = general
-type = textfield
-description = "Введите ключевые слова сайта. Эти слова будут использованы в meta keywords."
-default = 
 
 [Смещение времени]
 options_key = time_zone
 options_type = general
 type = select
-values = "0.00||Гринвич (0) # 1.00 # 2.00||Киев (+2) # 3.00||Москва (+3) # 4.00 # 5.00 # 6.00 # 7.00 # 8.00 # 9.00 # 10.00 # 11.00 # 12.00 # -1.00 # -2.00 # -3.00 # -4.00 # -5.00 # -6.00 # -7.00 # -8.00 # -9.00 # -10.00 # -11.00 # -12.00"
+values = "0.00||Гринвич (0) # 1.00 # 2.00||Киев (+2) # 3.00||Москва (+3)"
 default = 0.00
 description = "Выберите смещение времени. Оно будет учитываться при выводе дат на сайте."
-
 
 [Избранный пост]
 options_key = _checkbox
@@ -81,13 +74,6 @@ options_type = general
 type = checkbox
 default = 1
 description = "описание"
-
-[Ваш текст]
-options_key = _textarea
-options_type = general
-type = textarea
-default = "Какой-то дефолтный <b>текст</b>_NR_Другой абзац"
-description = "описание текста"
 
 [Выберите возраст]
 options_key = _radio

@@ -170,7 +170,11 @@ function mso_view_ini($all = false)
 		{
 			$value = str_replace('_NR_', "\n", $value);
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			$f .= '<textarea rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
+			
+			if ( !isset($row['rows']) ) $rr = 7;
+				else $rr = (int) $row['rows'];
+			
+			$f .= '<textarea rows="' . $rr . '" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}
 		elseif ($type == 'checkbox')
 		{

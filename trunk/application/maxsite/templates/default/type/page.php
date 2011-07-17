@@ -16,7 +16,7 @@ if ($f = mso_page_foreach('page-head-meta')) require($f);
 else
 { 
 	// в титле следует указать формат вывода | заменяется на  » true - использовать только page_title
-	mso_head_meta('title', $pages, '%page_title%|%title%', ' » ', true ); // meta title страницы
+	mso_head_meta('title', $pages, '%page_title%'); // meta title страницы
 	mso_head_meta('description', $pages); // meta description страницы
 	mso_head_meta('keywords', $pages); // meta keywords страницы
 }
@@ -88,35 +88,16 @@ if ($pages) // есть страницы
 				
 				// связанные страницы по родителям
 				if ($page_nav = mso_page_nav($page_id, $page_id_parent))
-				{
 					echo '<div class="page_nav">' . $page_nav . '</div>';
-				}
 				
-				// выводить ли блок "Еще записи этой рубрики"
-				if ($bl_title = mso_get_option('page_other_pages', 'templates', t('Еще записи по теме', '')))
-				{
-					$bl_pages = mso_get_pages(
-										array(  'type'=> false, 'content'=> false, 'pagination'=>false, 
-												'custom_type'=> 'category', 'categories'=>$page_categories, 
-												'exclude_page_id'=>array($page_id), 
-												'content'=>false,
-												'limit'=> mso_get_option('page_other_pages_limit', 'templates', 7), 
-												'order'=>mso_get_option('page_other_pages_order', 'templates', 'page_date_publish'),
-												'order_asc'=>mso_get_option('page_other_pages_order_asc', 'templates', 'random')
-												),
-												$_temp);
-					if ($bl_pages)
-					{
-						echo '<div class="page_other_pages"><h3>' . $bl_title . '</h3><ul>';
-						foreach ($bl_pages as $bl_page)
-							mso_page_title($bl_page['page_slug'], $bl_page['page_title'], '<li>', '</li>', true);
-						echo '</ul></div>';
-					}
-				}
+				// блок "Еще записи этой рубрики"
+				mso_page_other_pages($page_id, $page_categories);
 				
 			echo '</div>';
 		
 		echo NR . '</div><!--div class="page_only"-->' . NR;
+		
+		if ($f = mso_page_foreach('page-only-end')) require($f);
 		
 		// здесь комментарии
 		// page-comments.php может быть в type своего шаблона

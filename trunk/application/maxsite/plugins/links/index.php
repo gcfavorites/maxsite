@@ -154,7 +154,7 @@ function links_widget_custom($options = array(), $num = 1)
 					if (!$options['screenshot'])
 					{
 						// обычный вывод списком
-						$out .= NR . '<li>' . $noindex1 . '<a href="' . $href . '" title="' . $title . '"' . $nofollow . $blank . '>' 
+						$out .= NR . '<li>' . $noindex1 . '<a href="' . $href . '" title="' . htmlspecialchars($title) . '"' . $nofollow . $blank . '>' 
 							. $title . '</a>' . $descr . $noindex2 . '</li>';
 					}
 					else
@@ -188,9 +188,9 @@ function links_widget_custom($options = array(), $num = 1)
 						}			
 						
 						
-						$out .= NR . '<p>' . $noindex1 . '<a href="' . $href . '" title="' . $title . '"' . $nofollow . $blank . '>' 
+						$out .= NR . '<p>' . $noindex1 . '<a href="' . $href . '" title="' . htmlspecialchars($title) . '"' . $nofollow . $blank . '>' 
 							. '<img src="http://webmorda.kz/site2img/?s=' . $s . '&u=' . $href_w . '" alt="' 
-							. $title . '" title="' . $title 
+							. htmlspecialchars($title) . '" title="' . $title 
 							. '" width="' . $width . '" height="' . $height . '"></a>' . $descr . '' . $noindex2 . '</p>';
 							
 						/*

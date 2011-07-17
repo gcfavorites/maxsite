@@ -23,10 +23,35 @@ myBbcodeSettings = {
 			{name:'Курсив', openWith:'[i]', closeWith:'[/i]', className:"italic", key:"I" },
 			{name:'Подчеркнутый', openWith:'[u]', closeWith:'[/u]', className:"underline" },
 			{name:'Зачеркнутый', openWith:'[s]', closeWith:'[/s]', className:"stroke" },
+			{separator:'---------------' },
 			{name:'Верхний индекс', openWith:'[sup]', closeWith:'[/sup]', className:"sup" },
 			{name:'Нижний индекс', openWith:'[sub]', closeWith:'[/sub]', className:"sub" },
+			{separator:'---------------' },
+			{name:'Размер текста', openWith:'[size=[![Размер текста]!]%]', closeWith:'[/size]', className:"text-smallcaps"},
 		]},
-      
+		
+		{name:'Ссылка', key:'L', openWith:'[url=[![Адрес с http://]!]]', closeWith:'[/url]', className:"link", dropMenu: [
+			{name:'Ссылка (адрес и текст)', openWith:'[url=[![Адрес с http://]!]][![Текст ссылки]!][/url]', closeWith:'', className:"link"}, 
+		]},
+		      
+ 		{name:'Цитата', openWith:'[quote]\n', closeWith:'\n[/quote]', className:"quote", dropMenu: [
+			{name:'Цитата (блок)', openWith:'\n[quote]\n', closeWith:'\n[/quote]', className:"quote"}, 
+			{name:'Цитирование в строке', openWith:'[q]', closeWith:'[/q]', className:"quote"}, 
+			{name:'Абревиатура', openWith:'[abbr [![Определение]!]]', closeWith:'[/abbr]', className:"abbr"}, 
+			{name:'Сноска', openWith:'[cite]', closeWith:'[/cite]', className:"cite"}, 
+			{name:'Адрес', openWith:'[address]', closeWith:'[/address]', className:"address"}, 
+			{name:'Новый термин', openWith:'[dfn]', closeWith:'[/dfn]', className:"dfn"}, 
+		]},
+		     
+  		{name:'Изображение', openWith:'[img [![Описание]!]][![Адрес]!][/img]', className:"picture", dropMenu: [
+			{name:'Изображение', replaceWith:'[img][![Адрес]!][/img]', className:"picture"}, 
+			{separator:'---------------' },
+			{name:'[img]', openWith:'[img [![Описание]!]][![Адрес]!][/image]', className:"image_add"},
+			{name:'[img(left)]', openWith:'[img(left) [![Описание]!]][![Адрес]!][/img]', className:"image_add"},
+			{name:'[img(right)]', openWith:'[img(right) [![Описание]!]][![Адрес]!][/img]', className:"image_add"},
+			{name:'[img(center)]', openWith:'[img(center) [![Описание]!]][![Адрес]!][/img]', className:"image_add"},
+		]},
+		    
 		{name:'Цвет', openWith:'[color=[![Color]!]]', closeWith:'[/color]', className:"colors", dropMenu: [
 			{name:'Желтый', openWith:'[color=yellow]', closeWith:'[/color]', className:"col1-1" },
 			{name:'Оранжевый', openWith:'[color=orange]', closeWith:'[/color]', className:"col1-2" },
@@ -41,54 +66,34 @@ myBbcodeSettings = {
 		
 		<?php if ($smiles) echo $smiles ?>
 		
-		{name:'Размер', openWith:'[size=[![Text size]!]%]', closeWith:'[/size]', className:"text-smallcaps", dropMenu :[  
-			{name:'Большой', openWith:'[size=200%]', closeWith:'[/size]', className:"big" },
-			{name:'Нормальный', openWith:'[size=100%]', closeWith:'[/size]', className:"normal" },
-			{name:'Маленький', openWith:'[size=50%]', closeWith:'[/size]', className:"small" }  
-		]},
 		
-  
+		{separator:'---------------' },
+		
 		{name:'Выравнивание', openWith:'[pleft]', closeWith:'[/pleft]', className:"left", dropMenu :[  
 			{name:'Абзац влево', openWith:'[pleft]', closeWith:'[/pleft]', className:"left" },
 			{name:'Абзац по центру', openWith:'[pcenter]', closeWith:'[/pcenter]', className:"center" },
 			{name:'Абзац вправо', openWith:'[pright]', closeWith:'[/pright]', className:"right" },
 			{name:'Абзац по формату', openWith:'[pjustify]', closeWith:'[/pjustify]', className:"justify" },
+			
 			{separator:'---------------' },
+			
 			{name:'Блок влево', openWith:'[left]', closeWith:'[/left]', className:"text-padding-left"}, 
 			{name:'Блок по центру', openWith:'[center]', closeWith:'[/center]', className:"text-padding-center"},       
 			{name:'Блок вправо', openWith:'[right]', closeWith:'[/right]', className:"text-padding-right"}, 
 			{name:'Блок по формату', openWith:'[justify]', closeWith:'[/justify]', className:"text-padding-justify"}, 
+			
+			{separator:'---------------' },
+			
+			{name:'p - абзац', openWith:'[p]', closeWith:'[/p]', className:"add"}, 
+			
+			{separator:'---------------' },
+			
+			{name:'div.class', openWith:'[div([![Css class]!])]', closeWith:'[/div]', className:"add"}, 
+			{name:'span.class', openWith:'[span([![Css class]!])]', closeWith:'[/span]', className:"add"}, 
+			{name:'&lt;div свойства&gt;', openWith:'[div [![Свойства]!]]', closeWith:'[/div]', className:"add"}, 
+			{name:'&lt;span свойства&gt;', openWith:'[span [![Свойства]!]]', closeWith:'[/span]', className:"add"}, 
 		]},
 
-		{separator:'---------------' },
-	
-		{name:'Ссылка', key:'L', openWith:'[url=[![Адрес]!]]', closeWith:'[/url]', placeHolder:'текст ссылки', className:"link"},
-		{name:'Отрезать', replaceWith:'[cut]\n', className:"separator"}, 
-		{name:'Принудительный перенос', replaceWith:'[br]\n', className:"page-red"},
-		
-		{name:'Цитата', openWith:'[quote]\n', closeWith:'\n[/quote]', className:"quote"}, 
-		
-		{name:'Линия', openWith:'\n[hr]\n', className:"hr"}, 
-		
-		{separator:'---------------' },
-		
-		{name:'Выполнить PHP-код', openWith:'[php]', closeWith:'[/php]', className:"php"}, 
-		{name:'Выполнить HTML-код', openWith:'[html]', closeWith:'[/html]', className:"html-code"}, 
-		
-		{separator:'---------------' },
-
-		{name:'Код', openWith:'[pre]', closeWith:'[/pre]', className:"code", dropMenu: [
-			{name:'Текст', openWith:'[pre]', closeWith:'[/pre]', className:"text" },
-			{name:'PHP', openWith:'[pre lang=php]', closeWith:'[/pre]', className:"php" },
-			{name:'HTML', openWith:'[pre lang=html]', closeWith:'[/pre]', className:"html-pre" },
-			{name:'CSS', openWith:'[pre lang=css]', closeWith:'[/pre]', className:"css" },
-			{name:'JavaScript', openWith:'[pre lang=js]', closeWith:'[/pre]', className:"js" },
-			{name:'Delphi', openWith:'[pre lang=delphi]', closeWith:'[/pre]', className:"delphi" },
-			{name:'SQL', openWith:'[pre lang=sql]', closeWith:'[/pre]', className:"sql" },
-			{name:'C#', openWith:'[pre lang=csharp]', closeWith:'[/pre]', className:"csharp" },
-			{name:'XML', openWith:'[pre lang=xml]', closeWith:'[/pre]', className:"xml" }
-		]},
-		
 		{name:'Заголовок', openWith:'[h1]', closeWith:'[/h1]', className:"h1", dropMenu: [
 			{name:'Заголовок 1', openWith:'[h1]', closeWith:'[/h1]', className:"h1"}, 
 			{name:'Заголовок 2', openWith:'[h2]', closeWith:'[/h2]', className:"h2"}, 
@@ -104,6 +109,13 @@ myBbcodeSettings = {
 			{name:'Элемент списка', openWith:'[*]', closeWith:'\n', className:"list-item"}, 	      
 			{name:'3 элемента', openWith:'\n[list]\n[*]\n[*]\n[*]\n', closeWith:'[/list]', className:"list-bullet"}, 
 			{name:'5 элементов', openWith:'\n[list]\n[*]\n[*]\n[*]\n[*]\n[*]\n', closeWith:'[/list]', className:"list-bullet"}, 
+			
+			{separator:'---------------' },
+			
+			{name:'Список определений', openWith:'\n[dl]\n', closeWith:'\n[/dl]', className:"dl"}, 
+			{name:'Определение', openWith:'[dt]', closeWith:'[/dt]', className:"dl"}, 
+			{name:'Описание', openWith:'[dd]', closeWith:'[/dd]', className:"dl"}, 
+			{name:'Заготовка', openWith:'\n[dl]\n[dt]Определение[/dt]\n[dd]Описание[/dd]\n\n[dt]Определение[/dt]\n[dd]Описание[/dd]\n[/dl]', closeWith:'', className:"dl"}, 
 		]},	  
 		
 		{name:'Таблица', openWith:'\n[table]\n', closeWith:'\n[/table]', className:"table", dropMenu: [
@@ -113,39 +125,88 @@ myBbcodeSettings = {
 			{name:'Заготовка1', openWith:'[table]\n[tr]\n[td] [/td]\n[td] [/td]\n[td] [/td]\n[/tr]\n[/table]', className:"table-go"}, 
 			{name:'Заготовка2', openWith:'\n[tr]\n[td] [/td]\n[td] [/td]\n[td] [/td]\n[/tr]', className:"table-go"}, 
 		]},	
-		
-		{name:'Изображение', replaceWith:'[img][![Адрес]!][/img]', className:"picture", dropMenu: [
-			{name:'Изображение', openWith:'[img [![Описание]!]][![Адрес]!][/img]', className:"picture"}, 
-			{name:'Влево', openWith:'[imgleft [![Описание]!]][![Адрес]!][/imgleft]', className:"picture"}, 
-			{name:'Вправо', openWith:'[imgright [![Описание]!]][![Адрес]!][/imgright]', className:"picture"},
-			{name:'Центр', openWith:'[imgcenter [![Описание]!]][![Адрес]!][/imgcenter]', className:"picture"},
+
+		{separator:'---------------' },
+
+		{name:'Преформатированный текст с подсветкой синтаксиса', openWith:'[pre]', closeWith:'[/pre]', className:"code", dropMenu: [
+			{name:'Обычный текст', openWith:'[pre]', closeWith:'[/pre]', className:"text" },
+			{name:'PHP-код', openWith:'[pre lang=php]', closeWith:'[/pre]', className:"php" },
+			{name:'HTML-код', openWith:'[pre lang=html]', closeWith:'[/pre]', className:"html-pre" },
+			{name:'CSS-код', openWith:'[pre lang=css]', closeWith:'[/pre]', className:"css" },
+			{name:'JavaScript-код', openWith:'[pre lang=js]', closeWith:'[/pre]', className:"js" },
+			{name:'Delphi/Pascal-код', openWith:'[pre lang=delphi]', closeWith:'[/pre]', className:"delphi" },
+			{name:'SQL-код', openWith:'[pre lang=sql]', closeWith:'[/pre]', className:"sql" },
+			{name:'C#-код', openWith:'[pre lang=csharp]', closeWith:'[/pre]', className:"csharp" },
+			{name:'XML-код', openWith:'[pre lang=xml]', closeWith:'[/pre]', className:"xml" }
+		]},
+
+		{name:'Очистить текст от BB-кодов', className:"clean", replaceWith:function(h) { return h.selection.replace(/\[(.*?)\]/g, "") }, className:"clean", dropMenu: [
+			
+			{name:'Очистить текст от BB-кодов', className:"clean", replaceWith:function(h) { return h.selection.replace(/\[(.*?)\]/g, "") }, className:"clean"},
+			
 			{separator:'---------------' },
-			{name:'[image]', openWith:'[image][![Адрес]!][/image]', className:"image_add"},
-			{name:'[image(left)]', openWith:'[image(left)][![Адрес]!][/image]', className:"image_add"},
-			{name:'[image(right)]', openWith:'[image(right)][![Адрес]!][/image]', className:"image_add"},
-		]},
-		
-		{name:'Медиа', className:"audio", dropMenu: [
-			{name:'Аудиоплеер', replaceWith:'[audio=[![Адрес]!]]', className:"audio"}, 
-			{name:'Flash (flv, mp4)', replaceWith:'[flash(640,480)][![Адрес]!][/flash]', className:"movies"}, 
-			{name:'Flowplayer (flv)', replaceWith:'[flowplayer=[![Адрес]!]', className:"movies"}, 
-		]},
-		
-		{name:'Прочее', className:"script-edit", dropMenu: [
-			{name:'div.class', openWith:'[div([![Css class]!])]', closeWith:'[/div]', className:"add"}, 
-			{name:'span.class', openWith:'[span([![Css class]!])]', closeWith:'[/span]', className:"add"}, 
-			{name:'div attr', openWith:'[div [![Attribute]!]]', closeWith:'[/div]', className:"add"}, 
-			{name:'span attr', openWith:'[span [![Attribute]!]]', closeWith:'[/span]', className:"add"}, 
-			{name:'p - абзац', openWith:'[p]', closeWith:'[/p]', className:"add"}, 
+			
+			{name:'Принудительный перенос', replaceWith:'[br]\n', className:"page-red"},
+			{name:'Линия', openWith:'\n[hr]\n', className:"hr"}, 
+			
+			{separator:'---------------' },
+			
+			<?php if (function_exists('run_php_custom')) { ?>
+			{name:'Выполнить PHP-код', openWith:'[php]', closeWith:'[/php]', className:"php"},
+			<?php } ?>
+			 
+			{name:'Выполнить HTML-код', openWith:'[html]', closeWith:'[/html]', className:"html-code"}, 
+			
+			
+			<?php if (function_exists('ushka')) { ?>
+			{separator:'---------------' },
+			{name:'Ушка', openWith:'[ushka=[![Имя ушки]!]]', closeWith:'', className:"add"}, 
+			<?php } ?>
+			
+			
+			<?php if (function_exists('down_count_content')) { ?>
+			{separator:'---------------' },
+			{name:'Счетчик перехода', openWith:'[dc]', closeWith:'[/dc]', className:"add"}, 
+			<?php } ?>
+			
+			<?php if (function_exists('audioplayer_content')) { ?>
+			{separator:'---------------' },
+			{name:'Аудиоплеер MP3', replaceWith:'[audio=[![Адрес]!]]', className:"audio"}, 
+			<?php } ?>
+			
+			<?php if (function_exists('faq_custom')) { ?>
+			{separator:'---------------' },
+			{name:'FAQ (заготовка)', openWith:'[faqs]\n[faq=вопрос]ответ[/faq]\n[faq=вопрос2]ответ2[/faq]\n[/faqs]', closeWith:'', className:"add"}, 
+			<?php } ?>
+
+			
+			<?php if (function_exists('spoiler_custom')) { ?>
+			{separator:'---------------' },
+			{name:'Показать/спрятать (spoiler)', openWith:'[spoiler=[![Заголовок блока]!]]', closeWith:'[/spoiler]', className:"add"}, 
+			<?php } ?>
+
+			<?php if (function_exists('auth_content_parse')) { ?>
+			{separator:'---------------' },
+			{name:'Спрятать от незалогиненных', openWith:'[auth]', closeWith:'[/auth]', className:"add"}, 
+			<?php } ?>
+			
+			<?php if (function_exists('forms_content')) { ?>
+			{separator:'---------------' },
+			{name:'Форма (заготовка)', openWith:'[form] \n[email=mylo@sait.com] \n[redirect=http://site.com/] \n[subject=Моя форма] \n \n[field] \nrequire = 1   \ntype = select \ndescription = Выберите специалиста \nvalues = Иванов # Петров # Сидоров\ndefault = Иванов\ntip = Подсказка к полю \n[/field] \n \n[field] \nrequire = 0   \ntype = text \ndescription = Ваш город\ntip = Указывайте вместе со страной\n[/field] \n \n[field] \nrequire = 1 \ntype = textarea \ndescription = Ваш вопрос \n[/field] \n \n[/form]', closeWith:'', className:"add"}, 
+			<?php } ?>
+
+
 		]},
 		
 		{separator:'---------------' },
-		{name:'Очистить выделенный текст от BB кодов', className:"clean", replaceWith:function(h) { return h.selection.replace(/\[(.*?)\]/g, "") }, className:"clean"},
+				
+		{name:'Отрезать для анонса', replaceWith:'[cut]\n', className:"separator"}, 
+		
 		{separator:'---------------' },
 		
 		{name:'Быстрое сохранение текста', className:'qsave', key:"S", beforeInsert:function(markItUp) { miu.save(markItUp) }},
+		{name:'Предпросмотр (с ALT скрыть)', className:'preview', call:'preview', key:"E"},
 		{name:'Полноэкранный режим редактора (F2)', className:'fullscreen', beforeInsert:function(){shsh();} },
-		{name:'Предпросмотр', className:'preview', call:'preview', key:"E"},
 		
 		<?php mso_hook('editor_markitup_bbcode') ?>
 

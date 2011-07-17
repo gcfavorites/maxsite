@@ -43,7 +43,7 @@
 		}
 		
 		if ($avatar_url) 
-			$avatar_url = '<span style="display: none"><![CDATA[<noindex>]]></span><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar"><span style="display: none"><![CDATA[</noindex>]]></span>';
+			$avatar_url = '<img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar">';
 		
 		echo '<div class="comments_content">' . $avatar_url;
 		echo mso_comments_content($comments_content);

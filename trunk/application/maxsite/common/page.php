@@ -374,7 +374,7 @@ function mso_get_pages($r = array(), &$pag)
 		{
 			// теперь одним запросом получим все рубрики каждой записи
 
-			$CI->db->select('page_id, category.category_id, category.category_name, category.category_slug, category.category_desc');
+			$CI->db->select('page_id, category.category_id, category.category_name, category.category_slug, category.category_desc, category.category_id_parent');
 			$CI->db->where_in('page_id', $all_page_id);
 			$CI->db->order_by('category.' . $r['cat_order'], $r['cat_order_asc']); // сортировка рубрик
 			$CI->db->from('cat2obj');
@@ -390,7 +390,7 @@ function mso_get_pages($r = array(), &$pag)
 			foreach ($cat as $key=>$val)
 			{
 				$page_cat[$val['page_id']][] = $val['category_id'];
-				$page_cat_detail[$val['page_id']][$val['category_id']] = array('category_name' => $val['category_name'], 'category_slug' => $val['category_slug'], 'category_desc' => $val['category_desc']);
+				$page_cat_detail[$val['page_id']][$val['category_id']] = array('category_name' => $val['category_name'], 'category_slug' => $val['category_slug'], 'category_desc' => $val['category_desc'], 'category_id_parent' => $val['category_id_parent']);
 			}
 		}
 		
@@ -1907,6 +1907,68 @@ function _mso_page_map_get_child($page_id = 0, $cur_id = 0)
 
 	return $result;
 }
+
+
+# блок "Еще записи этой рубрики"
+function mso_page_other_pages($page_id = 0, $page_categories = array())
+{
+	if ($bl_title = mso_get_option('page_other_pages', 'templates', t('Еще записи по теме', '')))
+	{
+		// алгоритм получения записей
+		$algoritm = mso_get_option('page_other_pages_algoritm', 'templates', 'all');
+		
+		if ($algoritm == 'lowlewel') // только из подрубрик
+		{
+			$all_cat = mso_cat_array_single(); // все рубрики
+			
+			$bl_page_categories = array(); // обработаный массив id-level
+			
+			foreach ($page_categories as $cat_id)
+			{
+				$bl_page_categories[$cat_id] = $all_cat[$cat_id]['level'];
+			}
+			
+			arsort($bl_page_categories); // сортируем в обратном порядке
+			$bl_page_categories = array_keys($bl_page_categories); // оставляем только ключи (id)
+			
+			// если что-то есть, то оставляем только первую рубрику, иначе $page_categories
+			if (isset($bl_page_categories[0]))
+				 $bl_page_categories = array($bl_page_categories[0]);
+			else $bl_page_categories = $page_categories;
+			
+		}
+		else
+		{
+			// обычный вывод по всем рубрикам 
+			$bl_page_categories = $page_categories; 
+		}
+		
+		$bl_pages = mso_get_pages(
+				array(  'type'=> false, 'content'=> false, 'pagination'=>false, 
+						'custom_type'=> 'category', 'categories'=>$bl_page_categories, 
+						'exclude_page_id'=>array($page_id), 
+						'content'=>false,
+						'limit'=> mso_get_option('page_other_pages_limit', 'templates', 7), 
+						'order'=>mso_get_option('page_other_pages_order', 'templates', 'page_date_publish'),
+						'order_asc'=>mso_get_option('page_other_pages_order_asc', 'templates', 'random')
+						),
+						$_temp);
+		
+		if ($bl_pages)
+		{
+			echo '<div class="page_other_pages"><h3>' . $bl_title . '</h3><ul>';
+			
+			foreach ($bl_pages as $bl_page)
+			{
+				mso_page_title($bl_page['page_slug'], $bl_page['page_title'], '<li>', '</li>', true);
+			}
+			
+			echo '</ul></div>';
+		}
+	}
+
+}
+
 
 
 # end file

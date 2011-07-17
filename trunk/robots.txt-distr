@@ -3,3 +3,9 @@ Disallow: /system
 Disallow: /admin
 Disallow: /login
 Disallow: /logout
+Disallow: /search
+Disallow: /users/*/edit
+Disallow: /users/*/lost
+Disallow: /password-recovery
+
+Host: 

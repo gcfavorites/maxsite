@@ -17,6 +17,8 @@ function forms_content_callback($matches)
 {
 	$text = $matches[1];
 	
+	$text = str_replace("\r", "", $text);
+	
 	$text = str_replace('&nbsp;', ' ', $text);
 	$text = str_replace("\t", ' ', $text);
 	$text = str_replace('<br />', "<br>", $text);
@@ -27,13 +29,16 @@ function forms_content_callback($matches)
 	$text = str_replace('   ', ' ', $text);
 	$text = str_replace('  ', ' ', $text);
 	$text = str_replace("\n ", "\n", $text);
+	$text = str_replace("\n\n", "\n", $text);
 	$text = trim($text);
+	
 	
 	$out = ''; // убиваем исходный текст формы
 	
 	// занесем в массив все поля
 	$r = preg_match_all('!\[email=(.*?)\]|\[redirect=(.*?)\]|\[subject=(.*?)\]|\[field\](.*?)\[\/field\]!is', $text, $all);
-	// pr($all);
+	//pr($all);
+
 	$f = array(); // массив для полей
 	if ($r)
 	{
@@ -63,6 +68,7 @@ function forms_content_callback($matches)
 				if ( isset($ar_val[0]) and isset($ar_val[1]))
 					$f[$i][$ar_val[0]] = $ar_val[1];
 			}
+			
 			
 			$i++;
 		}
@@ -198,21 +204,22 @@ function forms_show_form($f = array())
 	
 	
 	// тут указанные поля в $f
-	
+	// pr($f);
 	foreach ($f as $key=>$val)
 	{
 		if (!isset($val['description'])) continue;
 		if (!isset($val['type'])) continue;
 		
+		$val['type'] = trim($val['type']);
+		$val['description'] = trim($val['description']);
 		
-		if (isset($val['require']) and  $val['require'] == 1) $require = '*';
+		if (isset($val['require']) and  trim($val['require']) == 1) $require = '*';
 			else $require = '';
 		
 		$description = trim($val['description']);
 		
 		if (isset($val['tip']) and trim($val['tip']) ) $tip = '<div class="tip">'. trim($val['tip']) . '</div>';
 			else $tip = '';
-			
 			
 		if ($val['type'] == 'text')
 		{
@@ -267,4 +274,4 @@ function forms_content($text = '')
 	return $text;
 }
 
-?>
+# end file

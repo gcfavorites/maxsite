@@ -9,7 +9,7 @@ $comusers = mso_get_comusers_all(); // получим всех комюзеро�
 if ($f = mso_page_foreach('users-all-head-meta')) require($f);
 else
 {
-	mso_head_meta('title', t('Комментаторы') . ' » ' . getinfo('title')); // meta title страницы
+	mso_head_meta('title', t('Комментаторы') . '. ' . getinfo('title')); // meta title страницы
 }
 
 

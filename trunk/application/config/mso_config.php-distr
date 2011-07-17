@@ -1,11 +1,10 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-/*
- Здесь можно переопределить конфигурацию CodeIgniter
-*/
+// Здесь можно переопределить конфигурацию CodeIgniter
 
-// $config['uri_protocol']	= "REQUEST_URI"; // для fastCGI
-// $config['compress_output'] = TRUE; // для сжатия трафика
+
+# $config['uri_protocol']	= "REQUEST_URI"; // для fastCGI
+# $config['compress_output'] = TRUE; // для сжатия трафика
 
 
 // Если вы не хотите использовать возможность MaxSite CMS создавать
@@ -17,7 +16,11 @@
 // Данная возможность включена по-умолчанию и используется для
 // совместимости при переходах с других CMS с ЧПУ без второго сегмента
 
-// $config['mso_permalink_no_slug'] = "no";
+# $config['mso_permalink_no_slug'] = "no";
+
+
+# $config['encryption_key'] = 'ключ шифрования сессии';
+
 
 
 /* End of file */

@@ -17,7 +17,7 @@ $pages = mso_get_pages($par, $pagination); // получим все - второ
 
 
 if ($f = mso_page_foreach('archive-head-meta')) require($f);
- 
+else  mso_head_meta('title', t('Архивы') . '. ' . getinfo('title') ); //  meta title страницы
 
 if (!$pages and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
 

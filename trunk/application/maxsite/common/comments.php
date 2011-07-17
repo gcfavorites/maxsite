@@ -125,13 +125,11 @@ function mso_get_comments($page_id = 0, $r = array())
 					
 					if (strpos($comment['comments_author_name'], '@') === 0) // первый символ @
 					{	
-						$lt = substr($comment['comments_author_name'], 1); // вычленим @
+						$lt = mso_slug( substr($comment['comments_author_name'], 1) ); // вычленим @
 						
-						// проверим корректность логина
-						if ($lt == mso_slug($lt))
-							$comment['comments_url'] = '<a href="http://twitter.com/' . $lt . '" rel="nofollow">@' . $lt . '</a>';
-						else
-							$comment['comments_url'] = $comment['comments_author_name'] . $r['anonim_title']; 
+						$lt = mso_xss_clean($lt, 'Error', $lt, true); // зачистка XSS
+						
+						$comment['comments_url'] = '<a href="http://twitter.com/' . $lt . '" rel="nofollow">@' . $lt . '</a>';
 					}
 					else $comment['comments_url'] = $comment['comments_author_name'] . $r['anonim_title']; 
 				}
@@ -331,7 +329,7 @@ function mso_get_new_comment($args = array())
 	{
 		// mso_checkreferer(); // если нужно проверять на реферер
 		$CI = & get_instance();
-		
+
 		// заголовок страницы
 		if ( !isset($args['page_title']) )		$args['page_title'] = '';
 		
@@ -538,6 +536,11 @@ function mso_get_new_comment($args = array())
 					if ( !mso_valid_email($comments_email) )
 						return '<div class="' . $args['css_error']. '">'. t('Ошибочный Email'). '</div>';
 
+
+					// проверим время последнего комментария чтобы не очень часто
+					if (!mso_last_activity_comment()) 
+						return '<div class="' . $args['css_error']. '">'. t('Слишком частые комментарии. Попробуйте позже.'). '</div>';
+					
 					// вначале нужно зарегистрировать comюзера - получить его id и только после этого добавить сам коммент
 					// но вначале есть смысл проверить есть ли такой ком-пользователь
 
@@ -583,11 +586,15 @@ function mso_get_new_comment($args = array())
 						// если активация стоит автоматом, то сразу её и прописываем
 						if ( mso_get_option('comusers_activate_auto', 'general', '0') )
 							$ins_data['comusers_activate_string'] = $ins_data['comusers_activate_key'];
-
+							
 						$res = ($CI->db->insert('comusers', $ins_data)) ? '1' : '0';
 
 						if ($res)
 						{
+							
+							// сохраним в сессии время отправления комментария - используется в mso_last_activity_comment
+							$CI->session->set_userdata('last_activity_comment', time());
+							
 							$comusers_id = $CI->db->insert_id(); // номер добавленной записи
 
 							// нужно добавить опцию в мета «новые комментарии, где я участвую» subscribe_my_comments
@@ -662,10 +669,17 @@ function mso_get_new_comment($args = array())
 							'comments_approved' => $comments_com_approved,
 							'comments_parent_id' => $comments_parent_id,
 							);
+							
+						// проверим время последнего комментария чтобы не очень часто
+						if (!mso_last_activity_comment()) 
+							return '<div class="' . $args['css_error']. '">'. t('Слишком частые комментарии. Попробуйте позже.'). '</div>';
 
 						$res = ($CI->db->insert('comments', $ins_data)) ? '1' : '0';
 						if ($res)
 						{
+							
+							// сохраним в сессии время отправления комментария - используется в mso_last_activity_comment
+							$CI->session->set_userdata('last_activity_comment', time());
 							
 							$id_comment_new = $CI->db->insert_id();
 							
@@ -683,8 +697,6 @@ function mso_get_new_comment($args = array())
 							mso_flush_cache();
 							$CI->db->cache_delete_all();
 							mso_hook('new_comment');
-							
-							
 							
 							
 							# если комюзер не залогинен, то сразу логиним его
@@ -728,7 +740,11 @@ function mso_get_new_comment($args = array())
 					// для случаев подделки post-запроса
 					if ( !mso_get_option('allow_comment_anonim', 'general', '1') )
 						return '<div class="' . $args['css_error']. '">'. t('Error allow_comment_anonim'). '</div>';
-
+					
+					// проверим время последнего комментария чтобы не очень часто
+					if (!mso_last_activity_comment()) 
+						return '<div class="' . $args['css_error']. '">'. t('Слишком частые комментарии. Попробуйте позже.'). '</div>';
+					
 					if ( isset($post['comments_author']) )
 					{
 						$comments_author_name = mso_strip($post['comments_author']);
@@ -755,11 +771,14 @@ function mso_get_new_comment($args = array())
 						'comments_approved' => $comments_approved,
 						'comments_parent_id' => $comments_parent_id,
 						);
-
+					
 					$res = ($CI->db->insert('comments', $ins_data)) ? '1' : '0';
 
 					if ($res)
 					{
+						// сохраним в сессии время отправления комментария - используется в mso_last_activity_comment
+						$CI->session->set_userdata('last_activity_comment', time());
+							
 						// посколько у нас идет редирект, то данные об отправленном комменте
 						// сохраняем в сессии номер комментария
 						if ( isset($MSO->data['session']) )
@@ -863,18 +882,6 @@ function mso_get_comuser($id = 0, $args = array())
 			foreach ($comments as $key=>$comment)
 			{
 				$comments_content = $comment['comments_content'];
-				
-				
-				/*
-				$comments_content = mso_xss_clean($comments_content);
-				
-				$comments_content = mso_auto_tag($comments_content, true);
-				$comments_content = strip_tags($comments_content, $args['tags']);
-				$comments_content = mso_balance_tags($comments_content);
-				$comments_content = mso_hook('comments_content', $comments_content);
-				*/
-				
-				$comments_content = $comment['comments_content'];
 				// защитим pre
 				$t = $comments_content;
 				$t = str_replace('&lt;/pre>', '</pre>', $t); // проставим pre - исправление ошибки CodeIgniter
@@ -953,7 +960,13 @@ function mso_get_comuser($id = 0, $args = array())
 		$comuser[0]['comusers_nik'] =  mso_xss_clean($comuser[0]['comusers_nik']);
 		$comuser[0]['comusers_icq'] =  mso_xss_clean($comuser[0]['comusers_icq']);
 		$comuser[0]['comusers_url'] =  mso_xss_clean($comuser[0]['comusers_url']);
-		$comuser[0]['comusers_msn'] =  mso_xss_clean($comuser[0]['comusers_msn']);
+		
+		if ($comuser[0]['comusers_url'] and strpos($comuser[0]['comusers_url'], 'http://') === false) 
+			$comuser[0]['comusers_url'] = 'http://' . $comuser[0]['comusers_url'];
+		
+		$comuser[0]['comusers_msn'] =  mso_xss_clean($comuser[0]['comusers_msn']); // twitter
+		$comuser[0]['comusers_msn'] = mso_slug(str_replace('@', '', $comuser[0]['comusers_msn']));
+		
 		$comuser[0]['comusers_jaber'] =  mso_xss_clean($comuser[0]['comusers_jaber']);
 		$comuser[0]['comusers_skype'] =  mso_xss_clean($comuser[0]['comusers_skype']);
 		$comuser[0]['comusers_description'] =  mso_xss_clean($comuser[0]['comusers_description']);
@@ -1721,6 +1734,26 @@ function mso_comuser_auth($data)
 }
 
 
+# определение времени последнего комментария и сравнение с текущим
+# нужно чтобы было не более 15 секунд - защита от частых комментариев
+function mso_last_activity_comment()
+{
+	global $MSO;
+	
+	/*
+		last_activity - время текущей сессии
+		last_activity_prev - время предыдущей сесиии
+		last_activity_comment - время предыдущего успешного комментария
+	*/
+	
+	// предыдущего комментария не было - это первый
+	if (!isset($MSO->data['session']['last_activity_comment'])) return true;
+	
+	// время в секундах между последним комментарием и текущим в секундах
+	$delta = time() - $MSO->data['session']['last_activity_comment'];
+	
+	return ($delta < 15) ? false : true;
+}
 
 
 # end file

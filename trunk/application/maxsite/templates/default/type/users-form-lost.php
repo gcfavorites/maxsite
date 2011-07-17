@@ -13,7 +13,7 @@ $comuser_info = mso_get_comuser(mso_segment(2)); // получим всю инф
 if ($f = mso_page_foreach('users-form-lost-head-meta')) require($f);
 else
 {
-	mso_head_meta('title', t('Восстановление пароля') . ' » '.  getinfo('title')); // meta title страницы
+	mso_head_meta('title', t('Восстановление пароля') . '. '.  getinfo('title')); // meta title страницы
 }
 
 if (!$comuser_info and mso_get_option('page_404_http_not_found', 'templates', 1) ) header('HTTP/1.0 404 Not Found'); 
