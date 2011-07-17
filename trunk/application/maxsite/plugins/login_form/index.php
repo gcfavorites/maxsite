@@ -57,7 +57,7 @@ function login_form_widget($num = 1)
 	{
 		
 		
-		if ( isset($options['header']) and $options['header'] ) $out = '<h2 class="box"><span>' . $options['header'] . '</span></h2>' . $out;
+		if ( isset($options['header']) and $options['header'] ) $out = mso_get_val('widget_header_start', '<h2 class="box"><span>') . $options['header'] . mso_get_val('widget_header_end', '</span></h2>') . $out;
 	}
 	
 	return $out;

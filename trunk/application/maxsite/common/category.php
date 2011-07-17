@@ -228,7 +228,7 @@ function mso_cat_array($type = 'page', $parent_id = 0, $order = 'category_menu_o
 		$k = $row['category_id'];
 		$r[$k] = $row;
 		$ch = _get_child($type, $row['category_id'], $child_order, $child_asc, $in, $ex, $in_child, $hide_empty, $only_page_publish, $date_now );
-	
+		
 		if ($ch) $r[$k]['childs'] = $ch;
 	}
 
@@ -280,7 +280,7 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 		else $CI->db->order_by('category.' . $order, $asc);
 	
 	$CI->db->group_by('category.category_id');
-	
+
 	$query = $CI->db->get('category');
 	$result = $query->result_array(); // здесь все рубрики
 	
@@ -296,10 +296,11 @@ function _get_child($type = 'page', $parent_id = 0, $order = 'category_menu_orde
 		$result = $r0;
 		foreach ($result as $key=>$row)
 		{
-			$r = _get_child($type, $row['category_id'], $order, $asc, $in, $ex, $in_child, $hide_empty, $only_page_publish);
+			$r = _get_child($type, $row['category_id'], $order, $asc, $in, $ex, $in_child, $hide_empty, $only_page_publish, $date_now);
 			if ($r) $result[$key]['childs'] = $r;
 		}
 	}
+	
 	return $result;
 }
 

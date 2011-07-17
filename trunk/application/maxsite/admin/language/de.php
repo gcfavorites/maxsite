@@ -5,15 +5,15 @@
  * Language file
  * (c) http://max-3000.com/
  * Author: (c) Александр Шиллинг
- * Author URL: http://www.thedignity.biz
- * Update URL: http://maxsite.thedignity.biz
+ * Author URL: http://w25.biz
+ * Update URL: http://w25.biz
  */
 
 $lang['Админ-доступ к «Плагинам»'] = 'Admin Zugriff auf die «Plugins»';
 $lang['Админ-панель'] = 'Admin Panel';
 $lang['Версия'] = 'Version';
 $lang['выйти'] = 'Abmelden';
-$lang['Добро пожаловать в MaxSite CMS!'] = 'Willkommen auf MaxSite CMS!';
+$lang['Добро пожаловать в MaxSite CMS!'] = 'Willkommen in MaxSite CMS!';
 $lang['Доступ запрещен'] = 'Zugriff verweigert';
 $lang['Информация'] = 'Information';
 $lang['Настройки'] = 'Einstellungen';
@@ -54,7 +54,7 @@ $lang['Удалить рубрику?'] = 'Kategorie entfernen?';
 
 # admin_comments
 $lang['Фильтр:'] = 'Filter:';
-$lang['C отмеченными:'] = 'Markiert';
+$lang['C отмеченными:'] = 'Nur markierte';
 $lang['Последние комментарии'] = 'Neueste Kommentare';
 $lang['Автор'] = 'Autor';
 $lang['анонимно'] = 'anonym';
@@ -66,8 +66,8 @@ $lang['Запретить'] = 'Verweigern';
 $lang['К списку комментариев'] = 'Zur Liste der Kommentare';
 $lang['Комментарии'] = 'Kommentare';
 $lang['комюзер'] = 'komuser';
-$lang['написал в'] = 'schrieb in';
-$lang['Одобрить'] = 'Genehmigen';
+$lang['написал в'] = 'Schrieb in';
+$lang['Одобрить'] = 'Erlauben';
 $lang['Ошибка удаления'] = 'Fehler beim entfernen';
 $lang['Ошибочный запрос'] = 'Fehlgeschlagene Anfrage';
 $lang['Ошибочный комментарий'] = 'Fehlerhafte Kommentar';
@@ -86,12 +86,12 @@ $lang['Последний вход'] = 'Letzter Login';
 
 
 # admin_files
-$lang['(если нужно)'] = '(Bei Bedarf)';
+$lang['(если нужно)'] = '(nur bei bedarf)';
 $lang['px (по максимальной стороне).'] = 'px (bei der maximalen Seite)';
 $lang['Админ-доступ к файлам (загрузка, просмотр)'] = 'Admin-Zugriff auf Dateien (Hochladen, Vorschau)';
 $lang['Выделенные файы будут безвозвратно удалены! Удалять?'] = 'Ausgewählte Detein werden unwiderruflich gelöscht! Entfernen?';
 $lang['Выделите нужные файлы. (У вас должен быть активирован плагин <strong>LightBox</strong>)'] = 'Markieren Sie die gewünschten Dateien. Sie müssen das Plugin <strong>LightBox</strong> aktivieren';
-$lang['Выполнено'] = 'Erledigt';
+$lang['Выполнено'] = 'Fertig';
 $lang['Генерировать код галереи'] = 'Code für Galerie generieren';
 $lang['Для загрузки файла нажмите кнопку «Обзор», выберите файл на своем компьютере. После этого нажмите кнопку «Загрузить». Размер файла не должен превышать'] =
 'Um die Datei hochzuladen, klicken Sie auf «Durchsuchen», wählen Sie die Datei auf Ihrem Computer. Klicken Sie dann auf "Upload". Die Dateigröße sollte nicht mehr als';
@@ -141,17 +141,17 @@ $lang['В правом нижнем углу'] = 'Rechts unten';
 
 
 # admin_home
-$lang['Google Code (для тестеров)'] = 'Google Code (für Tester)';
+$lang['Google Code (для тестеров)'] = 'Google Code (nur für Test-Team)';
 $lang['Latest-версия'] = 'Latest-Version';
-$lang['Ваша версия <strong>MaxSite CMS</strong>'] = 'Ihre Version <strong>MaxSite CMS</strong>';
-$lang['Вы можете %sвыполнить обновление'] = 'Sie können ein %sUpgrade durchführen';
-$lang['Кэш удален'] = 'Cache gelöscht';
+$lang['Ваша версия <strong>MaxSite CMS</strong>'] = 'Ihre Version der <strong>MaxSite CMS</strong>';
+$lang['Вы можете %sвыполнить обновление'] = 'Sie können einen %sUpgrade durchführen';
+$lang['Кэш удален'] = 'Cache wurde gelöscht';
 $lang['Обновление не требуется.'] = 'Ein Upgrade ist nicht erforderlich.';
 $lang['Официальный сайт'] = 'Offizielle Website';
-$lang['Ошибка соединения с max-3000.com!'] = 'Problem beim Verbinden mit dem max-3000.com!';
+$lang['Ошибка соединения с max-3000.com!'] = 'Problem beim Verbinden mit max-3000.com!';
 $lang['Полученная информация является ошибочной'] = 'Die erhaltenen Informationen ist nicht korrekt';
-$lang['Проверить последнюю версию MaxSite CMS'] = 'Überprüfen Sie die neueste MaxSite CMS';
-$lang['Сбросить кэш системы'] = 'Cache von System zurücksetzen';
+$lang['Проверить последнюю версию MaxSite CMS'] = 'Nach neuste MaxSite CMS Version suchen';
+$lang['Сбросить кэш системы'] = 'System-Cache zurücksetzen';
 $lang['Текущая официальная версия'] = 'Die aktuelle offizielle Version';
 $lang['Форум поддержки'] = 'Support-Forum';
 $lang['Центр помощи'] = 'Hilfe';
@@ -161,14 +161,14 @@ $lang['Центр помощи'] = 'Hilfe';
 $lang['Автор:'] = 'Autor:';
 $lang['Вы не ввели тип страницы!'] = 'Sie haben den Typ der Seite nicht eingegeben!';
 $lang['Выберите нужный шаблон. Все шаблоны хранятся в каталоге <strong>«maxsite/templates»</strong>. Название шаблона совпадает с названием его каталога.'] =
-'Wählen Sie die gewünschte Vorlage. Alle Vorlagen sind im Verzeichnis <strong>«maxsite/templates»</strong>. Name der Vorlage (Template) und den Ordner sind gleich.';
-$lang['Выбрать этот шаблон'] = 'Wählen Sie diese Vorlage';
+'Wählen Sie die gewünschte Vorlage. Alle Vorlagen sind im Verzeichnis <strong>«maxsite/templates»</strong>. Name der Template und der Ordner sind gleich.';
+$lang['Выбрать этот шаблон'] = 'Diese Template auswählen';
 $lang['Действие'] = 'Aktion';
 $lang['Добавить новый тип'] = 'Fügen Sie einen neuen Typ ein';
 $lang['Здесь вы можете указать основные настройки. Если указанная настройка отмечена «нет в базе», значит нужно ввести её значение и нажать кнопку «Сохранить».'] =
-'Hier können Sie die Grundeinstellungen vornehmen. Wenn diese Einstellung mit «nicht in Datenbank» gekennzeichnet sind, dann müssen Sie ein Wert eingeben und auf «Speichern» klicken.';
+'Hier können Sie die Grundeinstellungen vornehmen. Wenn Einstellungen mit «nicht in Datenbank» gekennzeichnet sind, dann müssen Sie ein Wert eingeben und auf «Speichern» drücken.';
 $lang['Изменить'] = 'Bearbeiten';
-$lang['Настройки сайта'] = 'Site-Einstellungenn';
+$lang['Настройки сайта'] = 'Seiten-Einstellungen';
 $lang['Нет изображения'] = 'Kein Bild';
 $lang['Новый тип добавлен!'] = 'Der neue Typ wurde hinzugefügt!';
 $lang['Новый тип'] = 'Neue Typ';
@@ -176,17 +176,17 @@ $lang['Описание'] = 'Beschreibung';
 $lang['Основные настройки'] = 'Grundeinstellungen';
 $lang['Основные'] = 'Grundeinstellungen';
 $lang['Ошибка добавления!'] = 'Ein Fehler ist aufgetreten!';
-$lang['Такой тип страниц уже существует!'] = 'Diese Typ der Seiten ist schon da!';
-$lang['Текущий шаблон:'] = 'Aktuelle Vorlage:';
+$lang['Такой тип страниц уже существует!'] = 'Diese Typ der Seiten exisiert bereits!';
+$lang['Текущий шаблон:'] = 'Aktuelle Template:';
 $lang['Тип'] = 'Typ';
 $lang['Типы страниц предназначены для того, чтобы вы могли группировать свои записи по своему усмотрению. Однако для того, чтобы задействовать дополнительные типы страниц, необходимо чтобы ваш шаблон знал об этих типах. Обычно это требует дополнительного программирования. Стандартно в <strong>MaxSite CMS</strong> использются типы <strong>«blog»</strong> - для отображения записей в обратном хронологическом порядке; а также <strong>«static»</strong> - для прочих статичных страниц.'] =
-'Typen von Seiten sollen Ihnen ermöglichen, Ihre Einträge in Gruppen aufzunehmen. Allerdings, um zusätzliche Typen von Seiten zu nutzen, benötigen Sie einen Eintrag über den Typ in Ihrem Template. Normalerweise erfordert dies zusätzliche Programmierung. Standard werden in <strong>MaxSite CMS</strong> die Typen <strong>«blog»</strong> — die Einträge werden in umgekehrter chronologischer Reihenfolge angezeigt; und <strong>«static»</strong> — für andere statische Seiten.';
+'Typen von Seiten ermöglichen, Ihre Einträge in verschiede Gruppen aufzunehmen. Allerdings, um zusätzliche Typen von Seiten zu nutzen, benötigen Sie einen Eintrag über den Typ in Ihrem Template Datein. Normalerweise erfordert dies zusätzliche Programmierung. Als Standart werden in <strong>MaxSite CMS</strong> die Typen <strong>«blog»</strong> — die Einträge werden in umgekehrter chronologischer Reihenfolge angezeigt; und <strong>«static»</strong> — für andere statische Seiten.';
 $lang['Типы страниц'] = 'Seitentypen';
-$lang['Шаблон сайта'] = 'Vorlage';
-$lang['Шаблоны для сайта'] = 'Vorlagen für die Website';
+$lang['Шаблон сайта'] = 'Template';
+$lang['Шаблоны для сайта'] = 'Template für die Website';
 $lang['Настройки редактора'] = 'Editor-Optionen';
 $lang['Настройка редактора'] = 'Anpassen des Editors';
-$lang['Выберите нужные опции редактора'] = 'Wählen Sie die gewünschte Optionen des Editor';
+$lang['Выберите нужные опции редактора'] = 'Wählen Sie die gewünschte Optionen des Editor aus';
 $lang['Сортировка меток'] = 'Tags Sortieren';
 $lang['0||По количеству записей (обратно) # 1||По количеству записей # 2||По алфавиту # 3||По алфавиту (обратно)'] = '0||Nach der Anzahl der Einträge (rückwärts) # 1||Nach der Anzahl der Einträge # 2||Alphabetisch # 3||Alphabetisch (rückwärts)';
 $lang['Используется для отображения облака меток'] = 'Wird für Tags-Wolke verwendet';
@@ -272,8 +272,8 @@ $lang['Каталог'] = 'Verzeichnis';
 $lang['Название'] = 'Titel';
 $lang['Настройка плагинов'] = 'Plugins Einstellungen';
 $lang['откл'] = 'Ausschalten';
-$lang['Отметьте необходимые плагины и выберите нужное действие.'] = 'Wählen Sie die notwendige plugins und wählen Sie die gewünschte Aktion.';
-$lang['Отметьте необходимые плагины'] = 'Wählen Sie die notwendige plugins';
+$lang['Отметьте необходимые плагины и выберите нужное действие.'] = 'Wählen Sie die notwendige Plugins und wählen Sie die gewünschte Aktion.';
+$lang['Отметьте необходимые плагины'] = 'Wählen Sie die notwendige Plugins';
 $lang['Ошибка обновления'] = 'Update-Fehler';
 $lang['Плагины расширяют стандартные возможности сайта. Здесь вы можете включить или отключить плагины. Если вы деинсталируете плагин, то это удаляет его настройки, что позволяет избежать «замусоривания» базы данных.'] =
 'Plugins erweitern die Standard-Funktionen der Website. Hier können Sie die Plugins aktivieren oder deaktivieren. Wenn Sie ein Plugin deinstalieren, entfernt das System die Einstellungen und macht somit die Datenbank sauber.';
@@ -284,10 +284,10 @@ $lang['опции'] = 'Optionen';
 
 
 # admin_sidebars
-$lang['в сайдбар'] = 'in der Sitebar';
+$lang['в сайдбар'] = 'in Sidebar';
 $lang['Виджет не содержит настроек'] = 'Widget enthält keine Einstellungen';
 $lang['Для виджета можно указать <a href="http://max-3000.com/page/uslovija-otobrazhenija-vidzheta" target="_blank">условия отображения</a>.'] = 
-'Für ein Widget können Sie angeben <a href="http://max-3000.com/page/uslovija-otobrazhenija-vidzheta" target="_blank">Anzeige Bedingungen</a>.';
+'Für ein Widget können Sie angeben <a href="http://max-3000.com/page/uslovija-otobrazhenija-vidzheta" target="_blank">Anzeige Bedingungen (RU)</a>.';
 $lang['Добавить'] = 'Hinzufügen';
 $lang['Добавьте в сайдбары необходимые виджеты. Каждый виджет в одной строчке. Виджеты будут отображаться в указанном вами порядке. Если указанные виджеты не существуют, то они будут проигнорированы при выводе в сайдбаре.'] = 
 'Fügen Sie die notwendigen Widgets in der Sidebar. Jedes Widget in einer Linie. Widgets werden in der angegebenen Reihenfolge erscheinen. Wenn diese Widgets nicht existieren, dann werden sie ignoriert';
@@ -321,7 +321,7 @@ $lang['Английский'] = 'Englisch';
 $lang['Без уведомлений'] = 'Ohne Benachrichtigung';
 $lang['введите название новой группы'] = 'Geben Sie ein Name der Neue Gruppe ein';
 $lang['Вернуться к списку пользователей'] = 'Zurück zur Liste der Benutzer';
-$lang['Временная зона'] = 'Time Zone';
+$lang['Временная зона'] = 'Zeit-Zone';
 $lang['Год:'] = 'Jahr';
 $lang['Группа:'] = 'Gruppe:';
 $lang['Группа'] = 'Gruppe';
@@ -389,7 +389,7 @@ $lang['Настройка шаблона'] = 'Vorlage anpassen';
 # admin_plugin_options
 $lang['Вернуться на страницу плагинов'] = 'Zurück zu Plugins';
 $lang['Опции плагина'] = 'Plugin Optionen';
-$lang['Укажите необходимые опции плагина.']  = 'Geben Sie die Plugins-Optionen, die Sie benötigen.';
+$lang['Укажите необходимые опции плагина.']  = 'Geben Sie die Plugins-Optionen an, die Sie benötigen.';
 $lang['Админ-доступ к редактированию опций плагинов'] = 'Admin Zugang zu bearbeiten der Optionen von Plug-Ins';
 $lang['Настройка опций плагинов'] = 'Plugins Optionen anpassen';
 $lang['Плагин не найден.'] = 'Plugin nicht gefunden.';

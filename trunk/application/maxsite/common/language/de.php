@@ -5,8 +5,8 @@
  * Language file
  * (c) http://max-3000.com/
  * Author: (c) Александр Шиллинг
- * Author URL: http://www.thedignity.biz
- * Update URL: http://maxsite.thedignity.biz
+ * Author URL: http://w25.biz
+ * Update URL: http://w25.biz
  */
 
 # common.php
@@ -24,7 +24,7 @@ $lang['Далее'] = 'Weiter';
 $lang['(черновик)'] = '(Entwurf)';
 $lang['Редактировать'] = 'Bearbeiten';
 $lang['Подписаться'] = 'Abonnieren';
-$lang['Данная запись защищена паролем.'] = 'Dieser Beitrag ist Passwort geschützt.';
+$lang['Данная запись защищена паролем.'] = 'Dieser Beitrag ist mit Passwort geschützt.';
 $lang['<strong>Ошибочный пароль!</strong> Повторите ввод.'] = '<strong>Falsches Passwort!</strong> Nochmal eingeben.';
 $lang['Обсудить'] = 'Kommentare';
 $lang['Посмотреть комментарии'] = 'Kommentare anzeigen';

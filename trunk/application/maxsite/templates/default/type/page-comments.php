@@ -40,7 +40,7 @@ if ($comments) // есть страницы
 	else 
 	{
 		echo '<div class="comments">';
-		echo '<h3 class="comments">' . t('Комментариев') . ': ' . count($comments) . '</h3>';
+		echo mso_get_val('page_comments_count_start', '<h3 class="comments">') . t('Комментариев') . ': ' . count($comments) . mso_get_val('page_comments_count_end', '</h3>');
 	}
 	
 	echo '<ol>';
@@ -118,7 +118,7 @@ if ($page_comment_allow)
 		or mso_get_option('allow_comment_comusers', 'general', '1') )  
 	{
 		if ($f = mso_page_foreach('page-comment-form-do')) require($f); // подключаем кастомный вывод
-		else echo '<div class="break"></div><h3 class="comments">' . mso_get_option('leave_a_comment', 'templates', t('Оставьте комментарий!')). '</h3>';
+		else echo '<div class="break"></div>' . mso_get_val('leave_a_comment_start', '<h3 class="comments">') . mso_get_option('leave_a_comment', 'templates', t('Оставьте комментарий!')). mso_get_val('leave_a_comment_end', '</h3>');
 		
 		if ($f = mso_page_foreach('page-comment-form')) 
 		{

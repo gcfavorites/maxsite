@@ -51,7 +51,7 @@ if ($pages) // есть страницы
 		if ($f = mso_page_foreach('category-show-rss-text')) 
 			require($f); // подключаем кастомный вывод
 		else
-			echo '<h3 class="category"><a href="' . getinfo('siteurl') . mso_segment(1) . '/' . mso_segment(2) . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a></h3>';
+			echo mso_get_val('show_rss_text_start', '<h3 class="category">') . '<a href="' . getinfo('siteurl') . mso_segment(1) . '/' . mso_segment(2) . '/feed">'. t('Подписаться на эту рубрику по RSS'). '</a>' .  mso_get_val('show_rss_text_end', '</h3>');
 			
 	}
 	

@@ -65,181 +65,194 @@ function bbcode_mso_options()
 # функции плагина
 function bbcode_custom($text = '')
 {
-
 	$text = preg_replace_callback('~\[pre(.*?)\](.*?)\[\/pre\]~si', 'bbcode_pre_callback', $text );
 
     $preg = array(
-		// Text arrtibutes
-		'~\[s\](.*?)\[\/s\]~si'        => '<del>$1</del>',
-		'~\[b\](.*?)\[\/b\]~si'                 => '<strong>$1</strong>',
-		'~\[i\](.*?)\[\/i\]~si'                 => '<em>$1</em>',
-		'~\[u\](.*?)\[\/u\]~si'                 => '<u>$1</u>',
 		
-		'~\[sub\](.*?)\[\/sub\]~si'                 => '<sub>$1</sub>',
-		'~\[sup\](.*?)\[\/sup\]~si'                 => '<sup>$1</sup>',
+		# Text
 		
-		'~\[p\](.*?)\[\/p\]~si'                 => '<p>$1</p>', // абзац
+		'~\[b (.*?)\](.*?)\[\/b\]~si'			=> '<strong $1>$2</strong>',
+		'~\[b\](.*?)\[\/b\]~si'					=> '<strong>$1</strong>',
 		
-		'~\[color=(.*?)\](.*?)\[\/color\]~si'   => '<span style="color:$1">$2</span>',
+		'~\[i (.*?)\](.*?)\[\/i\]~si'			=> '<em$1>$2</em>',
+		'~\[i\](.*?)\[\/i\]~si'					=> '<em>$1</em>',
+		
+		'~\[u (.*?)\](.*?)\[\/u\]~si'			=> '<u $1>$2</u>',
+		'~\[u\](.*?)\[\/u\]~si'					=> '<u>$1</u>',
+		
+		'~\[s (.*?)\](.*?)\[\/s\]~si'			=> '<del $1>$2</del>',
+		'~\[s\](.*?)\[\/s\]~si'					=> '<del>$1</del>',
+		
+		'~\[sub\](.*?)\[\/sub\]~si'				=> '<sub>$1</sub>',
+		'~\[sup\](.*?)\[\/sup\]~si'				=> '<sup>$1</sup>',
+		
+		'~\[color=(.*?)\](.*?)\[\/color\]~si'	=> '<span style="color:$1">$2</span>',
+		'~\[size=(.*?)\](.*?)\[\/size\]~si'		=> '<span style="font-size:$1">$2</span>',
 
-		'~\[size=(.*?)\](.*?)\[\/size\]~si'   => '<span style="font-size:$1">$2</span>',
+		# стиль для блока [div=color: red]текст[/div]
+		'~\[div=(.*?)\](.*?)\[\/div\]~si'		=> '<div style="$1">$2</div>',
+		'~\[span=(.*?)\](.*?)\[\/span\]~si'		=> '<span style="$1">$2</span>',
+		
+		# div
+		'~\[left (.*?)\](.*?)\[\/left\]~si'		=> '<div style="text-align: left; $1">$2</div>',
+		'~\[left\](.*?)\[\/left\]~si'			=> '<div style="text-align: left;">$1</div>',
 
-		// стиль для блока [div=color: red]текст[/div]
-		'~\[div=(.*?)\](.*?)\[\/div\]~si' => '<div style="$1">$2</div>',
-		'~\[p=(.*?)\](.*?)\[\/p\]~si'   => '<p style="$1">$2</p>',
-		'~\[span=(.*?)\](.*?)\[\/span\]~si'   => '<span style="$1">$2</span>',
+		'~\[right (.*?)\](.*?)\[\/right\]~si'	=> '<div style="text-align: right; $1">$2</div>',
+		'~\[right\](.*?)\[\/right\]~si'			=> '<div style="text-align: right;">$1</div>',
 
-		'~\[left (.*?)\](.*?)\[\/left\]~si'       => '<div style="text-align: left; $1">$2</div>',
-		'~\[left\](.*?)\[\/left\]~si'       => '<div style="text-align: left;">$1</div>',
+		'~\[center (.*?)\](.*?)\[\/center\]~si'	=> '<div style="text-align: center; $1">$2</div>',
+		'~\[center\](.*?)\[\/center\]~si'		=> '<div style="text-align: center;">$1</div>',
 
-		'~\[right (.*?)\](.*?)\[\/right\]~si'     => '<div style="text-align: right; $1">$2</div>',
-		'~\[right\](.*?)\[\/right\]~si'     => '<div style="text-align: right;">$1</div>',
+		'~\[justify (.*?)\](.*?)\[\/justify\]~si'	=> '<div style="text-align: justify; $1">$2</div>',
+		'~\[justify\](.*?)\[\/justify\]~si'			=> '<div style="text-align: justify;">$1</div>',		
+		
+		# p
+		'~\[p\](.*?)\[\/p\]~si'					=> '<p>$1</p>', // абзац
+		'~\[p=(.*?)\](.*?)\[\/p\]~si'			=> '<p style="$1">$2</p>',
+		'~\[p (.*?)\](.*?)\[\/p\]~si'			=> '<p $1>$2</p>',
+		
+		'~\[pleft\](.*?)\[\/pleft\]~si'			=> '<p style="text-align: left;">$1</p>',
+		'~\[pright\](.*?)\[\/pright\]~si'		=> '<p style="text-align: right;">$1</p>',
+		'~\[pcenter\](.*?)\[\/pcenter\]~si'		=> '<p style="text-align: center;">$1</p>',
+		'~\[pjustify\](.*?)\[\/pjustify\]~si'	=> '<p style="text-align: justify;">$1</p>',
+		
+		
+		# 
+		'~\[abbr\](.*?)\[\/abbr\]~si'			=> '<abbr>$1</abbr>',
+		'~\[abbr (.*?)\](.*?)\[\/abbr\]~si' 	=> '<abbr title="$1">$2</abbr>',
+		
+		'~\[q\](.*?)\[\/q\]~si'	  				=> '<q>$1</q>',
+		'~\[q (.*?)\](.*?)\[\/q\]~si' 			=> '<q $1">$2</q>',
+		
+		'~\[cite\](.*?)\[\/cite\]~si'			=> '<cite>$1</cite>',
+		'~\[cite (.*?)\](.*?)\[\/cite\]~si' 	=> '<cite $1">$2</cite>',
+		
+		'~\[address\](.*?)\[\/address\]~si'	  		=> '<address>$1</address>',
+		'~\[address (.*?)\](.*?)\[\/address\]~si' 	=> '<address $1">$2</address>',
+		
+		'~\[dfn\](.*?)\[\/dfn\]~si'	  			=> '<dfn>$1</dfn>',
+		'~\[dfn (.*?)\](.*?)\[\/dfn\]~si' 		=> '<dfn $1">$2</dfn>',
 
-		'~\[center (.*?)\](.*?)\[\/center\]~si'   => '<div style="text-align: center; $1">$2</div>',
-		'~\[center\](.*?)\[\/center\]~si'   => '<div style="text-align: center;">$1</div>',
-
-		'~\[justify (.*?)\](.*?)\[\/justify\]~si'   => '<div style="text-align: justify; $1">$2</div>',
-		'~\[justify\](.*?)\[\/justify\]~si'   => '<div style="text-align: justify;">$1</div>',		
-
-		'~\[pleft\](.*?)\[\/pleft\]~si'       => '<p style="text-align: left;">$1</p>',
-		'~\[pright\](.*?)\[\/pright\]~si'     => '<p style="text-align: right;">$1</p>',
-		'~\[pcenter\](.*?)\[\/pcenter\]~si'   => '<p style="text-align: center;">$1</p>',
-		'~\[pjustify\](.*?)\[\/pjustify\]~si'   => '<p style="text-align: justify;">$1</p>',
+		'~\[dl\](.*?)\[\/dl\]~si'				=> '<dl>$1</dl>',
+		'~\[dl (.*?)\](.*?)\[\/dl\]~si' 		=> '<dl $1">$2</dl>',
 		
+		'~\[dt\](.*?)\[\/dt\]~si'				=> '<dt>$1</dt>',
+		'~\[dt (.*?)\](.*?)\[\/dt\]~si' 		=> '<dt $1">$2</dt>',
 		
-		'~\[abbr\](.*?)\[\/abbr\]~si'   => '<abbr>$1</abbr>',
-		'~\[abbr (.*?)\](.*?)\[\/abbr\]~si' => '<abbr title="$1">$2</abbr>',
+		'~\[dd\](.*?)\[\/dd\]~si'				=> '<dd>$1</dd>',
+		'~\[dd (.*?)\](.*?)\[\/dd\]~si' 		=> '<dd $1">$2</dd>',		
 		
-		'~\[q\](.*?)\[\/q\]~si'   => '<q>$1</q>',
-		'~\[q (.*?)\](.*?)\[\/q\]~si' => '<q $1">$2</q>',
+		'~\[del\](.*?)\[\/del\]~si'	  			=> '<del>$1</del>',
+		'~\[del (.*?)\](.*?)\[\/del\]~si' 		=> '<del $1">$2</del>',	
 		
-		'~\[cite\](.*?)\[\/cite\]~si'   => '<cite>$1</cite>',
-		'~\[cite (.*?)\](.*?)\[\/cite\]~si' => '<cite $1">$2</cite>',
-		
-		'~\[address\](.*?)\[\/address\]~si'   => '<address>$1</address>',
-		'~\[address (.*?)\](.*?)\[\/address\]~si' => '<address $1">$2</address>',
-		
-		'~\[dfn\](.*?)\[\/dfn\]~si'   => '<dfn>$1</dfn>',
-		'~\[dfn (.*?)\](.*?)\[\/dfn\]~si' => '<dfn $1">$2</dfn>',
-
-		'~\[dl\](.*?)\[\/dl\]~si'   => '<dl>$1</dl>',
-		'~\[dl (.*?)\](.*?)\[\/dl\]~si' => '<dl $1">$2</dl>',
-		
-		'~\[dt\](.*?)\[\/dt\]~si'   => '<dt>$1</dt>',
-		'~\[dt (.*?)\](.*?)\[\/dt\]~si' => '<dt $1">$2</dt>',
-		
-		'~\[dd\](.*?)\[\/dd\]~si'   => '<dd>$1</dd>',
-		'~\[dd (.*?)\](.*?)\[\/dd\]~si' => '<dd $1">$2</dd>',		
-		
-		'~\[del\](.*?)\[\/del\]~si'   => '<del>$1</del>',
-		'~\[del (.*?)\](.*?)\[\/del\]~si' => '<del $1">$2</del>',	
-		
-		'~\[ins\](.*?)\[\/ins\]~si'   => '<ins>$1</ins>',
-		'~\[ins (.*?)\](.*?)\[\/ins\]~si' => '<ins $1">$2</ins>',
+		'~\[ins\](.*?)\[\/ins\]~si'	  			=> '<ins>$1</ins>',
+		'~\[ins (.*?)\](.*?)\[\/ins\]~si' 		=> '<ins $1">$2</ins>',
 				
+		'~\[hr\]~si'   							=> '<hr>',
+		'~\[line\]~si'	 						=> '<hr>',
+
+
+		# table
+		'~\[table\]~si'	  						=> '<table>',
+		'~\[table (.*?)\]~si' 					=> '<table $1>',
+		'~\[\/table\]~si'						=> '</table>',
+
+		'~\[tr\]~si'   							=> '<tr>',
+		'~\[tr (.*?)\]~si' 						=> '<tr $1>',
+		'~\[\/tr\]~si'	 						=> '</tr>',
+
+		'~\[td\]~si'  		 					=> '<td>',
+		'~\[td (.*?)\]~si' 						=> '<td $1>',
+		'~\[\/td\]~si'	 						=> '</td>',
+
+		'~\[th\]~si'   							=> '<th>',
+		'~\[th (.*?)\]~si' 						=> '<th $1>',
+		'~\[\/th\]~si'	 						=> '</th>',
 		
-		// '~\[br\]~si'   => '<br clear="all">',
 		
-		'~\[hr\]~si'   => '<hr>',
-		'~\[line\]~si'   => '<hr>',
-
-		'~\[table\]~si'   => '<table>',
-		'~\[table (.*?)\]~si' => '<table $1>',
-		'~\[\/table\]~si'   => '</table>',
-
-		'~\[tr\]~si'   => '<tr>',
-		'~\[tr (.*?)\]~si' => '<tr $1>',
-		'~\[\/tr\]~si'   => '</tr>',
-
-		'~\[td\]~si'   => '<td>',
-		'~\[td (.*?)\]~si' => '<td $1>',
-		'~\[\/td\]~si'   => '</td>',
-
-		'~\[th\]~si'   => '<th>',
-		'~\[th (.*?)\]~si' => '<th $1>',
-		'~\[\/th\]~si'   => '</th>',
-
-		'~\[\*\](.*?)\[\/\*\]~si'   => '<li>$1</li>',
-		'~\[\*\]~si'   => '<li>',
-		'~\[ul\](.*?)\[\/ul\]~si'   => "<ul>$1</li></ul>",
-		'~\[list\](.*?)\[\/list\]~si'   => "<ul>$1</li></ul>",
-		'~\[ol\](.*?)\[\/ol\]~si'   => '<ol>$1</li></ol>',
+		# [*] [list] [ul] [ol]
+		'~\[\*\](.*?)\[\/\*\]~si'				=> '<li>$1</li>',
+		'~\[\*\]~si'   							=> '<li>',
+		'~\[ul\](.*?)\[\/ul\]~si'				=> "<ul>$1</li></ul>",
+		'~\[list\](.*?)\[\/list\]~si'			=> "<ul>$1</li></ul>",
+		'~\[ol\](.*?)\[\/ol\]~si'				=> '<ol>$1</li></ol>',
 
 
-		//headers
-		'~\[h1\](.*?)\[\/h1\]~si'           => '<h1>$1</h1>',
-		'~\[h1\((.[^ ]*?)\)\](.*?)\[\/h1\]~si'           => '<h1 class="$1">$2</h1>',
-		'~\[h2\](.*?)\[\/h2\]~si'           => '<h2>$1</h2>',
-		'~\[h2\((.[^ ]*?)\)\](.*?)\[\/h2\]~si'           => '<h2 class="$1">$2</h2>',
-		'~\[h3\](.*?)\[\/h3\]~si'           => '<h3>$1</h3>',
-		'~\[h3\((.[^ ]*?)\)\](.*?)\[\/h3\]~si'           => '<h3 class="$1">$2</h3>',
-		'~\[h4\](.*?)\[\/h4\]~si'           => '<h4>$1</h4>',
-		'~\[h4\((.[^ ]*?)\)\](.*?)\[\/h4\]~si'           => '<h4 class="$1">$2</h4>',
-		'~\[h5\](.*?)\[\/h5\]~si'           => '<h5>$1</h5>',
-		'~\[h5\((.[^ ]*?)\)\](.*?)\[\/h5\]~si'           => '<h5 class="$1">$2</h5>',
-		'~\[h6\](.*?)\[\/h6\]~si'           => '<h6>$1</h6>',
-		'~\[h6\((.[^ ]*?)\)\](.*?)\[\/h6\]~si'           => '<h6 class="$1">$2</h6>',
+		# headers
+		'~\[h1\](.*?)\[\/h1\]~si'				=> '<h1>$1</h1>',
+		'~\[h1\((.[^ ]*?)\)\](.*?)\[\/h1\]~si'	=> '<h1 class="$1">$2</h1>',
+		'~\[h2\](.*?)\[\/h2\]~si'				=> '<h2>$1</h2>',
+		'~\[h2\((.[^ ]*?)\)\](.*?)\[\/h2\]~si'	=> '<h2 class="$1">$2</h2>',
+		'~\[h3\](.*?)\[\/h3\]~si'				=> '<h3>$1</h3>',
+		'~\[h3\((.[^ ]*?)\)\](.*?)\[\/h3\]~si'	=> '<h3 class="$1">$2</h3>',
+		'~\[h4\](.*?)\[\/h4\]~si'				=> '<h4>$1</h4>',
+		'~\[h4\((.[^ ]*?)\)\](.*?)\[\/h4\]~si'	=> '<h4 class="$1">$2</h4>',
+		'~\[h5\](.*?)\[\/h5\]~si'				=> '<h5>$1</h5>',
+		'~\[h5\((.[^ ]*?)\)\](.*?)\[\/h5\]~si'	=> '<h5 class="$1">$2</h5>',
+		'~\[h6\](.*?)\[\/h6\]~si'				=> '<h6>$1</h6>',
+		'~\[h6\((.[^ ]*?)\)\](.*?)\[\/h6\]~si'	=> '<h6 class="$1">$2</h6>',
 
-		// [code=language][/code]
-		'~\[code\](.*?)\[\/code\]~si'       => '<code>$1</code>',
-		//'~\[pre\](.*?)\[\/pre\]~si'         => '<pre>$1</pre>',
-		// '~\[code=(.*?)\](.*?)\[\/code\]~si'     => '<pre><code class="$1">$2</code></pre>',
-
-		// email with indexing prevention & @ replacement
-		// '~\[email\](.*?)\[\/email\]~sei'         => "'<a rel=\"noindex\" href=\"mailto:'.str_replace('@', '.at.','$1').'\">'.str_replace('@', '.at.','$1').'</a>'",
-		//'~\[email=(.*?)\](.*?)\[\/email\]~sei'   => "'<a rel=\"noindex\" href=\"mailto:'.str_replace('@', '.at.','$1').'\">$2</a>'",
-
-		// links
-		//'~\[url\]www\.(.*?)\[\/url\]~si'        => '<a href="http://www.$1">$1</a>',
-		'~\[url\](.*?)\[\/url\]~si'             => '<a href="$1">$1</a>',
-		'~\[url=(.*?)?\](.*?)\[\/url\]~si'      => '<a href="$1">$2</a>',
+		# [code=language][/code]
+		'~\[code\](.*?)\[\/code\]~si'			=> '<code>$1</code>',
 
 
-		// images
+		# links
+		# [url]http://maxsite.org/[/url]
+		# [url=http://maxsite.org/]Блог Макса[/url]
+		# [url=http://maxsite.org/ rel="nofollow"]Блог Макса[/url]
+		# [url rel="nofollow"]http://maxsite.org/[/url]
+		
+		'~\[url\](.*?)\[\/url\]~si'						=> '<a href="$1">$1</a>', 
+		'~\[url=(.[^ ]*?)\](.*?)\[\/url\]~si'			=> '<a href="$1">$2</a>', 
+		'~\[url=(.[^\s]*?) (.*?)\](.*?)\[\/url\]~si'	=> '<a href="$1" $2>$3</a>',
+		'~\[url (.*?)\](.*?)\[\/url\]~si'				=> '<a href="$2" $1>$2</a>', 
 
-		'~\[imgleft=(.*?)x(.*?)\](.*?)\[\/imgleft\]~si'  => '<img src="$3" style="float: left; margin: 0 10px 0 0; width: $1px; height: $2px">',
-		'~\[imgleft\](.*?)\[\/imgleft\]~si'      => '<img src="$1" style="float: left; margin: 0 10px 0 0;">',
-		'~\[imgleft (.*?)\](.*?)\[\/imgleft\]~si'      => '<img src="$2" title="$1" alt="$1" style="float: left; margin: 0 10px 0 0;">',
 
-		'~\[imgright=(.*?)x(.*?)\](.*?)\[\/imgright\]~si'  => '<img src="$3" style="float: right; margin: 0 0 0 10px; width: $1px; height: $2px">',
-		'~\[imgright\](.*?)\[\/imgright\]~si'    => '<img src="$1" style="float: right; margin: 0 0 0 10px;">',
-		'~\[imgright (.*?)\](.*?)\[\/imgright\]~si'    => '<img src="$2" title="$1" alt="$1" style="float: right; margin: 0 0 0 10px;">',
+		# images
 
-		'~\[imgcenter\](.*?)\[\/imgcenter\]~si'  => '<div style="text-align: center"><img src="$1"></div>',
-		'~\[imgcenter (.*?)\](.*?)\[\/imgcenter\]~si'  => '<div style="text-align: center"><img src="$2" title="$1" alt="$1"></div>',
+		'~\[imgleft=(.*?)x(.*?)\](.*?)\[\/imgleft\]~si'	 	=> '<img src="$3" style="float: left; margin: 0 10px 0 0; width: $1px; height: $2px">',
+		'~\[imgleft\](.*?)\[\/imgleft\]~si'		 			=> '<img src="$1" style="float: left; margin: 0 10px 0 0;">',
+		'~\[imgleft (.*?)\](.*?)\[\/imgleft\]~si'	   		=> '<img src="$2" title="$1" alt="$1" style="float: left; margin: 0 10px 0 0;">',
 
-		// [imgmini=http://site/uploads/sborka-mini.jpg]http://site/uploads/sborka.jpg[/imgmini]
-		'~\[imgmini=_(.*?)\](.*?)\[\/imgmini\]~si' => '<a href="$2" target="_blank" class="lightbox"><img src="$1"></a>',
-		'~\[imgmini=(.*?)\](.*?)\[\/imgmini\]~si'  => '<a href="$2"><img src="$1" class="lightbox"></a>',
+		'~\[imgright=(.*?)x(.*?)\](.*?)\[\/imgright\]~si'	=> '<img src="$3" style="float: right; margin: 0 0 0 10px; width: $1px; height: $2px">',
+		'~\[imgright\](.*?)\[\/imgright\]~si'	 			=> '<img src="$1" style="float: right; margin: 0 0 0 10px;">',
+		'~\[imgright (.*?)\](.*?)\[\/imgright\]~si'	   		=> '<img src="$2" title="$1" alt="$1" style="float: right; margin: 0 0 0 10px;">',
 
-		'~\[img=(.*?)x(.*?)\](.*?)\[\/img\]~si'  => '<img src="$3" style="width: $1px; height: $2px">',
+		'~\[imgcenter\](.*?)\[\/imgcenter\]~si'	 			=> '<div style="text-align: center"><img src="$1"></div>',
+		'~\[imgcenter (.*?)\](.*?)\[\/imgcenter\]~si'  		=> '<div style="text-align: center"><img src="$2" title="$1" alt="$1"></div>',
 
-		'~\[img (.*?)\](.*?)\[\/img\]~si'              => '<img src="$2" title="$1" alt="$1">',
-		'~\[img\](.*?)\[\/img\]~si'              => '<img src="$1" title="" alt="">',
+		# [imgmini=http://site/uploads/sborka-mini.jpg]http://site/uploads/sborka.jpg[/imgmini]
+		'~\[imgmini=_(.*?)\](.*?)\[\/imgmini\]~si' 			=> '<a href="$2" target="_blank" class="lightbox"><img src="$1"></a>',
+		'~\[imgmini=(.*?)\](.*?)\[\/imgmini\]~si'  			=> '<a href="$2"><img src="$1" class="lightbox"></a>',
+
+		'~\[img=(.*?)x(.*?)\](.*?)\[\/img\]~si'	 			=> '<img src="$3" style="width: $1px; height: $2px">',
+
+		'~\[img (.*?)\](.*?)\[\/img\]~si'			   		=> '<img src="$2" title="$1" alt="$1">',
+		'~\[img\](.*?)\[\/img\]~si'				 			=> '<img src="$1" title="" alt="">',
 
 		# [img(right)]http://localhost/uploads/2008-07-11-19-50-56.jpg[/img]
-		'~\[img\((.[^ ]*?)\)\](.*?)\[\/img\]~si' => '<img src="$2" alt="" class="$1">',
-		
+		'~\[img\((.[^ ]*?)\)\](.*?)\[\/img\]~si' 			=> '<img src="$2" alt="" class="$1">',
 		
 		# [img(right) Описание файла]http://localhost/uploads/2008-07-11-19-50-56.jpg[/img]
-		'~\[img\((.[^ ]*?)\) (.*?)\](.*?)\[\/img\]~si' => '<img src="$3" alt="$2" title="$2" class="$1">',
+		'~\[img\((.[^ ]*?)\) (.*?)\](.*?)\[\/img\]~si' 		=> '<img src="$3" alt="$2" title="$2" class="$1">',
+
 
 		
-		// quoting
-		'~\[quote\](.*?)\[\/quote\]~si'         => '<blockquote>$1</blockquote>',
-		'~\[quote=(?:&quot;|"|\')?(.*?)["\']?(?:&quot;|"|\')?\](.*?)\[\/quote\]~si'   => '<blockquote><strong class="src">$1:</strong>$2</blockquote>',
+		# quoting
+		'~\[quote\](.*?)\[\/quote\]~si'												=> '<blockquote>$1</blockquote>',
+		'~\[quote=(?:&quot;|"|\')?(.*?)["\']?(?:&quot;|"|\')?\](.*?)\[\/quote\]~si'	=> '<blockquote><strong class="src">$1:</strong>$2</blockquote>',
 
 		# [div(class)]текст[/div]
-		'~\[div\((.*?)\)\](.*?)\[\/div\]~si' => '<div class="$1">$2</div>',
+		'~\[div\((.*?)\)\](.*?)\[\/div\]~si' 	=> '<div class="$1">$2</div>',
 
 		# [div style="color: red"]текст[/div] - произвольные атрибуты
-		'~\[div (.*?)\](.*?)\[\/div\]~si' => '<div $1>$2</div>',
+		'~\[div (.*?)\](.*?)\[\/div\]~si' 		=> '<div $1>$2</div>',
 
 		# [span(class)]текст[/div]
-		'~\[span\((.*?)\)\](.*?)\[\/span\]~si' => '<span class="$1">$2</span>',
+		'~\[span\((.*?)\)\](.*?)\[\/span\]~si' 	=> '<span class="$1">$2</span>',
 
 		# [span style="color: red"]текст[/span] - произвольные атрибуты
-		'~\[span (.*?)\](.*?)\[\/span\]~si' => '<span $1>$2</span>',
+		'~\[span (.*?)\](.*?)\[\/span\]~si' 	=> '<span $1>$2</span>',
 
 	);
 

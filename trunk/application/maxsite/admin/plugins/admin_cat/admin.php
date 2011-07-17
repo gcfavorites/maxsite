@@ -104,9 +104,13 @@
 
 <?php
 	
+	//$all_cat = mso_cat_ul('<label><input name="f_cat[]" type="checkbox" %CHECKED% value="%ID%" title="id = %ID%"> %NAME%</label>', true, array(), array());
+	// pr($all_cat, 1);
+
+
 	$all = mso_cat_array('page', 0, 'category_menu_order', 'asc', 'category_menu_order', 'asc', false, false, false, false, false, false);
 	//	<input title="Описание" name="f_category_desc[[ID]]" value="[DESCR]" maxlength="500" size="50" style="width: 250px;" type="text">
-
+// pr($all);
 	$format = '
 	
 	<table class="page cats">
@@ -145,7 +149,7 @@
 	
 	';
 	
-	// pr($all);
+	
 	
 	$out = mso_create_list($all, 
 		array(

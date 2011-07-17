@@ -3549,4 +3549,38 @@ function mso_rss()
 }
 
 
+
+# Функция использует глобальный одномерный массив
+# который используется для получения значения указанного ключа $key
+# Если в массиве клю не определён, то используется значение $default
+function mso_get_val($key = '', $default = '')
+{
+	global $MSO;
+	
+	// нет такого массива, создаём
+	if (!isset($MSO->key_options)) 
+	{
+		$MSO->key_options = array();
+		return $default;
+	}
+	
+	// возвращаем значение или дефаулт
+	return (isset($MSO->key_options[$key])) ? $MSO->key_options[$key] : $default; 
+}
+
+# Функция обратная mso_get_val() - задаёт для ключа $key значение $val 
+function mso_set_val($key, $val)
+{
+	global $MSO;
+	
+	// нет массива, создаём
+	if (!isset($MSO->key_options)) 
+	{
+		$MSO->key_options = array();
+	}
+	
+	// записали значение
+	$MSO->key_options[$key] = $val;
+}
+
 # end file

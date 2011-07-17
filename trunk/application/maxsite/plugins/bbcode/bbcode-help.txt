@@ -126,9 +126,11 @@
 [span атрибуты]текст[/span] => <span атрибуты>текст</span>
 
 
+[url]http://maxsite.org/[/url] => <a href="http://maxsite.org/">http://maxsite.org/</a>
+[url=http://maxsite.org/]Блог Макса[/url] => <a href="http://maxsite.org/">Блог Макса</a>
+[url=http://maxsite.org/ rel="nofollow"]Блог Макса[/url] => <a href="http://maxsite.org/" rel="nofollow">Блог Макса</a>
+[url rel="nofollow"]http://maxsite.org/[/url] => <a href="http://maxsite.org/" rel="nofollow">http://maxsite.org/</a>
 
-[url]http://site/[/url] => <a href="http://site/">http://site/</a>
-[url=http://site/]текст[/url] => <a href="http://site/">текст</a>
 
 Таблица
 [table]

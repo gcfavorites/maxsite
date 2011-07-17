@@ -5,8 +5,8 @@
  * Language file
  * (c) http://max-3000.com/
  * Author: (c) Александр Шиллинг
- * Author URL: http://www.thedignity.biz
- * Update URL: http://maxsite.thedignity.biz
+ * Author URL: http://w25.biz
+ * Update URL: http://w25.biz
  */
 
 $lang['Еще записи по теме'] = 'Ein weiterer Eintrag zum Thema';

@@ -5,8 +5,8 @@
  * Language file
  * (c) http://max-3000.com/
  * Author: (c) Александр Шиллинг
- * Author URL: http://www.thedignity.biz
- * Update URL: http://maxsite.thedignity.biz
+ * Author URL: http://w25.biz
+ * Update URL: http://w25.biz
  */
  
 $lang['Доступ запрещен'] = 'Zugriff verweigert';
@@ -21,7 +21,7 @@ $lang['Админ-доступ к настройкам '] = 'Admin Zugriff auf d
 
 
 # admin_ip
-$lang['Обновлено! Обязательно сохраните секретный адрес сейчас!'] = 'Aktualisiert! Speichern Sie Ihre geheime Adresse jetzt ab!';
+$lang['Обновлено! Обязательно сохраните секретный адрес сейчас!'] = 'Aktualisiert! Speichern Sie Ihre Geheime Adresse jetzt ab!';
 $lang['Admin IP'] = 'Admin IP';
 $lang['Вы можете указать IP с которых разрешен доступ в админ-панель. Если пользователь попытается войти в панель управления с другого IP, то ему будет отказано в доступе.'] =
 'Sie können die IP-Adresse eingeben, die Zugriff auf das Admin-Panel erlaubt. Wenn ein anderer Benutzer versucht, in das Control Panel mit einem anderen IP-Protokoll einzulogen, so wird der Zugriff verweigert.';

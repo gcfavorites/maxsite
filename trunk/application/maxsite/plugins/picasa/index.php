@@ -19,7 +19,7 @@ function picasa_widget($num = 1)
 	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
 	
 	if ( isset($options['header']) and $options['header'] ) 
-		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+		$options['header'] = mso_get_val('widget_header_start', '<h2 class="box"><span>') . $options['header'] . mso_get_val('widget_header_end', '</span></h2>');
 	else $options['header'] = '';
 
 	return picasa_widget_custom($options, $num);
@@ -141,7 +141,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			$title = $item['title'];
 			$title = str_replace("'","",$title);
 			$title = str_replace('"',"",$title);
-			$result .= "<p><noindex><a href='".$item['link']."' target='_blank' rel='nofollow'>".$title."</a></noindex></p>";	
+			$result .= "<p><a href='".$item['link']."' target='_blank' rel='nofollow'>".$title."</a></p>";	
 		}
 	};
 	if ($show_type == 2) {
@@ -155,7 +155,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			preg_match('/.*src="(.*?)".*/',$item['description'],$img_src);
 			$path = $img_src[1];
 			$path = str_replace("s160-","s".$img_size."-",$path);
-			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' width='".$img_size."' height='".$img_size."'></a></noindex>";	
+			$result .= "<a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."' width='".$img_size."' height='".$img_size."'></a>";	
 		}
 	};
 	if ($show_type == 3) {
@@ -169,7 +169,7 @@ function picasa_go($url = false, $show_type = 1, $albums_count = 10, $album_name
 			preg_match('/.*src="(.*?)".*/',$item['description'],$img_src);
 			$path = $img_src[1];
 			$path = str_replace("s288","s".$img_size,$path);
-			$result .= "<noindex><a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."'></a></noindex>";	
+			$result .= "<a href='".$item['link']."' target='_blank' rel='nofollow'><img src='".$path."' class='picasa-photo' alt='' title='".$title."'></a>";	
 		}
 	};
 	mso_add_cache($cache_key, $result, 300, true);

@@ -1956,7 +1956,7 @@ function mso_page_other_pages($page_id = 0, $page_categories = array())
 		
 		if ($bl_pages)
 		{
-			echo '<div class="page_other_pages"><h3>' . $bl_title . '</h3><ul>';
+			echo '<div class="page_other_pages">' . mso_get_val('page_other_pages_start', '<h3>') . $bl_title . mso_get_val('page_other_pages_end', '</h3>') . '<ul>';
 			
 			foreach ($bl_pages as $bl_page)
 			{

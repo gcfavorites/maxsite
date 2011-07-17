@@ -29,8 +29,11 @@ function dignity_rss_widget($num = 1)
 	
 	// заменим заголовок, чтобы был в  h2 class="box"
 	if (isset($options['header']) and $options['header'] ) 
-		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+		$options['header'] = mso_get_val('widget_header_start', '<h2 class="box"><span>') . $options['header'] . mso_get_val('widget_header_end', '</span></h2>');
 	else $options['header'] = '';
+
+	if (isset($options['textdo']) ) $options['textdo'] = '<p>' . $options['textdo'] . '</p>';
+	else $options['textdo'] = '';
 	
 	if (isset($options['feed_url']) ) $options['feed_url'] = $options['feed_url'];
 	else $options['feed_url'] = getinfo('rss_url');
@@ -46,6 +49,9 @@ function dignity_rss_widget($num = 1)
 
 	if (isset($options['rss_to_email']) ) $options['rss_to_email'] = $options['rss_to_email'];
 	else $options['rss_to_email'] = t('Получать RSS-ленту на почту', 'plugins');
+
+	if (isset($options['textposle']) ) $options['textposle'] = '<p>' . $options['textposle'] . '</p>';
+	else $options['textposle'] = '';
 	
 	return dignity_rss_widget_custom($options, $num);
 }
@@ -61,18 +67,22 @@ function dignity_rss_widget_form($num = 1)
 	// получаем опции 
 	$options = mso_get_option($widget, 'plugins', array());
 	
-	if ( !isset($options['header']) ) $options['header'] = '';
+	if ( !isset($options['header']) ) $options['header'] = t('Подписка на новости', 'plugins');
+	if ( !isset($options['textdo']) ) $options['textdo'] = '';
 	if ( !isset($options['feed_url']) ) $options['feed_url'] = getinfo('rss_url');
 	if ( !isset($options['google_text']) ) $options['google_text'] = t('Читать блог через Google', 'plugins');
 	if ( !isset($options['yandex_text']) ) $options['yandex_text'] = t('Читать блог через Яндекс', 'plugins');
 	if ( !isset($options['rss_text']) ) $options['rss_text'] = t('RSS лента', 'plugins');
 	if ( !isset($options['rss_to_email']) ) $options['rss_to_email'] = t('Получать RSS-ленту на почту', 'plugins');
+	if ( !isset($options['textposle']) ) $options['textposle'] = '';
 	
 	// вывод самой формы
 	$CI = & get_instance();
 	$CI->load->helper('form');
 	
 	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+
+	$form .= '<p><div class="t150">' . t('Текст вначале:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'textdo', 'value'=>$options['textdo'] ) ) ;
 
 	$form .= '<p><div class="t150">' . t('Адрес RSS-Feed:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'feed_url', 'value'=>$options['feed_url'] ) ) ;
 
@@ -83,6 +93,8 @@ function dignity_rss_widget_form($num = 1)
 	$form .= '<p><div class="t150">' . t('Текст RSS ленты:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'rss_text', 'value'=>$options['rss_text'] ) ) ;
 
 	$form .= '<p><div class="t150">' . t('Текст RSS-лента на почту:', 'plugins') . '</div> '. form_input( array( 'name'=>$widget . 'rss_to_email', 'value'=>$options['rss_to_email'] ) ) ;
+
+	$form .= '<br><br><p><div class="t150">' . t('Текст в конце:', 'plugins') . '</div> '. form_textarea( array( 'name'=>$widget . 'textposle', 'value'=>$options['textposle'] ) ) ;
 	
 	return $form;
 }
@@ -100,11 +112,13 @@ function dignity_rss_widget_update($num = 1)
 	# обрабатываем POST
 
 	$newoptions['header'] = mso_widget_get_post($widget . 'header');
+	$newoptions['textdo'] = mso_widget_get_post($widget . 'textdo');
 	$newoptions['feed_url'] = mso_widget_get_post($widget . 'feed_url');
 	$newoptions['google_text'] = mso_widget_get_post($widget . 'google_text');
 	$newoptions['yandex_text'] = mso_widget_get_post($widget . 'yandex_text');
 	$newoptions['rss_text'] = mso_widget_get_post($widget . 'rss_text');
 	$newoptions['rss_to_email'] = mso_widget_get_post($widget . 'rss_to_email');
+	$newoptions['textposle'] = mso_widget_get_post($widget . 'textposle');
 	
 	if ( $options != $newoptions ) 
 		mso_add_option($widget, $newoptions, 'plugins');
@@ -115,6 +129,8 @@ function dignity_rss_widget_update($num = 1)
 function dignity_rss_widget_custom($options = array(), $num = 1)
 {
 	$header = $options['header'];
+	$textdo = $options['textdo'];
+	$textposle = $options['textposle'];
 	$feed_url = $options['feed_url'];
 	$google_text = $options['google_text'];
 	$yandex_text = $options['yandex_text'];
@@ -122,13 +138,13 @@ function dignity_rss_widget_custom($options = array(), $num = 1)
 	$rss_to_email = $options['rss_to_email'];
 	$path = getinfo('plugins_url') . 'dignity_rss/img/'; # путь к картинкам
 	$rss_google = 'http://fusion.google.com/add?feedurl=' . $feed_url;
-	$rss_yandex = 'http://lenta.yandex.ru/settings.xml?name=feed&url=' . $feed_url;
+	$rss_yandex = 'http://lenta.yandex.ru/settings.xml?name=feed&amp;url=' . $feed_url;
 	$rss_google_read = '<p><a href="' .$rss_google  . '" rel="nofollow"><img src="' . $path . 'google.png"></a> <a href="' . $rss_google . '" rel="nofollow">' . $google_text . '</a></p>';
 	$rss_yandex_read = '<p><a href="' .$rss_yandex  . '" rel="nofollow"><img src="' . $path . 'yandex.png"></a> <a href="' . $rss_yandex . '" rel="nofollow">' . $yandex_text . '</a></p>';
 	$rss_mail = '<p><a href="http://www.rss2email.ru?rss=' . $feed_url . '" title="' . $rss_to_email . '" rel="nofollow"><img src="' . $path . 'email.png"></a> <a href="http://www.rss2email.ru?rss=' . $feed_url . '" title="' . $rss_to_email . '" rel="nofollow">' . $rss_to_email . '</a></p>';
 	$rss_f = '<p><a href="' . $feed_url . '"><img src="' . $path . 'rss.png"></a>' . ' <a href="' . $feed_url . '">' . $rss_text . '</a></p>';
 	
-	return $header . $rss_f . $rss_google_read . $rss_yandex_read . $rss_mail;
+	return $header . $textdo . $rss_f . $rss_google_read . $rss_yandex_read . $rss_mail . $textposle;
 }
 
 ?>

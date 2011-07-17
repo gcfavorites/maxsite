@@ -3,9 +3,9 @@
 $info = array(
 	'name' => 'dignity_rss',
 	'description' => 'Виджет для вывода RSS подписки.',
-	'version' => '1.2',
+	'version' => '1.3',
 	'author' => 'Александр Шиллинг',
-	'plugin_url' => 'http://maxsite.thedignity.biz/',
+	'plugin_url' => 'http://w25.biz/',
 	'author_url' => 'http://thedignity.biz/',
 	'group' => 'template'
 );

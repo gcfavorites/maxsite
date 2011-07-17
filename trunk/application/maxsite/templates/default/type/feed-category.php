@@ -18,7 +18,11 @@ $this->load->helper('xml');
 
 $encoding = 'utf-8';
 
-$time_zone = getinfo('time_zone');
+$time_zone = getinfo('time_zone'); // 2.00 -> 200
+$time_zone_server = date('O') / 100; // +0100 -> 1.00
+$time_zone = $time_zone + $time_zone_server; // 3
+$time_zone = number_format($time_zone, 2, '.', ''); // 3.00
+
 if ($time_zone < 10 and $time_zone > 0) $time_zone = '+0' . $time_zone;
 elseif ($time_zone > -10 and $time_zone < 0) { $time_zone = '0' . $time_zone; $time_zone = str_replace('0-', '-0', $time_zone); }
 else $time_zone = '+00.00';
@@ -43,7 +47,7 @@ if (!$pages)
 	$pages = array();
 	$pubdate = date('D, d M Y H:i:s ' . $time_zone);
 }
-else $pubdate = date('D, d M Y H:i:s ' . $time_zone, strtotime($pages[0]['page_date_publish']));
+else $pubdate = date('D, d M Y H:i:s ' . $time_zone, strtotime(mso_date_convert('Y-m-d H:i:s', $pages[0]['page_date_publish'])));
 
 
 	echo '<' . '?xml version="1.0" encoding="utf-8"?' . '>';
@@ -63,7 +67,7 @@ else $pubdate = date('D, d M Y H:i:s ' . $time_zone, strtotime($pages[0]['page_d
 			<title><?= xml_convert(strip_tags($page_title)) ?></title>
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?></guid>
-			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($page_date_publish)) ?></pubDate>
+			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime(mso_date_convert('Y-m-d H:i:s', $page_date_publish))) ?></pubDate>
 			<?= mso_page_cat_link($page_categories, "\n", '<category><![CDATA[', ']]></category>' . "\n", false, 'category', false) ?>
 			<description><![CDATA[<?= mso_page_content($page_content) . mso_page_comments_link($page_comment_allow, $page_slug, ' '. t('Обсудить'), '', '', false) ?>]]></description>
 		</item>

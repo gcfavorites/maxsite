@@ -17,7 +17,11 @@ $this->load->helper('xml');
 
 $encoding = 'utf-8';
 
-$time_zone = getinfo('time_zone');
+$time_zone = getinfo('time_zone'); // 2.00 -> 200
+$time_zone_server = date('O') / 100; // +0100 -> 1.00
+$time_zone = $time_zone + $time_zone_server; // 3
+$time_zone = number_format($time_zone, 2, '.', ''); // 3.00
+
 if ($time_zone < 10 and $time_zone > 0) $time_zone = '+0' . $time_zone;
 elseif ($time_zone > -10 and $time_zone < 0) { $time_zone = '0' . $time_zone; $time_zone = str_replace('0-', '-0', $time_zone); }
 else $time_zone = '+00.00';
@@ -35,7 +39,7 @@ $pages = mso_get_pages($par, $pagination);
 if ($pages) 
 {
 
-	$pubdate = date('D, d M Y H:i:s '. $time_zone, strtotime($pages[0]['page_date_publish']));
+	$pubdate = date('D, d M Y H:i:s '. $time_zone, strtotime(mso_date_convert('Y-m-d H:i:s', $pages[0]['page_date_publish'])));
 
 	echo '<' . '?xml version="1.0" encoding="utf-8"?' . '>';
 	
@@ -63,7 +67,7 @@ if ($pages)
 			<title><?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?> к "<?= xml_convert(strip_tags($page_title)) ?>"</title>
 			<link><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></link>
 			<guid><?= getinfo('siteurl') . 'page/' . mso_slug($page_slug) ?>#comment-<?= $comments_id ?></guid>
-			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime($comments_date)) ?></pubDate>
+			<pubDate><?= date('D, d M Y H:i:s '. $time_zone, strtotime(mso_date_convert('Y-m-d H:i:s', $comments_date ))) ?></pubDate>
 			<author>none@none.com (<?= xml_convert(strip_tags($users_nik . $comments_author_name . $comusers_nik)) ?>)</author>
 			<description><![CDATA[<?= $comments_content  ?>]]></description>
 		</item>

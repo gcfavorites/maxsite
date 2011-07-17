@@ -187,9 +187,13 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 			}
 			elseif ($val['type'] == 'textarea')
 			{
+				if (isset($val['rows'])) $rows = (int) $val['rows'];
+				else $rows = 10;
+				
+				
 				$form .= '<div class="admin_plugin_options"><strong>' 
 						. $val['name'] 
-						. '</strong><br><textarea rows="10" name="'
+						. '</strong><br><textarea rows="' . $rows . '" name="'
 						. $key . '-' . $type . '[' . $m . ']'
 						. '">'
 						. htmlspecialchars($options[$m]) 
@@ -278,7 +282,7 @@ function mso_admin_plugin_options($key, $type, $ar, $title = '', $info = '', $te
 		
 		
 		# выводим форму
-		echo NR . '<form action="" method="post">' . mso_form_session('f_session_id');
+		echo NR . '<form method="post">' . mso_form_session('f_session_id');
 		echo $form;
 		echo NR . '<p class="br"><input type="submit" name="f_submit" value="' . t('Сохранить', 'admin') . '"></p>';
 		echo '</form>' . NR;

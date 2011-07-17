@@ -186,9 +186,18 @@ else
 			{ 	
 				
 				if ( mso_get_option('home_full_text', 'templates', '1') )
-					echo NR . '<h1 class="home-cat-block"><a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' . $all_cats[$cat_id]['category_name'] . '</a></h1>';
+					echo NR 
+						. mso_get_val('home_full_text_cat_start', '<h1 class="home-cat-block">') 
+						.  '<a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' 
+						. $all_cats[$cat_id]['category_name'] . '</a>' 
+						. mso_get_val('home_full_text_cat_end', '</h1>');
 				else
-					echo NR . '<h1 class="home-cat-block home-cat-block-list"><a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' . $all_cats[$cat_id]['category_name'] . '</a></h1>';
+					echo NR 
+						. mso_get_val('home_full_text_cat_start', '<h1 class="home-cat-block home-cat-block-list">') 
+						. '<a href="' . getinfo('site_url') . 'category/' . $all_cats[$cat_id]['category_slug'] . '">' 
+						. $all_cats[$cat_id]['category_name'] . '</a>'
+						. mso_get_val('home_full_text_cat_end', '</h1>');
+						
 				
 				// выводим полнные тексты или списком
 				if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="home-cat-block">';
