@@ -3,7 +3,7 @@
 $info = array(
         'name' => 'Сomment smiles',
         'description' => 'Кнопки смайлов для формы комментария',
-        'version' => '1.2',
+        'version' => '1.3',
         'author' => 'Максим, quantum',
         'plugin_url' => 'http://maxsitecms.ru/comment-smiles',
         'author_url' => 'http://maxsitecms.ru/',

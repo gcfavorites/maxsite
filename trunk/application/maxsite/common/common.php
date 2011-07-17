@@ -189,6 +189,10 @@ function getinfo($info = '')
 				$out = $MSO->data['type'];
 				break;
 				
+		case 'type_foreach_file':
+				$out = isset($MSO->data['type_foreach_file']) ? $MSO->data['type_foreach_file'] : '';
+				break;
+
 	endswitch;
 
 	return $out;
@@ -2558,8 +2562,7 @@ function mso_load_jquery($plugin = '')
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			// jquery-1.4.4.min.js
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.5.min.js"></script>' . NR;
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.5.1.min.js"></script>' . NR;
 	}
 }
 
@@ -3096,13 +3099,21 @@ function mso_parse_url_get($s = '')
 # кастомный вывод цикла
 # $f - идентификатор цикла
 # $f - варианты см. в templates/default/type_foreach/
-function mso_page_foreach($f = false)
+function mso_page_foreach($type_foreach_file = false)
 {
+	global $MSO;
+	
 	# при первом обращении занесем сюда все файлы из шаблонного type_foreach
 	# чтобы потом результат считывать из масива, а не по file_exists
 	static $files = false; 
+
+	$MSO->data['type_foreach_file'] = $type_foreach_file; // помещаем в $MSO вызываемый тип
 	
-	if ($f)
+	// описание см. default/type_foreach/_general.php
+	if (file_exists(getinfo('template_dir') . 'type_foreach/general.php'))
+		include(getinfo('template_dir') . 'type_foreach/general.php'); 
+
+	if ($type_foreach_file)
 	{
 		if ($files === false)
 		{
@@ -3111,8 +3122,7 @@ function mso_page_foreach($f = false)
 			$files = directory_map(getinfo('template_dir') . 'type_foreach/', true); // только в type_foreach
 			if (!$files) $files = array();
 		}
-		
-		if (in_array($f . '.php', $files)) return getinfo('template_dir') . 'type_foreach/' . $f . '.php';
+		if (in_array($type_foreach_file . '.php', $files)) return getinfo('template_dir') . 'type_foreach/' . $type_foreach_file . '.php';
 			else return false;
 	}
 	

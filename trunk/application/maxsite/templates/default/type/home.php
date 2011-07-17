@@ -19,7 +19,7 @@ if (mso_get_option('home_page_id_top', 'templates', '0'))
 {
 	$par = array( 
 			// колво записей на главной
-			'limit' => 1, 
+			// 'limit' => 1, 
 			// номер записи для главной
 			'page_id' => mso_get_option('home_page_id_top', 'templates', '0'), 
 			// текст для Далее

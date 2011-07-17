@@ -55,11 +55,13 @@ function sitemap($arg = array())
 			'cat_order_asc'=>'asc',
 			//'order_asc'=> 'desc',
 			); 
+	if ($f = mso_page_foreach('sitemap-mso-get-pages')) require($f); 
 	$pages = mso_get_pages($par, $pagination); // получим все
 	
 	if ($pages)
 	{
-		$out .= '<div class="sitemap">' . NR;
+		$out .= '<div class="sitemap">' . NR . mso_hook('sitemap_do');
+		
 		$first = true;
 		foreach ($pages as $page)
 		{
@@ -99,7 +101,7 @@ function sitemap($arg = array())
 			$date1 = $date;
 		}
 
-		$out .= '</ul>' . NR . '</div>' . NR;
+		$out .= '</ul>' . NR . mso_hook('sitemap_posle') . '</div>' . NR;
 	}
 	
 	
@@ -116,4 +118,4 @@ function sitemap($arg = array())
 }
 
 
-?>
+# end file

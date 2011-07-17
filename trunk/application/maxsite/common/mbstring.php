@@ -71,5 +71,13 @@ if ( !function_exists('mb_strpos') )
 	}
 }
 
+if ( !function_exists('mb_stripos') )
+{
+	function mb_stripos($haystack, $needle, $offset = 0, $encoding = '')
+	{
+		return stripos ($haystack, $needle, $offset);
+	}
+}
+
 
 ?>

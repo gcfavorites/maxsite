@@ -73,6 +73,9 @@ if ($comments) // есть страницы
 		if ($comusers_avatar_url) $avatar_url = $comusers_avatar_url;
 		elseif ($users_avatar_url) $avatar_url = $users_avatar_url;
 		
+		$avatar_size = (int) mso_get_option('gravatar_size', 'templates', 80);
+		if ($avatar_size < 1 or $avatar_size > 512) $avatar_size = 80;
+		
 		if (!$avatar_url) 
 		{ // аватарки нет, попробуем получить из gravatara
 			
@@ -80,22 +83,19 @@ if ($comments) // есть страницы
 			elseif ($comusers_email) $grav_email = $comusers_email;
 			else $grav_email = '';
 			
-			if ($grav_email)
-			{
-				if ($gravatar_type = mso_get_option('gravatar_type', 'templates', ''))
-					$d = '&amp;d=' . urlencode($gravatar_type);
-				else 
-					$d = '';
-				
-				$avatar_url = "http://www.gravatar.com/avatar.php?gravatar_id=" 
-						. md5($grav_email)
-						. "&amp;size=80"
-						. $d;
-			}
+			if ($gravatar_type = mso_get_option('gravatar_type', 'templates', ''))
+				$d = '&amp;d=' . urlencode($gravatar_type);
+			else 
+				$d = '';
+			
+			$avatar_url = "http://www.gravatar.com/avatar.php?gravatar_id=" 
+					. md5($grav_email)
+					. "&amp;size=" . $avatar_size
+					. $d;
 		}
 		
 		if ($avatar_url) 
-			$avatar_url = '<span style="display: none"><![CDATA[<noindex>]]></span><img src="' . $avatar_url . '" width="80" height="80" alt="" title="" style="float: left; margin: 5px 15px 10px 0;" class="gravatar"><span style="display: none"><![CDATA[</noindex>]]></span>';
+			$avatar_url = '<span style="display: none"><![CDATA[<noindex>]]></span><img src="' . $avatar_url . '" width="' . $avatar_size . '" height="'. $avatar_size . '" alt="" title="" style="float: left; margin: 5px 10px 10px 0;" class="gravatar"><span style="display: none"><![CDATA[</noindex>]]></span>';
 		
 		echo '<div class="comments_content">' . $avatar_url;
 		echo mso_comments_content($comments_content);

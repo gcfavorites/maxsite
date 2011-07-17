@@ -110,6 +110,9 @@ function tweetmeme_com_content($text = '')
 	
 	if (!is_type('page') and !is_type('home')) return $text;
 	
+	// если запись не опубликована, не отображаем блок
+	if (is_type('page') and isset($page['page_status']) and $page['page_status'] != 'publish') return $text;
+	
 	$options = mso_get_option('plugin_tweetmeme_com', 'plugins', array() ); // получаем опции
 	
 	// отображать только на одиночной странице

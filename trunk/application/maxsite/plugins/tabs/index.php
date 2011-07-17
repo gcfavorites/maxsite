@@ -169,7 +169,7 @@ function tabs_widget_custom($options = array(), $num = 1)
 	if ($out and $options['header']) $out = $options['header'] . $out;
 		
 	if ($out) $out .=  <<<EOF
-	<script> 
+	<script type="text/javascript"> 
 		$("#tabs-widget-{$num} > ul").tabs({ fx: { height: 'toggle', opacity: 'toggle', duration: 'fast' } });
 	</script> 
 EOF;
@@ -181,4 +181,4 @@ EOF;
 	return $out;	
 }
 
-?>
+# end file

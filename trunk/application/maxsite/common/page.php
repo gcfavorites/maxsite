@@ -859,7 +859,15 @@ function _mso_sql_build_tag($r, &$pag)
 		$slug = $r['slug'];
 	else
 		$slug = mso_segment(2);
-
+	
+	// если метка не указана, то иммитируем несуществующую метку, чтобы была 404-страница
+	if (!$slug) 
+	{
+		$slug = md5(time());
+		$r['pagination'] = false;
+	}
+	
+	
 	$offset = 0;
 
 	if ($r['pagination'])

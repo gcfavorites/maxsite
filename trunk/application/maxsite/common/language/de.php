@@ -6,28 +6,28 @@
  * (c) http://max-3000.com/
  * Author: (c) Александр Шиллинг
  * Author URL: http://www.thedignity.biz
- * Update URL: http://thedignity.biz/maxsite-cms
+ * Update URL: http://maxsite.thedignity.biz
  */
 
 # common.php
-$lang['Доступ запрещен'] = 'Unberechtigt! Sie sind nicht bevollmächtigt';
+$lang['Доступ запрещен'] = 'Zugriff verweigert';
 $lang['Сайдбар'] = 'Sidebar';
 $lang['Виджет'] = 'Widget';
 
 # inifile.php
 $lang['Сохранить'] = 'Speichern';
-$lang['Настройка'] = 'Einstellungen';
+$lang['Настройка'] = 'Einstellung';
 $lang['Значение'] = 'Wert';
 
 # page.php
-$lang['Далее'] = 'Mehr';
+$lang['Далее'] = 'Weiter';
 $lang['(черновик)'] = '(Entwurf)';
-$lang['Редактировать'] = 'Ändern';
+$lang['Редактировать'] = 'Bearbeiten';
 $lang['Подписаться'] = 'Abonnieren';
-$lang['Данная запись защищена паролем.'] = 'Passwort geschützte Seite.';
-$lang['<strong>Ошибочный пароль!</strong> Повторите ввод.'] = '<strong>Falsches Passwort!</strong> Versuchen Sie noch einmal.';
-$lang['Обсудить'] = 'Diskutieren';
-$lang['Посмотреть комментарии'] = 'Kommentar Ansehen';
+$lang['Данная запись защищена паролем.'] = 'Dieser Beitrag ist Passwort geschützt.';
+$lang['<strong>Ошибочный пароль!</strong> Повторите ввод.'] = '<strong>Falsches Passwort!</strong> Nochmal eingeben.';
+$lang['Обсудить'] = 'Kommentare';
+$lang['Посмотреть комментарии'] = 'Kommentare anzeigen';
 $lang['<span>Прочтений:</span> '] = '<span>Gelesen:</span> '; // пробел в конце!
 $lang['Пароль:'] = 'Passwort:';
 

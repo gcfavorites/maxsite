@@ -107,7 +107,7 @@
 				if ( mso_valid_email($to_email) ) mso_mail($to_email, $subject, $text_email);
 			}
 
-			if ($form_hide) echo '<p class="comment-ok"><h2>'. t('Ваше сообщение отправлено!'). '</h2></p><p>'
+			if ($form_hide) echo '<p class="comment-ok">'. t('Ваше сообщение отправлено!'). '</p><p>'
 					. str_replace("\n", '<br>', htmlspecialchars($subject. "\n" . $_POST['contact_message']))
 					. '</p>';
 			//$form_hide = true;
