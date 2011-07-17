@@ -21,11 +21,13 @@ require(getinfo('template_dir') . 'main-start.php');
 
 echo NR . '<div class="type type_users_all">' . NR;
 
-if ($f = mso_page_foreach('users-all-do')) require($f); // подключаем кастомный вывод
-	else echo '<h1>'. t('Комментаторы'). '</h1><p>' . t('Забыли кто вы?') . ' <a href="' . getinfo('siteurl') . 'password-recovery">'. t('Можно восстановить пароль.'). '</a></p><ul class="users-all">';
 	
 if ($comusers)
 {
+	if ($f = mso_page_foreach('users-all-do')) require($f); // подключаем кастомный вывод
+	else 
+		echo '<h1>'. t('Комментаторы'). '</h1><p>' . t('Забыли кто вы?') . ' <a href="' . getinfo('siteurl') . 'password-recovery">'. t('Можно восстановить пароль.'). '</a></p><ul class="users-all">';
+	
 	// pr($comusers);
 	foreach ($comusers as $comuser)
 	{
@@ -38,7 +40,9 @@ if ($comusers)
 		if (!$comuser['comusers_nik']) $comuser['comusers_nik'] = t('Комментатор'). ' ' . $comuser['comusers_id'];
 		echo '<li><a href="' . getinfo('siteurl') . 'users/' . $comuser['comusers_id'] . '">' . $comuser['comusers_nik'] . '</a></li>';
 	}
-	echo '</ul>';
+	
+	if ($f = mso_page_foreach('users-all-posle')) require($f);
+		else echo '</ul>';
 }
 else
 {

@@ -23,7 +23,7 @@
 		
 		mso_login_form(array( 
 			'login'=>t('Логин'), 
-			'password'=>'<br>'. t('Пароль'), 
+			'password'=>t('Пароль'), 
 			'submit'=>'', 
 			'submit_value'=>t('Войти'), 
 			'form_end'=>'<div class="form-end"><a href="' . getinfo('siteurl') . '">'. t('Вернуться к сайту'). '</a></div>'

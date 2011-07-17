@@ -577,6 +577,8 @@
 		{
 			if ($page_title) $page_slug = mso_slug($page_title);
 				else $page_slug = 'no-title';
+			
+			if (!$page_slug) $page_slug = 'no-title';
 		}
 
 		// нужно проверить есть ли уже такая запись
@@ -834,8 +836,9 @@
 		{
 			if ($page_title) $page_slug = mso_slug($page_title);
 				else $page_slug = 'no-title';
+				
+			if (!$page_slug) $page_slug = 'no-title';
 		}
-
 
 		// $page_slug нужно проверить на существование
 		// если есть, то нужно добавить скажем их кол-во+1

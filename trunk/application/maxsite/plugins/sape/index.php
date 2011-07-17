@@ -97,6 +97,8 @@ function sape_init($args = array())
 		
 		if (isset($options['test']) and $options['test']) $sa['force_show_code'] = true;
 		
+		if (isset($options['multi_site']) and $options['multi_site']) $sa['multi_site'] = true;
+
 		$SAPE = new SAPE_client($sa);
 		
 		if (isset($options['context']) and $options['context'])

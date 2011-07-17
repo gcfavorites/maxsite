@@ -1512,7 +1512,7 @@ function mso_auto_tag($pee, $pre_special_chars = false)
 	$pee = str_replace("</p></p>", "</p>", $pee); 
 	
 	# блочные тэги
-	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|embed|h1|h2|h3|h4|h5|h6|hr)';
+	$allblocks = '(?:table|thead|tfoot|caption|colgroup|center|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|code|select|form|map|area|blockquote|address|math|style|input|embed|h1|h2|h3|h4|h5|h6|hr|p)';
 	
 	# здесь не нужно ставить <p> и </p>
 	$pee = preg_replace('!<p>(<' . $allblocks . '[^>]*>)</p>!', "\n$1", $pee); # <p><tag></p>
@@ -1629,6 +1629,9 @@ function mso_slug($slug)
 		# украина
 		"Є" => "ye", "є" => "ye", "І" => "i", "і" => "i",
 		"Ї" => "yi", "ї" => "yi", "Ґ" => "g", "ґ" => "g",
+		
+		# беларусь
+		"Ў"=>"u", "ў"=>"u", "'"=>"",
 
 		"«"=>"", "»"=>"", "—"=>"-", "`"=>"", " "=>"-",
 		"["=>"", "]"=>"", "{"=>"", "}"=>"", "<"=>"", ">"=>"",
@@ -1765,9 +1768,9 @@ function mso_login_form($conf = array(), $redirect = '', $echo = true)
 	<form method="post" action="{$action}" name="flogin" class="flogin">
 		<input type="hidden" value="{$redirect}" name="flogin_redirect">
 		<input type="hidden" value="{$session_id}" name="flogin_session_id">
-		<label class="flogin_user"><span>{$login}</span><input type="text" value="" name="flogin_user" class="flogin_user"></label>
-		<label class="flogin_password"><span>{$password}</span><input type="password" value="" name="flogin_password" class="flogin_password"></label>
-		{$submit}<input type="submit" name="flogin_submit" class="flogin_submit" value="{$submit_value}">
+		<p class="flogin_user"><label class="flogin_user"><span>{$login}</span><input type="text" value="" name="flogin_user" class="flogin_user"></label></p>
+		<p class="flogin_password"><label class="flogin_password"><span>{$password}</span><input type="password" value="" name="flogin_password" class="flogin_password"></label></p>
+		<p class="flogin_submit">{$submit}<input type="submit" name="flogin_submit" class="flogin_submit" value="{$submit_value}"></p>
 		{$hook_login_form_auth}
 		{$form_end}
 	</form>

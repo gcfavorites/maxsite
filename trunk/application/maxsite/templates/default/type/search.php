@@ -3,7 +3,7 @@
 	mso_cur_dir_lang('templates');
 	
 	# подготовка данных
-	$min_search_chars = 2; // минимульное кол-во симоволов при поиске
+	$min_search_chars = 2; // минимальное кол-во симоволов при поиске
 	
 	$search = mso_segment(2);
 
@@ -19,7 +19,7 @@
 	$search_len = true; // поисковая фраза более 2 символов
 	
 	// параметры для получения страниц
-	if (!$search or ($search_len = strlen(mso_slug($search)) <= $min_search_chars) ) // нет запроса или он короткий
+	if (!$search or ( $search_len = (strlen(mso_slug($search)) < $min_search_chars) ) ) // нет запроса или он короткий
 	{
 		$search = t('Поиск');
 		$pages = false; // нет страниц

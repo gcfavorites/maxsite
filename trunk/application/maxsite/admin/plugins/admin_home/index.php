@@ -9,7 +9,7 @@
 # функция автоподключения плагина
 function admin_home_autoload($args = array())
 {	
-	mso_hook_add( 'admin_init', 'admin_home_admin_init');
+	mso_hook_add('admin_init', 'admin_home_admin_init');
 }
 
 

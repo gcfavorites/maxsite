@@ -34,7 +34,10 @@ function comment_smiles_custom($arg = array())
   $CI->load->helper('smiley_helper');
   $smileys=_get_smiley_array();
   
-  echo '<p style="padding-bottom:5px" class="comment_smiles">';
+  // идея Евгений - http://jenweb.info/page/hide-smileys, http://forum.max-3000.com/viewtopic.php?f=6&t=3192
+  echo NR . '<div style="width: 19px; height: 19px; float: right; text-align: right; margin-top: -23px; cursor: pointer; background: url(\'' . getinfo('plugins_url') . 'comment_smiles/bg.gif\') no-repeat;" title="' . t('Показать/скрыть смайлики', 'plugins') . '" class="btn-smiles"></div>' . NR;  
+  
+  echo '<p style="padding-bottom:5px;" class="comment_smiles">';
   
   //кусок кода из smiley_helper
   $used = array();
@@ -50,8 +53,8 @@ function comment_smiles_custom($arg = array())
     $used[$smileys[$key][0]] = TRUE;
   }
   
-  echo '</p>';
-        
+  echo '</p><script>$("p.comment_smiles").hide();</script>';
+  
 }
 
-?>
+# end file

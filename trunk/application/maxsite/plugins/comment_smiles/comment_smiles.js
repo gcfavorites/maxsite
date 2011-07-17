@@ -27,3 +27,16 @@
       comment.value += t;
     }
   }
+  
+
+$(document).ready(function() {
+
+    $(".btn-smiles").hover(function() {
+        $(this).toggleClass("btn-hov1");
+    });
+    
+    $(".btn-smiles").click(function() {
+        $(".comment_smiles").slideToggle("slow").toggleClass("show");
+        $(this).toggleClass("btn-hov2");
+    });
+});

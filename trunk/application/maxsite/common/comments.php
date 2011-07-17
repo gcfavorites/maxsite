@@ -631,7 +631,7 @@ function mso_get_new_comment($args = array())
 							$all_comusers = mso_comuser_update_count_comment(); // список комюзер => колво комментов
 							
 							// есть такой комюзер и у него более 1 комментария
-							if (isset($all_comusers[$comusers_id]) and $all_comusers[$comusers_id] > 1)
+							if (isset($all_comusers[$comusers_id]) and $all_comusers[$comusers_id] > 0)
 								$comments_com_approved = 0; // разрешаем публикацию
 						}
 						

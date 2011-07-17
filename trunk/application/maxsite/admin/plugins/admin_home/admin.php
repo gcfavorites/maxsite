@@ -16,69 +16,73 @@ mso_cur_dir_lang('admin');
 <p><?= t('Ваша версия <strong>MaxSite CMS</strong>') ?>: <?= getinfo('version') ?></p>
 <?php
 
-	$show_check_version = true;
-	$show_clear_cache = true;
-
-	if ( $post = mso_check_post(array('f_session_id', 'f_submit_check_version')) )
+	if (mso_check_allow('admin_home')) // если есть разрешение на доступ
 	{
-		mso_checkreferer();
-		$show_check_version = false;
-		$url = 'http://max-3000.com/uploads/latest.txt';
-		$latest = @file($url); // массив
-		if (!$latest)
+		$show_check_version = true;
+		$show_clear_cache = true;
+
+		if ( $post = mso_check_post(array('f_session_id', 'f_submit_check_version')) )
 		{
-			echo '<div class="error">'. t('Ошибка соединения с max-3000.com!') . '</div>';
-		}
-		else
-		{
-			if ( !isset($latest[0]) or !isset($latest[1]) )
+			mso_checkreferer();
+			$show_check_version = false;
+			$url = 'http://max-3000.com/uploads/latest.txt';
+			$latest = @file($url); // массив
+			if (!$latest)
 			{
-				echo '<div class="error">' . t('Полученная информация является ошибочной') . '</div>';
+				echo '<div class="error">'. t('Ошибка соединения с max-3000.com!') . '</div>';
 			}
 			else
 			{
-				$info1 = explode('|', $latest[0]);
-				
-				echo '<p>' . t('Последняя опубликованная версия') . ': <a href="' . $info1[2] . '">' . $info1[0] . '</a> (' . $info1[1] . ')</p>';
-				
-				if ( $info1[0] > getinfo('version') )
+				if ( !isset($latest[0]) or !isset($latest[1]) )
 				{
-					echo '<p style="margin: 10px 0; font-weight: bold;">';
-					echo sprintf( t('Вы можете %sвыполнить обновление'), '<a href="' . $info1[2] . '">' ) . '</a> ';
-					echo t('или настроить <a href="http://max-3000.com/page/update-maxsite-cms" target="_blank">автоматическое обновление</a>.');
-					
-					echo '</p>';
+					echo '<div class="error">' . t('Полученная информация является ошибочной') . '</div>';
 				}
 				else
 				{
-					echo '<p style="margin: 10px 0; font-weight: bold;">' . t('Обновление не требуется.') . '</p>';
+					$info1 = explode('|', $latest[0]);
+					
+					echo '<p>' . t('Последняя опубликованная версия') . ': <a href="' . $info1[2] . '">' . $info1[0] . '</a> (' . $info1[1] . ')</p>';
+					
+					if ( $info1[0] > getinfo('version') )
+					{
+						echo '<p style="margin: 10px 0; font-weight: bold;">';
+						echo sprintf( t('Вы можете %sвыполнить обновление'), '<a href="' . $info1[2] . '">' ) . '</a> ';
+						echo t('или настроить <a href="http://max-3000.com/page/update-maxsite-cms" target="_blank">автоматическое обновление</a>.');
+						
+						echo '</p>';
+					}
+					else
+					{
+						echo '<p style="margin: 10px 0; font-weight: bold;">' . t('Обновление не требуется.') . '</p>';
+					}
 				}
 			}
 		}
-	}
 
-	if ( $post = mso_check_post(array('f_session_id', 'f_submit_clear_cache')) )
-	{
-		mso_checkreferer();
-		$show_clear_cache = false;
-		mso_flush_cache(); // сбросим кэш
-		echo '<p style="margin: 10px 0; font-weight: bold;">' . t('Кэш удален') . '</p><br>';
-	}
+		if ( $post = mso_check_post(array('f_session_id', 'f_submit_clear_cache')) )
+		{
+			mso_checkreferer();
+			$show_clear_cache = false;
+			mso_flush_cache(); // сбросим кэш
+			echo '<p style="margin: 10px 0; font-weight: bold;">' . t('Кэш удален') . '</p><br>';
+		}
 
 
-	if ($show_check_version or $show_clear_cache)
-	{
-		echo '<form action="" method="post">' . mso_form_session('f_session_id');
+		if ($show_check_version or $show_clear_cache)
+		{
+			echo '<form action="" method="post">' . mso_form_session('f_session_id');
 
-		if ($show_check_version)
-			echo '<p><input type="submit" name="f_submit_check_version" value="' . t('Проверить последнюю версию MaxSite CMS') . '"></p>';
+			if ($show_check_version)
+				echo '<p><input type="submit" name="f_submit_check_version" value="' . t('Проверить последнюю версию MaxSite CMS') . '"></p>';
 
-		if ($show_clear_cache)
-			echo '<p><input type="submit" name="f_submit_clear_cache" value="' . t('Сбросить кэш системы') . '"></p>';
+			if ($show_clear_cache)
+				echo '<p><input type="submit" name="f_submit_clear_cache" value="' . t('Сбросить кэш системы') . '"></p>';
 
-		echo '</form>';
-	}
-	
+			echo '</form>';
+		}
+		
+	} //if (mso_check_allow('admin_home'))
+		
 	# получать последние новости
 	$max_3000_news = mso_get_option('max_3000_news', 'general', 0);
 	
@@ -111,7 +115,7 @@ mso_cur_dir_lang('admin');
 		}
 	}
 	
-	
+		
 	mso_hook('admin_home');
 	
 ?>

@@ -37,6 +37,7 @@
 		$options['context'] = isset($post['f_context']) ? 1 : 0;
 		$options['context_comment'] = isset($post['f_context_comment']) ? 1 : 0;
 		$options['test'] = isset($post['f_test']) ? 1 : 0;
+		$options['multi_site'] = isset($post['f_multi_site']) ? 1 : 0;
 		$options['anticheck'] = isset($post['f_anticheck']) ? 1 : 0;
 		
 		$options['articles'] = isset($post['f_articles']) ? 1 : 0;
@@ -98,6 +99,7 @@
 		if ( !isset($options['context']) ) $options['context'] = true; 
 		if ( !isset($options['context_comment']) ) $options['context_comment'] = true; 
 		if ( !isset($options['test']) ) $options['test'] = false; 
+		if ( !isset($options['multi_site']) ) $options['multi_site'] = false; 
 		if ( !isset($options['start']) ) $options['start'] = true; 
 		if ( !isset($options['anticheck']) ) $options['anticheck'] = false; 
 		
@@ -108,6 +110,7 @@
 		$checked_context = $options['context'] ? ' checked="checked" ' : '';
 		$checked_context_comment = $options['context_comment'] ? ' checked="checked" ' : '';
 		$checked_test = $options['test'] ? ' checked="checked" ' : '';
+		$checked_multi_site = $options['multi_site'] ? ' checked="checked" ' : '';
 		$checked_start = $options['start'] ? ' checked="checked" ' : '';
 		$checked_anticheck = $options['anticheck'] ? ' checked="checked" ' : '';
 		
@@ -118,6 +121,7 @@
 		
 		$form .= '<p><label><input name="f_start" type="checkbox"' . $checked_start . '> Включить плагин</label></p>';
 		$form .= '<p><label><input name="f_context" type="checkbox"' . $checked_context . '> Использовать контекстные ссылки</label></p>';
+		$form .= '<p><label><input name="f_multi_site" type="checkbox"' . $checked_multi_site . '> Включите если код Сапы использыется <a href="http://help.sape.ru/sape/faq/1031" target="_blank">для нескольких сайтов</a></label></p>';
 		$form .= '<p><label><input name="f_context_comment" type="checkbox"' . $checked_context_comment . '> Использовать контекстные ссылки в комментариях</label></p>';
 		$form .= '<p><label><input name="f_test" type="checkbox"' . $checked_test . '> Режим проверки установленного кода</label></p>';
 		$form .= '<p><label><input name="f_anticheck" type="checkbox"' . $checked_anticheck . '> Включить антиобнаружитель продажных ссылок</label></p>';

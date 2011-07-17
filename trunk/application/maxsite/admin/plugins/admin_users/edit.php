@@ -151,7 +151,7 @@ mso_cur_dir_lang('admin');
 				_mso_add_row(t('Имя', 'admin'), 'f_last_name', $row['users_last_name']);
 				_mso_add_row(t('ICQ', 'admin'), 'f_icq', $row['users_icq']);
 				_mso_add_row(t('Сайт', 'admin'), 'f_url', $row['users_url']);
-				_mso_add_row(t('MSN', 'admin'), 'f_msn', $row['users_msn']);
+				_mso_add_row(t('Twitter', 'admin'), 'f_msn', $row['users_msn']);
 				_mso_add_row(t('Jabber', 'admin'), 'f_jaber', $row['users_jaber']);
 				_mso_add_row(t('Skype', 'admin'), 'f_skype', $row['users_skype']);
 				_mso_add_row(t('URL аватара', 'admin'), 'f_avatar_url', $row['users_avatar_url']);
@@ -192,8 +192,8 @@ mso_cur_dir_lang('admin');
 				$CI->table->add_row(t('Временная зона', 'admin'), 
 					form_dropdown('f_time_zone', array(
 					'0.00'=>'0:00 Casablanca, Dublin, Edinburgh, London, Lisbon, Monrovia', 
-					'1.00'=>'1:00 Berlin, Brussels, Copenhagen, Madrid, Paris, Rome', 
-					'2.00'=>'2:00 Киев, Севастополь, Kaliningrad, South Africa, Warsaw', 
+					'1.00'=>'1:00 Berlin, Brussels, Copenhagen, Madrid, Paris, Rome, Warsaw', 
+					'2.00'=>'2:00 Киев, Минск, Севастополь, Kaliningrad, South Africa', 
 					'3.00'=>'3:00 Москва, Baghdad, Riyadh, Nairobi', 
 					'4.00'=>'4:00 Adu Dhabi, Baku, Muscat, Tbilisi', 
 					'5.00'=>'5:00 Islamabad, Karachi, Tashkent', 

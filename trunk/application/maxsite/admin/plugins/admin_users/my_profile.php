@@ -143,17 +143,16 @@ mso_cur_dir_lang('admin');
 									
 				$CI->table->add_row('Логин', $row['users_login'] );
 										
-				_mso_add_row('Ник', 'f_nik', $row['users_nik'] );
-				_mso_add_row('E-mail', 'f_email', $row['users_email'] );
-				_mso_add_row('Фамилия', 'f_first_name', $row['users_first_name'] );
-				_mso_add_row('Имя', 'f_last_name', $row['users_last_name']);
-				_mso_add_row('ICQ', 'f_icq', $row['users_icq']);
-				_mso_add_row('Сайт', 'f_url', $row['users_url']);
-				_mso_add_row('Twitter', 'f_msn', $row['users_msn']);
-				_mso_add_row('Jabber', 'f_jaber', $row['users_jaber']);
-				_mso_add_row('Skype', 'f_skype', $row['users_skype']);
-				_mso_add_row('URL аватара', 'f_avatar_url', $row['users_avatar_url']);
-				
+				_mso_add_row(t('Ник', 'admin'), 'f_nik', $row['users_nik'] );
+				_mso_add_row(t('E-mail', 'admin'), 'f_email', $row['users_email'] );
+				_mso_add_row(t('Фамилия', 'admin'), 'f_first_name', $row['users_first_name'] );
+				_mso_add_row(t('Имя', 'admin'), 'f_last_name', $row['users_last_name']);
+				_mso_add_row(t('ICQ', 'admin'), 'f_icq', $row['users_icq']);
+				_mso_add_row(t('Сайт', 'admin'), 'f_url', $row['users_url']);
+				_mso_add_row(t('Twitter', 'admin'), 'f_msn', $row['users_msn']);
+				_mso_add_row(t('Jabber', 'admin'), 'f_jaber', $row['users_jaber']);
+				_mso_add_row(t('Skype', 'admin'), 'f_skype', $row['users_skype']);
+				_mso_add_row(t('URL аватара', 'admin'), 'f_avatar_url', $row['users_avatar_url']);				
 				
 				$CI->table->add_row(t('Описание', 'admin'), '<textarea name="f_description" cols="90" rows="3">' . htmlspecialchars($row['users_description']) . '</textarea>');
 				
@@ -191,7 +190,7 @@ mso_cur_dir_lang('admin');
 					form_dropdown('f_time_zone', array(
 					'0.00'=>'0:00 Casablanca, Dublin, Edinburgh, London, Lisbon, Monrovia', 
 					'1.00'=>'1:00 Berlin, Brussels, Copenhagen, Madrid, Paris, Rome', 
-					'2.00'=>'2:00 Киев, Севастополь, Kaliningrad, South Africa, Warsaw', 
+					'2.00'=>'2:00 Киев, Минск, Севастополь, Kaliningrad, South Africa, Warsaw', 
 					'3.00'=>'3:00 Москва, Baghdad, Riyadh, Nairobi', 
 					'4.00'=>'4:00 Adu Dhabi, Baku, Muscat, Tbilisi', 
 					'5.00'=>'5:00 Islamabad, Karachi, Tashkent', 
@@ -246,9 +245,11 @@ mso_cur_dir_lang('admin');
 					form_dropdown('f_groups_id', $groups, $row['groups_id'], ' style="width: 300px;" '));			
 				}
 				
-				_mso_add_row(t('Новый пароль (только английские символы, длина > 6 символов)', 'admin'), 'f_new_password', '');
-				_mso_add_row(t('Подтвердите пароль', 'admin'), 'f_new_confirm_password', '');
-
+				if ( mso_check_allow('edit_self_users')) // если разрешено менять анкету
+				{
+					_mso_add_row(t('Новый пароль (только английские символы, длина > 6 символов)', 'admin'), 'f_new_password', '');
+					_mso_add_row(t('Подтвердите пароль', 'admin'), 'f_new_confirm_password', '');
+				}
 
 				###!!! здесь же по-идее нужно смотреть и мета для данного юзера
 				###!!! и выводить её в виде - ключ-значение
@@ -258,7 +259,10 @@ mso_cur_dir_lang('admin');
 			
 			echo '<form action="" method="post">' . mso_form_session('f_session_id');
 			echo $CI->table->generate();
-			echo '<p class="br"><input type="submit" name="f_submit[' . $id . ']" value="' . t('Изменить', 'admin') . '"></p>';
+			
+			if (mso_check_allow('edit_self_users')) // если разрешено менять анкету
+				echo '<p class="br"><input type="submit" name="f_submit[' . $id . ']" value="' . t('Изменить', 'admin') . '"></p>';
+			
 			echo '</form>';
 		}
 		else echo '<div class="error">' . t('Ошибочный запрос', 'admin') . '</div>';
