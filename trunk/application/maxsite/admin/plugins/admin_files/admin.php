@@ -60,7 +60,7 @@
 				@mkdir($new_dir, 0777); // нет каталога, пробуем создать
 				@mkdir($new_dir . '/_mso_i', 0777); // нет каталога, пробуем создать
 				@mkdir($new_dir . '/mini', 0777); // нет каталога, пробуем создать
-				echo '<div class="update">' . sprintf(t('Каталог <strong>%s</strong> создан!'), $f_cat_name)
+				echo '<div class="update">' . sprintf(t('Каталог <strong>%s</strong> создан!', 'admin'), $f_cat_name)
 					. '</div>';
 			}
 		}
@@ -326,7 +326,7 @@
 	
 	for ($i = 1; $i <= $admin_files_field_count; $i++)
 	{
-		echo '<input type="file" name="f_userfile[]" size="100">';
+		echo '<input type="file" name="f_userfile[]" size="90">';
 		if ($i < $admin_files_field_count) echo '<br>';
 	}	
 	

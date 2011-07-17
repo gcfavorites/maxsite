@@ -5,7 +5,7 @@ mso_cur_dir_lang('admin');
 ?>
 
 <h1><?= t('Редактирование страницы') ?></h1>
-<p class="ret-to-pages"><a href="<?= $MSO->config['site_admin_url'] . 'page' ?>">Вернуться к списку страниц</a>
+<p class="ret-to-pages"><a href="<?= $MSO->config['site_admin_url'] . 'page' ?>"><?= t('Вернуться к списку страниц', 'admin') ?></a>
 
 <?php
 	

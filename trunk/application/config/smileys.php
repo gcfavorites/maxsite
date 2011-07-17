@@ -7,7 +7,7 @@
 | Individual images can be used to replace multiple simileys.  For example:
 | :-) and :) use the same image replacement.
 |
-| Please see user guide for more info: 
+| Please see user guide for more info:
 | http://codeigniter.com/user_guide/helpers/smiley_helper.html
 |
 */
@@ -21,7 +21,7 @@ $smileys = array(
 	':cheese:'		=>	array('cheese.gif',			'19',	'19',	'cheese'),
 	':)'			=>	array('smile.gif',			'19',	'19',	'smile'),
 	';-)'			=>	array('wink.gif',			'19',	'19',	'wink'),
-	//';)'			=>	array('wink.gif',			'19',	'19',	'wink'),
+	';)'			=>	array('wink.gif',			'19',	'19',	'wink'),
 	':smirk:'		=>	array('smirk.gif',			'19',	'19',	'smirk'),
 	':roll:'		=>	array('rolleyes.gif',		'19',	'19',	'rolleyes'),
 	':-S'			=>	array('confused.gif',		'19',	'19',	'confused'),
@@ -63,4 +63,4 @@ $smileys = array(
 		);
 
 /* End of file smileys.php */
-/* Location: ./system/application/config/smileys.php */
+/* Location: ./application/config/smileys.php */

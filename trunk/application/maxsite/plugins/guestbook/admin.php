@@ -96,14 +96,14 @@
 <tr><td class="t1"><b>Текст:</b></td><td class="t2">[text]</td></tr>
 <tr><td colspan="2" class="space">&nbsp;</td></tr>'; 
 
-		if ( !isset($options['start']) ) $options['start'] = '<h2 class="guestbook">Отзывы</h2><table class="guestbook">'; 
+		if ( !isset($options['start']) ) $options['start'] = '<h2 class="guestbook">' . t('Отзывы', __FILE__) . '</h2><table class="guestbook">'; 
 
 		if ( !isset($options['end']) ) $options['end'] = '</table>'; 
 
 
 		$form = '';
 		
-		$form .= '<p><strong>' . t('Короткая ссылка:', __FILE__) . '</strong> ' . ' <input name="f_slug" type="text" value="' . $options['slug'] . '"> <a href="' . getinfo('siteurl') . $options['slug']  . '" target="_blank">Просмотр</a></p>';
+		$form .= '<p><strong>' . t('Короткая ссылка:', __FILE__) . '</strong> ' . ' <input name="f_slug" type="text" value="' . $options['slug'] . '"> <a href="' . getinfo('siteurl') . $options['slug']  . '" target="_blank">' . t('Просмотр', __FILE__) . '</a></p>';
 		
 		$form .= '<p><strong>' . t('Отзывов на страницу:', __FILE__) . '</strong> ' . ' <input name="f_limit" type="text" value="' . $options['limit'] . '"></p>';
 		

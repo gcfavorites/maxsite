@@ -167,7 +167,10 @@
 		
 		
 			if (version_compare(PHP_VERSION, '5.1.6', '<')) 
+			{
 				echo '<p class="error"><span>X</span> Старая версия PHP ' . PHP_VERSION . '</p>';
+				$show_button = false;
+			}
 			else
 				echo '<p class="ok"><span>√</span> Версия PHP ' . PHP_VERSION . ' - OK!</p>';
 
@@ -175,6 +178,16 @@
 			if (file_exists( $MSO->config['base_dir'] . 'mso_config.php' )) 
 			{
 				echo '<p class="ok"><span>√</span> Файл «application/maxsite/mso_config.php» - OK!</p>';
+				
+				require_once ($MSO->config['base_dir'] . 'mso_config.php');
+				
+				if ($MSO->config['secret_key'])
+					echo '<p class="ok"><span>√</span> Секретная фраза - OK!</p>';
+				else 
+				{
+					echo '<p class="error"><span>X</span> Не указана секретная фраза в «application/maxsite/mso_config.php»!</p>';
+					$show_button = false;
+				}
 			}
 			else
 			{

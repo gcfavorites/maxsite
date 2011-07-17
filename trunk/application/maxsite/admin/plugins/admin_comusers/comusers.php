@@ -111,13 +111,13 @@
 		# отмечаем невыполненную активацию
 		if ($row['comusers_activate_string'] != $row['comusers_activate_key'])
 		{
-			$activat = 'нет';
-			$nik = '<span style="color: red" title="Активация не выполнена!">' . $nik . '</span>';
+			$activat = t('нет');
+			$nik = '<span style="color: red" title="' . t('Активация не выполнена!') . '">' . $nik . '</span>';
 		}
 		else $activat = '';
 
 		$nik = '<a href="' . $this_url . '/edit/' . $id . '">'
-				. $nik . '</a> [<a href="' . getinfo('siteurl') . 'users/' . $id . '" target="_blank">Просмотр</a>]';
+				. $nik . '</a> [<a href="' . getinfo('siteurl') . 'users/' . $id . '" target="_blank">' . t('Просмотр') . '</a>]';
 
 		if ($row['comusers_date_registr'] != $row['comusers_last_visit'])
 			$date = '<span style="color: gray" title="Дата регистрации">' . $row['comusers_date_registr']

@@ -141,7 +141,7 @@ mso_cur_dir_lang('admin');
 			
 				$CI->table->add_row('ID', $id );
 									
-				$CI->table->add_row('Логин', $row['users_login'] );
+				$CI->table->add_row(t('Логин', 'admin'), $row['users_login'] );
 										
 				_mso_add_row(t('Ник', 'admin'), 'f_nik', $row['users_nik'] );
 				_mso_add_row(t('E-mail', 'admin'), 'f_email', $row['users_email'] );
@@ -173,7 +173,7 @@ mso_cur_dir_lang('admin');
 				$d_r = array_flip(range(1, 31));
 				foreach ($d_r as $key=>$val) $d_r[$key] = $key;			
 				
-				$CI->table->add_row('Дата рождения', 
+				$CI->table->add_row(t('Дата рождения', 'admin'), 
 				t('Год:', 'admin') . ' ' . form_dropdown('f_date_birth_y', $y_r, $y, ' style="width: 100px;" ') . 
 				' ' . t('Месяц:', 'admin') . ' ' . form_dropdown('f_date_birth_m', $m_r, $m, ' style="width: 100px;" ' ) . 
 				' ' . t('День:', 'admin') . ' ' . form_dropdown('f_date_birth_d', $d_r, $d, ' style="width: 100px;" ' ) 

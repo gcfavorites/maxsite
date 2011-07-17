@@ -339,8 +339,15 @@ function mso_initalizing()
 	if ( file_exists($fn) ) require_once ($fn);
 
 	// если кэш старый, то очищаем его
-	$path = $CI->config->item('cache_path');
-	$mso_cache_last = ($path == '') ? BASEPATH . 'cache/' . '_mso_cache_last.txt' : $path . '_mso_cache_last.txt';
+	// #ci1 $path = $CI->config->item('cache_path');
+	
+	$path = getinfo('cache_dir');
+	
+	
+	// #ci1 $mso_cache_last = ($path == '') ? BASEPATH . 'cache/' . '_mso_cache_last.txt' : $path . '_mso_cache_last.txt';
+	
+	$mso_cache_last = $path . '_mso_cache_last.txt';
+	
 	if (file_exists($mso_cache_last))
 	{
 		$time = (int) trim(implode('', file($mso_cache_last)));
@@ -2037,8 +2044,9 @@ function mso_segment($segment = 2, $die = true, $my_segments = false)
 	
 	$seg = urldecode($seg);
 	
-	$url = $CI->input->xss_clean($seg);
-
+	// $url = $CI->input->xss_clean($seg); // ci < 2
+	$url = $CI->security->xss_clean($seg, false);
+	
 	if ($url != $seg and $die) die('<b><font color="red">Achtung! XSS attack!</font></b>');
 	
 	return $url;
@@ -2562,7 +2570,7 @@ function mso_load_jquery($plugin = '')
 		if ($plugin)
 			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/' . $plugin . '"></script>' . NR;
 		else
-			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.5.2.min.js"></script>' . NR;
+			return '<script type="text/javascript" src="'. getinfo('common_url') . 'jquery/jquery-1.6.min.js"></script>' . NR;
 	}
 }
 
@@ -2579,6 +2587,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 	# добавить ссылку на admin
 	if ($add_link_admin and is_login()) $menu .= NR . 'admin|Admin';
 
+	$menu = str_replace("\r", "", $menu); // если это windows
 	$menu = str_replace("_NR_", "\n", $menu);
 	$menu = str_replace("\n\n\n", "\n", $menu);
 	$menu = str_replace("\n\n", "\n", $menu);
@@ -2643,6 +2652,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 
 			if ($class == ' ') $class = '';
 			
+
 			if ($group_in) // открываем группу
 			{
 				$group_num++;
@@ -2681,6 +2691,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 		{
 			// если это [, то это начало группы ul 
 			// если ] то /ul
+
 			if ($elem[0] == '[') 
 			{
 				$group_in = true;
@@ -2695,6 +2706,7 @@ function mso_menu_build($menu = '', $select_css = 'selected', $add_link_admin = 
 				$group_work = false;
 				$out .= '</ul>' . NR . '</li>' . NR;
 			}
+			
 		}
 	}
 	
@@ -3376,8 +3388,9 @@ function mso_xss_clean($text, $out_error = '_mso_xss_clean_out_error', $out_no_e
 	$CI = & get_instance();
 
 	// выполняем XSS-фильтрацию
-	$text_xss = $CI->input->xss_clean($text);
+	//$text_xss = $CI->input->xss_clean($text);
     
+    $text_xss = $CI->security->xss_clean($text, false);
 	// если тексты не равны, значит существует опасность XSS-атаки
 	if ($text != $text_xss)
 	{

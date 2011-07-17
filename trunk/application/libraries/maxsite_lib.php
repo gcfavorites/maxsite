@@ -7,7 +7,7 @@
 
 class Maxsite_lib 
 {
-	var $version = '0.444';
+	var $version = '0.500';
 	var $config = array();
 	var $data = array();
 	var $hooks = array();
@@ -21,7 +21,7 @@ class Maxsite_lib
 	var $current_lang_dir = false;
 	
 	
-	function Maxsite_lib() 
+	public function __construct()
 	{
 		$CI =& get_instance();
 		
@@ -42,7 +42,7 @@ class Maxsite_lib
 		
 		$this->config['cache_dir'] = $CI->config->config['cache_path'];
 		if (!$this->config['cache_dir'])
-			$this->config['cache_dir'] = FCPATH . 'system/cache/';		
+			$this->config['cache_dir'] = FCPATH . 'application/cache/';		
 		
 		$this->config['common_dir'] = $this->config['base_dir'] . 'common/';
 		$this->config['templates_dir'] = $this->config['base_dir'] . 'templates/';
@@ -73,6 +73,6 @@ global $MSO;
 
 if ( !isset($MSO) ) $MSO = new Maxsite_lib();
 
-require_once( $MSO->config['common_dir'] . 'common.php' );
+require_once($MSO->config['common_dir'] . 'common.php');
 
 # end file

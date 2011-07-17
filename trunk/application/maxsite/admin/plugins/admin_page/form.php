@@ -153,7 +153,7 @@
 
 			<div class="block_page page_date">
 				<h3>' . t('Дата публикации', 'admin') . '</h3>
-				<p><label><input name="f_date_change" type="checkbox" ' . $f_date_change . '> Изменить дату публикации</label></p>
+				<p><label><input name="f_date_change" type="checkbox" ' . $f_date_change . '> ' . t('Изменить дату публикации', 'admin') . '</label></p>
 				<p>' . $date_y . ' - ' . $date_m . ' - ' . $date_d . '</p>
 				<p>' . $time_h . ' : ' . $time_m . ' : ' . $time_s . '</p>
 				<p><em>' . $date_time . '</em></p>

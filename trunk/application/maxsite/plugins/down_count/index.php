@@ -136,8 +136,11 @@ function down_count_init($args = array())
 		
 		// проверяем входящий url 
 		// в нем может быть закодирована какая-то гадость
-		$url_check = $CI->input->xss_clean($url);
+		// $url_check = $CI->input->xss_clean($url);
+		
+		$url_check = mso_xss_clean($url);
 		if ($url_check != $url) die('<b><font color="red">Achtung! XSS attack!</font></b>');
+		
 		$url = $url_check;
 		
 		// все урлы хранятся в файле 

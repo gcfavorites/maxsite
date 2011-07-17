@@ -10,12 +10,12 @@
 
 $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'cpt'	=>	'application/mac-compactpro',
-				'csv'	=>	array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel'),
+				'csv'	=>	array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel'),
 				'bin'	=>	'application/macbinary',
 				'dms'	=>	'application/octet-stream',
 				'lha'	=>	'application/octet-stream',
 				'lzh'	=>	'application/octet-stream',
-				'exe'	=>	'application/octet-stream',
+				'exe'	=>	array('application/octet-stream', 'application/x-msdownload'),
 				'class'	=>	'application/octet-stream',
 				'psd'	=>	'application/x-photoshop',
 				'so'	=>	'application/octet-stream',
@@ -38,10 +38,7 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'dxr'	=>	'application/x-director',
 				'dvi'	=>	'application/x-dvi',
 				'gtar'	=>	'application/x-gtar',
-				
-				# max 
-				'gz'	=>	array('application/octet-stream', 'application/gzip'),
-				
+				'gz'	=>	'application/x-gzip',
 				'php'	=>	'application/x-httpd-php',
 				'php4'	=>	'application/x-httpd-php',
 				'php3'	=>	'application/x-httpd-php',
@@ -51,7 +48,7 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'swf'	=>	'application/x-shockwave-flash',
 				'sit'	=>	'application/x-stuffit',
 				'tar'	=>	'application/x-tar',
-				'tgz'	=>	'application/x-tar',
+				'tgz'	=>	array('application/x-tar', 'application/x-gzip-compressed'),
 				'xhtml'	=>	'application/xhtml+xml',
 				'xht'	=>	'application/xhtml+xml',
 				'zip'	=>  array('application/x-zip', 'application/zip', 'application/x-zip-compressed'),
@@ -59,7 +56,7 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'midi'	=>	'audio/midi',
 				'mpga'	=>	'audio/mpeg',
 				'mp2'	=>	'audio/mpeg',
-				'mp3'	=>	array('audio/mpeg', 'audio/mpg'),
+				'mp3'	=>	array('audio/mpeg', 'audio/mpg', 'audio/mpeg3', 'audio/mp3'),
 				'aif'	=>	'audio/x-aiff',
 				'aiff'	=>	'audio/x-aiff',
 				'aifc'	=>	'audio/x-aiff',
@@ -101,14 +98,9 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'word'	=>	array('application/msword', 'application/octet-stream'),
 				'xl'	=>	'application/excel',
 				'eml'	=>	'message/rfc822',
-				
-				# MAX
-				'rar'	=>	'application/octet-stream',
-				'7z'	=>	'application/octet-stream',
-				'flv'	=>	'application/octet-stream'
-
+				'json' => array('application/json', 'text/json')
 			);
 
 
 /* End of file mimes.php */
-/* Location: ./system/application/config/mimes.php */
+/* Location: ./application/config/mimes.php */

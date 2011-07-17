@@ -5,13 +5,13 @@
  * (c) http://max-3000.com/
  */
 
-class Maxsite extends Controller 
+class Maxsite extends CI_Controller 
 {
 	var $data_def = array();
 	
-	function Maxsite()
+	public function __construct()
 	{
-		parent::Controller();
+		parent::__construct();
 		
 		# подключаем свою библиотеку
 		$this->load->library('maxsite_lib');

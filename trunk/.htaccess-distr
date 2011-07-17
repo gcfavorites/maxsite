@@ -1,12 +1,10 @@
 Options +FollowSymLinks
 Options -Indexes
-php_flag register_globals off
-
 DirectoryIndex index.php index.html
-
-#php_value memory_limit 16M
-
 AddDefaultCharset UTF-8
+
+#php_flag register_globals off
+#php_value memory_limit 16M
 
 <IfModule mod_rewrite.c>
 RewriteEngine on

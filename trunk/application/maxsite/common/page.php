@@ -239,7 +239,7 @@ function mso_get_pages($r = array(), &$pag)
 					if ( $pages[0]['page_id_autor'] <> $MSO->data['session']['users_id'] ) return array();
 					else
 					{
-						if ($page_status == 'draft') $pages[0]['page_title'] .= ' ' . t('(черновик)');
+						if ($page_status == 'draft') $pages[0]['page_title'] .= ' ' . t('(черновик)', 'common');
 						// else $pages[0]['page_title'] .= ' (личное)';
 					}
 
