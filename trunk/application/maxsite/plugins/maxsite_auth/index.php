@@ -46,7 +46,7 @@ function maxsite_auth_admin_init($args = array())
 # сообщение в форме комментариев
 function maxsite_auth_page_comment_form($args = array()) 
 {
-	echo '<span><a href="' . getinfo('siteurl') . 'maxsite-auth-form">Авторизация MaxSiteAuth</a>.</span> ';
+	echo '<span><a href="' . getinfo('siteurl') . 'maxsite-auth-form">MaxSiteAuth</a>.</span> ';
 	
 	return $args;
 }

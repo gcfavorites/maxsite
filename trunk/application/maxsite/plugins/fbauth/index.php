@@ -96,7 +96,7 @@ function fbauth_mso_options()
 # сообщение в форме комментариев
 function fbauth_page_comment_form($args = array()) 
 {
-	echo ' <span><a href="' . getinfo('siteurl') . 'maxsite-fbauth">Авторизация Facebook</a></span> ';
+	echo ' <span><a href="' . getinfo('siteurl') . 'maxsite-fbauth">Facebook</a>.</span> ';
 	
 	return $args;
 }

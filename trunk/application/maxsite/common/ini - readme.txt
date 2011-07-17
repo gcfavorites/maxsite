@@ -36,19 +36,28 @@ delimer = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 Для типа textfield можно указать кавычку (") в виде _QUOT_ - он автоматически пербразуется в &quot; 
 
 
+В описании можно использовать параметры section и section_description, которые выводятся отдельной строкой перед этой секцией в таблице вывода. Поле section выводится в первой ячейке таблицы (ключ, название), section_description - второй (описание).
+
+Пример использования см. application/maxsite/admin/plugins/admin_options/general.ini
+
+
+
 [Титул]
 options_key = title
 options_type = general
 type = textfield
 description = "Короткое название сайта. Это описание будет использовано в title вашего сайта."
-default = 
+default = ""
+section = "Сайт"
+section_description = "Задайте базовое описание сайта"
+
 
 [Описание сайта]
 options_key = description
 options_type = general
 type = textfield
 description = "Кратко опишите свой сайт. Это описание будет использовано в meta description вашего сайта."
-default = 
+default = ""
 
 [Ключевые слова]
 options_key = keywords
@@ -88,6 +97,4 @@ delimer = "<br>"
 values = "0-9 # 10-19 # 20+"
 default = "10-19"
 description = "описание"
-
-
 

@@ -13,6 +13,8 @@
 	
 <?php mso_hook('head') ?>
 
+<?php if ($my_style = mso_get_option('my_style', 'templates', '')) echo '<style>' . NR . $my_style . NR . '</style>'; ?>
+
 </head><?php if (!$_POST) flush(); ?>
 <body>
 <!-- end header -->

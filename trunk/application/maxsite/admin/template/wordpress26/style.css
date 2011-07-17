@@ -80,6 +80,8 @@ table.page th {padding: 8px;  background: #888; color: #FFF; font-size: 13px;}
 table.page tr {background: white;}
 table.page tr.alt {background: white;}
 
+div.section {background: #dddddd; margin: -7px; padding: 5px; height: 1.4em; font-weight: bold; font-style: italic; border-top: 12px solid white;}
+div.section h2 {margin: 0; line-height: 1em;}
 
 div.update {padding: 10px; background: #209920; margin-bottom: 10px; color: white;}
 div.update a {color: white;}

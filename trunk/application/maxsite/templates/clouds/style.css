@@ -115,32 +115,45 @@ div.calendar div.today-content {background: #8591B7;}
 div.calendar td a {text-decoration: underline;}
 
 
-/* COMMENTS */
-div.comment-form {line-height: 1.2em; width: 100%;}
-div.comment-form label {margin: 3px;}
-div.comment-form p {margin: 3px;}
-div.comment-form input.text {width: 300px; margin: 3px;}
-div.comment-form input.no-margin {width: auto; margin: 3px; }
+/* COMMENT FORM */
+
+div.comment-form {}
+
+div.comments-auth {background: #E5E5F1; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; padding: 10px; margin: 10px 0; border: 1px solid #8591B7;}
+
+div.comment-form div.comments-noreg {}
+div.comment-form div.comments-reg {margin: 0;}
+div.comment-form div.sep {border-top: 1px solid #8591B7; margin-top: 10px; padding-top: 5px;}
+
+div.comment-form div.comments-textarea {border: 1px solid #8591B7; margin: 10px 0; background: #E5F1E5; padding: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;}
+
+div.comment-form input[type="radio"] {position: relative; top: 1px; cursor: pointer;}
+
+table.no-border, table.no-border td {border: none; padding: 0; vertical-align: top; border-collapse: collapse; border-spacing: 0;}
+div.comment-form table {width: 100%;}
+div.comment-form td {padding: 2px;}
+div.comment-form td.t1 {width: 85px; text-align: right;}
+div.comment-form td.t2 input {width: 100%;}
+div.comment-form p.hint {margin: 0 0 5px 90px; font-size: .9em; color: gray; font-style: italic; line-height: 1.2em;}
+div.comment-form p.radio {font-weight: bold;}
+
 div.comment-form textarea {width: 99%; margin: 3px;}
 *html div.comment-form textarea {width: 95%; margin: 3px;}
-div.comment-form span { position: relative; top: -5px; font-size: 8pt; color: gray;}
-div.comment-form span.black { color: black;}
-div.comment-form input.comments_submit {width: 120px; }
-div.comment-form input.comments_captha {width: 90px;}
+
+div.comment-form p.you-comment {font-weight: bold;}
+
 div.comment-form img { position: relative; top: 7px; }
-
-div.comment-form div.comments-reg {border: 1px solid #8591B7; margin: 10px 0; padding: 10px;}
-div.comment-form div.comments-noreg {border: 1px solid #8591B7; margin: 10px 0; padding: 10px;}
-div.comment-form div.comments-textarea {border: 1px solid #8591B7; margin: 10px 0; padding: 10px;}
-
-div.comment-form div.comments-user {border: 1px solid #8591B7; margin: 10px 0; padding: 10px; -moz-border-radius: 10px; font-weight: bold;}
-
-div.comment-ok {background: #40A040; color: white; padding: 10px; text-align: center; font-weight: bold;}
-div.comment-error {background: #FF4040; color: white; padding: 10px; text-align: center; font-weight: bold;}
 
 div.comment-form .comment_button input {margin: 0px; padding: 0 5px; font-size: 8pt;}
 
+div.comment-form div.comments-user {border: 1px solid #8591B7; margin: 10px 0; background: #E5F1E5; padding: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; font-weight: bold;}
 
+div.comment-ok {background: #40A040; color: white; padding: 10px; text-align: center; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; font-weight: bold;}
+div.comment-error {background: #FF4040; color: white; padding: 10px; text-align: center; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; font-weight: bold;}
+
+
+
+/* COMMENTS */
 div.comments {margin: 20px 0 0 0;}
 div.comments ul, div.comments ol {margin: 10px 0 20px 0;}
 div.comments li {margin: 0 0 20px 30px;}

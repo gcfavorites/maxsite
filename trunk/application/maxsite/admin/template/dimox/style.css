@@ -321,6 +321,10 @@ table#pagetable tr.activated td {
 	background: #E6F1CD;
   border: 1px solid #BCDD77;
 }
+
+div.section {background: #dddddd; margin: -5px -8px; padding: 5px; height: 1.4em; font-weight: bold; font-style: italic; border-top: 12px solid white;}
+div.section h2 {margin: 0; line-height: 1em;}
+
 table.addPost {
 	margin: 15px 0 0;
 	width: 100% !important;

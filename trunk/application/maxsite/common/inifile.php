@@ -81,7 +81,7 @@ function _mso_ini_check_php_callback($matches)
 function mso_view_ini($all = false) 
 {
 	if (!$all) return '';
-	
+	//pr($all);
 	$CI = & get_instance();
 	
 	$CI->load->library('table');
@@ -118,7 +118,6 @@ function mso_view_ini($all = false)
 	else 
 		$all_options = array();
 		
-	
 	
 	foreach ($all as $key=>$row)
 	{
@@ -158,25 +157,6 @@ function mso_view_ini($all = false)
 			}
 		}
 		
-		/*
-		// получаем текущее значение опции 
-		// старый вариант - через много запросов БД
-		$CI->db->select('options_value');
-		$CI->db->where( array('options_type'=>$options_type, 'options_key'=>$options_key ) );
-		$query = $CI->db->get('options');
-		
-		if ($query->num_rows() > 0 ) // есть запись
-		{
-			$val = $query->row_array();
-			$value = htmlspecialchars($val['options_value']);
-		}
-		else 
-		{
-			$options_present = false;
-			$value = $default; // нет значание, поэтому берем дефолт
-		}
-		*/
-		
 		$f = NR; 
 
 		$name_f = 'f_options[' . $options_key . '_m_s_o_' . $options_type . ']'; // название поля 
@@ -184,14 +164,12 @@ function mso_view_ini($all = false)
 		if ($type == 'textfield')
 		{
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			//$f .= '<input style="width: 99%;" type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 			$f .= '<input type="text" name="' . $name_f . '" value="' . $value . '">' . NR;
 		}
 		elseif ($type == 'textarea')
 		{
 			$value = str_replace('_NR_', "\n", $value);
 			$value = str_replace('_QUOT_', '&quot;', $value);
-			//$f .= '<textarea style="width: 99%;" rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 			$f .= '<textarea rows="7" name="' . $name_f . '">'. $value . '</textarea>' . NR;
 		}
 		elseif ($type == 'checkbox')
@@ -227,8 +205,6 @@ function mso_view_ini($all = false)
 			
 			if ($values) // есть что-то
 			{
-				//$f .= '<select name="' . $name_f . '">';
-				//$f .= '<select style="width: 99%;" name="' . $name_f . '">';
 				$f .= '<select name="' . $name_f . '">';
 				
 				foreach( $values as $val ) 
@@ -255,7 +231,17 @@ function mso_view_ini($all = false)
 			$key = '<span title="' . $options_key . '" class="red">* ' . t($key) . ' '. t('(нет в базе)') .'</span>';
 		else 
 			$key = '<strong title="' . $options_key . '">' . t($key) . '</strong>';
-			
+		
+		// если есть новая секция, то выводим пустую инфо-строчку
+		if (isset($row['section']))
+		{
+			if (isset($row['section_description']))
+				$CI->table->add_row('<div class="section"><h2>' . t($row['section']) . '</h2></div>', '<div class="section">' . t($row['section_description']) . '</div>');
+			else
+				$CI->table->add_row('<div class="section"><h2>' . t($row['section']) . '</h2></div>', '<div class="section"><h2>&nbsp;</h2></div>');
+				
+		}
+		
 		$CI->table->add_row($key, $f);
 	}
 	

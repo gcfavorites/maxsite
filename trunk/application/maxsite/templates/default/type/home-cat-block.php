@@ -178,7 +178,14 @@ else
 				if ( !mso_get_option('home_full_text', 'templates', '1') ) echo '<ul class="home-cat-block">';
 					
 				foreach ($pages as $page) : // выводим в цикле
-
+					
+					if ($f = mso_page_foreach('home-cat-block-out-pages')) 
+					{
+						require($f); // подключаем кастомный вывод
+						continue; // следующая итерация
+					}
+					
+					
 					extract($page);
 					// pr($page);
 					

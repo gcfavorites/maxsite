@@ -13,18 +13,61 @@ function randomtext_autoload($args = array())
 	mso_register_widget('randomtext_widget', t('Цитаты', 'plugins')); 
 }
 
+function randomtext_uninstall($args = array())
+{	
+	mso_delete_option_mask('randomtext_widget_', 'plugins'); // удалим созданные опции
+	return $args;
+}
 
 # функция виджета
 function randomtext_widget($num = 1)
 {
-	$args = array();
-	return randomtext_widget_custom($args, $num);
+	$widget = 'randomtext_widget_' . $num; // имя для опций = виджет + номер
+	$options = mso_get_option($widget, 'plugins', array() ); // получаем опции
+	
+	// заменим заголовок, чтобы был в  h2 class="box"
+	if ( isset($options['header']) and $options['header'] ) 
+		$options['header'] = '<h2 class="box"><span>' . $options['header'] . '</span></h2>';
+	else $options['header'] = '';
+	
+	return randomtext_widget_custom($options, $num);
 }
 
 # функция вывода формы настройки виджета
 function randomtext_widget_form($num = 1)
 {
-	return '';
+	$widget = 'randomtext_widget_' . $num; // имя для формы и опций = виджет + номер
+	
+	// получаем опции 
+	$options = mso_get_option($widget, 'plugins', array());
+	
+	if ( !isset($options['header']) ) $options['header'] = '';
+	
+	// вывод самой формы
+	$CI = & get_instance();
+	$CI->load->helper('form');
+	
+	$form = '<p><div class="t150">' . t('Заголовок:', 'plugins') . '</div> '. 
+			form_input( array( 'name'=>$widget . 'header', 'value'=>$options['header'] ) ) ;
+	
+	return $form;
+}
+
+
+# сюда приходят POST из формы настройки виджета
+# имя функции = виджет_update
+function randomtext_widget_update($num = 1) 
+{
+	$widget = 'randomtext_widget_' . $num; // имя для опций = виджет + номер
+	
+	// получаем опции
+	$options = $newoptions = mso_get_option($widget, 'plugins', array());
+	
+	# обрабатываем POST
+	$newoptions['header'] = mso_widget_get_post($widget . 'header');
+	
+	if ( $options != $newoptions ) 
+		mso_add_option($widget, $newoptions, 'plugins');
 }
 
 

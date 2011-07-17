@@ -2391,7 +2391,19 @@ function mso_show_sidebar($sidebar = '1', $block_start = '', $block_end = '', $e
 					$en = str_replace('[NUMF]', $num, $en);
 					$en = str_replace('[NUMW]', $numw, $en);
 					$en = str_replace('[SB]', $sidebar, $en);
-
+					
+					// обрамим содержимое виджета в div.widget-content
+					if (stripos($temp, '</span></h2>') !== false)
+					{
+						// есть вхождение заголовка виджета <h2>
+						$temp = str_replace('</span></h2>', '</span></h2><div class="widget-content">', $temp);
+						$en = '</div>' . $en;
+					}
+					else
+					{
+						$temp = '<div class="widget-content">' . $temp . '</div>';
+					}
+					
 					$out .= $st . $temp . $en;
 				}
 			}

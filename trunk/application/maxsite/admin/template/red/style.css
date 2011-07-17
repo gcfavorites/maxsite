@@ -70,6 +70,9 @@ table.page th {padding: 3px;  background: #FCEAC7; color: #A82717;}
 table.page tr {background: #ECDAB7;}
 table.page tr.alt {background: #FCEAC7;}
 
+div.section {background: #E0C89D; margin: -3px; padding: 5px; height: 1.4em; font-weight: bold; font-style: italic; border-top: 12px solid white;}
+div.section h2 {margin: 0; line-height: 1em;}
+
 input.f_header {width: 99%; margin: 5px auto 5px auto; color: #333399; padding: 2px; font-size: 18pt;}
 
 

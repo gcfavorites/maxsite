@@ -620,11 +620,24 @@ function mso_get_new_comment($args = array())
 
 					if ($comusers_id)
 					{
+						// Модерация комюзеров 1 - модерировать
 						$comments_com_approved = mso_get_option('new_comment_comuser_moderate', 'general', 1);
 
+						// если включена модерация комюзеров
+						// и включена опция только первого комментария
+						// то получаем кол-во комментариев комюзера
+						if ($comments_com_approved and mso_get_option('new_comment_comuser_moderate_first_comment', 'general', 0)) 
+						{
+							$all_comusers = mso_comuser_update_count_comment(); // список комюзер => колво комментов
+							
+							// есть такой комюзер и у него более 1 комментария
+							if (isset($all_comusers[$comusers_id]) and $all_comusers[$comusers_id] > 1)
+								$comments_com_approved = 0; // разрешаем публикацию
+						}
+						
 						// но у нас в базе хранится значение наоборот - 1 разрешить 0 - запретить
 						$comments_com_approved = !$comments_com_approved;
-
+						
 						if ($moderation == 1) $comments_com_approved = 0; // антиспам определил, что нужно премодерировать
 
 						if ($comments_com_approved == 1) // если разрешено

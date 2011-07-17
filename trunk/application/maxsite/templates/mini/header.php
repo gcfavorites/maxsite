@@ -8,10 +8,12 @@
 	<link rel="shortcut icon" href="<?= getinfo('stylesheet_url') ?>favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>struct.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="<?= getinfo('stylesheet_url') ?>style.css" type="text/css" media="screen">
-	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?= getinfo('rss_url') ?>">
+	<?= mso_rss() ?>
 	<?= mso_load_jquery() ?>
 	
 <?php mso_hook('head') ?>
+
+<?php if ($my_style = mso_get_option('my_style', 'templates', '')) echo '<style>' . NR . $my_style . NR . '</style>'; ?>
 
 </head><?php if (!$_POST) flush(); ?>
 <body>

@@ -38,6 +38,9 @@ function admin_home_admin_init($args = array())
 	mso_admin_menu_add('', 'go_site', t('Переход к сайту', 'admin'));
 	mso_admin_url_hook ('go_site', 'admin_home_go_site');
 	
+	mso_admin_menu_add('', 'logout', t('Выход', 'admin'), 20);
+	mso_admin_url_hook ('logout', 'admin_home_logout');
+	
 	return $args;
 }
 
@@ -59,4 +62,10 @@ function admin_home_go_site($args = array())
 	mso_redirect('');
 }
 
-?>
+# выход
+function admin_home_logout($args = array()) 
+{
+	mso_redirect('logout');
+}
+
+# end file

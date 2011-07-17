@@ -88,7 +88,7 @@ function ushki_to_hook_custom($args = array())
 		
 		
 		// разобъем построчкно в массив
-		$lines = explode("/n", $options['option1']);
+		$lines = explode("\n", $options['option1']);
 		
 		// рассматриваем каждую строчку
 		foreach ($lines as $line)

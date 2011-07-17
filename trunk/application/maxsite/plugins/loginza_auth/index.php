@@ -78,7 +78,7 @@ function loginza_auth_mso_options()
 						'type' => 'text', 
 						'name' => 'Текст ссылки авторизации для формы комментариев:', 
 						'description' => 'Укажите текст ссылки авторизации для формы комментариев.<br>Работает html',
-						'default' => 'Войти через Loginza'
+						'default' => 'Loginza'
 					),					
 				'widget_fcomments_priority' => array(
 						'type' => 'text', 
@@ -131,10 +131,10 @@ function loginza_auth_mso_options()
 
 function loginza_auth_head($args = array())
 {
-	echo '<script src="http://loginza.ru/js/widget.js" type="text/javascript"></script>';
+	if (!is_login() and !is_login_comuser())
+		echo '<script src="http://loginza.ru/js/widget.js" type="text/javascript"></script>';
 
-	
-	
+	return $args;
 }
 
 # хук на форму логина
@@ -187,7 +187,7 @@ function loginza_auth_page_comment_form($args = array())
 	if (!isset($options['widget_type'])) $options['widget_type'] = 1; 
     $widget_type =  $options['widget_type'];
 	
-	if (!isset($options['auth_title']) or empty($options['auth_title'])) $options['auth_title'] = 'Войти через Loginza';  
+	if (!isset($options['auth_title']) or empty($options['auth_title'])) $options['auth_title'] = 'Loginza';  
 	$auth_title = $options['auth_title'];
 	
 	if (!isset($options['providers_set'])) $options['providers_set'] = 'google, yandex, facebook, twitter, loginza, myopenid, webmoney, openid';

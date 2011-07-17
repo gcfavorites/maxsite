@@ -75,6 +75,9 @@ table.page th {padding: 8px;  background: #404040; color: white;}
 table.page tr {background: white;}
 table.page tr.alt {background: white;}
 
+div.section {background: #dddddd; margin: -7px; padding: 5px; height: 1.4em; font-weight: bold; font-style: italic; border-top: 12px solid white;}
+div.section h2 {margin: 0; line-height: 1em;}
+
 input.f_header {width: 99%; border: 1px solid #CCCCCC; margin: 5px auto 5px auto; backg1round: #E3FAFF; co1lor: #333399; padding: 2px; font-size: 18pt;}
 
 div.update {padding: 10px; background: #209920; margin-bottom: 10px; color: white;}

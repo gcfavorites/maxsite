@@ -128,8 +128,9 @@ myBbcodeSettings = {
 		{name:'Прочее', className:"script-edit", dropMenu: [
 			{name:'div.class', openWith:'[div([![Css class]!])]', closeWith:'[/div]', className:"add"}, 
 			{name:'span.class', openWith:'[span([![Css class]!])]', closeWith:'[/span]', className:"add"}, 
-			{name:'div arrt', openWith:'[div [![Attribute]!]]', closeWith:'[/div]', className:"add"}, 
-			{name:'span arrt', openWith:'[span [![Attribute]!]]', closeWith:'[/span]', className:"add"}, 
+			{name:'div attr', openWith:'[div [![Attribute]!]]', closeWith:'[/div]', className:"add"}, 
+			{name:'span attr', openWith:'[span [![Attribute]!]]', closeWith:'[/span]', className:"add"}, 
+			{name:'p - абзац', openWith:'[p]', closeWith:'[/p]', className:"add"}, 
 		]},
 		
 		{separator:'---------------' },
